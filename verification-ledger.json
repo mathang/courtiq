@@ -1,6 +1,6 @@
 {
   "template": false,
-  "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
+  "project": "CourtIQ — 3D Basketball & Slow-Motion Question Duel Learning Game",
   "revision_or_artifact_hash": "dist/index.html:sha256:5b5c22fcc52a909b1456e327dd510580b1d6992712d5d4306f0c1fb6e6324fbd",
   "checks": [
     {
@@ -159,6 +159,16 @@
       "command_or_action": "Two synthetic students create/join/ready/shoot/poll on preview /api/room",
       "observed": "Same question ID/stem/choices/reveal time; answer keys hidden.",
       "evidence_path": "output/playtest/online-preview.json (local generated evidence, gitignored)"
+    },
+    {
+      "id": "street-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-10-30T22:47:32.005136+00:00",
+      "command_or_action": "GitHub main push; Netlify CLI production deploy; asset digest comparison; production Playwright; two-student HTTP duel",
+      "observed": "GitHub main contains source 5f2ccf8d565b1e35ad582cca0485f1743ba8233d. Production deploy 6ae51e61fcaf0370e6a793ef. All 3 live JS/CSS asset hashes match dist. Live browser movement inspected. Two synthetic students receive identical question ID/stem/choices/reveal time; answer keys hidden.",
+      "evidence_path": "https://courtiq-spx101.netlify.app; https://github.com/mathang/courtiq/commit/5f2ccf8d565b1e35ad582cca0485f1743ba8233d; output/playtest/online-production.json (local)"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
