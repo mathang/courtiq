@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CourtIQ — 3D Basketball & Slow-Motion Question Duel</title>
+    <link rel="stylesheet" href="/client/styles/main.css" />
+  </head>
+  <body>
+    <div id="app-root">
+      <!-- 3D Arena / 2D Fallback Canvas Container -->
+      <div id="viewport-container" aria-label="CourtIQ Basketball Arena"></div>
+
+      <!-- Top Scoreboard & Possession HUD -->
+      <header id="hud-top" class="hud-top" role="banner">
+        <div class="hud-brand">
+          <span class="brand-logo" aria-hidden="true">🏀</span>
+          <div>
+            <div class="brand-title">CourtIQ</div>
+            <div id="hud-mode-subtitle" class="brand-subtitle">1v1 Half-Court Learning Duel</div>
+          </div>
+        </div>
+
+        <div class="scoreboard-strip" aria-live="polite">
+          <div id="hud-p0-card" class="player-score-card slot-0 active-attacker">
+            <div class="player-meta">
+              <span id="hud-p0-role" class="role-pill">🏀 ATT</span>
+              <span id="hud-p0-name" class="player-name">Player 1</span>
+            </div>
+            <div id="hud-p0-score" class="player-score">0</div>
+          </div>
+
+          <div class="center-clock-card">
+            <div id="hud-possession-label" class="possession-counter">POSS 1 / 10</div>
+            <div id="hud-shot-clock" class="shot-clock" title="15-second movement clock">15.0s</div>
+            <div id="hud-zone-badge" class="zone-badge">3PT ARC • Base 7%</div>
+          </div>
+
+          <div id="hud-p1-card" class="player-score-card slot-1">
+            <div id="hud-p1-score" class="player-score">0</div>
+            <div class="player-meta right">
+              <span id="hud-p1-name" class="player-name">CourtBot</span>
+              <span id="hud-p1-role" class="role-pill">🛡️ DEF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hud-actions">
+          <div id="hud-block-indicator" class="block-indicator hidden" role="status">
+            🛡️ Block Available (&le;1.8m)
+          </div>
+          <div class="stamina-wrap" title="Sprint Stamina Meter">
+            <span class="stamina-label">SPRINT</span>
+            <div class="stamina-track">
+              <div id="hud-stamina-fill" class="stamina-fill" style="width: 100%"></div>
+            </div>
+          </div>
+          <button id="btn-open-tutorial" class="icon-btn" type="button" title="How to Play & Duel Rules">
+            ? Rules
+          </button>
+          <button id="btn-toggle-mute" class="icon-btn" type="button" aria-pressed="false" title="Toggle Audio Mute">
+            🔊 Audio
+          </button>
+          <button id="btn-open-settings" class="icon-btn" type="button" title="Settings, Accessibility & Controls (Esc)">
+            ⚙️ Settings
+          </button>
+          <button id="btn-return-lobby" class="icon-btn hidden" type="button" title="Return to Lobby">
+            🏠 Lobby
+          </button>
+        </div>
+      </header>
+
+      <!-- Connection / Reconnect Banner for Online Rooms -->
+      <div id="connection-banner" class="connection-banner hidden" role="alert"></div>
+
+      <!-- On-Court Possession Prompt Pill -->
+      <div id="possession-hint-pill" class="possession-hint-pill hidden" aria-live="polite">
+        Move with <kbd>WASD</kbd> / <kbd>Arrows</kbd> • Hold <kbd>Shift</kbd> to Sprint • Press <kbd>Space</kbd> to Shoot &amp; Trigger Question Duel
+      </div>
+
+      <!-- Touch Controls for Mobile / Tablet / Optional Desktop Touch Mode -->
+      <div id="touch-controls" class="touch-controls hidden" aria-label="Touch Controls">
+        <div id="touch-joystick-zone" class="touch-joystick-zone">
+          <div id="touch-joystick-base" class="touch-joystick-base">
+            <div id="touch-joystick-stick" class="touch-joystick-stick"></div>
+          </div>
+          <span class="touch-caption">DRAG TO MOVE</span>
+        </div>
+        <div class="touch-action-buttons">
+          <button id="btn-touch-sprint" class="touch-btn sprint-btn" type="button">
+            ⚡ SPRINT
+          </button>
+          <button id="btn-touch-shoot" class="touch-btn shoot-btn" type="button">
+            🏀 SHOOT
+          </button>
+        </div>
+      </div>
+
+      <!-- Lobby Overlay (Compact side/center card keeping 3D court visible) -->
+      <section id="lobby-overlay" class="lobby-overlay" aria-label="Match Setup Lobby">
+        <div class="lobby-card">
+          <div class="lobby-header">
+            <div>
+              <span class="eyebrow-badge">ORIGINAL 3D BASKETBALL LEARNING GAME</span>
+              <h1>CourtIQ: Slow-Motion Question Duel</h1>
+              <p class="lobby-lead">
+                Create space on the half-court and release your shot. As the ball rises in slow motion, both players race to answer the same course question: knowledge and speed boost shot probability, while an in-range defender who answers first blocks the shot!
+              </p>
+            </div>
+          </div>
+
+          <div class="mode-tabs" role="tablist">
+            <button id="tab-solo" class="mode-tab active" role="tab" aria-selected="true" type="button">
+              🤖 Solo vs Computer
+            </button>
+            <button id="tab-online" class="mode-tab" role="tab" aria-selected="false" type="button">
+              🌐 Play a Friend (Online Room)
+            </button>
+            <button id="tab-content" class="mode-tab" role="tab" aria-selected="false" type="button">
+              📚 Question Packs &amp; Validator
+            </button>
+          </div>
+
+          <!-- Shared Player & Match Configuration -->
+          <div id="lobby-config-grid" class="lobby-grid">
+            <div class="form-group">
+              <label for="input-pseudonym">Your Nickname (Temporary)</label>
+              <input id="input-pseudonym" type="text" maxlength="18" value="Student A" autocomplete="off" />
+            </div>
+
+            <div class="form-group">
+              <label for="select-appearance">Player Character Style</label>
+              <select id="select-appearance">
+                <option value="0">Style A (Gold Band • Fade)</option>
+                <option value="1">Style B (Cyan Band • Ponytail)</option>
+                <option value="2">Style C (White Band • Afro)</option>
+                <option value="3">Style D (Navy Band • Short Crop)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-pack">Approved Question Pack</label>
+              <select id="select-pack"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-room-preset">Timing &amp; Reading Preset</label>
+              <select id="select-room-preset">
+                <option value="standard">Standard Classroom (12s window, 2s reading)</option>
+                <option value="arcade">Arcade Fast Duel (10s window, 1.5s reading)</option>
+                <option value="learning">Learning Focus (18s window, 3s reading)</option>
+                <option value="practice">Untimed Practice (No speed bonus penalty)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-session-length">Match Length</label>
+              <select id="select-session-length">
+                <option value="standard">Standard Match (First to 11 pts, max 10 poss)</option>
+                <option value="quick">Quick Match (First to 7 pts, max 5 poss)</option>
+                <option value="practice">Practice Session (8 possessions each)</option>
+              </select>
+            </div>
+
+            <div id="ai-difficulty-group" class="form-group">
+              <label for="select-ai-difficulty">Computer Opponent Preset</label>
+              <select id="select-ai-difficulty">
+                <option value="beginner">Beginner (45% accuracy, 6–10s response)</option>
+                <option value="intermediate" selected>Intermediate (65% accuracy, 4–8s response)</option>
+                <option value="advanced">Advanced (80% accuracy, 3–6s response)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Solo Actions -->
+          <div id="panel-solo-actions" class="lobby-actions-row">
+            <button id="btn-start-solo" class="primary-cta-btn" type="button">
+              🏀 Start 1v1 Solo Match
+            </button>
+            <button id="btn-quick-demo-shot" class="secondary-cta-btn" type="button" title="Jump straight into an immediate possession and trigger a shot duel">
+              ⚡ Instant Shot Duel Preview
+            </button>
+          </div>
+
+          <!-- Online Room Section -->
+          <div id="panel-online-actions" class="online-room-panel hidden">
+            <div class="online-split">
+              <div class="online-box">
+                <h3>Create a Private Room</h3>
+                <p>Generate a 6-character code for a classmate on another device or browser window.</p>
+                <button id="btn-create-room" class="primary-cta-btn" type="button">
+                  ➕ Create Private Room
+                </button>
+              </div>
+              <div class="online-box">
+                <h3>Join with Room Code</h3>
+                <div class="join-code-row">
+                  <input id="input-join-code" type="text" maxlength="8" placeholder="ENTER CODE" />
+                  <button id="btn-join-room" class="secondary-cta-btn" type="button">
+                    Join Room
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="online-waiting-room" class="online-waiting-room hidden">
+              <div class="room-code-banner">
+                <span>PRIVATE ROOM CODE:</span>
+                <strong id="display-room-code" class="room-code-pill">------</strong>
+                <button id="btn-copy-room-code" class="small-btn" type="button">Copy Code</button>
+              </div>
+              <div id="online-players-list" class="online-players-list"></div>
+              <div class="online-ready-row">
+                <button id="btn-toggle-ready" class="primary-cta-btn" type="button">
+                  ✓ Mark Ready to Play
+                </button>
+                <span id="online-status-note" class="online-status-note">Waiting for both players to mark Ready...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Pack Validator & Custom Import Section -->
+          <div id="panel-content-validator" class="content-validator-panel hidden">
+            <h3>Teacher Question-Pack Inspector &amp; JSON Import</h3>
+            <p class="small-muted">
+              All competitive matches freeze an approved question pack version before tip-off. Paste a custom JSON pack below to validate required fields, 4 stable option IDs, explanations, and source references.
+            </p>
+            <textarea id="textarea-custom-pack" rows="5" placeholder='{"packId":"custom-spx101","packVersion":1,"title":"Custom Pack","course":"SPX101","questions":[...]}'></textarea>
+            <div class="validator-actions">
+              <button id="btn-validate-pack" class="secondary-cta-btn" type="button">
+                🔍 Validate &amp; Load Custom JSON Pack
+              </button>
+              <button id="btn-load-sample-pack-json" class="small-btn" type="button">
+                Load Sample Question Template
+              </button>
+            </div>
+            <div id="pack-validation-output" class="validation-output" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slow-Motion Question Duel Overlay (Lower Screen HTML over 3D Canvas) -->
+      <section id="question-overlay" class="question-overlay hidden" aria-label="Slow-Motion Question Duel" aria-live="polite">
+        <div class="question-panel">
+          <div class="question-top-bar">
+            <div class="question-badges">
+              <span id="q-course-badge" class="q-badge primary">SPX101 • Week 9</span>
+              <span id="q-topic-badge" class="q-badge">Measurement Error</span>
+              <span id="q-contest-badge" class="q-badge contest">🛡️ Block Available</span>
+            </div>
+
+            <div class="question-timer-cluster">
+              <span id="q-reading-pill" class="reading-pill">📖 Reading Period...</span>
+              <span id="q-timer-text" class="q-timer-text">12.0s</span>
+            </div>
+          </div>
+
+          <div class="timer-progress-track" aria-hidden="true">
+            <div id="q-timer-bar" class="timer-progress-fill" style="width: 100%"></div>
+          </div>
+
+          <h2 id="q-stem-text" class="question-stem">
+            An athlete improves their test result slightly. What should you consider before concluding that performance genuinely improved?
+          </h2>
+
+          <div id="q-options-grid" class="options-grid" role="group" aria-label="Multiple choice options">
+            <button id="btn-opt-0" class="option-btn" type="button" data-index="0">
+              <span class="opt-key">1 / A</span>
+              <span class="opt-text">Option A</span>
+              <span class="opt-status-icon" aria-hidden="true"></span>
+            </button>
+            <button id="btn-opt-1" class="option-btn" type="button" data-index="1">
+              <span class="opt-key">2 / B</span>
+              <span class="opt-text">Option B</span>
+              <span class="opt-status-icon" aria-hidden="true"></span>
+            </button>
+            <button id="btn-opt-2" class="option-btn" type="button" data-index="2">
+              <span class="opt-key">3 / C</span>
+              <span class="opt-text">Option C</span>
+              <span class="opt-status-icon" aria-hidden="true"></span>
+            </button>
+            <button id="btn-opt-3" class="option-btn" type="button" data-index="3">
+              <span class="opt-key">4 / D</span>
+              <span class="opt-text">Option D</span>
+              <span class="opt-status-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="question-footer-status">
+            <div id="q-your-status" class="duel-participant-status">
+              ⏳ Select one option (<kbd>1</kbd>–<kbd>4</kbd> or tap)
+            </div>
+            <div id="q-opponent-status" class="duel-participant-status right">
+              🤖 Opponent thinking...
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Post-Shot Learning Feedback Banner -->
+      <section id="feedback-overlay" class="feedback-overlay hidden" aria-live="assertive">
+        <div class="feedback-card">
+          <div class="feedback-header">
+            <div>
+              <span id="fb-outcome-pill" class="fb-outcome-pill">SWISH! +2 POINTS</span>
+              <h2 id="fb-subheadline" class="fb-subheadline">Attacker answered correctly first!</h2>
+            </div>
+            <div id="fb-prob-badge" class="fb-prob-badge">Shot Prob: 79%</div>
+          </div>
+
+          <div class="fb-learning-box">
+            <div class="fb-correct-line">
+              <strong>✓ Correct Answer:</strong>
+              <span id="fb-correct-text"></span>
+            </div>
+            <p id="fb-explanation-text" class="fb-explanation-text"></p>
+            <div class="fb-meta-row">
+              <span id="fb-source-ref" class="fb-source-ref"></span>
+              <button id="btn-next-possession" class="small-cta-btn" type="button">
+                Next Possession &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- End-of-Match Basketball & Learning Results Screen -->
+      <section id="results-overlay" class="results-overlay hidden" aria-label="Match and Learning Results">
+        <div class="results-card">
+          <div class="results-header">
+            <div>
+              <span class="eyebrow-badge">MATCH COMPLETE • SEPARATED PERFORMANCE REPORT</span>
+              <h1 id="res-winner-headline">Match Final</h1>
+              <p class="small-muted">
+                Basketball score and educational question accuracy are reported separately. Response speed helps on the court but does not define conceptual mastery.
+              </p>
+            </div>
+            <div class="results-top-actions">
+              <button id="btn-practice-missed" class="secondary-cta-btn hidden" type="button">
+                🎯 Practise Missed Questions
+              </button>
+              <button id="btn-export-json" class="small-btn" type="button">
+                📥 Export JSON
+              </button>
+              <button id="btn-export-csv" class="small-btn" type="button">
+                📊 Export CSV
+              </button>
+              <button id="btn-results-play-again" class="primary-cta-btn" type="button">
+                🔄 Play Again
+              </button>
+            </div>
+          </div>
+
+          <div class="results-summary-grid">
+            <div class="summary-panel basketball-panel">
+              <h3>🏀 Basketball Result</h3>
+              <div id="res-basketball-scoreline" class="big-scoreline">11 – 8</div>
+              <div id="res-basketball-details" class="summary-subtext"></div>
+            </div>
+
+            <div class="summary-panel learning-panel">
+              <h3>🎓 Your Learning Accuracy</h3>
+              <div id="res-learning-scoreline" class="big-scoreline">85% (6 / 7)</div>
+              <div id="res-learning-details" class="summary-subtext"></div>
+            </div>
+          </div>
+
+          <div class="results-columns">
+            <div class="results-col">
+              <h3>Accuracy by Course Topic</h3>
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Week &amp; Topic</th>
+                    <th>Correct</th>
+                    <th>Accuracy</th>
+                  </tr>
+                </thead>
+                <tbody id="res-topic-tbody"></tbody>
+              </table>
+            </div>
+
+            <div class="results-col">
+              <h3>Questions for Review &amp; Explanations</h3>
+              <div id="res-review-list" class="review-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings, Remap Controls & Accessibility Modal -->
+      <div id="settings-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2 id="settings-title">⚙️ Settings, Accessibility &amp; Controls</h2>
+            <button id="btn-close-settings" class="icon-btn" type="button">✕ Close</button>
+          </div>
+
+          <div class="settings-section">
+            <h3>Accessibility &amp; Performance</h3>
+            <label class="toggle-row">
+              <input id="chk-reduced-motion" type="checkbox" />
+              <span><strong>Reduced Motion</strong> (Preserves all timing &amp; rules while removing camera pan &amp; particle trails)</span>
+            </label>
+            <label class="toggle-row">
+              <input id="chk-mute-audio" type="checkbox" />
+              <span><strong>Mute All Audio</strong> (Silences procedural court &amp; duel sound effects)</span>
+            </label>
+            <label class="toggle-row">
+              <input id="chk-touch-overlay" type="checkbox" />
+              <span><strong>Show On-Screen Touch Controls</strong> (Virtual joystick, Sprint &amp; Shoot buttons)</span>
+            </label>
+            <div class="form-group" style="margin-top: 10px">
+              <label for="select-quality-mode">Graphics &amp; Performance Mode</label>
+              <select id="select-quality-mode">
+                <option value="high">High Quality 3D Arena (Target 60 FPS)</option>
+                <option value="low">Lower-Quality 3D Mode (Target 30 FPS / Reduced Crowd)</option>
+                <option value="fallback2d">2D Tactical Court Fallback (No WebGL Required)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>Remappable Keyboard Controls</h3>
+            <p class="small-muted">Click any control button below and press a new key to remap.</p>
+            <div id="remap-grid" class="remap-grid"></div>
+            <button id="btn-reset-bindings" class="small-btn" type="button" style="margin-top: 8px">
+              Reset Default Keys
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Play / Complete Duel Rules Modal -->
+      <div id="tutorial-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2 id="tutorial-title">🏀 How CourtIQ Works</h2>
+            <button id="btn-close-tutorial" class="icon-btn" type="button">✕ Close</button>
+          </div>
+          <div class="tutorial-body">
+            <ol class="tutorial-steps">
+              <li>
+                <strong>1. Position on the Half-Court (15s Movement Clock):</strong>
+                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>. Use <kbd>Shift</kbd> sparingly to sprint. Inside the arc scores <strong>2 points</strong> (Close base 20%, Mid-range base 12%); outside the 6.75m arc scores <strong>3 points</strong> (base 7%).
+              </li>
+              <li>
+                <strong>2. Release the Shot (<kbd>Space</kbd>) &amp; Slow-Motion Flight:</strong>
+                When the ball leaves the attacker's hands, court positions and block eligibility (&le;1.8m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc.
+              </li>
+              <li>
+                <strong>3. Protected Reading &amp; Single-Lock Answer Duel:</strong>
+                After a 2-second reading period, both players answer the same multiple-choice question (<kbd>1</kbd>–<kbd>4</kbd> or tap). Each player gets <strong>one locked submission</strong>. Option order is shuffled independently per device.
+              </li>
+              <li>
+                <strong>4. Knowledge + Speed + Positioning = Outcome:</strong>
+                <ul>
+                  <li><strong>Attacker correct first (or tied within 200ms):</strong> Earns up to +70% accuracy bonus based on speed: \(P = \text{clamp}(B + C(0.35 + 0.35S), 0.03, 0.95)\).</li>
+                  <li><strong>Eligible defender (&le;1.8m) correct first:</strong> Swats and <strong>BLOCKS</strong> the shot!</li>
+                  <li><strong>Defender correct first but out of range:</strong> Credited in learning accuracy, but too far away to block.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>5. Alternating Possessions &amp; Equal Opportunity:</strong>
+                Possession switches after every attempt. First to 11 points (max 10 possessions each), always preserving equal possessions and paired overtime rounds.
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/client/main.ts"></script>
+  </body>
+</html>

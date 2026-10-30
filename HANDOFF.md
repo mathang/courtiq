@@ -1,0 +1,224 @@
+# CourtIQ — Technical, Educational & Operational Handoff Document
+
+**Version**: `1.0.0`  
+**Target Course**: `SPX101 — Introduction to Sports and Exercise Science`  
+**Stack**: TypeScript, Three.js, Vite, Node.js (`ws` + HTTP), Netlify Functions, Vitest  
+
+---
+
+## 1. Executive Summary
+
+**CourtIQ** combines a responsive 3D half-court 1v1 arcade basketball game with an authoritative multiple-choice question duel triggered on every shot release.
+
+Key design invariants enforced across the codebase:
+1. **Shared Pure Rules (`shared/rules/`)**: All shooting probabilities, speed scores, block eligibility checks, question-duel resolution matrices, possession transitions, and AI decision models are pure, deterministic TypeScript functions shared between the client (`client/`), standalone WebSocket server (`server/`), and Netlify serverless functions (`netlify/functions/`).
+2. **Separated Clocks**: Question countdowns, reading locks, and answer timestamps always run on `realClock` (wall-clock milliseconds), completely independent of the slow-motion `simulationClock` and `presentationClock` ($0.14\times$ time scale during a shot duel).
+3. **Zero Pre-Resolution Answer Leakage**: In online multiplayer, `toPublicDuelQuestion` strips `correctOptionId` and `explanation` before transmitting `DUEL_PRELOAD` or `MATCH_SNAPSHOT`. Answer keys are revealed only after the duel transitions to `Resolution` / `Feedback`.
+4. **Separated Basketball vs. Learning Reporting**: End-of-match reports clearly separate basketball outcomes (score, FG%, 3PT%, blocks) from curriculum mastery (overall learning accuracy, average response time, per-topic breakdown, missed-question review cards, and interactive retry mode), including credit for out-of-range defensive answers (`correct-out-of-range`).
+
+---
+
+## 2. Repository Directory Structure
+
+```text
+courtiq/
+├── index.html                          # Accessible HUD, Lobby, Question Duel, Feedback & Results UI
+├── package.json                        # Scripts (dev, build, server, test) & dependencies
+├── tsconfig.json                       # Strict TypeScript configuration across client, shared, server, netlify, tests
+├── vite.config.ts                      # Vite bundler & Vitest runner configuration
+├── netlify.toml                        # Netlify build, publish ("dist"), functions ("netlify/functions") & redirects
+├── project-profile.md                  # Build & Verify safeguard profile
+├── verification-ledger.json            # Machine-readable verification evidence ledger
+├── content/
+│   ├── packRegistry.ts                 # Exports bundled validated SPX101 question packs
+│   └── approved-packs/
+│       ├── spx101-w09-performance-analysis.json  # 45 approved Week 9 questions
+│       └── spx101-w05-measurement-quality.json   # 40 approved Week 5 questions
+├── shared/
+│   ├── config/
+│   │   └── balance.ts                  # Central tunable parameters (probabilities, cones, presets, AI tiers)
+│   ├── content/
+│   │   └── question-schema.ts          # Pack validator, seeded RNG, per-player option shuffler, answer key stripper
+│   ├── protocol/
+│   │   └── messages.ts                 # Client <-> Server protocol message definitions
+│   └── rules/
+│       ├── block.ts                    # Frozen release-time block eligibility geometry
+│       ├── timing.ts                   # Speed score S, bounded latency adjustment, 9-outcome duel evaluator
+│       ├── shot.ts                     # Base/final shot probability & 4-stage C0/C1 Hermite ball flight spline
+│       ├── possession.ts               # Alternating possessions, equal-possession rule, overtime & learning summary
+│       ├── aiOpponent.ts               # Pre-committed AI question plan & 1v1 court positioning AI
+│       └── matchStateMachine.ts        # AuthoritativeMatchEngine (Lobby -> Possession -> QuestionReady -> Duel -> Resolution -> Feedback -> MatchEnd)
+├── server/
+│   ├── index.ts                        # Standalone Node HTTP + WebSocket (/ws) + HTTP sync (/api/room) server
+│   ├── question-service/
+│   │   └── packService.ts              # Server-side question pack loader & non-repeating match draw
+│   ├── answer-validation/
+│   │   └── duelValidator.ts            # Online submission validation & bounded RTT compensation
+│   ├── match-events/
+│   │   └── eventLogger.ts              # Sanitized per-slot state snapshot builder & structured event logger
+│   ├── simulation/
+│   │   └── authoritativeMatch.ts       # Room simulation stepper & broadcast coordinator
+│   └── rooms/
+│       └── roomManager.ts              # 6-char room lifecycle, reconnect tokens, WebSocket & HTTP sync handler
+├── netlify/
+│   └── functions/
+│       ├── room.ts                     # Serverless POST /api/room endpoint for 2-player online rooms on Netlify
+│       └── health.ts                   # Serverless GET /api/health & /api/packs endpoint
+├── client/
+│   ├── main.ts                         # Application entry point, DOM controller, Solo & Online dual-transport client
+│   ├── styles/
+│   │   └── main.css                    # High-contrast accessible UI styling & responsive court layout
+│   └── game/
+│       ├── engine.ts                   # Three.js WebGL renderer, clock separation & render loop
+│       ├── court/arena.ts              # Original 3D half-court arena, markings, hoop, stanchion & scoreboard
+│       ├── characters/playerCharacter.ts # Articulated 3D player meshes, 4 distinct kits & animation states
+│       ├── animation/ballTrajectory.ts # 3D basketball mesh, dynamic arc ribbon & rim lighting effects
+│       ├── camera/courtCamera.ts       # Dynamic broadcast & slow-motion framing camera controller
+│       ├── input/controls.ts           # Keyboard/touch state machine & accidental-answer prevention guards
+│       └── audio/soundEngine.ts        # WebAudio procedural sound effects (dribble, release, swish, block, buzzer)
+└── tests/
+    ├── rules/
+    │   ├── shot.test.ts                # Base/final shot probabilities & continuous 4-stage ball trajectory tests
+    │   ├── block.test.ts               # Frozen block distance, facing cone, contest lane & bounds tests
+    │   ├── timing.test.ts              # Speed score S, tie window, reading lock & all 9 duel outcomes
+    │   ├── possession.test.ts          # Alternating possessions, equal-possession win & sudden-death overtime
+    │   ├── content.test.ts             # Schema validation, duplicate rejection & option shuffling tests
+    │   └── aiOpponent.test.ts          # Pre-committed AI duel plan & difficulty scaling tests
+    ├── multiplayer/
+    │   └── roomAuthoritative.test.ts   # End-to-end 2-player WebSocket AND Netlify Function (/api/room) tests
+    └── accessibility/
+        └── uiAndInput.test.ts          # Input guards (held shoot key, key repeat, reading lock) & separated reports
+```
+
+---
+
+## 3. Exact Mathematical & Rule Specifications
+
+### 3.1 Shooting Probability Formula (`shared/rules/shot.ts`)
+
+Base shooting probability $B$ is recorded at the instant of shot release:
+
+| Shot Zone / Condition | Distance to Hoop ($r$) | Value |
+| :--- | :--- | :---: |
+| **Close & Open** | $r \le 2.6\text{ m}$ | $0.20$ ($20\%$) |
+| **Mid-Range & Open** | $2.6\text{ m} < r < 6.75\text{ m}$ | $0.12$ ($12\%$) |
+| **Three-Pointer & Open** | $r \ge 6.75\text{ m}$ | $0.07$ ($7\%$) |
+| **Heavily Contested Penalty** | Defender $\le 1.8\text{ m}$ and contesting | $-0.05$ ($-5\text{ pp}$) |
+| **Released While Sprinting Penalty** | Sprinting or settle timer $> 0\text{ ms}$ | $-0.05$ ($-5\text{ pp}$) |
+
+When the question duel resolves (and is not blocked), the final basket probability is:
+
+$$P(\text{basket}) = \operatorname{clamp}\left(B + C(0.35 + 0.35S),\, 0.03,\, 0.95\right)$$
+
+where:
+- $C = 1$ if the attacker submitted the correct option before the deadline, else $0$.
+- $S \in [0, 1]$ is the normalized speed score:
+  $$S = \operatorname{clamp}\left(1 - \frac{t - R}{T - R},\, 0,\, 1\right)$$
+  with $t$ = accepted response time, $R$ = protected reading period ($2.0\text{ s}$ default), and $T$ = question window ($12.0\text{ s}$ default).
+- In **Untimed Practice** mode, $C(0.35 + 0.35S)$ is replaced by a flat $+0.55$ accuracy bonus so students are never penalized for reading carefully.
+
+### 3.2 Frozen Block Eligibility (`shared/rules/block.ts`)
+
+At the exact frame the ball leaves the shooter's hands, `evaluateBlockEligibilityAtRelease` freezes four conditions:
+1. **Distance**: Euclidean distance on the court plane between shooter and defender $\le 1.8\text{ m}$.
+2. **Forward-Facing Cone**: Angle between defender's facing vector and the vector from defender to shooter $\le 65^\circ$.
+3. **Contesting Position**: Angle between shooter-to-hoop vector and shooter-to-defender vector $\le 100^\circ$.
+4. **In Bounds**: Defender is inside the playable half-court boundaries ($x \in [-7.5, 7.5]\text{ m}$, $z \in [-10.8, 0.2]\text{ m}$).
+
+### 3.3 Nine-Outcome Question-Duel Resolution Matrix (`shared/rules/timing.ts`)
+
+| # | Attacker Submission | Defender Submission | Frozen Block Eligible? | Timing Comparison | Duel Resolution Outcome |
+| :-: | :--- | :--- | :---: | :--- | :--- |
+| **1** | Correct | Wrong / None | Any | — | `attacker-bonus` (Shot boosted by $0.35 + 0.35S$) |
+| **2** | Correct | Correct | Any | $t_{\text{att}} < t_{\text{def}} - 200\text{ ms}$ | `attacker-first-bonus` (Defender cannot block) |
+| **3** | Correct | Correct | **Yes** | $t_{\text{def}} < t_{\text{att}} - 200\text{ ms}$ | `defender-block` (Shot is blocked; $0\text{ pts}$) |
+| **4** | Correct | Correct | **No** | $t_{\text{def}} < t_{\text{att}} - 200\text{ ms}$ | `defender-correct-out-of-range` (Defender credited in learning log; attacker still gets shot bonus) |
+| **5** | Correct | Correct | Any | $|t_{\text{def}} - t_{\text{att}}| \le 200\text{ ms}$ | `tie-attacker-bonus` (Tie within $200\text{ ms}$ favours attacker) |
+| **6** | Wrong | Wrong / Ineligible | Any | — | `attacker-wrong-no-bonus` (Base shot $B$ resolves) |
+| **7** | Wrong | Wrong | Any | — | `both-wrong-base-shot` (Base shot $B$ resolves) |
+| **8** | None (Timeout) | None (Timeout) | Any | $t > T$ | `neither-answered-low-prob` (Base shot $B$ resolves) |
+| **9** | Wrong / None | Correct | **Yes** | $t_{\text{def}} \le T$ | `defender-block-after-attacker-miss` (Defender blocks before deadline) |
+
+### 3.4 Continuous 4-Stage Slow-Motion Ball Trajectory (`shared/rules/shot.ts`)
+
+To guarantee that the ball **never teleports** and **never reaches the rim before the question duel resolves**:
+1. **`release` ($u \in [0, 0.25]$)**: Ball rises from the shooter's release hand toward the high slow-motion apex.
+2. **`question` ($u \in [0.25, 0.72]$)**: Ball glides smoothly in slow motion along the upper arc, asymptotically approaching $u_{\max} = 0.72$ if the duel takes the full window.
+3. **`resolution`**: At the exact frame the duel resolves, `transitionBallToResolution` captures the ball's instantaneous 3D position $\mathbf{p}_0$ and velocity $\mathbf{v}_0$ and constructs a $C^0/C^1$-continuous cubic Hermite spline to the resolved target (`make` through the net, `miss` off the rim flange, or `block` swatted by the defender).
+4. **`recovery`**: Ball settles to the court floor during the post-shot explanation banner.
+
+---
+
+## 4. Question Pack Authoring & Content Pipeline
+
+Question packs live in `content/approved-packs/*.json` and are validated by `validateQuestionPack` (`shared/content/question-schema.ts`).
+
+### Required Schema Fields
+```json
+{
+  "packId": "spx101-w09-performance-analysis",
+  "packVersion": 1,
+  "title": "SPX101 Week 9: Performance Analysis & Testing",
+  "course": "SPX101",
+  "description": "45 teacher-approved questions on performance analysis.",
+  "approvedBy": "SPX101 Teaching Team",
+  "approvedAtIso": "2026-10-30T00:00:00.000Z",
+  "questions": [
+    {
+      "id": "w09-q01",
+      "version": 1,
+      "status": "approved",
+      "course": "SPX101",
+      "week": 9,
+      "topic": "Needs Analysis",
+      "subtopic": "Physiological & Biomechanical Demands",
+      "difficulty": 1,
+      "stem": "Before selecting fitness tests for an athlete, what is the primary purpose of conducting a sport-specific needs analysis?",
+      "options": [
+        { "id": "a", "text": "To identify the key physiological, biomechanical, and injury-risk demands of the sport" },
+        { "id": "b", "text": "To guarantee that the athlete achieves a personal best on their first testing session" },
+        { "id": "c", "text": "To replace valid field tests with questionnaires" },
+        { "id": "d", "text": "To eliminate typical error from all timing gates" }
+      ],
+      "correctOptionId": "a",
+      "explanation": "A needs analysis establishes the sport's specific demands so that selected tests are relevant and valid.",
+      "sourceRef": "SPX101 Week 9 — Needs Analysis & Test Selection"
+    }
+  ]
+}
+```
+
+### Content Validation Rules (`validateQuestionPack`)
+- Only items with `"status": "approved"` are eligible for match draw.
+- Every question must have a concise stem ($\le 240$ characters), **exactly 4 options** with unique IDs and unique non-empty text ($\le 140$ characters each), a valid `correctOptionId` matching one of the 4 options, and a non-empty `explanation` ($\le 300$ characters).
+- Option order is independently shuffled per player slot on every duel (`shuffleQuestionOptionsForPlayer`) so two students sitting side-by-side cannot copy button positions (`1–4`), while the authoritative server validates submissions by `optionId`.
+
+---
+
+## 5. Multiplayer Architecture (WebSocket + Netlify Functions)
+
+CourtIQ supports two interchangeable authoritative transports:
+
+1. **WebSocket Transport (`/ws` via `npm run server`)**:
+   - Persistent full-duplex WebSocket connection running a $20\text{ Hz}$ room simulation loop (`server/index.ts`).
+2. **Serverless HTTP Room Sync Transport (`/api/room` via `netlify/functions/room.ts`)**:
+   - Designed specifically so 2-player online rooms work out-of-the-box on **Netlify** without requiring a separate persistent Node host.
+   - `client/main.ts` automatically falls back to `/api/room` whenever `/ws` is unavailable (such as on Netlify CDN).
+   - `RoomManager.handleHttpSync` steps active room simulations by the wall-clock delta between requests, coalesces `MATCH_SNAPSHOT` and `LOBBY_UPDATE` in per-player outboxes, and enforces the exact same answer-key stripping, reading period protection, and bounded RTT fairness rules.
+
+---
+
+## 6. Verification Status & Remaining Risks
+
+### Automated Verification (`PASS`)
+- **`npm run build`**: TypeScript strict typecheck (`tsc --noEmit`) across `client`, `shared`, `server`, `netlify`, `tests`, and `content`, followed by Vite production bundle build (`dist/`).
+- **`npm test`**: **21/21 passing tests** across 8 test suites (`shot.test.ts`, `block.test.ts`, `timing.test.ts`, `possession.test.ts`, `content.test.ts`, `aiOpponent.test.ts`, `roomAuthoritative.test.ts`, `uiAndInput.test.ts`).
+
+### Remaining Items Requiring Live Classroom Hardware (`NOT_TESTED`)
+1. **Multi-Device Campus Wi-Fi Jitter & Cold-Start Evaluation (`NOT_TESTED`)**:
+   - While both WebSocket (`/ws`) and Netlify Function (`/api/room`) two-player room flows are verified in automated integration tests, live testing across two physical laptops/tablets on university Wi-Fi is recommended before high-stakes tournament use.
+   - Note that serverless Netlify Function instances keep room state in warm container memory (expiring after 15 minutes of inactivity); for large-scale concurrent classroom tournaments (e.g., 50+ simultaneous rooms across multiple geographic regions), running `npm run server` on a single persistent Node container or backing `RoomManager` with Redis/Netlify Blobs is recommended.
+2. **Physical iOS / Android Touch Ergonomics (`NOT_TESTED`)**:
+   - Virtual joystick and $\ge 48\text{ px}$ touch answer buttons are verified in DOM tests, but should be playtested on physical iPads and Android tablets.
+3. **Educational Balance Calibration (`NOT_TESTED`)**:
+   - All numeric constants in `shared/config/balance.ts` ($12\text{ s}$ window, $2\text{ s}$ reading period, $200\text{ ms}$ tie tolerance, $0.35 + 0.35S$ answer bonus) are initial playtest values ready for empirical tuning with SPX101 cohorts.

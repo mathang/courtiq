@@ -1,0 +1,116 @@
+{
+  "template": false,
+  "project": "CourtIQ — 3D Basketball & Slow-Motion Question Duel Learning Game",
+  "revision_or_artifact_hash": "dist/index.html:sha256:8dea02b2b94cbe1e045a0d6c7e5d462d27ade63ee9124f23a854a4e579df0a50",
+  "checks": [
+    {
+      "id": "stage1-pure-shot-and-trajectory-rules",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8",
+      "timestamp_utc": "2026-10-30T08:52:02Z",
+      "command_or_action": "cd courtiq && npx vitest run tests/rules/shot.test.ts",
+      "expected": "Open mid-range probabilities match spec (12% wrong, 79% at 3s, 65% at 7s, 51% at 11s); close (20%), 3PT (7%), contest (-5%), sprint (-5%), clamp [3%, 95%], block override, and C0 continuous slow-motion trajectory (<1e-6m jump) pass.",
+      "observed": "5/5 tests in tests/rules/shot.test.ts passed.",
+      "evidence_path": "courtiq/tests/rules/shot.test.ts",
+      "reason": "Verified deterministically."
+    },
+    {
+      "id": "stage1-block-and-duel-timing-rules",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8",
+      "timestamp_utc": "2026-10-30T08:52:02Z",
+      "command_or_action": "cd courtiq && npx vitest run tests/rules/block.test.ts tests/rules/timing.test.ts tests/rules/possession.test.ts",
+      "expected": "Frozen block eligibility (<=1.8m, forward cone, in-bounds), all 9 duel resolution scenarios, 2s reading period protection, 200ms tie tolerance, duplicate submission lock, equal possessions, and paired overtime pass.",
+      "observed": "9/9 tests across block.test.ts, timing.test.ts, and possession.test.ts passed.",
+      "evidence_path": "courtiq/tests/rules/timing.test.ts",
+      "reason": "Verified deterministically."
+    },
+    {
+      "id": "stage2-solo-match-and-ai-opponent",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8",
+      "timestamp_utc": "2026-10-30T08:52:02Z",
+      "command_or_action": "cd courtiq && npx vitest run tests/rules/aiOpponent.test.ts",
+      "expected": "Complete solo match runs from tip-off to MatchEnd without manual reset; AI pre-commits question answer plan at duel creation before human answers; no question repeats within match; separated learning report generated.",
+      "observed": "1/1 test in tests/rules/aiOpponent.test.ts passed.",
+      "evidence_path": "courtiq/tests/rules/aiOpponent.test.ts",
+      "reason": "Verified deterministically with seeded simulation."
+    },
+    {
+      "id": "stage4-question-pack-validation-and-security",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8",
+      "timestamp_utc": "2026-10-30T08:52:02Z",
+      "command_or_action": "cd courtiq && npx vitest run tests/rules/content.test.ts",
+      "expected": "Both bundled SPX101 packs (45 and 40 approved questions) pass validation; malformed packs with duplicate IDs, <4 options, missing explanations, or position-dependent options are rejected; public client payloads omit correctOptionId and explanation.",
+      "observed": "3/3 tests in tests/rules/content.test.ts passed.",
+      "evidence_path": "courtiq/tests/rules/content.test.ts",
+      "reason": "Verified deterministically."
+    },
+    {
+      "id": "stage5-authoritative-online-rooms-websocket-and-netlify-functions",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "macOS Node v25.6.1 / ws 8.18.0 loopback WebSocket server & Netlify Functions HTTP adapter",
+      "timestamp_utc": "2026-10-30T21:49:55Z",
+      "command_or_action": "cd courtiq && npx vitest run tests/multiplayer/roomAuthoritative.test.ts",
+      "expected": "Two clients create/join private room via code over both WebSocket (/ws) and Netlify Functions HTTP adapter (/api/room), 3rd player rejected, DUEL_PRELOAD omits correctOptionId/explanation, reading period/stale/duplicate submissions rejected, both clients receive identical scores/outcomes, and disconnect/reconnect restores authoritative state.",
+      "observed": "2/2 full lifecycle tests in tests/multiplayer/roomAuthoritative.test.ts passed (21/21 total tests passing).",
+      "evidence_path": "courtiq/tests/multiplayer/roomAuthoritative.test.ts",
+      "reason": "Exercised against live local WebSocket server and serverless Netlify Functions handler."
+    },
+    {
+      "id": "stage6-input-fresh-press-and-no-autorepeat",
+      "status": "PASS",
+      "required": true,
+      "kind": "accessibility",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8",
+      "timestamp_utc": "2026-10-30T08:52:02Z",
+      "command_or_action": "cd courtiq && npx vitest run tests/accessibility/uiAndInput.test.ts",
+      "expected": "Held shoot key (Space) and pre-held answer keys cannot submit an answer; keyboard autorepeat ignored; movement disabled during Duel; shuffled option button index maps to stable optionId; double submissions locked.",
+      "observed": "1/1 test in tests/accessibility/uiAndInput.test.ts passed.",
+      "evidence_path": "courtiq/tests/accessibility/uiAndInput.test.ts",
+      "reason": "Verified deterministically."
+    },
+    {
+      "id": "stage7-typescript-and-production-bundle",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "macOS Node v25.6.1 / TypeScript 5.7.2 / Vite 6.0.5",
+      "timestamp_utc": "2026-10-30T08:52:32Z",
+      "command_or_action": "cd courtiq && npm run build",
+      "expected": "tsc --noEmit and vite build complete with 0 errors; HTTP server serves dist/index.html and /api/health.",
+      "observed": "Built dist/index.html (23.49 kB), CSS (14.57 kB), app JS (196.44 kB), Three.js chunk (473.68 kB); HTTP smoke check returned status=ok and 2 packs.",
+      "evidence_path": "courtiq/dist/index.html",
+      "reason": "Verified via build and live HTTP server probe."
+    },
+    {
+      "id": "classroom-pilot-physical-devices-and-educator-signoff",
+      "status": "NOT_TESTED",
+      "required": false,
+      "kind": "human",
+      "environment": "University classroom Wi-Fi / physical iOS & Android touch devices / SPX101 educator sign-off",
+      "timestamp_utc": null,
+      "command_or_action": "Classroom teaching pilot (Stage 8)",
+      "expected": "Two students on separate physical devices over university Wi-Fi complete matches; teacher verifies question pack balance and timing presets.",
+      "observed": "",
+      "evidence_path": null,
+      "reason": "Requires live human classroom playtesting on separate physical devices and educator review of proposed game-balance parameters."
+    }
+  ],
+  "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
+  "remaining_risks": [
+    "All numerical balance settings (base shot probabilities 20%/12%/7%, 35% correctness bonus, 35% speed bonus, 200ms tie tolerance) are starting playtest values and require empirical calibration during the Stage 8 classroom pilot.",
+    "Online room synchronization was verified on local loopback WebSockets; real university Wi-Fi jitter and physical mobile touch ergonomics remain NOT_TESTED until multi-device pilot testing."
+  ]
+}
