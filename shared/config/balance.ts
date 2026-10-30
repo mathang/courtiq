@@ -57,14 +57,16 @@ export const COURT_GEOMETRY = {
 } as const;
 
 export const MOVEMENT_CONFIG = {
-  baseSpeedMps: 4.4,
-  dribbleSpeedMps: 4.1,
-  sprintMultiplier: 1.42,
+  baseSpeedMps: 5.4,
+  dribbleSpeedMps: 5.8,
+  sprintMultiplier: 1.5,
+  acceleration: 22,
+  braking: 30,
   playerCollisionRadiusM: 0.48,
-  minPlayerSeparationM: 0.96,
+  minPlayerSeparationM: 0.82,
   /** Sprint stamina (0..1) */
-  sprintDrainPerSec: 0.45,
-  sprintRegenPerSec: 0.28,
+  sprintDrainPerSec: 0.30,
+  sprintRegenPerSec: 0.34,
   minStaminaToStartSprint: 0.15,
   /** Settling window after releasing sprint during which shot still incurs sprint penalty */
   sprintSettleWindowMs: 350,

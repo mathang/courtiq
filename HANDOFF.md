@@ -224,3 +224,16 @@ CourtIQ supports two interchangeable authoritative transports:
    - Virtual joystick and $\ge 48\text{ px}$ touch answer buttons are verified in DOM tests, but should be playtested on physical iPads and Android tablets.
 3. **Educational Balance Calibration (`NOT_TESTED`)**:
    - All numeric constants in `shared/config/balance.ts` ($12\text{ s}$ window, $2\text{ s}$ reading period, $200\text{ ms}$ tie tolerance, $0.35 + 0.35S$ answer bonus) are initial playtest values ready for empirical tuning with SPX101 cohorts.
+
+
+## Street gameplay revision — 31 October 2026
+
+- `shared/rules/streetMoves.ts`: typed move catalogue, runtime validation, shared airborne pose for ball and player rendering.
+- `matchStateMachine.ts`: authoritative velocity blending, stamina/cooldowns, move paths, brief defensive wrong-footing and dunk selection. Court bounds, collision separation, shot probability, frozen block eligibility and question rules are retained.
+- `aiOpponent.ts`: actually applies the configured reaction delay using a short observation history.
+- Character rigs use rounded geometry, articulated elbows/knees, and nameplates drawn from each player's pseudonym. Name textures update only when the name changes.
+- Both WebSocket and HTTP room intents carry one-shot trick inputs. HTTP queue coalescing preserves pending tricks and shots. Authoritative simulation consumes each trick intent once.
+- Browser hooks: `render_game_to_text()` returns public playing state without answer keys. Calling `advanceTime(ms)` enables deterministic manual stepping until reload (for browser automation).
+- Validation: 31 automated tests across nine files; production build; keyboard playtests for all four moves, cooldowns, a drive-to-dunk sequence, protected reading, answer submission, pause/resume and touch controls at 844×390 and 390×844. Visual screenshots inspected; no browser page errors. Actual physical touch devices and campus Wi-Fi remain untested.
+- The same-question contract is explicitly tested for question ID, stem, choice IDs/text, reading/answer timing and reveal timestamp through both room transports, as well as exercised on the deployed preview.
+- Source checkout for this revision: `/Users/ross_mac/Documents/Codex/2026-10-31/courtiq`.

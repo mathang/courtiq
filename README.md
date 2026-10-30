@@ -15,6 +15,26 @@
 
 ---
 
+## Street gameplay update — 31 October 2026
+
+Players now accelerate, brake and turn smoothly with rounded bodies, articulated knees and elbows, and their chosen name above the back jersey number.
+
+| Action | Keyboard | Touch |
+| --- | --- | --- |
+| Move / Turbo | WASD or arrows / Shift | Joystick / SPRINT |
+| Crossover | C | CROSS |
+| Spin | Q | SPIN |
+| Eurostep | E | EURO |
+| Step back | X | STEP BACK |
+| Shoot / dunk | Space | SHOOT / DUNK |
+| Fullscreen | F (Esc exits) | Browser fullscreen controls |
+
+Hold a direction to choose the side of a move. Each trick costs stamina and has a short cooldown; nearby defenders can be wrong-footed briefly. CourtBot reacts with its difficulty preset's delay, so good changes of direction can create space. Sprint and shoot within 2.65m of the hoop for a running dunk, use a eurostep into a close shot, or shoot within 1.5m for a standing dunk. Dunk attempts show a gather, take-off, suspended question moment, finish and landing. All attempts retain the existing question-based basket/block rules, so a dunk can still miss or be blocked.
+
+In **student-versus-student rooms, both players receive the same question and answer choices for each duel**, with the same reading period and answer deadline. The order of answer choices may differ. The server chooses one question per duel and keeps its answer key hidden until resolution.
+
+Solo settings pause the match. New trick bindings can be remapped in Settings; saved older bindings inherit the new defaults.
+
 ## Quick Start
 
 ### Prerequisites

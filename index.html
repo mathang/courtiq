@@ -75,8 +75,10 @@
 
       <!-- On-Court Possession Prompt Pill -->
       <div id="possession-hint-pill" class="possession-hint-pill hidden" aria-live="polite">
-        Move with <kbd>WASD</kbd> / <kbd>Arrows</kbd> • Hold <kbd>Shift</kbd> to Sprint • Press <kbd>Space</kbd> to Shoot &amp; Trigger Question Duel
+        <kbd>WASD</kbd> Move · <kbd>Shift</kbd> Turbo · <kbd>C</kbd> Cross · <kbd>Q</kbd> Spin · <kbd>E</kbd> Euro · <kbd>X</kbd> Step back · <kbd>Space</kbd> Shoot / Dunk
       </div>
+
+      <div id="street-status" class="street-status hidden" role="status" aria-live="polite"></div>
 
       <!-- Touch Controls for Mobile / Tablet / Optional Desktop Touch Mode -->
       <div id="touch-controls" class="touch-controls hidden" aria-label="Touch Controls">
@@ -87,11 +89,15 @@
           <span class="touch-caption">DRAG TO MOVE</span>
         </div>
         <div class="touch-action-buttons">
+          <button id="btn-touch-crossover" class="touch-btn trick-btn" type="button">CROSS</button>
+          <button id="btn-touch-spin" class="touch-btn trick-btn" type="button">SPIN</button>
+          <button id="btn-touch-eurostep" class="touch-btn trick-btn" type="button">EURO</button>
+          <button id="btn-touch-stepback" class="touch-btn trick-btn" type="button">STEP BACK</button>
           <button id="btn-touch-sprint" class="touch-btn sprint-btn" type="button">
             ⚡ SPRINT
           </button>
           <button id="btn-touch-shoot" class="touch-btn shoot-btn" type="button">
-            🏀 SHOOT
+            🏀 SHOOT / DUNK
           </button>
         </div>
       </div>
@@ -104,7 +110,7 @@
               <span class="eyebrow-badge">ORIGINAL 3D BASKETBALL LEARNING GAME</span>
               <h1>CourtIQ: Slow-Motion Question Duel</h1>
               <p class="lobby-lead">
-                Create space on the half-court and release your shot. As the ball rises in slow motion, both players race to answer the same course question: knowledge and speed boost shot probability, while an in-range defender who answers first blocks the shot!
+                Break ankles with crossovers, spins, eurosteps and step-backs. Hold Turbo and shoot near the rim to take off for a dunk. As the ball rises in slow motion, both students receive the same course question in each duel and race to answer: knowledge and speed boost shot probability, while an in-range defender who answers first blocks the shot!
               </p>
             </div>
           </div>
@@ -408,7 +414,7 @@
             </label>
             <label class="toggle-row">
               <input id="chk-touch-overlay" type="checkbox" />
-              <span><strong>Show On-Screen Touch Controls</strong> (Virtual joystick, Sprint &amp; Shoot buttons)</span>
+              <span><strong>Show On-Screen Touch Controls</strong> (Joystick, tricks, Sprint &amp; Shoot / Dunk)</span>
             </label>
             <div class="form-group" style="margin-top: 10px">
               <label for="select-quality-mode">Graphics &amp; Performance Mode</label>
@@ -442,11 +448,11 @@
             <ol class="tutorial-steps">
               <li>
                 <strong>1. Position on the Half-Court (15s Movement Clock):</strong>
-                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>. Use <kbd>Shift</kbd> sparingly to sprint. Inside the arc scores <strong>2 points</strong> (Close base 20%, Mid-range base 12%); outside the 6.75m arc scores <strong>3 points</strong> (base 7%).
+                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>. Hold <kbd>Shift</kbd> for Turbo. Use <kbd>C</kbd> to cross over, <kbd>Q</kbd> to spin, <kbd>E</kbd> to eurostep, and <kbd>X</kbd> to step back. Hold a direction to choose a side. Moves cost stamina and recharge briefly. Hold Turbo and shoot within 2.65m for a dunk; shoot within 1.5m for a standing dunk. Press <kbd>F</kbd> for fullscreen. Inside the arc scores <strong>2 points</strong> (Close base 20%, Mid-range base 12%); outside the 6.75m arc scores <strong>3 points</strong> (base 7%).
               </li>
               <li>
                 <strong>2. Release the Shot (<kbd>Space</kbd>) &amp; Slow-Motion Flight:</strong>
-                When the ball leaves the attacker's hands, court positions and block eligibility (&le;1.8m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc.
+                When the ball leaves the attacker's hands, court positions and block eligibility (&le;1.8m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc. On a dunk, you take off and hang in the air for the question before the finish resolves.
               </li>
               <li>
                 <strong>3. Protected Reading &amp; Single-Lock Answer Duel:</strong>

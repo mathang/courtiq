@@ -1,3 +1,4 @@
+import { STREET_MOVES } from '../shared/rules/streetMoves';
 import { BUNDLED_QUESTION_PACKS } from '../content/packRegistry';
 import {
   AiDifficultyId,
@@ -89,10 +90,39 @@ class CourtIqApp {
     this.initLobbyPreviewEngine();
 
     let lastTime = performance.now();
+    let manualClock = false;
+    let manualNow = lastTime;
+    const hooks = window as unknown as { advanceTime: (ms: number) => void; render_game_to_text: () => string };
+    hooks.advanceTime = (ms) => {
+      manualClock = true;
+      const frames = Math.max(1, Math.ceil(ms / (1000 / 60)));
+      for (let i = 0; i < frames; i++) {
+        manualNow += ms / frames;
+        this.tickFrame(ms / frames, manualNow);
+      }
+    };
+    hooks.render_game_to_text = () => {
+      const eng = this.soloEngine;
+      const online = this.onlineSnapshot;
+      const players = online?.players ?? eng?.players;
+      return JSON.stringify({
+        coordinates: 'metres; x right, z towards camera, y up; hoop (0,3.05,-5.25)',
+        phase: online?.phase ?? eng?.phase,
+        score: online?.scoreState.scores ?? eng?.scoreState.scores,
+        attacker: online?.scoreState.currentAttacker ?? eng?.scoreState.currentAttacker,
+        clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
+        players, ball: online?.ballPosition ?? eng?.getBallPosition3D(),
+        paused: !document.getElementById('settings-modal')?.classList.contains('hidden'),
+        duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected } : eng?.activeDuel ? {
+          id: eng.activeDuel.duelId, elapsedMs: eng.activeDuel.elapsedRealMs,
+          readingMs: eng.activeDuel.config.readingMs, submitted: eng.activeDuel.answersBySlot.map(Boolean),
+        } : null,
+      });
+    };
     const animate = (now: number) => {
       const deltaMs = Math.min(100, Math.max(1, now - lastTime));
       lastTime = now;
-      this.tickFrame(deltaMs, now);
+      if (!manualClock) this.tickFrame(deltaMs, now);
       requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
@@ -159,6 +189,7 @@ class CourtIqApp {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
         return;
       }
+      if (e.code !== this.input.bindings.pause && ['settings-modal', 'tutorial-modal'].some((id) => !document.getElementById(id)?.classList.contains('hidden'))) return;
       this.input.handleKeyDown(e);
     });
 
@@ -166,6 +197,19 @@ class CourtIqApp {
       this.input.handleKeyUp(e);
     });
 
+    window.addEventListener('blur', () => this.input.reset());
+    document.addEventListener('visibilitychange', () => { if (document.hidden) this.input.reset(); });
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyF' && !e.repeat && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
+        if (document.fullscreenElement) void document.exitFullscreen();
+        else void document.documentElement.requestFullscreen().catch(() => {});
+      }
+    });
+    for (const move of ['crossover', 'spin', 'eurostep', 'stepback'] as const) {
+      document.getElementById(`btn-touch-${move}`)?.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); this.input.triggerTouchTrick(move);
+      });
+    }
     // Mode tabs
     const tabs: Array<[string, string]> = [
       ['tab-solo', 'panel-solo-actions'],
@@ -485,6 +529,7 @@ class CourtIqApp {
   }
 
   private returnToLobby(): void {
+    this.input.reset();
     this.closeOnlineConnection();
     this.onlineSnapshot = null;
     this.sound.stopSlowMoAtmosphere();
@@ -522,6 +567,7 @@ class CourtIqApp {
     // Determine whether we are rendering an active online match or the local solo engine
     if (this.onlineSnapshot) {
       const snap = this.onlineSnapshot;
+      this.updateStreetHud(snap.phase, snap.players[this.onlineSlot], snap.players[snap.scoreState.currentAttacker]);
       this.syncInputAndOverlaysFromOnline(snap);
 
       const moveIntent = this.input.consumeMoveInput(snap.phase);
@@ -565,7 +611,8 @@ class CourtIqApp {
     const moveInput0 = this.input.consumeMoveInput(eng.phase);
     const neutralInput = { moveX: 0, moveZ: 0, sprint: false, shoot: false };
 
-    if (eng.phase !== 'Lobby') {
+    const paused = ['settings-modal', 'tutorial-modal'].some((id) => !document.getElementById(id)?.classList.contains('hidden'));
+    if (eng.phase !== 'Lobby' && !paused) {
       eng.step(realDeltaMs, [moveInput0, neutralInput]);
     }
 
@@ -649,6 +696,7 @@ class CourtIqApp {
     blockEligible: boolean
   ): void {
     const att = eng.scoreState.currentAttacker;
+    this.updateStreetHud(eng.phase, eng.players[0], eng.players[att]);
     const activeDuel = eng.activeDuel;
     const readingProtected =
       eng.phase === 'QuestionReady' ||
@@ -683,6 +731,7 @@ class CourtIqApp {
     const showTouch =
       eng.phase === 'Possession' &&
       (this.touchOverlayEnabled || 'ontouchstart' in window);
+    if (showTouch) document.getElementById('possession-hint-pill')?.classList.add('hidden');
     document
       .getElementById('touch-controls')
       ?.classList.toggle('hidden', !showTouch);
@@ -732,6 +781,17 @@ class CourtIqApp {
     }
   }
 
+  private updateStreetHud(phase: MatchPhase, you: PlayerSimState, attacker: PlayerSimState): void {
+    const badge = document.getElementById('street-status');
+    if (!badge) return;
+    const active = phase === 'Possession' || phase === 'QuestionReady' || phase === 'Duel' || phase === 'Resolution';
+    badge.classList.toggle('hidden', !active);
+    const label = attacker.finishKind === 'dunk' ? 'AIR TIME • DUNK DUEL' :
+      you.wrongFootSec > 0 ? 'WRONG FOOTED' : you.streetMove ? STREET_MOVES[you.streetMove].label :
+      you.moveCooldownSec > 0 ? `MOVE RECHARGING ${you.moveCooldownSec.toFixed(1)}s` : 'STREET MOVES READY';
+    if (badge.textContent !== label) badge.textContent = label;
+  }
+
   private syncInputAndOverlaysFromOnline(
     snap: AuthoritativeMatchStateSnapshot
   ): void {
@@ -771,6 +831,9 @@ class CourtIqApp {
     document
       .getElementById('possession-hint-pill')
       ?.classList.toggle('hidden', snap.phase !== 'Possession');
+    const showTouch = snap.phase === 'Possession' && (this.touchOverlayEnabled || 'ontouchstart' in window);
+    document.getElementById('touch-controls')?.classList.toggle('hidden', !showTouch);
+    if (showTouch) document.getElementById('possession-hint-pill')?.classList.add('hidden');
 
     const inQuestion =
       (snap.phase === 'QuestionReady' || snap.phase === 'Duel') &&
@@ -1408,10 +1471,10 @@ class CourtIqApp {
             ClientToServerMessage,
             { type: 'MOVE_INTENT' }
           >;
-          if (prev.input.shoot) {
+          if (prev.input.shoot || prev.input.trick) {
             msg = {
               type: 'MOVE_INTENT',
-              input: { ...msg.input, shoot: true },
+              input: { ...msg.input, shoot: prev.input.shoot || msg.input.shoot, trick: prev.input.trick ?? msg.input.trick },
             };
           }
           this.httpOutgoingQueue.splice(existingIdx, 1);
@@ -1420,7 +1483,7 @@ class CourtIqApp {
       this.httpOutgoingQueue.push(msg);
       const isUrgent =
         msg.type !== 'MOVE_INTENT' ||
-        (msg.type === 'MOVE_INTENT' && msg.input.shoot);
+        (msg.type === 'MOVE_INTENT' && (msg.input.shoot || Boolean(msg.input.trick)));
       if (isUrgent) {
         void this.flushHttpRoomSync();
       }
@@ -1600,6 +1663,7 @@ class CourtIqApp {
     const modal = document.getElementById('settings-modal');
     if (!modal) return;
     const willOpen = forceOpen ?? modal.classList.contains('hidden');
+    this.input.reset();
     modal.classList.toggle('hidden', !willOpen);
   }
 
@@ -1613,7 +1677,8 @@ class CourtIqApp {
       ['moveLeft', 'Move Left'],
       ['moveRight', 'Move Right'],
       ['sprint', 'Sprint'],
-      ['shoot', 'Shoot Ball'],
+      ['shoot', 'Shoot / Dunk Near Rim'],
+      ['crossover', 'Crossover'], ['spin', 'Spin Move'], ['eurostep', 'Eurostep'], ['stepback', 'Step Back'],
       ['answer1', 'Answer Option 1'],
       ['answer2', 'Answer Option 2'],
       ['answer3', 'Answer Option 3'],

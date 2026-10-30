@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getAirPose, STREET_MOVES } from '../../../shared/rules/streetMoves';
 import { PlayerSimState } from '../../../shared/rules/matchStateMachine';
 import { PlayerSlot } from '../../../shared/rules/possession';
 
@@ -46,314 +47,175 @@ export const APPEARANCE_PRESETS: readonly AppearancePresetOption[] = [
   },
 ];
 
+interface LimbRig { pivot: THREE.Group; joint: THREE.Group; }
+
 export class PlayerCharacter3D {
   public readonly root = new THREE.Group();
-  private readonly bodyGroup = new THREE.Group();
-  private readonly leftArm: THREE.Group;
-  private readonly rightArm: THREE.Group;
-  private readonly leftLeg: THREE.Group;
-  private readonly rightLeg: THREE.Group;
-  private readonly floorRing: THREE.Mesh;
-  private readonly blockEligibleRing: THREE.Mesh;
-
-  private animPhase = 0;
-  private currentPresetId = -1;
-  private readonly slot: PlayerSlot;
+  private body = new THREE.Group();
+  private leftArm: LimbRig;
+  private rightArm: LimbRig;
+  private leftLeg: LimbRig;
+  private rightLeg: LimbRig;
+  private ring: THREE.Mesh;
+  private contest: THREE.Mesh;
+  private phase = 0;
+  private rotation = Math.PI;
+  private initialized = false;
+  private jerseyName = '';
+  private readonly nameCanvas = document.createElement('canvas');
+  private readonly nameTexture: THREE.CanvasTexture;
+  private readonly nameColour: string;
 
   constructor(slot: PlayerSlot, appearancePreset = 0) {
-    this.slot = slot;
-    this.currentPresetId = appearancePreset;
-
-    const preset =
-      APPEARANCE_PRESETS[appearancePreset % APPEARANCE_PRESETS.length] ??
-      APPEARANCE_PRESETS[0];
-
-    const jerseyPrimary = slot === 0 ? 0xfdb913 : 0x00a8e8;
-    const jerseyTrim = slot === 0 ? 0x002647 : 0x082f49;
-    const jerseyNumber = slot === 0 ? '9' : '5';
-
-    const skinMat = new THREE.MeshStandardMaterial({
-      color: preset.skinHex,
-      roughness: 0.55,
-    });
-    const shortsMat = new THREE.MeshStandardMaterial({
-      color: jerseyTrim,
-      roughness: 0.6,
-    });
-    const shoeMat = new THREE.MeshStandardMaterial({
-      color: slot === 0 ? 0xffffff : 0x1e293b,
-      roughness: 0.4,
-    });
-
-    // Jersey torso with procedural number texture
-    const jerseyTex = this.createJerseyTexture(
-      slot === 0 ? '#fdb913' : '#00a8e8',
-      slot === 0 ? '#002647' : '#ffffff',
-      jerseyNumber
-    );
-    const torsoMat = new THREE.MeshStandardMaterial({
-      map: jerseyTex,
-      roughness: 0.5,
-    });
-    const torso = new THREE.Mesh(
-      new THREE.BoxGeometry(0.46, 0.62, 0.28),
-      torsoMat
-    );
-    torso.position.set(0, 1.16, 0);
-    torso.castShadow = true;
-    this.bodyGroup.add(torso);
-
-    // Shorts / pelvis
-    const shorts = new THREE.Mesh(
-      new THREE.BoxGeometry(0.44, 0.28, 0.27),
-      shortsMat
-    );
-    shorts.position.set(0, 0.72, 0);
-    this.bodyGroup.add(shorts);
-
-    // Head & Hair & Headband
-    const headGroup = new THREE.Group();
-    headGroup.position.set(0, 1.66, 0);
-
-    const head = new THREE.Mesh(
-      new THREE.SphereGeometry(0.18, 14, 14),
-      skinMat
-    );
-    headGroup.add(head);
-
-    const headband = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.186, 0.186, 0.055, 16),
-      new THREE.MeshStandardMaterial({ color: preset.headbandHex, roughness: 0.4 })
-    );
-    headband.position.set(0, 0.06, 0);
-    headGroup.add(headband);
-
-    const hairMat = new THREE.MeshStandardMaterial({
-      color: preset.hairHex,
-      roughness: 0.8,
-    });
-    if (preset.hairStyle === 'afro') {
-      const hair = new THREE.Mesh(
-        new THREE.SphereGeometry(0.22, 12, 12),
-        hairMat
-      );
-      hair.position.set(0, 0.08, -0.02);
-      headGroup.add(hair);
-    } else if (preset.hairStyle === 'ponytail') {
-      const cap = new THREE.Mesh(
-        new THREE.SphereGeometry(0.184, 12, 12, 0, Math.PI * 2, 0, Math.PI * 0.55),
-        hairMat
-      );
-      headGroup.add(cap);
-      const tail = new THREE.Mesh(
-        new THREE.SphereGeometry(0.09, 10, 10),
-        hairMat
-      );
-      tail.position.set(0, 0.05, -0.2);
-      headGroup.add(tail);
-    } else {
-      const topHair = new THREE.Mesh(
-        new THREE.BoxGeometry(0.26, 0.1, 0.26),
-        hairMat
-      );
-      topHair.position.set(0, 0.15, 0);
-      headGroup.add(topHair);
+    this.nameCanvas.width = 512; this.nameCanvas.height = 96;
+    this.nameTexture = new THREE.CanvasTexture(this.nameCanvas);
+    this.nameTexture.colorSpace = THREE.SRGBColorSpace;
+    this.nameColour = slot === 0 ? '#082a48' : '#ffffff';
+    const preset = APPEARANCE_PRESETS[appearancePreset % 4] ?? APPEARANCE_PRESETS[0];
+    const skin = new THREE.MeshStandardMaterial({ color: preset.skinHex, roughness: 0.65 });
+    const jersey = new THREE.MeshStandardMaterial({ color: slot === 0 ? 0xfdb913 : 0x00a8e8, roughness: 0.75 });
+    const shorts = new THREE.MeshStandardMaterial({ color: slot === 0 ? 0x082a48 : 0x082f49, roughness: 0.8 });
+    const shoes = new THREE.MeshStandardMaterial({ color: slot === 0 ? 0xf8fafc : 0x183147, roughness: 0.5 });
+    const band = new THREE.MeshStandardMaterial({ color: preset.headbandHex });
+    const hair = new THREE.MeshStandardMaterial({ color: preset.hairHex, roughness: 1 });
+    const torso = this.mesh(new THREE.CylinderGeometry(0.285, 0.21, 0.50, 20), jersey, this.body, 0, 1.23, 0);
+    torso.scale.z = 0.64;
+    this.ellipsoid(this.body, shorts, 0, 0.91, 0, 0.245, 0.18, 0.15);
+    this.mesh(new THREE.CylinderGeometry(0.075, 0.08, 0.13, 12), skin, this.body, 0, 1.54, 0);
+    this.ellipsoid(this.body, skin, 0, 1.73, 0, 0.16, 0.20, 0.155);
+    const cap = this.ellipsoid(this.body, hair, 0, 1.86, -0.015, preset.hairStyle === 'afro' ? 0.205 : 0.16,
+      preset.hairStyle === 'afro' ? 0.18 : 0.09, preset.hairStyle === 'afro' ? 0.19 : 0.15);
+    if (preset.hairStyle === 'ponytail') this.ellipsoid(this.body, hair, 0, 1.79, -0.20, 0.08, 0.17, 0.08);
+    const headband = this.mesh(new THREE.CylinderGeometry(0.163, 0.163, 0.045, 20), band, this.body, 0, 1.82, 0);
+    headband.scale.z = 0.96;
+    // Small facial details keep the face readable without external assets.
+    const eyes = new THREE.MeshStandardMaterial({ color: 0x111827 });
+    for (const side of [-1, 1]) this.ellipsoid(this.body, eyes, side * 0.055, 1.75, 0.146, 0.018, 0.013, 0.012);
+    this.ellipsoid(this.body, skin, 0, 1.70, 0.154, 0.027, 0.035, 0.028);
+    const texture = this.numberTexture(slot === 0 ? '9' : '5', slot === 0 ? '#082a48' : '#ffffff');
+    for (const front of [1, -1]) {
+      const number = this.mesh(new THREE.PlaneGeometry(0.18, 0.25), new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide }), this.body, 0, 1.24, front * 0.177);
+      if (front < 0) number.rotation.y = Math.PI;
     }
-
-    this.bodyGroup.add(headGroup);
-
-    // Articulated Arms
-    this.leftArm = this.buildArm(skinMat, jerseyPrimary, -0.3);
-    this.rightArm = this.buildArm(skinMat, jerseyPrimary, 0.3);
-    this.bodyGroup.add(this.leftArm);
-    this.bodyGroup.add(this.rightArm);
-
-    // Articulated Legs
-    this.leftLeg = this.buildLeg(skinMat, shortsMat, shoeMat, -0.13);
-    this.rightLeg = this.buildLeg(skinMat, shortsMat, shoeMat, 0.13);
-    this.bodyGroup.add(this.leftLeg);
-    this.bodyGroup.add(this.rightLeg);
-
-    this.root.add(this.bodyGroup);
-
-    // Tactical floor indicator ring
-    this.floorRing = new THREE.Mesh(
-      new THREE.RingGeometry(0.46, 0.56, 28),
-      new THREE.MeshBasicMaterial({
-        color: jerseyPrimary,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.78,
-      })
-    );
-    this.floorRing.rotation.x = -Math.PI / 2;
-    this.floorRing.position.y = 0.015;
-    this.root.add(this.floorRing);
-
-    // Defender "BLOCK AVAILABLE" outer glowing contest ring
-    this.blockEligibleRing = new THREE.Mesh(
-      new THREE.RingGeometry(0.62, 0.74, 32),
-      new THREE.MeshBasicMaterial({
-        color: 0x10b981,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.9,
-      })
-    );
-    this.blockEligibleRing.rotation.x = -Math.PI / 2;
-    this.blockEligibleRing.position.y = 0.02;
-    this.blockEligibleRing.visible = false;
-    this.root.add(this.blockEligibleRing);
+    const nameplate = this.mesh(new THREE.PlaneGeometry(0.38, 0.075), new THREE.MeshBasicMaterial({ map: this.nameTexture, transparent: true, depthWrite: false }), this.body, 0, 1.415, -0.186);
+    nameplate.rotation.y = Math.PI;
+    this.leftArm = this.arm(-0.28, skin, jersey);
+    this.rightArm = this.arm(0.28, skin, jersey);
+    this.leftLeg = this.leg(-0.125, skin, shorts, shoes);
+    this.rightLeg = this.leg(0.125, skin, shorts, shoes);
+    this.root.add(this.body);
+    this.ring = this.mesh(new THREE.RingGeometry(0.39, 0.43, 48), new THREE.MeshBasicMaterial({ color: slot === 0 ? 0xfdb913 : 0x38bdf8, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }), this.root, 0, 0.014, 0);
+    this.ring.rotation.x = -Math.PI / 2;
+    this.contest = this.mesh(new THREE.RingGeometry(0.53, 0.57, 48), new THREE.MeshBasicMaterial({ color: 0x34d399, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }), this.root, 0, 0.018, 0);
+    this.contest.rotation.x = -Math.PI / 2;
   }
 
-  private buildArm(
-    skinMat: THREE.Material,
-    shoulderHex: number,
-    offsetX: number
-  ): THREE.Group {
-    const g = new THREE.Group();
-    g.position.set(offsetX, 1.42, 0);
-
-    const shoulder = new THREE.Mesh(
-      new THREE.SphereGeometry(0.085, 8, 8),
-      new THREE.MeshStandardMaterial({ color: shoulderHex, roughness: 0.5 })
-    );
-    g.add(shoulder);
-
-    const arm = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.06, 0.05, 0.52, 8),
-      skinMat
-    );
-    arm.position.set(0, -0.26, 0);
-    g.add(arm);
-
-    return g;
+  private mesh(geometry: THREE.BufferGeometry, material: THREE.Material, parent: THREE.Object3D, x: number, y: number, z: number): THREE.Mesh {
+    const m = new THREE.Mesh(geometry, material); m.position.set(x, y, z); m.castShadow = true; parent.add(m); return m;
+  }
+  private ellipsoid(parent: THREE.Object3D, mat: THREE.Material, x: number, y: number, z: number, sx: number, sy: number, sz: number): THREE.Mesh {
+    const m = this.mesh(new THREE.SphereGeometry(1, 16, 12), mat, parent, x, y, z); m.scale.set(sx, sy, sz); return m;
+  }
+  private arm(x: number, skin: THREE.Material, kit: THREE.Material): LimbRig {
+    const pivot = new THREE.Group(); pivot.position.set(x, 1.45, 0); this.body.add(pivot);
+    this.ellipsoid(pivot, kit, 0, 0, 0, 0.09, 0.10, 0.095);
+    this.mesh(new THREE.CapsuleGeometry(0.062, 0.19, 4, 12), skin, pivot, 0, -0.15, 0);
+    const joint = new THREE.Group(); joint.position.y = -0.29; pivot.add(joint);
+    this.ellipsoid(joint, skin, 0, 0, 0, 0.059, 0.06, 0.059);
+    this.mesh(new THREE.CapsuleGeometry(0.048, 0.19, 4, 12), skin, joint, 0, -0.14, 0);
+    this.ellipsoid(joint, skin, 0, -0.30, 0.015, 0.055, 0.07, 0.035);
+    return { pivot, joint };
+  }
+  private leg(x: number, skin: THREE.Material, kit: THREE.Material, shoes: THREE.Material): LimbRig {
+    const pivot = new THREE.Group(); pivot.position.set(x, 0.88, 0); this.body.add(pivot);
+    this.mesh(new THREE.CapsuleGeometry(0.105, 0.17, 4, 12), kit, pivot, 0, -0.14, 0);
+    const joint = new THREE.Group(); joint.position.y = -0.37; pivot.add(joint);
+    this.ellipsoid(joint, skin, 0, 0, 0, 0.073, 0.075, 0.07);
+    this.mesh(new THREE.CapsuleGeometry(0.06, 0.22, 4, 12), skin, joint, 0, -0.17, 0);
+    this.ellipsoid(joint, shoes, 0, -0.44, 0.055, 0.085, 0.07, 0.16);
+    return { pivot, joint };
+  }
+  private numberTexture(n: string, colour: string): THREE.CanvasTexture {
+    const canvas = document.createElement('canvas'); canvas.width = 128; canvas.height = 160;
+    const ctx = canvas.getContext('2d')!; ctx.fillStyle = colour; ctx.font = '900 140px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(n, 64, 82);
+    const tex = new THREE.CanvasTexture(canvas); tex.colorSpace = THREE.SRGBColorSpace; return tex;
   }
 
-  private buildLeg(
-    skinMat: THREE.Material,
-    shortsMat: THREE.Material,
-    shoeMat: THREE.Material,
-    offsetX: number
-  ): THREE.Group {
-    const g = new THREE.Group();
-    g.position.set(offsetX, 0.64, 0);
-
-    const thigh = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.095, 0.08, 0.3, 8),
-      shortsMat
-    );
-    thigh.position.set(0, -0.15, 0);
-    g.add(thigh);
-
-    const calf = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.075, 0.06, 0.34, 8),
-      skinMat
-    );
-    calf.position.set(0, -0.42, 0);
-    g.add(calf);
-
-    const shoe = new THREE.Mesh(
-      new THREE.BoxGeometry(0.14, 0.1, 0.26),
-      shoeMat
-    );
-    shoe.position.set(0, -0.59, 0.05);
-    g.add(shoe);
-
-    return g;
-  }
-
-  private createJerseyTexture(
-    bgHex: string,
-    textHex: string,
-    numStr: string
-  ): THREE.CanvasTexture {
-    const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext('2d')!;
-
-    ctx.fillStyle = bgHex;
-    ctx.fillRect(0, 0, 256, 256);
-
-    ctx.strokeStyle = textHex;
-    ctx.lineWidth = 14;
-    ctx.strokeRect(10, 10, 236, 236);
-
-    ctx.fillStyle = textHex;
-    ctx.font = 'bold 136px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(numStr, 128, 138);
-
-    return new THREE.CanvasTexture(canvas);
-  }
-
-  public update(params: {
-    sim: PlayerSimState;
-    isAttacker: boolean;
-    showBlockEligibleRing: boolean;
-    presentationDeltaSec: number;
-  }): void {
-    const { sim, isAttacker, showBlockEligibleRing, presentationDeltaSec } =
-      params;
-
-    this.root.position.set(sim.x, 0, sim.z);
-    this.bodyGroup.rotation.y = sim.facingAngle;
-
-    // Floor tactical rings
-    const ringMat = this.floorRing.material as THREE.MeshBasicMaterial;
-    ringMat.opacity = isAttacker ? 0.92 : 0.45;
-    this.floorRing.scale.setScalar(isAttacker ? 1.08 : 0.92);
-
-    this.blockEligibleRing.visible = !isAttacker && showBlockEligibleRing;
-
-    // Advance character animation using presentationDeltaSec (respects slow motion!)
-    this.animPhase += presentationDeltaSec * (sim.isSprinting ? 14 : 9.5);
-
-    if (sim.animState === 'run' || sim.animState === 'dribble') {
-      const swing = Math.sin(this.animPhase) * 0.55;
-      this.leftLeg.rotation.x = swing;
-      this.rightLeg.rotation.x = -swing;
-      this.leftArm.rotation.x = -swing * 0.7;
-
-      if (sim.animState === 'dribble') {
-        // Right arm pumps the dribble
-        this.rightArm.rotation.x =
-          -0.65 + Math.sin(this.animPhase * 1.6) * 0.45;
-      } else {
-        this.rightArm.rotation.x = swing * 0.7;
+  public update(params: { sim: PlayerSimState; isAttacker: boolean; showBlockEligibleRing: boolean; presentationDeltaSec: number; realDeltaSec: number }): void {
+    const { sim: p, isAttacker, showBlockEligibleRing, presentationDeltaSec: dt } = params;
+    if (this.jerseyName !== p.pseudonym) {
+      this.jerseyName = p.pseudonym;
+      const ctx = this.nameCanvas.getContext('2d')!;
+      ctx.clearRect(0, 0, 512, 96);
+      ctx.fillStyle = this.nameColour; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const name = p.pseudonym.toLocaleUpperCase();
+      let size = 72;
+      do { ctx.font = `900 ${size}px system-ui, sans-serif`; size -= 2; } while (ctx.measureText(name).width > 490 && size > 14);
+      ctx.fillText(name, 256, 48, 490); this.nameTexture.needsUpdate = true;
+    }
+    const air = getAirPose(p);
+    // Ease network snapshots while keeping solo response snappy. Reset instantly at check-ball.
+    const target = new THREE.Vector3(air.x, 0, air.z);
+    if (!this.initialized || this.root.position.distanceTo(target) > 3.5) this.root.position.copy(target);
+    else this.root.position.lerp(target, 1 - Math.exp(-params.realDeltaSec * 32));
+    this.initialized = true;
+    const angle = Math.atan2(Math.sin(p.facingAngle - this.rotation), Math.cos(p.facingAngle - this.rotation));
+    this.rotation += angle * (1 - Math.exp(-dt * 25));
+    this.body.rotation.set(0, this.rotation, 0);
+    this.body.position.set(0, air.y, 0);
+    const speed = Math.hypot(p.vx, p.vz);
+    this.phase += dt * (4 + speed * 2.3);
+    const stride = Math.sin(this.phase);
+    const moving = speed > 0.2;
+    const legSwing = moving ? stride * Math.min(0.85, speed * 0.10) : 0;
+    this.leftLeg.pivot.rotation.set(legSwing, 0, -0.035);
+    this.rightLeg.pivot.rotation.set(-legSwing, 0, 0.035);
+    this.leftLeg.joint.rotation.x = moving ? Math.max(0, -stride) * 1.0 : 0.12;
+    this.rightLeg.joint.rotation.x = moving ? Math.max(0, stride) * 1.0 : 0.12;
+    this.leftArm.pivot.rotation.set(-legSwing * 0.7 - 0.1, 0, -0.12);
+    this.rightArm.pivot.rotation.set(isAttacker ? -0.5 + Math.sin(this.phase * 1.25) * 0.3 : legSwing * 0.7 - 0.1, 0, 0.12);
+    this.leftArm.joint.rotation.x = -0.45;
+    this.rightArm.joint.rotation.x = isAttacker ? -0.55 : -0.45;
+    if (!p.finishKind) {
+      this.body.position.y = moving ? Math.abs(stride) * 0.045 : Math.sin(this.phase) * 0.01;
+      this.body.rotation.x = moving ? 0.10 : 0.02;
+    }
+    if (p.streetMove) {
+      const u = p.moveElapsedSec / STREET_MOVES[p.streetMove].duration;
+      this.body.position.y -= Math.sin(u * Math.PI) * 0.15;
+      if (p.streetMove === 'spin') this.body.rotation.y += p.moveSide * u * Math.PI * 2;
+      this.body.rotation.z = Math.sin(u * Math.PI * (p.streetMove === 'eurostep' ? 2 : 1)) * -p.moveSide * 0.24;
+      this.leftLeg.joint.rotation.x += 0.35; this.rightLeg.joint.rotation.x += 0.35;
+      this.rightArm.pivot.rotation.x = -0.65;
+    }
+    if (p.wrongFootSec > 0) {
+      this.body.rotation.z = Math.sin(p.wrongFootSec * 12) * 0.22;
+      this.leftArm.pivot.rotation.z = -0.8; this.rightArm.pivot.rotation.z = 0.8;
+    }
+    if (p.finishKind && (p.animState === 'shoot' || p.finishResolutionSec >= 0)) {
+      const dunk = p.finishKind === 'dunk';
+      const raising = dunk ? Math.min(1, p.finishElapsedSec / 0.40) : Math.min(1, p.finishElapsedSec / 0.18);
+      const landing = p.finishResolutionSec > 0.3;
+      this.rightArm.pivot.rotation.x = -Math.PI * raising;
+      this.rightArm.joint.rotation.x = 0;
+      this.leftArm.pivot.rotation.x = (dunk ? -2.5 : -2.9) * raising;
+      this.leftArm.joint.rotation.x = -0.12;
+      this.leftLeg.pivot.rotation.x = dunk ? -0.5 * (1 - air.progress) : 0.1;
+      this.rightLeg.pivot.rotation.x = dunk ? 0.35 : -0.1;
+      this.leftLeg.joint.rotation.x = dunk && !landing ? 0.95 : 0.18;
+      this.rightLeg.joint.rotation.x = dunk && !landing ? 0.65 : 0.18;
+      if (landing) {
+        this.rightArm.pivot.rotation.x *= Math.max(0, 1 - (p.finishResolutionSec - 0.3) / 0.7);
+        this.leftArm.pivot.rotation.x *= Math.max(0, 1 - (p.finishResolutionSec - 0.3) / 0.7);
       }
-      this.bodyGroup.position.y = Math.abs(Math.sin(this.animPhase)) * 0.06;
-    } else if (sim.animState === 'shoot') {
-      // Jump-shot release pose
-      this.leftLeg.rotation.x = 0.12;
-      this.rightLeg.rotation.x = -0.12;
-      this.rightArm.rotation.x = -2.45; // Follow-through high toward basket
-      this.leftArm.rotation.x = -1.75;  // Guide hand up
-      this.bodyGroup.position.y = 0.34;
-    } else if (sim.animState === 'block') {
-      // Explosive vertical block contest
-      this.leftLeg.rotation.x = -0.15;
-      this.rightLeg.rotation.x = 0.15;
-      this.rightArm.rotation.x = -2.85;
-      this.leftArm.rotation.x = -2.65;
-      this.bodyGroup.position.y = 0.48;
-    } else if (sim.animState === 'celebrate') {
-      const hop = Math.abs(Math.sin(this.animPhase * 1.4)) * 0.24;
-      this.bodyGroup.position.y = hop;
-      this.leftArm.rotation.x = -2.6;
-      this.rightArm.rotation.x = -2.6;
-      this.leftLeg.rotation.x = 0;
-      this.rightLeg.rotation.x = 0;
-    } else {
-      // Idle athletic stance
-      const breathe = Math.sin(this.animPhase * 0.4) * 0.04;
-      this.leftLeg.rotation.x = 0;
-      this.rightLeg.rotation.x = 0;
-      this.leftArm.rotation.x = -0.22 + breathe;
-      this.rightArm.rotation.x = -0.22 - breathe;
-      this.bodyGroup.position.y = 0;
+    } else if (p.animState === 'block') {
+      this.body.position.y = Math.sin(Math.min(1, p.finishElapsedSec / 0.7) * Math.PI) * 0.55;
+      this.leftArm.pivot.rotation.x = -2.8; this.rightArm.pivot.rotation.x = -3.0;
     }
+    this.contest.visible = !isAttacker && showBlockEligibleRing;
+    (this.ring.material as THREE.MeshBasicMaterial).opacity = isAttacker ? 0.85 : 0.4;
+    this.ring.scale.setScalar(p.streetMove ? 1.25 : 1);
+    // Rings track feet on the floor, even while the body is airborne.
   }
 }

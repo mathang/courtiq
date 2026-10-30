@@ -1071,3 +1071,42 @@ textarea {
     display: none;
   }
 }
+
+/* Street controls keep the playfield clear; keyboard legend yields to touch. */
+.street-status { position:absolute; z-index:21; top:106px; left:50%; transform:translateX(-50%); padding:6px 14px; border-radius:20px; background:rgba(7,16,31,.86); color:var(--gold-bright); font-size:.72rem; font-weight:850; letter-spacing:.08em; pointer-events:none; white-space:nowrap; }
+.touch-action-buttons { display:grid; grid-template-columns:repeat(3,64px); gap:8px; }
+.touch-btn { width:64px; height:56px; border-radius:16px; font-size:.62rem; }
+.trick-btn { background:rgba(15,23,42,.88); border:1px solid var(--gold); }
+@media (max-width: 1050px) { .hud-top { flex-wrap:wrap; gap:5px; padding:6px 9px; } .hud-brand { display:none; } .hud-actions { gap:4px; } }
+@media (max-width: 650px) { .street-status { top:116px; font-size:.6rem; } .possession-hint-pill { display:none; } .touch-action-buttons { grid-template-columns:repeat(3,52px); gap:5px; } .touch-btn { width:52px; height:50px; } .touch-joystick-base { width:88px; height:88px; } .touch-controls { left:10px; right:10px; bottom:12px; } }
+
+.possession-hint-pill { top:auto; bottom:18px; max-width:calc(100vw - 28px); }
+@media (max-width:650px) {
+  .hud-top { left:8px; right:8px; top:6px; padding:5px; }
+  .scoreboard-strip { width:100%; display:grid; grid-template-columns:1fr 1.05fr 1fr; gap:4px; }
+  .player-score-card { min-width:0; padding:4px; gap:4px; }
+  .player-meta { min-width:0; }
+  .player-name { font-size:.64rem; max-width:64px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .player-score { font-size:1.3rem; }
+  .role-pill { font-size:.52rem; padding:1px 3px; }
+  .center-clock-card { min-width:0; padding:3px; }
+  .zone-badge { font-size:.5rem; text-align:center; }
+  .possession-counter { font-size:.53rem; }
+  .shot-clock { font-size:1rem; }
+  .hud-actions { width:100%; flex-wrap:wrap; justify-content:space-between; gap:3px; }
+  .hud-actions .icon-btn { padding:5px; font-size:.61rem; min-height:34px; }
+  .block-indicator { padding:3px 5px; font-size:.54rem; max-width:95px; }
+  .stamina-wrap { width:38px; }
+  .stamina-label { font-size:.48rem; }
+  .street-status { top:135px; }
+}
+@media (max-height:500px) and (min-width:651px) {
+  .hud-top { flex-wrap:nowrap; padding:4px 6px; }
+  .scoreboard-strip { gap:4px; }
+  .player-score-card { min-width:115px; padding:3px 6px; }
+  .center-clock-card { min-width:105px; padding:3px; }
+  .hud-actions { gap:3px; flex-wrap:wrap; justify-content:flex-end; }
+  .hud-actions .icon-btn { padding:4px 6px; font-size:.6rem; }
+  .block-indicator { font-size:.55rem; padding:3px; }
+  .street-status { top:86px; }
+}

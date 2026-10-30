@@ -1,3 +1,4 @@
+import { isStreetMove, StreetMove } from '../../../shared/rules/streetMoves';
 import { QuestionOption } from '../../../shared/content/question-schema';
 import { MatchPhase, PlayerMoveInput } from '../../../shared/rules/matchStateMachine';
 
@@ -8,6 +9,10 @@ export interface KeyBindingsConfig {
   moveRight: string;
   sprint: string;
   shoot: string;
+  crossover: string;
+  spin: string;
+  eurostep: string;
+  stepback: string;
   answer1: string;
   answer2: string;
   answer3: string;
@@ -22,6 +27,7 @@ export const DEFAULT_KEY_BINDINGS: KeyBindingsConfig = {
   moveRight: 'KeyD',
   sprint: 'ShiftLeft',
   shoot: 'Space',
+  crossover: 'KeyC', spin: 'KeyQ', eurostep: 'KeyE', stepback: 'KeyX',
   answer1: 'Digit1',
   answer2: 'Digit2',
   answer3: 'Digit3',
@@ -44,6 +50,7 @@ export class InputGuardController {
   private downKeys = new Set<string>();
   private keysHeldBeforeAnswerActive = new Set<string>();
   private shootTriggeredFresh = false;
+  private pendingTrick: StreetMove | undefined;
 
   private activeDuelId: string | null = null;
   private answerButtonsUnlocked = false;
@@ -133,6 +140,11 @@ export class InputGuardController {
       return;
     }
 
+    for (const move of ['crossover', 'spin', 'eurostep', 'stepback'] as const) {
+      if (ev.code === this.bindings[move] && this.activeDuelId === null) {
+        ev.preventDefault?.(); this.pendingTrick = move; return;
+      }
+    }
     // Check answer keys 1..4
     const answerSlotIndex = this.getAnswerIndexForKeyCode(ev.code);
     if (answerSlotIndex !== -1) {
@@ -183,6 +195,15 @@ export class InputGuardController {
     return true;
   }
 
+  public reset(): void {
+    this.downKeys.clear(); this.touchVector = { x: 0, z: 0 }; this.touchSprint = false;
+    this.pendingTrick = undefined; this.shootTriggeredFresh = false; this.touchShootTriggered = false;
+  }
+
+  public triggerTouchTrick(move: StreetMove): void {
+    if (this.activeDuelId === null && isStreetMove(move)) this.pendingTrick = move;
+  }
+
   public setTouchMove(x: number, z: number): void {
     this.touchVector.x = x;
     this.touchVector.z = z;
@@ -207,6 +228,7 @@ export class InputGuardController {
     if (phase !== 'Possession') {
       this.shootTriggeredFresh = false;
       this.touchShootTriggered = false;
+      this.pendingTrick = undefined;
       return { moveX: 0, moveZ: 0, sprint: false, shoot: false };
     }
 
@@ -247,6 +269,8 @@ export class InputGuardController {
     this.shootTriggeredFresh = false;
     this.touchShootTriggered = false;
 
-    return { moveX, moveZ, sprint, shoot };
+    const trick = this.pendingTrick;
+    this.pendingTrick = undefined;
+    return { moveX, moveZ, sprint, shoot, ...(trick ? { trick } : {}) };
   }
 }

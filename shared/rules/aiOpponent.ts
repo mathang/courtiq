@@ -69,6 +69,7 @@ export interface AiBasketballBrainState {
   retargetTimerSec: number;
   possessionElapsedSec: number;
   minDribbleBeforeShotSec: number;
+  observations: Array<{ age: number; x: number; z: number }>;
 }
 
 export function createAiBasketballBrainState(
@@ -78,6 +79,7 @@ export function createAiBasketballBrainState(
     targetSpot: pickOffensiveTargetSpot(rng),
     retargetTimerSec: 1.8 + rng() * 1.4,
     possessionElapsedSec: 0,
+    observations: [],
     minDribbleBeforeShotSec: 1.6 + rng() * 2.2,
   };
 }
@@ -169,21 +171,26 @@ export function stepAiBasketballDecision(params: {
       shoot: false,
     };
   } else {
+    for (const o of brain.observations) o.age += params.deltaSec;
+    brain.observations.push({ age: 0, ...params.opponentPos });
+    const delay = preset.reactionDelayMs / 1000;
+    while (brain.observations.length > 1 && brain.observations[1].age >= delay) brain.observations.shift();
+    const observed = brain.observations[0];
     // Defensive AI: position between attacker and basket at contesting distance (~1.25m)
     const hoopX = COURT_GEOMETRY.hoopX;
     const hoopZ = COURT_GEOMETRY.hoopZ;
-    const attToHoopX = hoopX - params.opponentPos.x;
-    const attToHoopZ = hoopZ - params.opponentPos.z;
+    const attToHoopX = hoopX - observed.x;
+    const attToHoopZ = hoopZ - observed.z;
     const attToHoopLen = Math.hypot(attToHoopX, attToHoopZ) || 1;
 
     const guardDist = 1.25;
     const desiredX = clamp(
-      params.opponentPos.x + (attToHoopX / attToHoopLen) * guardDist,
+      observed.x + (attToHoopX / attToHoopLen) * guardDist,
       COURT_GEOMETRY.minX + 0.6,
       COURT_GEOMETRY.maxX - 0.6
     );
     const desiredZ = clamp(
-      params.opponentPos.z + (attToHoopZ / attToHoopLen) * guardDist,
+      observed.z + (attToHoopZ / attToHoopLen) * guardDist,
       COURT_GEOMETRY.minZ + 1.1,
       COURT_GEOMETRY.maxZ - 0.6
     );

@@ -143,6 +143,13 @@ describe('Authoritative online multiplayer server & room synchronization (Sectio
     const preload0 = await c0.waitFor('DUEL_PRELOAD');
     const preload1 = await c1.waitFor('DUEL_PRELOAD');
     expect(preload0.duelId).toBe(preload1.duelId);
+    expect(preload0.revealAtServerMs).toBe(preload1.revealAtServerMs);
+    expect(preload0.publicQuestion.id).toBe(preload1.publicQuestion.id);
+    expect(preload0.publicQuestion.stem).toBe(preload1.publicQuestion.stem);
+    expect([...preload0.publicQuestion.options].sort((a, b) => a.id.localeCompare(b.id)))
+      .toEqual([...preload1.publicQuestion.options].sort((a, b) => a.id.localeCompare(b.id)));
+    expect(preload0.publicQuestion.readingMs).toBe(preload1.publicQuestion.readingMs);
+    expect(preload0.publicQuestion.answerWindowMs).toBe(preload1.publicQuestion.answerWindowMs);
 
     const rawQ0 = preload0.publicQuestion as unknown as Record<string, unknown>;
     expect('correctOptionId' in rawQ0).toBe(false);
@@ -395,6 +402,22 @@ describe('Authoritative online multiplayer server & room synchronization (Sectio
         m.type === 'DUEL_PRELOAD'
     );
     expect(preloadA).toBeDefined();
+    const pollB = await netlifyRoomHandler({ httpMethod: 'POST', body: JSON.stringify({
+      clientId: 'netlify-client-B', roomCode, reconnectToken: joinedB!.reconnectToken, messages: [],
+    }) });
+    const messagesB = JSON.parse(pollB.body).messages as ServerToClientMessage[];
+    const preloadB = messagesB.find((m): m is Extract<ServerToClientMessage, { type: 'DUEL_PRELOAD' }> => m.type === 'DUEL_PRELOAD');
+    expect(preloadB).toBeDefined();
+    expect(preloadA!.duelId).toBe(preloadB!.duelId);
+    expect(preloadA!.revealAtServerMs).toBe(preloadB!.revealAtServerMs);
+    expect(preloadA!.publicQuestion.id).toBe(preloadB!.publicQuestion.id);
+    expect(preloadA!.publicQuestion.stem).toBe(preloadB!.publicQuestion.stem);
+    expect([...preloadA!.publicQuestion.options].sort((a, b) => a.id.localeCompare(b.id)))
+      .toEqual([...preloadB!.publicQuestion.options].sort((a, b) => a.id.localeCompare(b.id)));
+    expect(preloadA!.publicQuestion.readingMs).toBe(preloadB!.publicQuestion.readingMs);
+    expect(preloadA!.publicQuestion.answerWindowMs).toBe(preloadB!.publicQuestion.answerWindowMs);
+    expect('correctOptionId' in preloadB!.publicQuestion).toBe(false);
+    expect('explanation' in preloadB!.publicQuestion).toBe(false);
     expect(
       'correctOptionId' in
         (preloadA!.publicQuestion as unknown as Record<string, unknown>)

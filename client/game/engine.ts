@@ -225,12 +225,14 @@ export class CourtIqRenderer {
       isAttacker: state.attackerSlot === 0,
       showBlockEligibleRing: state.blockEligible,
       presentationDeltaSec,
+      realDeltaSec,
     });
     this.chars[1].update({
       sim: state.players[1],
       isAttacker: state.attackerSlot === 1,
       showBlockEligibleRing: state.blockEligible,
       presentationDeltaSec,
+      realDeltaSec,
     });
 
     this.ballCtrl.update({

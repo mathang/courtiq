@@ -83,6 +83,8 @@ export class AuthoritativeRoomSimulation {
     // Clear one-shot shoot intent after processing
     p0.latestInput.shoot = false;
     p1.latestInput.shoot = false;
+    p0.latestInput.trick = undefined;
+    p1.latestInput.trick = undefined;
 
     // If a shot just entered QuestionReady, preload the question on both devices without the answer key
     if (

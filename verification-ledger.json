@@ -1,7 +1,7 @@
 {
   "template": false,
-  "project": "CourtIQ — 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:8dea02b2b94cbe1e045a0d6c7e5d462d27ade63ee9124f23a854a4e579df0a50",
+  "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
+  "revision_or_artifact_hash": "dist/index.html:sha256:5b5c22fcc52a909b1456e327dd510580b1d6992712d5d4306f0c1fb6e6324fbd",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -119,6 +119,46 @@
       "observed": "",
       "evidence_path": null,
       "reason": "Requires live human classroom playtesting on separate physical devices and educator review of proposed game-balance parameters."
+    },
+    {
+      "id": "street-gameplay-rules-and-shared-question-regressions",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit-and-integration",
+      "timestamp_utc": "2026-10-30T22:46:32.181865+00:00",
+      "command_or_action": "npm test",
+      "observed": "31/31 tests pass across 9 files, including four moves, cooldown/stamina/role/bounds checks, dunk takeoff/hang/landing and same-question identity/options/timing through WebSocket and Netlify HTTP handlers.",
+      "evidence_path": "tests/rules/streetMoves.test.ts; tests/multiplayer/roomAuthoritative.test.ts"
+    },
+    {
+      "id": "street-production-build",
+      "status": "PASS",
+      "required": true,
+      "kind": "build",
+      "timestamp_utc": "2026-10-30T22:46:32.181865+00:00",
+      "command_or_action": "npm run build",
+      "observed": "TypeScript strict checking and Vite production bundle pass.",
+      "evidence_path": "dist/index.html"
+    },
+    {
+      "id": "street-browser-playtest",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser",
+      "timestamp_utc": "2026-10-30T22:46:32.181865+00:00",
+      "command_or_action": "Develop Web Game Playwright client plus supplemental keyboard/touch playtest",
+      "observed": "Four moves, drive-to-dunk, suspended ball above 3m, reading lock, answer, feedback, pause/resume, jersey names and mobile controls inspected. Portrait overflow false. No page errors.",
+      "evidence_path": "output/playtest/report.json; output/playtest/*.png (local generated evidence, gitignored)"
+    },
+    {
+      "id": "street-live-preview-two-student-question",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-10-30T22:46:32.181865+00:00",
+      "command_or_action": "Two synthetic students create/join/ready/shoot/poll on preview /api/room",
+      "observed": "Same question ID/stem/choices/reveal time; answer keys hidden.",
+      "evidence_path": "output/playtest/online-preview.json (local generated evidence, gitignored)"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

@@ -1,3 +1,4 @@
+import { isStreetMove } from '../../shared/rules/streetMoves';
 import { RoomPresetId, SessionLengthId } from '../../shared/config/balance';
 import {
   ClientToServerMessage,
@@ -355,6 +356,7 @@ export class RoomManager {
           moveZ: Number(msg.input.moveZ) || 0,
           sprint: Boolean(msg.input.sprint),
           shoot: Boolean(msg.input.shoot),
+          trick: isStreetMove(msg.input.trick) ? msg.input.trick : undefined,
         };
         if (
           player.latestInput.shoot &&

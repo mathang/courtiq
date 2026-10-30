@@ -1,3 +1,4 @@
+import { getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
   AiDifficultyId,
   COURT_GEOMETRY,
@@ -93,6 +94,16 @@ export interface PlayerSimState {
   sprintSettleRemainingMs: number;
   animState: CharacterAnimState;
   appearancePreset: number;
+  streetMove: StreetMove | null;
+  moveElapsedSec: number;
+  moveCooldownSec: number;
+  moveSide: number;
+  moveForwardX: number;
+  moveForwardZ: number;
+  wrongFootSec: number;
+  finishKind: 'jump' | 'dunk' | null;
+  finishElapsedSec: number;
+  finishResolutionSec: number;
 }
 
 export interface PlayerMoveInput {
@@ -100,6 +111,7 @@ export interface PlayerMoveInput {
   moveZ: number; // -1..1
   sprint: boolean;
   shoot: boolean;
+  trick?: StreetMove;
 }
 
 export interface ActiveDuelState {
@@ -231,6 +243,9 @@ export class AuthoritativeMatchEngine {
         sprintSettleRemainingMs: 0,
         animState: 'idle',
         appearancePreset: options.player0.appearancePreset ?? 0,
+        streetMove: null, moveElapsedSec: 0, moveCooldownSec: 0, moveSide: 1,
+        moveForwardX: 0, moveForwardZ: -1, wrongFootSec: 0,
+        finishKind: null, finishElapsedSec: 0, finishResolutionSec: -1,
       },
       {
         slot: 1,
@@ -247,6 +262,9 @@ export class AuthoritativeMatchEngine {
         sprintSettleRemainingMs: 0,
         animState: 'idle',
         appearancePreset: options.player1.appearancePreset ?? 1,
+        streetMove: null, moveElapsedSec: 0, moveCooldownSec: 0, moveSide: 1,
+        moveForwardX: 0, moveForwardZ: -1, wrongFootSec: 0,
+        finishKind: null, finishElapsedSec: 0, finishResolutionSec: -1,
       },
     ];
   }
@@ -281,6 +299,10 @@ export class AuthoritativeMatchEngine {
     this.players[def].sprintSettleRemainingMs = 0;
     this.players[def].animState = 'idle';
 
+    for (const p of this.players) {
+      p.streetMove = null; p.moveElapsedSec = 0; p.moveCooldownSec = 0;
+      p.wrongFootSec = 0; p.finishKind = null; p.finishElapsedSec = 0; p.finishResolutionSec = -1;
+    }
     this.movementClockRemainingMs = this.rules.movementClockMs;
     this.ballFlight = null;
     this.activeDuel = null;
@@ -335,6 +357,12 @@ export class AuthoritativeMatchEngine {
   ): void {
     const clampedDeltaMs = clamp(realDeltaMs, 0, 250);
     const deltaSec = clampedDeltaMs / 1000;
+    for (const p of this.players) {
+      if (p.finishKind && this.phase !== 'Possession' && this.phase !== 'Lobby') {
+        p.finishElapsedSec += deltaSec;
+        if (this.phase === 'Resolution' || this.phase === 'Feedback') p.finishResolutionSec += deltaSec;
+      }
+    }
 
     if (this.phase === 'Possession') {
       this.stepPossessionPhase(clampedDeltaMs, deltaSec, inputsBySlot);
@@ -404,9 +432,32 @@ export class AuthoritativeMatchEngine {
       const inp = effectiveInputs[slot];
       const isAttacker = slot === att;
 
-      const mag = Math.hypot(inp.moveX, inp.moveZ);
-      const normX = mag > 1 ? inp.moveX / mag : inp.moveX;
-      const normZ = mag > 1 ? inp.moveZ / mag : inp.moveZ;
+      p.moveCooldownSec = Math.max(0, p.moveCooldownSec - deltaSec);
+      p.wrongFootSec = Math.max(0, p.wrongFootSec - deltaSec);
+      if (p.streetMove) {
+        p.moveElapsedSec += deltaSec;
+        if (p.moveElapsedSec >= STREET_MOVES[p.streetMove].duration) p.streetMove = null;
+      }
+      if (isAttacker && isStreetMove(inp.trick) && !p.streetMove && p.moveCooldownSec <= 0 &&
+          p.sprintStamina >= STREET_MOVES[inp.trick].cost) {
+        p.streetMove = inp.trick; p.moveElapsedSec = 0; p.moveCooldownSec = 0.95;
+        p.sprintStamina -= STREET_MOVES[inp.trick].cost;
+        const dx = COURT_GEOMETRY.hoopX - p.x, dz = COURT_GEOMETRY.hoopZ - p.z;
+        const d = Math.hypot(dx, dz) || 1;
+        p.moveForwardX = dx / d; p.moveForwardZ = dz / d;
+        const lateral = inp.moveX * -p.moveForwardZ + inp.moveZ * p.moveForwardX;
+        p.moveSide = Math.abs(lateral) > 0.1 ? Math.sign(lateral) : -p.moveSide;
+        const opponent = this.players[def];
+        // A well-timed move beats a nearby planted defender, once per cooldown.
+        if (computeDistance2D(p, opponent) < 2.5 && opponent.wrongFootSec <= 0) {
+          opponent.wrongFootSec = inp.trick === 'spin' ? 0.42 : 0.32;
+        }
+      }
+      const safeX = Number.isFinite(inp.moveX) ? inp.moveX : 0;
+      const safeZ = Number.isFinite(inp.moveZ) ? inp.moveZ : 0;
+      const mag = Math.hypot(safeX, safeZ);
+      const normX = mag > 1 ? safeX / mag : safeX;
+      const normZ = mag > 1 ? safeZ / mag : safeZ;
       const isMoving = mag > 0.06;
 
       const canSprint =
@@ -443,8 +494,20 @@ export class AuthoritativeMatchEngine {
       const speed =
         baseSpeed * (p.isSprinting ? MOVEMENT_CONFIG.sprintMultiplier : 1);
 
-      p.vx = normX * speed;
-      p.vz = normZ * speed;
+      let targetX = normX * speed, targetZ = normZ * speed;
+      if (p.streetMove) {
+        const move = STREET_MOVES[p.streetMove];
+        const u = p.moveElapsedSec / move.duration;
+        const forward = p.streetMove === 'stepback' ? -1 : p.streetMove === 'crossover' ? 0.35 : 0.82;
+        const side = p.streetMove === 'stepback' ? 0 : p.moveSide * (p.streetMove === 'eurostep' && u > 0.48 ? -0.72 : 0.72);
+        const len = Math.hypot(forward, side);
+        targetX = (p.moveForwardX * forward - p.moveForwardZ * side) / len * move.speed;
+        targetZ = (p.moveForwardZ * forward + p.moveForwardX * side) / len * move.speed;
+      }
+      if (p.wrongFootSec > 0) { targetX = 0; targetZ = 0; }
+      const blend = 1 - Math.exp(-(isMoving || p.streetMove ? MOVEMENT_CONFIG.acceleration : MOVEMENT_CONFIG.braking) * deltaSec);
+      p.vx += (targetX - p.vx) * blend;
+      p.vz += (targetZ - p.vz) * blend;
       p.x = clamp(
         p.x + p.vx * deltaSec,
         COURT_GEOMETRY.minX,
@@ -456,8 +519,10 @@ export class AuthoritativeMatchEngine {
         COURT_GEOMETRY.maxZ
       );
 
-      if (isMoving) {
-        p.facingAngle = Math.atan2(normX, normZ);
+      if (isMoving || p.streetMove) {
+        const facing = p.streetMove ? Math.atan2(p.moveForwardX, p.moveForwardZ) : Math.atan2(normX, normZ);
+        const turn = Math.atan2(Math.sin(facing - p.facingAngle), Math.cos(facing - p.facingAngle));
+        p.facingAngle += turn * (1 - Math.exp(-18 * deltaSec));
         p.animState = isAttacker ? 'dribble' : 'run';
       } else {
         // Defender naturally faces attacker when stationary; attacker faces hoop
@@ -522,6 +587,10 @@ export class AuthoritativeMatchEngine {
     defender.vx = 0;
     defender.vz = 0;
     attacker.animState = 'shoot';
+    const distance = Math.hypot(COURT_GEOMETRY.hoopX - attacker.x, COURT_GEOMETRY.hoopZ - attacker.z);
+    attacker.finishKind = distance <= 2.65 && (attacker.isSprinting || attacker.streetMove === 'eurostep' || distance <= 1.5) ? 'dunk' : 'jump';
+    attacker.finishElapsedSec = 0; attacker.finishResolutionSec = -1;
+    attacker.streetMove = null;
     defender.animState = 'idle';
 
     // Freeze block eligibility at release (Section 8)
@@ -763,6 +832,7 @@ export class AuthoritativeMatchEngine {
       this.players[att].animState = 'celebrate';
     }
 
+    this.players[att].finishResolutionSec = 0;
     this.phase = 'Resolution';
   }
 
@@ -976,6 +1046,20 @@ export class AuthoritativeMatchEngine {
   }
 
   public getBallPosition3D(): Vector3D {
+    const finisher = this.players[this.scoreState.currentAttacker];
+    if (finisher.finishKind === 'dunk' && (this.phase === 'QuestionReady' || this.phase === 'Duel' || this.phase === 'Resolution')) {
+      const pose = getAirPose(finisher);
+      const r = finisher.finishResolutionSec;
+      const outcome = this.activeDuel?.resolvedOutcome?.outcome;
+      if (r < 0.30) {
+        return { x: pose.x + Math.sin(finisher.facingAngle) * 0.22,
+          z: pose.z + Math.cos(finisher.facingAngle) * 0.22, y: pose.y + 2.12 };
+      }
+      const t = r - 0.30;
+      return { x: COURT_GEOMETRY.hoopX + (outcome === 'block' ? t * 3 : outcome === 'miss' ? t * 1.7 : 0),
+        z: COURT_GEOMETRY.hoopZ + (outcome === 'basket' ? 0 : t * 1.4),
+        y: Math.max(0.18, 3.17 - 1.5 * t - 4.9 * t * t) };
+    }
     if (this.ballFlight) {
       return evaluateBallPosition(this.ballFlight);
     }
@@ -983,10 +1067,12 @@ export class AuthoritativeMatchEngine {
     const p = this.players[att];
     const bounce =
       p.animState === 'dribble'
-        ? Math.abs(Math.sin(performance.now() * 0.011)) * 0.65 + 0.24
+        ? Math.abs(Math.sin((this.rules.movementClockMs - this.movementClockRemainingMs) * 0.014)) * 0.65 + 0.24
         : 1.15;
-    const forwardX = Math.sin(p.facingAngle) * 0.38;
-    const forwardZ = Math.cos(p.facingAngle) * 0.38;
+    const moveU = p.streetMove ? p.moveElapsedSec / STREET_MOVES[p.streetMove].duration : 0;
+    const hand = p.streetMove === 'crossover' || p.streetMove === 'eurostep' ? Math.cos(moveU * Math.PI) * p.moveSide : 1;
+    const forwardX = Math.sin(p.facingAngle) * 0.28 + Math.cos(p.facingAngle) * 0.34 * hand;
+    const forwardZ = Math.cos(p.facingAngle) * 0.28 - Math.sin(p.facingAngle) * 0.34 * hand;
     return {
       x: p.x + forwardX,
       y: bounce,
