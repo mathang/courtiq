@@ -90,9 +90,22 @@
       "timestamp_utc": "2026-10-30T08:52:32Z",
       "command_or_action": "cd courtiq && npm run build",
       "expected": "tsc --noEmit and vite build complete with 0 errors; HTTP server serves dist/index.html and /api/health.",
-      "observed": "Built dist/index.html (23.49 kB), CSS (14.57 kB), app JS (196.44 kB), Three.js chunk (473.68 kB); HTTP smoke check returned status=ok and 2 packs.",
+      "observed": "Built dist/index.html (23.49 kB), CSS (14.57 kB), app JS (198.53 kB), Three.js chunk (473.68 kB); HTTP smoke check returned status=ok and 2 packs.",
       "evidence_path": "courtiq/dist/index.html",
       "reason": "Verified via build and live HTTP server probe."
+    },
+    {
+      "id": "netlify-production-and-github-deployment",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "Netlify Edge & Functions (https://courtiq-spx101.netlify.app) + GitHub (https://github.com/mathang/courtiq)",
+      "timestamp_utc": "2026-10-30T22:28:14Z",
+      "command_or_action": "curl -sI https://courtiq-spx101.netlify.app/ && curl -s https://courtiq-spx101.netlify.app/api/health && curl -s -X POST https://courtiq-spx101.netlify.app/api/room",
+      "expected": "HTTP/2 200 on /, status=ok with 2 SPX101 packs on /api/health, and ROOM_JOINED with 6-character code on POST /api/room.",
+      "observed": "HTTP/2 200 on /; /api/health returned status=ok and 2 packs (45 and 40 approved questions); POST /api/room returned ROOM_JOINED (roomCode 8F4S8N).",
+      "evidence_path": "courtiq/netlify.toml",
+      "reason": "Verified against live production Netlify deployment."
     },
     {
       "id": "classroom-pilot-physical-devices-and-educator-signoff",

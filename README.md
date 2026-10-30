@@ -1,5 +1,8 @@
 # CourtIQ — Slow-Motion Basketball Question-Duel Learning Game
 
+- **Live Production App (Netlify)**: [https://courtiq-spx101.netlify.app](https://courtiq-spx101.netlify.app)
+- **GitHub Repository**: [https://github.com/mathang/courtiq](https://github.com/mathang/courtiq)
+
 **CourtIQ** is an original browser-based 3D half-court basketball learning game built for **SPX101 (Introduction to Sports and Exercise Science)**. Every shot attempt triggers a slow-motion multiple-choice question duel:
 
 1. **Positioning creates the opportunity**: Create space inside or outside the 3-point arc on offense, or stay within contesting range ($\le 1.8\text{ m}$, forward-facing cone) on defense.

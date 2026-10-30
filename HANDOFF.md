@@ -3,6 +3,8 @@
 **Version**: `1.0.0`  
 **Target Course**: `SPX101 — Introduction to Sports and Exercise Science`  
 **Stack**: TypeScript, Three.js, Vite, Node.js (`ws` + HTTP), Netlify Functions, Vitest  
+**Live Production URL**: `https://courtiq-spx101.netlify.app`  
+**GitHub Repository**: `https://github.com/mathang/courtiq`  
 
 ---
 
