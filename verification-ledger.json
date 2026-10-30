@@ -205,6 +205,15 @@
       "timestamp_utc": "2026-10-30T23:13:01.821594+00:00",
       "observed": "Deployed preview: swipe intent produces rooted miss/recovery; two synthetic students get identical question ID/text/choices/reveal time, answer keys hidden.",
       "evidence_path": "output/arcade/remote-preview.json (local generated, gitignored)"
+    },
+    {
+      "id": "arcade-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-10-30T23:14:02.042940+00:00",
+      "observed": "Source 546ab3e on GitHub main. Netlify production 6ae5248fede4589a46975637. All live JS/CSS digests match tested dist; live browser gameplay inspected. Production two-client HTTP check confirms missed-swipe recovery, identical shared question/choices/timing and hidden answer keys. Mobile defense capture also verified in headed Chromium after intermittent headless WebGL capture clearing.",
+      "evidence_path": "https://courtiq-spx101.netlify.app; output/arcade/remote-production.json; output/arcade/production-assets.json (local generated evidence)"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
