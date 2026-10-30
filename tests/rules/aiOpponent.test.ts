@@ -78,11 +78,11 @@ describe('Solo match simulation & AI pre-committed question plan (Sections 12 & 
     ).toBe(engine.scoreState.possessionsCompleted[1]);
 
     // Verify no question was repeated during the match
-    expect(seenQuestionIds.size).toBe(engine.attemptEvents.length);
+    expect(seenQuestionIds.size).toBe(engine.attemptEvents.filter(e => e.questionId !== '').length);
 
     // Verify separated learning summary
     const [p0Summary] = engine.getLearningSummaries();
-    expect(p0Summary.totalQuestions).toBe(engine.attemptEvents.length);
+    expect(p0Summary.totalQuestions).toBe(engine.attemptEvents.filter(e => e.questionId !== '').length);
     expect(p0Summary.overallAccuracyPercent).toBe(100);
   });
 });

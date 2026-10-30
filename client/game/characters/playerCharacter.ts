@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { dunkRig } from '../../../shared/rules/dunks';
 import { getAirPose, STREET_MOVES } from '../../../shared/rules/streetMoves';
 import { PlayerSimState } from '../../../shared/rules/matchStateMachine';
 import { PlayerSlot } from '../../../shared/rules/possession';
@@ -177,7 +178,7 @@ export class PlayerCharacter3D {
     this.rightArm.pivot.rotation.set(isAttacker ? -0.5 + Math.sin(this.phase * 1.25) * 0.3 : legSwing * 0.7 - 0.1, 0, 0.12);
     this.leftArm.joint.rotation.x = -0.45;
     this.rightArm.joint.rotation.x = isAttacker ? -0.55 : -0.45;
-    if (!p.finishKind) {
+    if (!p.finishKind && !p.defenseAction) {
       this.body.position.y = moving ? Math.abs(stride) * 0.045 : Math.sin(this.phase) * 0.01;
       this.body.rotation.x = moving ? 0.10 : 0.02;
     }
@@ -212,6 +213,35 @@ export class PlayerCharacter3D {
     } else if (p.animState === 'block') {
       this.body.position.y = Math.sin(Math.min(1, p.finishElapsedSec / 0.7) * Math.PI) * 0.55;
       this.leftArm.pivot.rotation.x = -2.8; this.rightArm.pivot.rotation.x = -3.0;
+    }
+    if (p.finishKind === 'dunk') {
+      const rig = dunkRig(p);
+      this.body.rotation.y += rig.twist;
+      this.rightArm.pivot.rotation.set(rig.arm, 0, 0);
+      this.rightArm.joint.rotation.x = 0;
+      this.leftArm.pivot.rotation.set(rig.guideArm, 0, p.dunkStyle === 'windmill' ? -0.7 : -0.05);
+      this.leftArm.joint.rotation.x = 0;
+      const tuck = Math.sin(Math.min(1, p.finishElapsedSec / 0.84) * Math.PI);
+      this.leftLeg.pivot.rotation.x = -0.65 * tuck;
+      this.rightLeg.pivot.rotation.x = 0.9 * tuck;
+      this.leftLeg.joint.rotation.x = 1.2 * tuck;
+      this.rightLeg.joint.rotation.x = 1.6 * tuck;
+    }
+    if (p.defenseAction === 'swipe') {
+      const reach = Math.sin(Math.min(1, p.defenseElapsedSec / 0.32) * Math.PI);
+      this.body.rotation.x = 0.18 + reach * 0.25;
+      this.rightArm.pivot.rotation.set(-0.65 - reach * 0.55, reach * 1.25, 0.35);
+      this.rightArm.joint.rotation.x = -0.08;
+      this.leftArm.pivot.rotation.x = 0.3;
+      this.leftLeg.joint.rotation.x = 0.25;
+      this.rightLeg.joint.rotation.x = 0.28;
+    } else if (p.defenseAction === 'jump') {
+      this.body.position.y = air.y;
+      this.leftArm.pivot.rotation.set(-2.9, 0, -0.15);
+      this.rightArm.pivot.rotation.set(-Math.PI, 0, 0.15);
+      this.leftArm.joint.rotation.x = 0; this.rightArm.joint.rotation.x = 0;
+      this.leftLeg.joint.rotation.x = 0.75 * air.progress;
+      this.rightLeg.joint.rotation.x = 0.95 * air.progress;
     }
     this.contest.visible = !isAttacker && showBlockEligibleRing;
     (this.ring.material as THREE.MeshBasicMaterial).opacity = isAttacker ? 0.85 : 0.4;

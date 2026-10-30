@@ -1,3 +1,5 @@
+import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction } from './defense';
+import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_RANGE_M, DUNK_LABELS, isDunkStyle, dunkBallPosition } from './dunks';
 import { getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
   AiDifficultyId,
@@ -104,6 +106,16 @@ export interface PlayerSimState {
   finishKind: 'jump' | 'dunk' | null;
   finishElapsedSec: number;
   finishResolutionSec: number;
+  finishOutcome: 'basket' | 'miss' | 'block' | null;
+  dunkStyle: DunkStyle;
+  dunkBallStart: Vector3D | null;
+  defenseAction: DefenseAction | null;
+  defenseElapsedSec: number;
+  defenseRecoverySec: number;
+  defenseCooldownSec: number;
+  defenseResult: 'miss' | 'steal' | 'timed-block' | 'jump' | null;
+  defenseTargetX: number;
+  defenseTargetZ: number;
 }
 
 export interface PlayerMoveInput {
@@ -112,6 +124,9 @@ export interface PlayerMoveInput {
   sprint: boolean;
   shoot: boolean;
   trick?: StreetMove;
+  defense?: DefenseAction;
+  dunk?: boolean;
+  dunkStyle?: DunkStyle;
 }
 
 export interface ActiveDuelState {
@@ -127,6 +142,8 @@ export interface ActiveDuelState {
   answersBySlot: [PlayerAnswerRecord | null, PlayerAnswerRecord | null];
   aiPlan: AiCommittedQuestionPlan | null;
   resolvedOutcome: ResolvedShotOutcome | null;
+  physicalBlock: boolean;
+  aiJumpAtMs: number | null;
 }
 
 export interface FeedbackBannerState {
@@ -139,7 +156,7 @@ export interface FeedbackBannerState {
   sourceRef: string;
   topic: string;
   week: number;
-  outcome: 'basket' | 'miss' | 'block' | 'shot-clock-turnover';
+  outcome: 'basket' | 'miss' | 'block' | 'shot-clock-turnover' | 'steal-turnover';
   pointsAwarded: 0 | 2 | 3;
   finalProbability: number;
   remainingRealMs: number;
@@ -246,6 +263,9 @@ export class AuthoritativeMatchEngine {
         streetMove: null, moveElapsedSec: 0, moveCooldownSec: 0, moveSide: 1,
         moveForwardX: 0, moveForwardZ: -1, wrongFootSec: 0,
         finishKind: null, finishElapsedSec: 0, finishResolutionSec: -1,
+        dunkStyle: 'tomahawk', dunkBallStart: null, finishOutcome: null,
+        defenseAction: null, defenseElapsedSec: 0, defenseRecoverySec: 0, defenseCooldownSec: 0,
+        defenseResult: null, defenseTargetX: 0, defenseTargetZ: 0,
       },
       {
         slot: 1,
@@ -265,6 +285,9 @@ export class AuthoritativeMatchEngine {
         streetMove: null, moveElapsedSec: 0, moveCooldownSec: 0, moveSide: 1,
         moveForwardX: 0, moveForwardZ: -1, wrongFootSec: 0,
         finishKind: null, finishElapsedSec: 0, finishResolutionSec: -1,
+        dunkStyle: 'tomahawk', dunkBallStart: null, finishOutcome: null,
+        defenseAction: null, defenseElapsedSec: 0, defenseRecoverySec: 0, defenseCooldownSec: 0,
+        defenseResult: null, defenseTargetX: 0, defenseTargetZ: 0,
       },
     ];
   }
@@ -302,6 +325,8 @@ export class AuthoritativeMatchEngine {
     for (const p of this.players) {
       p.streetMove = null; p.moveElapsedSec = 0; p.moveCooldownSec = 0;
       p.wrongFootSec = 0; p.finishKind = null; p.finishElapsedSec = 0; p.finishResolutionSec = -1;
+      p.defenseAction = null; p.defenseElapsedSec = 0; p.defenseRecoverySec = 0; p.defenseCooldownSec = 0;
+      p.defenseResult = null; p.dunkBallStart = null; p.finishOutcome = null;
     }
     this.movementClockRemainingMs = this.rules.movementClockMs;
     this.ballFlight = null;
@@ -342,6 +367,7 @@ export class AuthoritativeMatchEngine {
       shooterPos: { x: this.players[att].x, z: this.players[att].z },
       defenderPos: { x: this.players[def].x, z: this.players[def].z },
       defenderFacingAngle: this.players[def].facingAngle,
+      blockingDisabledByRule: this.players[def].defenseAction === 'swipe' || this.players[def].wrongFootSec > 0,
     });
   }
 
@@ -358,6 +384,12 @@ export class AuthoritativeMatchEngine {
     const clampedDeltaMs = clamp(realDeltaMs, 0, 250);
     const deltaSec = clampedDeltaMs / 1000;
     for (const p of this.players) {
+      if (this.phase !== 'Lobby') {
+        p.defenseElapsedSec += deltaSec;
+        p.defenseRecoverySec = Math.max(0, p.defenseRecoverySec - deltaSec);
+        p.defenseCooldownSec = Math.max(0, p.defenseCooldownSec - deltaSec);
+        if (p.defenseRecoverySec <= 0) p.defenseAction = null;
+      }
       if (p.finishKind && this.phase !== 'Possession' && this.phase !== 'Lobby') {
         p.finishElapsedSec += deltaSec;
         if (this.phase === 'Resolution' || this.phase === 'Feedback') p.finishResolutionSec += deltaSec;
@@ -370,6 +402,13 @@ export class AuthoritativeMatchEngine {
     }
 
     if (this.phase === 'QuestionReady') {
+      const def: PlayerSlot = this.scoreState.currentAttacker === 0 ? 1 : 0;
+      if (inputsBySlot[def].defense === 'jump' || inputsBySlot[def].shoot) this.tryDefenseAction(def, 'jump');
+      if (this.activeDuel?.aiJumpAtMs !== null && this.activeDuel?.aiJumpAtMs !== undefined &&
+          this.questionReadyTimerMs >= this.activeDuel.aiJumpAtMs) {
+        this.tryDefenseAction(def, 'jump'); this.activeDuel.aiJumpAtMs = null;
+      }
+      this.checkTimedDunkBlock();
       this.stepQuestionReadyPhase(clampedDeltaMs, deltaSec);
       return;
     }
@@ -426,6 +465,10 @@ export class AuthoritativeMatchEngine {
       });
     }
 
+    if (effectiveInputs[def].defense || effectiveInputs[def].shoot) {
+      const action = effectiveInputs[def].defense ?? 'jump';
+      if (isDefenseAction(action)) this.tryDefenseAction(def, action);
+    }
     // Update both players' movement
     for (const slot of [0, 1] as const) {
       const p = this.players[slot];
@@ -504,7 +547,8 @@ export class AuthoritativeMatchEngine {
         targetX = (p.moveForwardX * forward - p.moveForwardZ * side) / len * move.speed;
         targetZ = (p.moveForwardZ * forward + p.moveForwardX * side) / len * move.speed;
       }
-      if (p.wrongFootSec > 0) { targetX = 0; targetZ = 0; }
+      if (p.wrongFootSec > 0 || p.defenseRecoverySec > 0) { targetX = 0; targetZ = 0; }
+      if (p.defenseRecoverySec > 0) { p.vx = 0; p.vz = 0; }
       const blend = 1 - Math.exp(-(isMoving || p.streetMove ? MOVEMENT_CONFIG.acceleration : MOVEMENT_CONFIG.braking) * deltaSec);
       p.vx += (targetX - p.vx) * blend;
       p.vz += (targetZ - p.vz) * blend;
@@ -519,7 +563,9 @@ export class AuthoritativeMatchEngine {
         COURT_GEOMETRY.maxZ
       );
 
-      if (isMoving || p.streetMove) {
+      if (p.defenseRecoverySec > 0) {
+        p.animState = p.defenseAction === 'jump' ? 'block' : 'idle';
+      } else if (isMoving || p.streetMove) {
         const facing = p.streetMove ? Math.atan2(p.moveForwardX, p.moveForwardZ) : Math.atan2(normX, normZ);
         const turn = Math.atan2(Math.sin(facing - p.facingAngle), Math.cos(facing - p.facingAngle));
         p.facingAngle += turn * (1 - Math.exp(-18 * deltaSec));
@@ -546,18 +592,28 @@ export class AuthoritativeMatchEngine {
     const dz = p1.z - p0.z;
     const dist = Math.hypot(dx, dz);
     if (dist < MOVEMENT_CONFIG.minPlayerSeparationM && dist > 1e-5) {
-      const overlap = (MOVEMENT_CONFIG.minPlayerSeparationM - dist) * 0.5;
-      const nx = dx / dist;
-      const nz = dz / dist;
-      p0.x = clamp(p0.x - nx * overlap, COURT_GEOMETRY.minX, COURT_GEOMETRY.maxX);
-      p0.z = clamp(p0.z - nz * overlap, COURT_GEOMETRY.minZ, COURT_GEOMETRY.maxZ);
-      p1.x = clamp(p1.x + nx * overlap, COURT_GEOMETRY.minX, COURT_GEOMETRY.maxX);
-      p1.z = clamp(p1.z + nz * overlap, COURT_GEOMETRY.minZ, COURT_GEOMETRY.maxZ);
+      const overlap = MOVEMENT_CONFIG.minPlayerSeparationM - dist;
+      const nx = dx / dist, nz = dz / dist;
+      const frozen0 = p0.defenseRecoverySec > 0, frozen1 = p1.defenseRecoverySec > 0;
+      const weight0 = frozen0 ? 0 : frozen1 ? 1 : 0.5;
+      const weight1 = frozen1 ? 0 : frozen0 ? 1 : 0.5;
+      p0.x = clamp(p0.x - nx * overlap * weight0, COURT_GEOMETRY.minX, COURT_GEOMETRY.maxX);
+      p0.z = clamp(p0.z - nz * overlap * weight0, COURT_GEOMETRY.minZ, COURT_GEOMETRY.maxZ);
+      p1.x = clamp(p1.x + nx * overlap * weight1, COURT_GEOMETRY.minX, COURT_GEOMETRY.maxX);
+      p1.z = clamp(p1.z + nz * overlap * weight1, COURT_GEOMETRY.minZ, COURT_GEOMETRY.maxZ);
     }
 
-    // Check if current attacker initiates a shot
-    if (effectiveInputs[att].shoot) {
-      this.initiateShotAttempt();
+    const defender = this.players[def];
+    if (defender.defenseAction === 'swipe' && defender.defenseResult === null &&
+        defender.defenseElapsedSec >= DEFENSE_CONFIG.swipeContactSec) {
+      if (canStealBall(defender, this.players[att], this.getBallPosition3D())) {
+        defender.defenseResult = 'steal'; this.completeSteal(def); return;
+      }
+      defender.defenseResult = 'miss';
+    }
+    // Defense resolves before a same-tick shot; only the authoritative attacker may shoot.
+    if ((effectiveInputs[att].shoot || effectiveInputs[att].dunk) && this.players[att].defenseRecoverySec <= 0) {
+      this.initiateShotAttempt(effectiveInputs[att]);
     }
   }
 
@@ -567,7 +623,7 @@ export class AuthoritativeMatchEngine {
    * - Freezes block eligibility and shot release parameters
    * - Creates a unique duel ID and shuffles options independently for both players
    */
-  public initiateShotAttempt(): void {
+  public initiateShotAttempt(input?: PlayerMoveInput): void {
     if (this.phase !== 'Possession') {
       return;
     }
@@ -577,6 +633,7 @@ export class AuthoritativeMatchEngine {
     const attacker = this.players[att];
     const defender = this.players[def];
 
+    const ballAtGather = this.getBallPosition3D();
     // Automatic facing towards the basket when shooting (Section 4)
     attacker.facingAngle = Math.atan2(
       COURT_GEOMETRY.hoopX - attacker.x,
@@ -588,8 +645,10 @@ export class AuthoritativeMatchEngine {
     defender.vz = 0;
     attacker.animState = 'shoot';
     const distance = Math.hypot(COURT_GEOMETRY.hoopX - attacker.x, COURT_GEOMETRY.hoopZ - attacker.z);
-    attacker.finishKind = distance <= 2.65 && (attacker.isSprinting || attacker.streetMove === 'eurostep' || distance <= 1.5) ? 'dunk' : 'jump';
-    attacker.finishElapsedSec = 0; attacker.finishResolutionSec = -1;
+    attacker.finishKind = distance <= DUNK_RANGE_M && (input?.dunk || attacker.isSprinting || attacker.streetMove === 'eurostep' || distance <= 1.8) ? 'dunk' : 'jump';
+    attacker.dunkStyle = isDunkStyle(input?.dunkStyle) ? input.dunkStyle : DUNK_STYLES[this.possessionIndex % DUNK_STYLES.length];
+    attacker.dunkBallStart = ballAtGather;
+    attacker.finishElapsedSec = 0; attacker.finishResolutionSec = -1; attacker.finishOutcome = null;
     attacker.streetMove = null;
     defender.animState = 'idle';
 
@@ -598,6 +657,7 @@ export class AuthoritativeMatchEngine {
       shooterPos: { x: attacker.x, z: attacker.z },
       defenderPos: { x: defender.x, z: defender.z },
       defenderFacingAngle: defender.facingAngle,
+      blockingDisabledByRule: defender.defenseAction === 'swipe' || defender.wrongFootSec > 0,
     });
 
     const releasedWhileSprinting =
@@ -669,6 +729,9 @@ export class AuthoritativeMatchEngine {
       answersBySlot: [null, null],
       aiPlan,
       resolvedOutcome: null,
+      physicalBlock: false,
+      aiJumpAtMs: defender.isAi && attacker.finishKind === 'dunk' && blockEligibility.eligible && this.rng() < 0.72
+        ? ({ beginner: 380, intermediate: 220, advanced: 120 }[this.aiDifficulty]) : null,
     };
 
     this.ballFlight = createInitialBallFlightState({
@@ -685,14 +748,7 @@ export class AuthoritativeMatchEngine {
       return;
     }
     this.activeDuel.readyClients[slot] = true;
-    if (
-      this.phase === 'QuestionReady' &&
-      this.activeDuel.readyClients[0] &&
-      this.activeDuel.readyClients[1] &&
-      this.questionReadyTimerMs >= 260
-    ) {
-      this.phase = 'Duel';
-    }
+    // Phase transition is owned by stepQuestionReadyPhase after the gather completes.
   }
 
   private stepQuestionReadyPhase(realDeltaMs: number, realDeltaSec: number): void {
@@ -708,8 +764,8 @@ export class AuthoritativeMatchEngine {
 
     // Transition into Duel once initial release animation (~320ms) finishes and clients are ready (or bounded 800ms preload timeout)
     if (
-      (bothReady && this.questionReadyTimerMs >= 320) ||
-      this.questionReadyTimerMs >= 800
+      (bothReady && this.questionReadyTimerMs >= (this.players[this.scoreState.currentAttacker].finishKind === 'dunk' ? DUNK_TAKEOFF_SEC * 1000 : 320)) ||
+      this.questionReadyTimerMs >= 1200
     ) {
       this.phase = 'Duel';
     }
@@ -811,13 +867,14 @@ export class AuthoritativeMatchEngine {
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
     const resolvedOutcome = resolveAuthoritativeShot({
       release: this.activeDuel.releaseSnapshot,
-      duel: duelSummary,
+      duel: this.activeDuel.physicalBlock ? { ...duelSummary, shotBlocked: true, statusBannerText: 'TIMED SWAT! The defender met the dunk at take-off.' } : duelSummary,
       randomDraw: this.rng(),
       correctBaseBonus: roomPreset.correctBaseBonus,
       speedBonusWeight: roomPreset.speedBonusWeight,
     });
 
     this.activeDuel.resolvedOutcome = resolvedOutcome;
+    this.players[att].finishOutcome = resolvedOutcome.outcome;
 
     if (this.ballFlight) {
       this.ballFlight = transitionBallToResolution(
@@ -828,6 +885,10 @@ export class AuthoritativeMatchEngine {
 
     if (resolvedOutcome.outcome === 'block') {
       this.players[def].animState = 'block';
+      this.players[def].defenseAction = 'jump'; this.players[def].defenseElapsedSec = 0;
+      this.players[def].defenseRecoverySec = 0.88;
+      const dunkPose = getAirPose(this.players[att]);
+      this.players[def].defenseTargetX = dunkPose.x; this.players[def].defenseTargetZ = dunkPose.z;
     } else if (resolvedOutcome.outcome === 'basket') {
       this.players[att].animState = 'celebrate';
     }
@@ -920,9 +981,9 @@ export class AuthoritativeMatchEngine {
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
     const headline =
       outcome.outcome === 'block'
-        ? 'SHOT BLOCKED!'
+        ? (this.activeDuel.physicalBlock ? 'DUNK SWATTED!' : 'SHOT BLOCKED!')
         : outcome.outcome === 'basket'
-          ? `SWISH! +${outcome.pointsAwarded} POINTS!`
+          ? `${this.players[att].finishKind === 'dunk' ? DUNK_LABELS[this.players[att].dunkStyle] + ' SLAM!' : 'SWISH!'} +${outcome.pointsAwarded} POINTS!`
           : 'RIM MISS — NO SCORE';
 
     this.feedbackState = {
@@ -944,7 +1005,46 @@ export class AuthoritativeMatchEngine {
     this.phase = 'Feedback';
   }
 
-  private handleMovementClockTurnover(): void {
+  private tryDefenseAction(slot: PlayerSlot, action: DefenseAction): boolean {
+    if (slot === this.scoreState.currentAttacker || (this.phase !== 'Possession' && this.phase !== 'QuestionReady')) return false;
+    if (action === 'swipe' && this.phase !== 'Possession') return false;
+    const p = this.players[slot], target = this.players[this.scoreState.currentAttacker];
+    if (p.defenseRecoverySec > 0 || p.defenseCooldownSec > 0 || p.wrongFootSec > 0 || p.sprintStamina < 0.12) return false;
+    if (this.phase === 'QuestionReady' && this.questionReadyTimerMs > DEFENSE_CONFIG.blockWindowEndSec * 1000) return false;
+    p.defenseAction = action; p.defenseElapsedSec = 0; p.defenseResult = null;
+    p.defenseRecoverySec = action === 'swipe' ? DEFENSE_CONFIG.swipeRecoverySec : DEFENSE_CONFIG.jumpDurationSec;
+    p.defenseCooldownSec = action === 'swipe' ? DEFENSE_CONFIG.swipeCooldownSec : DEFENSE_CONFIG.jumpCooldownSec;
+    p.defenseTargetX = target.x; p.defenseTargetZ = target.z;
+    p.sprintStamina -= 0.12; p.vx = 0; p.vz = 0; p.isSprinting = false;
+    return true;
+  }
+
+  private checkTimedDunkBlock(): void {
+    const duel = this.activeDuel;
+    if (!duel || duel.physicalBlock || this.players[this.scoreState.currentAttacker].finishKind !== 'dunk') return;
+    const d = this.players[this.scoreState.currentAttacker === 0 ? 1 : 0];
+    const time = this.questionReadyTimerMs / 1000;
+    if (duel.releaseSnapshot.blockEligibility.eligible && d.defenseAction === 'jump' &&
+        d.defenseElapsedSec >= 0.10 && d.defenseElapsedSec <= 0.60 &&
+        time >= DEFENSE_CONFIG.blockWindowStartSec && time <= DEFENSE_CONFIG.blockWindowEndSec) {
+      duel.physicalBlock = true; d.defenseResult = 'timed-block';
+    }
+  }
+
+  private completeSteal(def: PlayerSlot): void {
+    const oldAtt = this.scoreState.currentAttacker;
+    this.handleMovementClockTurnover(true);
+    this.feedbackState = null; this.activeDuel = null; this.ballFlight = null;
+    this.movementClockRemainingMs = this.rules.movementClockMs;
+    this.aiBrain = createAiBasketballBrainState(this.rng);
+    this.players[oldAtt].wrongFootSec = 0.30;
+    this.players[oldAtt].streetMove = null;
+    this.players[def].defenseRecoverySec = 0.22;
+    for (const p of this.players) { p.finishKind = null; p.vx = 0; p.vz = 0; }
+    this.phase = this.scoreState.isMatchOver ? 'MatchEnd' : 'Possession';
+  }
+
+  private handleMovementClockTurnover(stolen = false): void {
     const att = this.scoreState.currentAttacker;
     const def: PlayerSlot = att === 0 ? 1 : 0;
 
@@ -956,10 +1056,10 @@ export class AuthoritativeMatchEngine {
       questionVersion: 0,
       course: '',
       week: 0,
-      topic: 'Shot Clock Violation',
+      topic: stolen ? 'Steal' : 'Shot Clock Violation',
       stem: '',
       explanation:
-        'A missed 15-second movement deadline counts as an empty possession.',
+        stolen ? 'A clean swipe ends the attacking possession without affecting learning accuracy.' : 'A missed 15-second movement deadline counts as an empty possession.',
       sourceRef: 'CourtIQ Match Rules',
       correctOptionId: '',
       correctOptionText: '',
@@ -986,7 +1086,7 @@ export class AuthoritativeMatchEngine {
       shotLocation: null,
       shotZone: 'turnover',
       blockEligible: false,
-      basketballOutcome: 'shot-clock-turnover',
+      basketballOutcome: stolen ? 'steal-turnover' : 'shot-clock-turnover',
       pointsAwarded: 0,
       finalShotProbability: 0,
     });
@@ -1052,8 +1152,7 @@ export class AuthoritativeMatchEngine {
       const r = finisher.finishResolutionSec;
       const outcome = this.activeDuel?.resolvedOutcome?.outcome;
       if (r < 0.30) {
-        return { x: pose.x + Math.sin(finisher.facingAngle) * 0.22,
-          z: pose.z + Math.cos(finisher.facingAngle) * 0.22, y: pose.y + 2.12 };
+        return dunkBallPosition(finisher, pose);
       }
       const t = r - 0.30;
       return { x: COURT_GEOMETRY.hoopX + (outcome === 'block' ? t * 3 : outcome === 'miss' ? t * 1.7 : 0),

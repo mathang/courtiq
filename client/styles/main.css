@@ -1110,3 +1110,9 @@ textarea {
   .block-indicator { font-size:.55rem; padding:3px; }
   .street-status { top:86px; }
 }
+
+.touch-action-buttons { grid-template-columns:repeat(4,64px); }
+@media (max-width:650px) { .touch-action-buttons { grid-template-columns:repeat(4,52px); } .street-status { max-width:96vw; font-size:.56rem; } }
+.possession-hint-pill { font-size:.67rem; padding:6px 9px; }
+.possession-hint-pill kbd { font-size:.65rem; padding:1px 3px; }
+@media (max-width:1100px) { .possession-hint-pill { white-space:normal; text-align:center; width:90%; } }

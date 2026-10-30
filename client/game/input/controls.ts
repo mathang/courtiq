@@ -1,3 +1,5 @@
+import { DefenseAction } from '../../../shared/rules/defense';
+import { DunkStyle, DUNK_STYLES } from '../../../shared/rules/dunks';
 import { isStreetMove, StreetMove } from '../../../shared/rules/streetMoves';
 import { QuestionOption } from '../../../shared/content/question-schema';
 import { MatchPhase, PlayerMoveInput } from '../../../shared/rules/matchStateMachine';
@@ -9,6 +11,10 @@ export interface KeyBindingsConfig {
   moveRight: string;
   sprint: string;
   shoot: string;
+  dunk: string;
+  dunkStyle: string;
+  swipe: string;
+  block: string;
   crossover: string;
   spin: string;
   eurostep: string;
@@ -26,7 +32,7 @@ export const DEFAULT_KEY_BINDINGS: KeyBindingsConfig = {
   moveLeft: 'KeyA',
   moveRight: 'KeyD',
   sprint: 'ShiftLeft',
-  shoot: 'Space',
+  shoot: 'Space', dunk: 'KeyR', dunkStyle: 'KeyV', swipe: 'KeyZ', block: 'KeyB',
   crossover: 'KeyC', spin: 'KeyQ', eurostep: 'KeyE', stepback: 'KeyX',
   answer1: 'Digit1',
   answer2: 'Digit2',
@@ -51,6 +57,10 @@ export class InputGuardController {
   private keysHeldBeforeAnswerActive = new Set<string>();
   private shootTriggeredFresh = false;
   private pendingTrick: StreetMove | undefined;
+  private pendingDefense: DefenseAction | undefined;
+  private pendingDunk = false;
+  private phase: MatchPhase = 'Lobby';
+  public dunkStyle: DunkStyle = 'tomahawk';
 
   private activeDuelId: string | null = null;
   private answerButtonsUnlocked = false;
@@ -85,6 +95,7 @@ export class InputGuardController {
     readingProtected: boolean;
     displayedOptions: readonly QuestionOption[];
   }): void {
+    this.phase = params.phase;
     if (params.duelId !== this.activeDuelId) {
       this.activeDuelId = params.duelId;
       this.answerButtonsUnlocked = false;
@@ -131,9 +142,19 @@ export class InputGuardController {
       return;
     }
 
+    if (ev.code === this.bindings.swipe || ev.code === this.bindings.block) {
+      ev.preventDefault?.();
+      if (this.phase === 'Possession' || (this.phase === 'QuestionReady' && ev.code === this.bindings.block)) {
+        this.pendingDefense = ev.code === this.bindings.swipe ? 'swipe' : 'jump';
+      }
+      return;
+    }
+    if (ev.code === this.bindings.dunkStyle && this.phase === 'Possession') { ev.preventDefault?.(); this.cycleDunkStyle(); return; }
+    if (ev.code === this.bindings.dunk && this.phase === 'Possession') { ev.preventDefault?.(); this.pendingDunk = true; return; }
     // Prevent Space from activating focused HTML buttons accidentally
     if (ev.code === this.bindings.shoot || ev.code === 'Space') {
       ev.preventDefault?.();
+      if (this.phase === 'QuestionReady') this.pendingDefense = 'jump';
       if (!this.answerButtonsUnlocked && this.activeDuelId === null) {
         this.shootTriggeredFresh = true;
       }
@@ -197,7 +218,15 @@ export class InputGuardController {
 
   public reset(): void {
     this.downKeys.clear(); this.touchVector = { x: 0, z: 0 }; this.touchSprint = false;
-    this.pendingTrick = undefined; this.shootTriggeredFresh = false; this.touchShootTriggered = false;
+    this.pendingTrick = undefined; this.pendingDefense = undefined; this.pendingDunk = false; this.shootTriggeredFresh = false; this.touchShootTriggered = false;
+  }
+
+  public cycleDunkStyle(): void {
+    this.dunkStyle = DUNK_STYLES[(DUNK_STYLES.indexOf(this.dunkStyle) + 1) % DUNK_STYLES.length];
+  }
+  public triggerTouchDunk(): void { if (this.phase === 'Possession') this.pendingDunk = true; }
+  public triggerTouchDefense(action: DefenseAction): void {
+    if (this.phase === 'Possession' || (action === 'jump' && this.phase === 'QuestionReady')) this.pendingDefense = action;
   }
 
   public triggerTouchTrick(move: StreetMove): void {
@@ -226,10 +255,12 @@ export class InputGuardController {
    */
   public consumeMoveInput(phase: MatchPhase): PlayerMoveInput {
     if (phase !== 'Possession') {
+      const defense = phase === 'QuestionReady' && this.pendingDefense === 'jump' ? 'jump' as const : undefined;
+      this.pendingDefense = undefined; this.pendingDunk = false;
       this.shootTriggeredFresh = false;
       this.touchShootTriggered = false;
       this.pendingTrick = undefined;
-      return { moveX: 0, moveZ: 0, sprint: false, shoot: false };
+      return { moveX: 0, moveZ: 0, sprint: false, shoot: false, ...(defense ? { defense } : {}) };
     }
 
     let moveX = this.touchVector.x;
@@ -271,6 +302,11 @@ export class InputGuardController {
 
     const trick = this.pendingTrick;
     this.pendingTrick = undefined;
-    return { moveX, moveZ, sprint, shoot, ...(trick ? { trick } : {}) };
+    const defense = this.pendingDefense, dunk = this.pendingDunk;
+    this.pendingDefense = undefined; this.pendingDunk = false;
+    const dunkStyle = this.dunkStyle;
+    if (shoot || dunk) this.cycleDunkStyle();
+    return { moveX, moveZ, sprint, shoot, ...(trick ? { trick } : {}), ...(defense ? { defense } : {}),
+      ...((shoot || dunk) ? { dunk, dunkStyle } : {}) };
   }
 }

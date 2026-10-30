@@ -57,7 +57,7 @@ export interface MatchAttemptEvent {
   readonly shotLocation: CourtPoint2D | null;
   readonly shotZone: ShotZone | 'turnover';
   readonly blockEligible: boolean;
-  readonly basketballOutcome: ShotOutcomeKind | 'shot-clock-turnover';
+  readonly basketballOutcome: ShotOutcomeKind | 'shot-clock-turnover' | 'steal-turnover';
   readonly pointsAwarded: 0 | 2 | 3;
   readonly finalShotProbability: number;
 }

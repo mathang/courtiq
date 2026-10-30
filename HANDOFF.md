@@ -237,3 +237,15 @@ CourtIQ supports two interchangeable authoritative transports:
 - Validation: 31 automated tests across nine files; production build; keyboard playtests for all four moves, cooldowns, a drive-to-dunk sequence, protected reading, answer submission, pause/resume and touch controls at 844×390 and 390×844. Visual screenshots inspected; no browser page errors. Actual physical touch devices and campus Wi-Fi remain untested.
 - The same-question contract is explicitly tested for question ID, stem, choice IDs/text, reading/answer timing and reveal timestamp through both room transports, as well as exercised on the deployed preview.
 - Source checkout for this revision: `/Users/ross_mac/Documents/Codex/2026-10-31/courtiq`.
+
+
+## Arcade dunk and defense revision — 31 October 2026
+
+- Original user direction: NBA Jam / NBA Street inspired high-flying dunks, manual dunk blocks, and steal swipes with a one-second missed-swipe freeze.
+- `dunks.ts` defines four distinct articulated poses and a shared hand/ball trajectory. A dribble-to-hand gather preserves ball continuity. Launch radius 3.4m; take-off 840ms, before the shared question card appears. Body rotation and arm path distinguish tomahawk, windmill, 360 and reverse. Contact sound plays at the visible resolution contact rather than late feedback.
+- Controls: R dedicated dunk, V change style (styles auto cycle after shots), B/Space defensive jump, Z swipe. Touch buttons show the current attacking/defending role. New bindings inherit defaults when loading saved configurations.
+- Timed physical blocks: defender must satisfy the frozen contest geometry, successfully start a jump outside recovery/cooldown, and have an active jump during the take-off window. The authoritative engine records `physicalBlock` and overrides only the basketball result after the shared question duel; curriculum records remain independent. Late/out-of-range jumps cannot retroactively block.
+- Swipes: contact check after 120ms, exposed ball within 1.45m and forward cone, no steal through protected spin/eurostep. A missed swipe roots the defender for 1s, including collision handling. Cooldown 1.35s and stamina cost 0.12 prevent spam. Success transfers live possession, resets the movement clock, advances completed possessions once, and creates `steal-turnover` with no question ID; these events are excluded from learning denominators.
+- Both transports latch one-shot intents until a simulation tick consumes them. Neutral frames cannot erase a fast keypress between server updates. Client HTTP queue coalescing preserves all pending actions.
+- CourtBot seeks rim attacks on most offensive possessions and sometimes risks swipes/jumps under the same recovery rules.
+- Automated coverage: 44 tests across ten files. New tests cover each dunk rig/gather, launch bounds, timed and late blocks, missed-swipe exact root and drive-by, clean live turnover, protected ball/facing, input phase protection, and HTTP one-shot latching/consumption.

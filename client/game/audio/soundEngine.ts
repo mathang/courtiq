@@ -135,6 +135,16 @@ export class SoundEngine {
     osc.stop(t + 0.15);
   }
 
+  public playDunkSlam(): void {
+    this.playSwish();
+    const ctx = this.ensureContext(); if (!ctx) return;
+    const t = ctx.currentTime, osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(140, t);
+    osc.frequency.exponentialRampToValueAtTime(35, t + 0.24);
+    gain.gain.setValueAtTime(0.32, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.30);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(t); osc.stop(t + 0.31);
+  }
+
   public playSwish(): void {
     const ctx = this.ensureContext();
     if (!ctx) return;

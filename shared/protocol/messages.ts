@@ -56,6 +56,7 @@ export interface AuthoritativeMatchStateSnapshot {
     yourSubmittedOptionId: string | null;
     opponentSubmitted: boolean;
     blockEligibleAtRelease: boolean;
+    physicalBlock: boolean;
   } | null;
   feedbackState: FeedbackBannerState | null;
   learningSummaries: [PlayerLearningSummary, PlayerLearningSummary] | null;
@@ -136,6 +137,7 @@ export type ServerToClientMessage =
       revealAtServerMs: number;
       publicQuestion: PublicDuelQuestion;
       blockEligibleAtRelease: boolean;
+      physicalBlock: boolean;
     }
   | {
       type: 'ANSWER_STATUS';

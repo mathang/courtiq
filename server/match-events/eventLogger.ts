@@ -29,6 +29,7 @@ export function buildSanitizedSnapshotForSlot(
           yourSubmittedOptionId:
             engine.activeDuel.answersBySlot[slot]?.optionId ?? null,
           opponentSubmitted: engine.activeDuel.answersBySlot[oppSlot] !== null,
+          physicalBlock: engine.activeDuel.physicalBlock,
           blockEligibleAtRelease:
             engine.activeDuel.releaseSnapshot.blockEligibility.eligible,
         }

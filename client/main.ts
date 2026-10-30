@@ -1,3 +1,4 @@
+import { DUNK_LABELS, DUNK_RANGE_M } from '../shared/rules/dunks';
 import { STREET_MOVES } from '../shared/rules/streetMoves';
 import { BUNDLED_QUESTION_PACKS } from '../content/packRegistry';
 import {
@@ -69,6 +70,7 @@ class CourtIqApp {
   // Transition tracking for sound triggers
   private lastPhase: MatchPhase = 'Lobby';
   private lastFeedbackDuelId: string | null = null;
+  private dunkImpactPlayed = false;
 
   constructor() {
     const viewport = document.getElementById('viewport-container')!;
@@ -113,9 +115,9 @@ class CourtIqApp {
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
         players, ball: online?.ballPosition ?? eng?.getBallPosition3D(),
         paused: !document.getElementById('settings-modal')?.classList.contains('hidden'),
-        duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected } : eng?.activeDuel ? {
+        duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected, physicalBlock: online.activeDuel.physicalBlock } : eng?.activeDuel ? {
           id: eng.activeDuel.duelId, elapsedMs: eng.activeDuel.elapsedRealMs,
-          readingMs: eng.activeDuel.config.readingMs, submitted: eng.activeDuel.answersBySlot.map(Boolean),
+          readingMs: eng.activeDuel.config.readingMs, physicalBlock: eng.activeDuel.physicalBlock, submitted: eng.activeDuel.answersBySlot.map(Boolean),
         } : null,
       });
     };
@@ -209,6 +211,11 @@ class CourtIqApp {
       document.getElementById(`btn-touch-${move}`)?.addEventListener('pointerdown', (e) => {
         e.preventDefault(); this.input.triggerTouchTrick(move);
       });
+    }
+    document.getElementById('btn-touch-dunk')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.input.triggerTouchDunk(); });
+    document.getElementById('btn-touch-style')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.input.cycleDunkStyle(); });
+    for (const [id, action] of [['swipe', 'swipe'], ['block', 'jump']] as const) {
+      document.getElementById(`btn-touch-${id}`)?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.input.triggerTouchDefense(action); });
     }
     // Mode tabs
     const tabs: Array<[string, string]> = [
@@ -571,7 +578,7 @@ class CourtIqApp {
       this.syncInputAndOverlaysFromOnline(snap);
 
       const moveIntent = this.input.consumeMoveInput(snap.phase);
-      if (snap.phase === 'Possession') {
+      if (snap.phase === 'Possession' || (snap.phase === 'QuestionReady' && moveIntent.defense === 'jump')) {
         this.sendWsMessage({ type: 'MOVE_INTENT', input: moveIntent });
       }
 
@@ -657,6 +664,7 @@ class CourtIqApp {
     }
 
     if (this.lastPhase === 'Possession' && phase === 'QuestionReady') {
+      this.dunkImpactPlayed = false;
       this.sound.playShotRelease();
       this.sound.startSlowMoAtmosphere();
     }
@@ -668,6 +676,13 @@ class CourtIqApp {
       this.sound.stopSlowMoAtmosphere();
     }
 
+    const dunk = players.find(p => p.finishKind === 'dunk');
+    if (phase === 'Resolution' && dunk && dunk.finishResolutionSec >= 0.30 && !this.dunkImpactPlayed) {
+      this.dunkImpactPlayed = true;
+      if (dunk.finishOutcome === 'basket') { this.sound.playDunkSlam(); this.renderer.triggerBasketCelebration(); }
+      else if (dunk.finishOutcome === 'block') { this.sound.playBlockSwat(); this.renderer.triggerBlockEffect(); }
+      else this.sound.playRimClank();
+    }
     if (
       phase === 'Feedback' &&
       feedback &&
@@ -675,7 +690,9 @@ class CourtIqApp {
     ) {
       this.lastFeedbackDuelId = feedback.duelId;
       this.sound.stopSlowMoAtmosphere();
-      if (feedback.outcome === 'basket') {
+      if (this.dunkImpactPlayed && dunk) {
+        // The slam/swat already played at the visible contact frame.
+      } else if (feedback.outcome === 'basket') {
         this.sound.playSwish();
         this.renderer.triggerBasketCelebration();
       } else if (feedback.outcome === 'block') {
@@ -729,7 +746,7 @@ class CourtIqApp {
       ?.classList.toggle('hidden', eng.phase !== 'Possession');
 
     const showTouch =
-      eng.phase === 'Possession' &&
+      (eng.phase === 'Possession' || (eng.phase === 'QuestionReady' && att !== 0)) &&
       (this.touchOverlayEnabled || 'ontouchstart' in window);
     if (showTouch) document.getElementById('possession-hint-pill')?.classList.add('hidden');
     document
@@ -738,7 +755,7 @@ class CourtIqApp {
 
     // Question panel
     const inQuestion =
-      (eng.phase === 'QuestionReady' || eng.phase === 'Duel') &&
+      eng.phase === 'Duel' &&
       activeDuel !== null;
     document
       .getElementById('question-overlay')
@@ -786,9 +803,25 @@ class CourtIqApp {
     if (!badge) return;
     const active = phase === 'Possession' || phase === 'QuestionReady' || phase === 'Duel' || phase === 'Resolution';
     badge.classList.toggle('hidden', !active);
-    const label = attacker.finishKind === 'dunk' ? 'AIR TIME • DUNK DUEL' :
+    const defending = you.slot !== attacker.slot;
+    const dunkRange = Math.hypot(attacker.x - COURT_GEOMETRY.hoopX, attacker.z - COURT_GEOMETRY.hoopZ) <= DUNK_RANGE_M;
+    const selectedStyle = DUNK_LABELS[this.input.dunkStyle];
+    const styleBtn = document.getElementById('btn-touch-style');
+    if (styleBtn) styleBtn.textContent = `STYLE: ${selectedStyle}`;
+    document.querySelectorAll('[data-attack-control]').forEach((e) => e.classList.toggle('hidden', defending));
+    document.querySelectorAll('[data-defense-control]').forEach((e) => e.classList.toggle('hidden', !defending));
+    const physicalSwat = this.onlineSnapshot?.activeDuel?.physicalBlock ?? this.soloEngine?.activeDuel?.physicalBlock ?? false;
+    const label = physicalSwat && (phase === 'QuestionReady' || phase === 'Duel') ? 'SWAT CONNECTED • QUESTION STILL COUNTS' :
+      defending && attacker.defenseResult === 'steal' && attacker.defenseElapsedSec < 1.2 ? 'BALL STOLEN! GET BACK ON DEFENSE' :
+      you.defenseResult === 'steal' && you.defenseElapsedSec < 1.2 ? 'CLEAN STEAL! DRIVE!' :
+      you.defenseResult === 'timed-block' && (phase === 'QuestionReady' || phase === 'Duel') ? 'GET THAT OUT! TIMED SWAT' :
+      you.defenseAction === 'swipe' ? `SWIPE ${you.defenseResult === 'miss' ? 'MISSED' : 'ATTEMPT'} • RECOVER ${you.defenseRecoverySec.toFixed(1)}s` :
+      you.defenseAction === 'jump' ? 'BLOCK ATTEMPT' :
+      attacker.finishKind === 'dunk' ? `${DUNK_LABELS[attacker.dunkStyle]} • ${defending && phase === 'QuestionReady' ? 'B / SPACE: SWAT NOW!' : 'ABOVE THE RIM'}` :
+      phase !== 'Possession' ? 'SHOT DUEL • ANSWER TO SCORE / BLOCK' :
+      defending ? (you.defenseCooldownSec > 0 ? `DEFENSE RECHARGING ${you.defenseCooldownSec.toFixed(1)}s` : 'Z: SWIPE • B / SPACE: JUMP BLOCK') :
       you.wrongFootSec > 0 ? 'WRONG FOOTED' : you.streetMove ? STREET_MOVES[you.streetMove].label :
-      you.moveCooldownSec > 0 ? `MOVE RECHARGING ${you.moveCooldownSec.toFixed(1)}s` : 'STREET MOVES READY';
+      dunkRange ? `DUNK ZONE • R: ${selectedStyle} • V: CHANGE` : `R: DUNK • V: ${selectedStyle}`;
     if (badge.textContent !== label) badge.textContent = label;
   }
 
@@ -831,12 +864,12 @@ class CourtIqApp {
     document
       .getElementById('possession-hint-pill')
       ?.classList.toggle('hidden', snap.phase !== 'Possession');
-    const showTouch = snap.phase === 'Possession' && (this.touchOverlayEnabled || 'ontouchstart' in window);
+    const showTouch = (snap.phase === 'Possession' || (snap.phase === 'QuestionReady' && att !== slot)) && (this.touchOverlayEnabled || 'ontouchstart' in window);
     document.getElementById('touch-controls')?.classList.toggle('hidden', !showTouch);
     if (showTouch) document.getElementById('possession-hint-pill')?.classList.add('hidden');
 
     const inQuestion =
-      (snap.phase === 'QuestionReady' || snap.phase === 'Duel') &&
+      snap.phase === 'Duel' &&
       snap.activeDuel !== null;
     document
       .getElementById('question-overlay')
@@ -1130,7 +1163,7 @@ class CourtIqApp {
     const bDetails = document.getElementById('res-basketball-details');
     if (bDetails) {
       const blocks = events.filter((e) => e.basketballOutcome === 'block').length;
-      bDetails.textContent = `${you.playerPseudonym} (${you.basketballScore} pts) vs ${opp.playerPseudonym} (${opp.basketballScore} pts) • ${events.length} total possessions (${blocks} blocks).`;
+      bDetails.textContent = `${you.playerPseudonym} (${you.basketballScore} pts) vs ${opp.playerPseudonym} (${opp.basketballScore} pts) • ${events.length} total possessions (${blocks} blocks, ${events.filter(e => e.basketballOutcome === 'steal-turnover').length} steals).`;
     }
 
     const lScore = document.getElementById('res-learning-scoreline');
@@ -1471,10 +1504,12 @@ class CourtIqApp {
             ClientToServerMessage,
             { type: 'MOVE_INTENT' }
           >;
-          if (prev.input.shoot || prev.input.trick) {
+          if (prev.input.shoot || prev.input.trick || prev.input.defense || prev.input.dunk) {
             msg = {
               type: 'MOVE_INTENT',
-              input: { ...msg.input, shoot: prev.input.shoot || msg.input.shoot, trick: prev.input.trick ?? msg.input.trick },
+              input: { ...msg.input, shoot: prev.input.shoot || msg.input.shoot, trick: prev.input.trick ?? msg.input.trick,
+                defense: prev.input.defense ?? msg.input.defense, dunk: prev.input.dunk || msg.input.dunk,
+                dunkStyle: prev.input.dunkStyle ?? msg.input.dunkStyle },
             };
           }
           this.httpOutgoingQueue.splice(existingIdx, 1);
@@ -1483,7 +1518,7 @@ class CourtIqApp {
       this.httpOutgoingQueue.push(msg);
       const isUrgent =
         msg.type !== 'MOVE_INTENT' ||
-        (msg.type === 'MOVE_INTENT' && (msg.input.shoot || Boolean(msg.input.trick)));
+        (msg.type === 'MOVE_INTENT' && (msg.input.shoot || msg.input.dunk || Boolean(msg.input.trick) || Boolean(msg.input.defense)));
       if (isUrgent) {
         void this.flushHttpRoomSync();
       }
@@ -1677,7 +1712,8 @@ class CourtIqApp {
       ['moveLeft', 'Move Left'],
       ['moveRight', 'Move Right'],
       ['sprint', 'Sprint'],
-      ['shoot', 'Shoot / Dunk Near Rim'],
+      ['shoot', 'Shoot / Auto Dunk / Block'],
+      ['dunk', 'Arcade Dunk'], ['dunkStyle', 'Change Dunk Style'], ['swipe', 'Steal Swipe'], ['block', 'Jump Block'],
       ['crossover', 'Crossover'], ['spin', 'Spin Move'], ['eurostep', 'Eurostep'], ['stepback', 'Step Back'],
       ['answer1', 'Answer Option 1'],
       ['answer2', 'Answer Option 2'],

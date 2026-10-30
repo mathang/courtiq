@@ -26,10 +26,18 @@ Players now accelerate, brake and turn smoothly with rounded bodies, articulated
 | Spin | Q | SPIN |
 | Eurostep | E | EURO |
 | Step back | X | STEP BACK |
-| Shoot / dunk | Space | SHOOT / DUNK |
+| Shoot / automatic dunk / defensive jump | Space | SHOOT / BLOCK |
+| Arcade dunk (within 3.4m) | R | DUNK |
+| Choose next dunk style | V | STYLE |
+| Steal swipe | Z | SWIPE |
+| Jump block | B (or Space on defense) | BLOCK |
 | Fullscreen | F (Esc exits) | Browser fullscreen controls |
 
-Hold a direction to choose the side of a move. Each trick costs stamina and has a short cooldown; nearby defenders can be wrong-footed briefly. CourtBot reacts with its difficulty preset's delay, so good changes of direction can create space. Sprint and shoot within 2.65m of the hoop for a running dunk, use a eurostep into a close shot, or shoot within 1.5m for a standing dunk. Dunk attempts show a gather, take-off, suspended question moment, finish and landing. All attempts retain the existing question-based basket/block rules, so a dunk can still miss or be blocked.
+Hold a direction to choose the side of a move. Each trick costs stamina and has a short cooldown; nearby defenders can be wrong-footed briefly. CourtBot reacts with its difficulty preset's delay, so good changes of direction can create space. Press **R** within 3.4m for a high-flying arcade dunk. **V** cycles tomahawk, windmill, 360 and reverse; styles also rotate after each shot. Space still chooses an automatic dunk when sprinting, eurostepping or very close to the rim. Each style has its own hand/ball path and body rotation, a big jump, a suspended question moment and a landing. CourtBot now looks for rim attacks too.
+
+On defense, **B / Space** jumps to challenge a dunk. Stay within the 1.8m contest range, face the attacker and jump during take-off: a correctly timed swat overrides the basketball outcome even if the attacker answers correctly. Both students still answer the same question and receive their own learning credit. Existing question-based blocks still apply.
+
+**Z** swipes for a steal. A swipe connects only if the exposed ball is in front of the defender and within 1.45m; spin moves and eurosteps protect the ball. **A missed swipe freezes the defender in place for 1 full second**, giving the attacker a drive-by opportunity. Swipes have a cooldown and stamina cost. A clean steal switches possession at the live court location with a fresh movement clock; it counts as an empty attacking possession, never an incorrect or unanswered learning response.
 
 In **student-versus-student rooms, both players receive the same question and answer choices for each duel**, with the same reading period and answer deadline. The order of answer choices may differ. The server chooses one question per duel and keeps its answer key hidden until resolution.
 
@@ -46,7 +54,7 @@ Solo settings pause the match. New trick bindings can be remapped in Settings; s
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (21 tests across 8 suites)
+# 2. Run the automated test suite (44 tests across 10 suites)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)

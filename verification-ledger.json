@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ — 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:5b5c22fcc52a909b1456e327dd510580b1d6992712d5d4306f0c1fb6e6324fbd",
+  "revision_or_artifact_hash": "dist/index.html:sha256:bc9da322e366616806bc8d6616ed671c8ba34632debdb5f1299c3db71e199f6b",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -169,6 +169,42 @@
       "command_or_action": "GitHub main push; Netlify CLI production deploy; asset digest comparison; production Playwright; two-student HTTP duel",
       "observed": "GitHub main contains source 5f2ccf8d565b1e35ad582cca0485f1743ba8233d. Production deploy 6ae51e61fcaf0370e6a793ef. All 3 live JS/CSS asset hashes match dist. Live browser movement inspected. Two synthetic students receive identical question ID/stem/choices/reveal time; answer keys hidden.",
       "evidence_path": "https://courtiq-spx101.netlify.app; https://github.com/mathang/courtiq/commit/5f2ccf8d565b1e35ad582cca0485f1743ba8233d; output/playtest/online-production.json (local)"
+    },
+    {
+      "id": "arcade-dunks-and-risk-reward-defense",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit-and-integration",
+      "timestamp_utc": "2026-10-30T23:13:01.821594+00:00",
+      "observed": "44/44 tests pass across 10 files. New coverage verifies all four dunk rigs, dribble-to-hand gather, launch bounds, successful/late/range-gated swats, one-second rooted misses, live steal accounting without learning penalties, protected ball/facing, phase-guarded input and HTTP intent latching.",
+      "evidence_path": "tests/rules/arcadeDefense.test.ts"
+    },
+    {
+      "id": "arcade-production-build",
+      "status": "PASS",
+      "required": true,
+      "kind": "build",
+      "timestamp_utc": "2026-10-30T23:13:01.821594+00:00",
+      "observed": "Strict TypeScript check and Vite build pass.",
+      "evidence_path": "dist/index.html"
+    },
+    {
+      "id": "arcade-two-browser-playtest",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser",
+      "timestamp_utc": "2026-10-30T23:13:01.821594+00:00",
+      "observed": "Two real browser clients using authoritative local WebSocket server: all four dunk styles take off and finish, timed block prevents score, shared question text identical, missed swipe roots even with held movement, drive-by and live steal succeed, correct role touch buttons at 390x844, no layout overflow or page errors. Screenshots inspected.",
+      "evidence_path": "output/arcade/browser-report.json; output/arcade/*.png (local generated, gitignored)"
+    },
+    {
+      "id": "arcade-netlify-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-10-30T23:13:01.821594+00:00",
+      "observed": "Deployed preview: swipe intent produces rooted miss/recovery; two synthetic students get identical question ID/text/choices/reveal time, answer keys hidden.",
+      "evidence_path": "output/arcade/remote-preview.json (local generated, gitignored)"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

@@ -85,6 +85,7 @@ export class AuthoritativeRoomSimulation {
     p1.latestInput.shoot = false;
     p0.latestInput.trick = undefined;
     p1.latestInput.trick = undefined;
+    for (const p of [p0, p1]) { p.latestInput.defense = undefined; p.latestInput.dunk = false; p.latestInput.dunkStyle = undefined; }
 
     // If a shot just entered QuestionReady, preload the question on both devices without the answer key
     if (
@@ -93,7 +94,7 @@ export class AuthoritativeRoomSimulation {
       this.lastPreloadedDuelId !== this.engine.activeDuel.duelId
     ) {
       this.lastPreloadedDuelId = this.engine.activeDuel.duelId;
-      const revealAtServerMs = Date.now() + 320;
+      const revealAtServerMs = Date.now() + (this.engine.players[this.engine.scoreState.currentAttacker].finishKind === 'dunk' ? 840 : 320);
       for (const slot of [0, 1] as const) {
         const target = players[slot];
         if (target && target.connected) {
@@ -102,6 +103,7 @@ export class AuthoritativeRoomSimulation {
             duelId: this.engine.activeDuel.duelId,
             revealAtServerMs,
             publicQuestion: this.engine.activeDuel.publicQuestionsBySlot[slot],
+            physicalBlock: this.engine.activeDuel.physicalBlock,
             blockEligibleAtRelease:
               this.engine.activeDuel.releaseSnapshot.blockEligibility.eligible,
           });

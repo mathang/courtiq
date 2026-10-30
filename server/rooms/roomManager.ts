@@ -1,3 +1,5 @@
+import { isDefenseAction } from '../../shared/rules/defense';
+import { isDunkStyle } from '../../shared/rules/dunks';
 import { isStreetMove } from '../../shared/rules/streetMoves';
 import { RoomPresetId, SessionLengthId } from '../../shared/config/balance';
 import {
@@ -355,11 +357,14 @@ export class RoomManager {
           moveX: Number(msg.input.moveX) || 0,
           moveZ: Number(msg.input.moveZ) || 0,
           sprint: Boolean(msg.input.sprint),
-          shoot: Boolean(msg.input.shoot),
-          trick: isStreetMove(msg.input.trick) ? msg.input.trick : undefined,
+          shoot: Boolean(msg.input.shoot) || player.latestInput.shoot,
+          trick: isStreetMove(msg.input.trick) ? msg.input.trick : player.latestInput.trick,
+          defense: isDefenseAction(msg.input.defense) ? msg.input.defense : player.latestInput.defense,
+          dunk: Boolean(msg.input.dunk) || player.latestInput.dunk,
+          dunkStyle: isDunkStyle(msg.input.dunkStyle) ? msg.input.dunkStyle : player.latestInput.dunkStyle,
         };
         if (
-          player.latestInput.shoot &&
+          (player.latestInput.shoot || player.latestInput.dunk) &&
           room.simulation &&
           room.simulation.engine.phase === 'Possession' &&
           room.simulation.engine.scoreState.currentAttacker === assoc.slot

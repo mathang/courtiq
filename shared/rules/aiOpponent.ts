@@ -1,3 +1,4 @@
+import { DefenseAction } from './defense';
 import {
   AI_DIFFICULTY_PRESETS,
   AiDifficultyId,
@@ -70,6 +71,8 @@ export interface AiBasketballBrainState {
   possessionElapsedSec: number;
   minDribbleBeforeShotSec: number;
   observations: Array<{ age: number; x: number; z: number }>;
+  wantsDunk: boolean;
+  defenseTimerSec: number;
 }
 
 export function createAiBasketballBrainState(
@@ -80,6 +83,8 @@ export function createAiBasketballBrainState(
     retargetTimerSec: 1.8 + rng() * 1.4,
     possessionElapsedSec: 0,
     observations: [],
+    wantsDunk: rng() < 0.68,
+    defenseTimerSec: 1.0 + rng() * 1.2,
     minDribbleBeforeShotSec: 1.6 + rng() * 2.2,
   };
 }
@@ -107,6 +112,8 @@ export interface AiMovementIntent {
   moveZ: number; // -1..1
   sprint: boolean;
   shoot: boolean;
+  dunk?: boolean;
+  defense?: DefenseAction;
 }
 
 /**
@@ -130,7 +137,8 @@ export function stepAiBasketballDecision(params: {
   brain.retargetTimerSec -= params.deltaSec;
 
   if (params.isAttacker) {
-    if (brain.retargetTimerSec <= 0) {
+    if (brain.wantsDunk) brain.targetSpot = { x: params.aiPos.x < 0 ? -0.7 : 0.7, z: -4.0 };
+    if (brain.retargetTimerSec <= 0 && !brain.wantsDunk) {
       brain.targetSpot = pickOffensiveTargetSpot(rng);
       brain.retargetTimerSec = 1.6 + rng() * 1.5;
     }
@@ -148,11 +156,11 @@ export function stepAiBasketballDecision(params: {
     const clockUrgent = params.movementClockRemainingMs <= 2600;
     const readyToShoot =
       brain.possessionElapsedSec >= brain.minDribbleBeforeShotSec &&
-      distToHoop <= 7.4 &&
+      distToHoop <= (brain.wantsDunk ? 3.2 : 7.4) &&
       ((isOpen && distToHoop <= 6.9) || (nearTarget && distToDefender > 1.55));
 
     if (clockUrgent || readyToShoot) {
-      return { moveX: 0, moveZ: 0, sprint: false, shoot: true };
+      return { moveX: 0, moveZ: 0, sprint: false, shoot: true, dunk: distToHoop <= 3.4 };
     }
 
     if (distToTarget < 0.35) {
@@ -167,10 +175,13 @@ export function stepAiBasketballDecision(params: {
     return {
       moveX: (dx / len) * preset.moveSpeedMultiplier,
       moveZ: (dz / len) * preset.moveSpeedMultiplier,
-      sprint: shouldSprint,
+      sprint: shouldSprint || brain.wantsDunk,
       shoot: false,
     };
   } else {
+    brain.defenseTimerSec -= params.deltaSec;
+    const attemptSwipe = brain.defenseTimerSec <= 0 && computeDistance2D(params.aiPos, params.opponentPos) < 1.7;
+    if (brain.defenseTimerSec <= 0) brain.defenseTimerSec = 1.3 + rng() * 1.9;
     for (const o of brain.observations) o.age += params.deltaSec;
     brain.observations.push({ age: 0, ...params.opponentPos });
     const delay = preset.reactionDelayMs / 1000;
@@ -200,13 +211,14 @@ export function stepAiBasketballDecision(params: {
     const dist = Math.hypot(dx, dz);
 
     if (dist < 0.18) {
-      return { moveX: 0, moveZ: 0, sprint: false, shoot: false };
+      return { moveX: 0, moveZ: 0, sprint: false, shoot: false, ...(attemptSwipe ? { defense: 'swipe' as const } : {}) };
     }
 
     return {
       moveX: (dx / dist) * preset.moveSpeedMultiplier * preset.contestAggression,
       moveZ: (dz / dist) * preset.moveSpeedMultiplier * preset.contestAggression,
       sprint: dist > 2.2,
+      ...(attemptSwipe ? { defense: 'swipe' as const } : {}),
       shoot: false,
     };
   }

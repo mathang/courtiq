@@ -75,7 +75,7 @@
 
       <!-- On-Court Possession Prompt Pill -->
       <div id="possession-hint-pill" class="possession-hint-pill hidden" aria-live="polite">
-        <kbd>WASD</kbd> Move · <kbd>Shift</kbd> Turbo · <kbd>C</kbd> Cross · <kbd>Q</kbd> Spin · <kbd>E</kbd> Euro · <kbd>X</kbd> Step back · <kbd>Space</kbd> Shoot / Dunk
+        <kbd>WASD</kbd> Move · <kbd>Shift</kbd> Turbo · <kbd>C</kbd> Cross · <kbd>Q</kbd> Spin · <kbd>E</kbd> Euro · <kbd>X</kbd> Step back · <kbd>R</kbd> Dunk · <kbd>V</kbd> Style · <kbd>Z</kbd> Steal · <kbd>B</kbd> Block · <kbd>Space</kbd> Shoot / Block
       </div>
 
       <div id="street-status" class="street-status hidden" role="status" aria-live="polite"></div>
@@ -89,15 +89,19 @@
           <span class="touch-caption">DRAG TO MOVE</span>
         </div>
         <div class="touch-action-buttons">
-          <button id="btn-touch-crossover" class="touch-btn trick-btn" type="button">CROSS</button>
-          <button id="btn-touch-spin" class="touch-btn trick-btn" type="button">SPIN</button>
-          <button id="btn-touch-eurostep" class="touch-btn trick-btn" type="button">EURO</button>
-          <button id="btn-touch-stepback" class="touch-btn trick-btn" type="button">STEP BACK</button>
+          <button id="btn-touch-swipe" data-defense-control class="touch-btn trick-btn hidden" type="button">SWIPE</button>
+          <button id="btn-touch-block" data-defense-control class="touch-btn shoot-btn hidden" type="button">BLOCK</button>
+          <button id="btn-touch-dunk" data-attack-control class="touch-btn shoot-btn" type="button">DUNK</button>
+          <button id="btn-touch-style" data-attack-control class="touch-btn trick-btn" type="button">STYLE</button>
+          <button id="btn-touch-crossover" data-attack-control class="touch-btn trick-btn" type="button">CROSS</button>
+          <button id="btn-touch-spin" data-attack-control class="touch-btn trick-btn" type="button">SPIN</button>
+          <button id="btn-touch-eurostep" data-attack-control class="touch-btn trick-btn" type="button">EURO</button>
+          <button id="btn-touch-stepback" data-attack-control class="touch-btn trick-btn" type="button">STEP BACK</button>
           <button id="btn-touch-sprint" class="touch-btn sprint-btn" type="button">
             ⚡ SPRINT
           </button>
-          <button id="btn-touch-shoot" class="touch-btn shoot-btn" type="button">
-            🏀 SHOOT / DUNK
+          <button id="btn-touch-shoot" data-attack-control class="touch-btn shoot-btn" type="button">
+            SHOOT
           </button>
         </div>
       </div>
@@ -110,7 +114,7 @@
               <span class="eyebrow-badge">ORIGINAL 3D BASKETBALL LEARNING GAME</span>
               <h1>CourtIQ: Slow-Motion Question Duel</h1>
               <p class="lobby-lead">
-                Break ankles with crossovers, spins, eurosteps and step-backs. Hold Turbo and shoot near the rim to take off for a dunk. As the ball rises in slow motion, both students receive the same course question in each duel and race to answer: knowledge and speed boost shot probability, while an in-range defender who answers first blocks the shot!
+                Launch tomahawks, windmills, 360s and reverses. Beat a defender’s swipe and take it to the rim — or time a jump to swat their dunk. As the ball rises in slow motion, both students receive the same course question in each duel and race to answer: knowledge and speed boost shot probability, while an in-range defender who answers first blocks the shot!
               </p>
             </div>
           </div>
@@ -448,11 +452,11 @@
             <ol class="tutorial-steps">
               <li>
                 <strong>1. Position on the Half-Court (15s Movement Clock):</strong>
-                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>. Hold <kbd>Shift</kbd> for Turbo. Use <kbd>C</kbd> to cross over, <kbd>Q</kbd> to spin, <kbd>E</kbd> to eurostep, and <kbd>X</kbd> to step back. Hold a direction to choose a side. Moves cost stamina and recharge briefly. Hold Turbo and shoot within 2.65m for a dunk; shoot within 1.5m for a standing dunk. Press <kbd>F</kbd> for fullscreen. Inside the arc scores <strong>2 points</strong> (Close base 20%, Mid-range base 12%); outside the 6.75m arc scores <strong>3 points</strong> (base 7%).
+                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>. Hold <kbd>Shift</kbd> for Turbo. Use <kbd>C</kbd> to cross over, <kbd>Q</kbd> to spin, <kbd>E</kbd> to eurostep, and <kbd>X</kbd> to step back. Hold a direction to choose a side. Moves cost stamina and recharge briefly. Press <kbd>R</kbd> within 3.4m for an arcade dunk. Press <kbd>V</kbd> to choose tomahawk, windmill, 360 or reverse (styles also cycle after each shot). Defend with <kbd>Z</kbd> to swipe: a miss freezes you for 1 second. Press <kbd>B</kbd> or <kbd>Space</kbd> during the dunk take-off to jump and swat it. Stay close, face the attacker and time your leap; early or late jumps miss. Press <kbd>F</kbd> for fullscreen. Inside the arc scores <strong>2 points</strong> (Close base 20%, Mid-range base 12%); outside the 6.75m arc scores <strong>3 points</strong> (base 7%).
               </li>
               <li>
                 <strong>2. Release the Shot (<kbd>Space</kbd>) &amp; Slow-Motion Flight:</strong>
-                When the ball leaves the attacker's hands, court positions and block eligibility (&le;1.8m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc. On a dunk, you take off and hang in the air for the question before the finish resolves.
+                When the ball leaves the attacker's hands, court positions and block eligibility (&le;1.8m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc. On a dunk, you take off and hang in the air for the question before the finish resolves. A timed physical swat overrides the basket; both students still answer and receive learning credit. A clean steal changes possession immediately and is excluded from question accuracy.
               </li>
               <li>
                 <strong>3. Protected Reading &amp; Single-Lock Answer Duel:</strong>
