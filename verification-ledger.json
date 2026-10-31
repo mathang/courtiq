@@ -241,6 +241,15 @@
       "timestamp_utc": "2026-10-31T00:41:53.270705+00:00",
       "observed": "Strict typecheck and Vite build pass. Skill Playwright client inspected crowded-rim renderer fixture before/after and normal app smoke; fixed fixture takes off for dunk instead of lingering in Possession.",
       "evidence_path": "output/ai/after/shot-0.png; output/ai/app-smoke (local generated, gitignored)"
+    },
+    {
+      "id": "courtbot-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-10-31T00:44:57.228545+00:00",
+      "observed": "GitHub main source76bbfeb. Production deploy6ae539d7f3eb5ca5561f8639. All live JS/CSS digests match tested dist and HTML references current app bundle. Normal production solo browser flow: CourtBot creates a dunk within750ms of gaining possession; no page errors; screenshot inspected.",
+      "evidence_path": "https://courtiq-spx101.netlify.app; output/ai/production-app-report.json; output/ai/production-assets.json (local generated, gitignored)"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
