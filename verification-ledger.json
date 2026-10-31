@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ — 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:bc9da322e366616806bc8d6616ed671c8ba34632debdb5f1299c3db71e199f6b",
+  "revision_or_artifact_hash": "dist/index.html:sha256:21690cee7955157aeb07b95eb853fd81a02793582e235814ed034ae03528d91a",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -214,6 +214,33 @@
       "timestamp_utc": "2026-10-30T23:14:02.042940+00:00",
       "observed": "Source 546ab3e on GitHub main. Netlify production 6ae5248fede4589a46975637. All live JS/CSS digests match tested dist; live browser gameplay inspected. Production two-client HTTP check confirms missed-swipe recovery, identical shared question/choices/timing and hidden answer keys. Mobile defense capture also verified in headed Chromium after intermittent headless WebGL capture clearing.",
       "evidence_path": "https://courtiq-spx101.netlify.app; output/arcade/remote-production.json; output/arcade/production-assets.json (local generated evidence)"
+    },
+    {
+      "id": "courtbot-stuck-rim-regressions",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit-and-integration",
+      "timestamp_utc": "2026-10-31T00:41:53.270705+00:00",
+      "observed": "55/55 tests across11 files. New AI cases reproduce fixed rim camping/lane flipping, multiple seeds at each difficulty, obstacle routing, baseline recovery, availability/facing/reach-gated swipes, and16.667/50/100ms simulation steps.",
+      "evidence_path": "tests/rules/aiPositioning.test.ts"
+    },
+    {
+      "id": "courtbot-seeded-before-after",
+      "status": "PASS",
+      "required": true,
+      "kind": "simulation",
+      "timestamp_utc": "2026-10-31T00:41:53.270705+00:00",
+      "observed": "Same240 seeded first-possession cases: late-clock bailout shots62 before,0 after; shots over6s76 before,0 after; max12400ms before,1750ms after (50ms steps).",
+      "evidence_path": "output/ai/before-benchmark.json; output/ai/after-benchmark.json (local generated, gitignored)"
+    },
+    {
+      "id": "courtbot-build-and-browser",
+      "status": "PASS",
+      "required": true,
+      "kind": "build-and-browser",
+      "timestamp_utc": "2026-10-31T00:41:53.270705+00:00",
+      "observed": "Strict typecheck and Vite build pass. Skill Playwright client inspected crowded-rim renderer fixture before/after and normal app smoke; fixed fixture takes off for dunk instead of lingering in Possession.",
+      "evidence_path": "output/ai/after/shot-0.png; output/ai/app-smoke (local generated, gitignored)"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

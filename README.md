@@ -54,7 +54,7 @@ Solo settings pause the match. New trick bindings can be remapped in Settings; s
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (44 tests across 10 suites)
+# 2. Run the automated test suite (55 tests across 11 suites)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)
@@ -144,3 +144,9 @@ npx netlify-cli deploy --prod
 - **[`HANDOFF.md`](./HANDOFF.md)**: Complete technical, mathematical, architectural, and operational handoff guide.
 - **[`project-profile.md`](./project-profile.md)**: Build & Verify safeguard profile.
 - **[`verification-ledger.json`](./verification-ledger.json)**: Machine-readable verification evidence ledger.
+
+## CourtBot positioning fix — 31 October 2026
+
+CourtBot now commits to a driving lane, routes around a planted defender, slows down near its destination and finishes close-range opportunities instead of waiting for an open shot until the movement clock is almost gone. It can use separation moves, recover from the baseline/backboard area and return to a wing defender position. Steal attempts check exposed-ball reach, facing, stamina and recovery/cooldown availability. Difficulty-specific reaction delays and pre-committed course-question answers are retained.
+
+Regression evidence: the original crowded-rim scenario delayed its shot until 12.4s; the same seeded case now finishes promptly. A comparison of 240 seeded first-possession scenarios across all three difficulties (crowded rim, lane defender, behind basket and open floor) reduced late-clock fallback shots from 62 to 0. This is deterministic simulation evidence; subjective game balance still requires playtesting.

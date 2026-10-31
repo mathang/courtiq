@@ -249,3 +249,12 @@ CourtIQ supports two interchangeable authoritative transports:
 - Both transports latch one-shot intents until a simulation tick consumes them. Neutral frames cannot erase a fast keypress between server updates. Client HTTP queue coalescing preserves all pending actions.
 - CourtBot seeks rim attacks on most offensive possessions and sometimes risks swipes/jumps under the same recovery rules.
 - Automated coverage: 44 tests across ten files. New tests cover each dunk rig/gather, launch bounds, timed and late blocks, missed-swipe exact root and drive-by, clean live turnover, protected ball/facing, input phase protection, and HTTP one-shot latching/consumption.
+
+
+## CourtBot positioning and decision fix — 31 October 2026
+
+- Reproduced two failures before editing: a contested rim opportunity waited 12.4 seconds, and the chosen dunk lane changed sign when x crossed zero. Both are protected by new regressions.
+- Offensive plans now commit to a lane. Short, stable waypoints route around a defender; lack of positional progress triggers a recovery route. Directional input slows near a destination instead of overshooting. Close, front-of-rim opportunities can finish under pressure; a short decision deadline avoids waiting until the late-clock fallback. AI separation moves use existing authoritative stamina/cooldown rules.
+- Defensive positioning adapts its guard gap near the rim and keeps targets on the court side of the backboard. Observations retain the difficulty-specific delay. Swipes require the actual exposed ball to be reachable and forward-facing, with sufficient stamina and no active recovery/cooldown.
+- The engine passes public player/ball state into the pure decision function; no human intentions, answers or future positions are inspected. The AI question-plan code is unchanged.
+- Verification: 55 tests across eleven files; strict TypeScript and production build; 240 seeded first-possession comparisons, with late-clock fallback shots reduced from 62 to 0. Dedicated local renderer fixture demonstrates the crowded-rim recovery and dunk; normal app browser movement smoke also run. These are software/simulation checks, not a human game-balance assessment.

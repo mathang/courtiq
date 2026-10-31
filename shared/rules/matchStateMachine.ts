@@ -461,6 +461,9 @@ export class AuthoritativeMatchEngine {
         movementClockRemainingMs: this.movementClockRemainingMs,
         difficulty: this.aiDifficulty,
         deltaSec,
+        self: this.players[1],
+        opponent: this.players[0],
+        ballPos: this.getBallPosition3D(),
         rng: this.rng,
       });
     }
