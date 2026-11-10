@@ -2,7 +2,7 @@
   "name": "courtiq",
   "version": "1.0.0",
   "private": true,
-  "description": "CourtIQ — 3D Half-Court Basketball & Slow-Motion Question Duel Learning Game",
+  "description": "CourtIQ \u2014 3D Half-Court Basketball & Slow-Motion Question Duel Learning Game",
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173",
@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --port 4173",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:player": "node scripts/build-player.mjs --optimise"
   },
   "dependencies": {
     "three": "0.170.0",

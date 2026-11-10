@@ -1,7 +1,7 @@
 {
   "template": false,
-  "project": "CourtIQ — 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:21690cee7955157aeb07b95eb853fd81a02793582e235814ed034ae03528d91a",
+  "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
+  "revision_or_artifact_hash": "dist/index.html:sha256:d061a86ff812311e84b7893fb76f8170f629e7d5c288c682037b6adbd6239fe4",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -250,6 +250,51 @@
       "timestamp_utc": "2026-10-31T00:44:57.228545+00:00",
       "observed": "GitHub main source76bbfeb. Production deploy6ae539d7f3eb5ca5561f8639. All live JS/CSS digests match tested dist and HTML references current app bundle. Normal production solo browser flow: CourtBot creates a dunk within750ms of gaining possession; no page errors; screenshot inspected.",
       "evidence_path": "https://courtiq-spx101.netlify.app; output/ai/production-app-report.json; output/ai/production-assets.json (local generated, gitignored)"
+    },
+    {
+      "id": "rigged-player-asset-and-contact",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit-and-integration",
+      "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
+      "observed": "59/59 tests in12 suites. Asset normalised skinning and UV contract, independent skeletons, ground stances and all4 dunk contacts at5 time points pass; strict TypeScript and Vite build pass.",
+      "evidence_path": "tests/render/playerAsset.test.ts; output/player/tests.txt; output/player/build.txt"
+    },
+    {
+      "id": "rigged-player-gltf-validation",
+      "status": "PASS",
+      "required": true,
+      "kind": "asset-validation",
+      "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
+      "observed": "glTF Transform4.5.1 validation: no errors, warnings, infos or hints. Asset under2MB and40000 triangles,10 material groups.",
+      "evidence_path": "output/player/asset-validation.txt; public/assets/player/streetball-player.glb"
+    },
+    {
+      "id": "rigged-player-browser-and-fallback",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser",
+      "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
+      "observed": "Skill client preview/game screenshots inspected. Six preview modes, front/back names and team colours checked on desktop and390px mobile, no page errors or overflow. A deliberately failed GLB request retains a playable solo Possession with both models in fallback.",
+      "evidence_path": "output/player/preview-report.json; output/player/skill-preview; output/player/skill-game; output/player/fallback-report.json"
+    },
+    {
+      "id": "rigged-player-two-client-playtest",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser-integration",
+      "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
+      "observed": "Two actual WebSocket browser clients: tomahawk, windmill,360 and reverse, timed physical block, missed swipe freeze and drive-by, clean steal, shared question and portrait role controls all pass; no page errors or overflow.",
+      "evidence_path": "output/player/arcade/browser-report.json"
+    },
+    {
+      "id": "rigged-player-deployed-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
+      "observed": "Preview6af3a18bd63fda9bbf590c91: browser preview inspected,10 build files verified; deployed two-student HTTP smoke confirms identical question/choices/reveal time, answer keys hidden and missed-swipe recovery. Index HTML differs only by observed Netlify Pretty URL anchor rewriting.",
+      "evidence_path": "output/player/preview-assets.json; output/player/live-preview/preview-report.json; output/player/remote-release.json"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

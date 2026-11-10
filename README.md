@@ -15,6 +15,14 @@
 
 ---
 
+## Rigged player and Player Lab — 11 November 2026
+
+[Open the Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) for an orbitable close-up with a live jersey name, two team colours, four skin/hair colour variants, and dribble/run/defend/dunk/block/swipe demos. The rigged player also appears in normal solo and student-versus-student matches. Both players keep their own skeleton, appearance, number and jersey name.
+
+The 65-bone Quaternius CC0 humanoid has original CourtIQ clothing, trainers, hair and jersey artwork. Basketball motion is authored in the game, with two-bone IK for planted stances and dunk hand contact; it is not a new physics engine or a motion-capture pack. The original procedural rig remains playable during loading or a failed asset download. See [asset provenance and rebuilding](assets/source/README.md).
+
+`npm run build:player` regenerates and optimises the GLB with pinned glTF Transform tools. The checked-in asset is used by normal `npm run build`; rebuilding it is optional. Preserve the jersey UV attribute during optimisation because names and numbers are mapped at runtime.
+
 ## Street gameplay update — 31 October 2026
 
 Players now accelerate, brake and turn smoothly with rounded bodies, articulated knees and elbows, and their chosen name above the back jersey number.
@@ -54,7 +62,7 @@ Solo settings pause the match. New trick bindings can be remapped in Settings; s
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (55 tests across 11 suites)
+# 2. Run the automated test suite (59 tests across 12 suites)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)

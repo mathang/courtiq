@@ -150,6 +150,8 @@ export class CourtIqRenderer {
     if (this.scene && this.chars) {
       this.scene.remove(this.chars[0].root);
       this.scene.remove(this.chars[1].root);
+      this.chars[0].dispose();
+      this.chars[1].dispose();
       this.chars = [
         new PlayerCharacter3D(0, preset0),
         new PlayerCharacter3D(1, preset1),
@@ -161,6 +163,10 @@ export class CourtIqRenderer {
 
   public triggerBasketCelebration(): void {
     this.arena?.triggerNetSwish();
+  }
+
+  public getPlayerAssetStates(): string[] {
+    return this.chars?.map(c => c.assetState) ?? [];
   }
 
   public triggerBlockEffect(): void {
@@ -226,6 +232,7 @@ export class CourtIqRenderer {
       showBlockEligibleRing: state.blockEligible,
       presentationDeltaSec,
       realDeltaSec,
+      ballPosition: state.ballPos,
     });
     this.chars[1].update({
       sim: state.players[1],
@@ -233,6 +240,7 @@ export class CourtIqRenderer {
       showBlockEligibleRing: state.blockEligible,
       presentationDeltaSec,
       realDeltaSec,
+      ballPosition: state.ballPos,
     });
 
     this.ballCtrl.update({

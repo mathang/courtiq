@@ -114,6 +114,7 @@ class CourtIqApp {
         attacker: online?.scoreState.currentAttacker ?? eng?.scoreState.currentAttacker,
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
         players, ball: online?.ballPosition ?? eng?.getBallPosition3D(),
+        playerModels: this.renderer.getPlayerAssetStates(),
         paused: !document.getElementById('settings-modal')?.classList.contains('hidden'),
         duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected, physicalBlock: online.activeDuel.physicalBlock } : eng?.activeDuel ? {
           id: eng.activeDuel.duelId, elapsedMs: eng.activeDuel.elapsedRealMs,

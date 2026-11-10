@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CourtIQ · Player Lab</title>
+    <link rel="stylesheet" href="/client/styles/playerLab.css" />
+  </head>
+  <body>
+    <header class="lab-header">
+      <a href="/" class="wordmark"
+        ><span class="brand-ball" aria-hidden="true">◉</span> COURT<span
+          >IQ</span
+        ></a
+      ><span class="lab-label">PLAYER LAB / 01</span
+      ><a class="play-link" href="/"
+        >Play a match <span aria-hidden="true">↗</span></a
+      >
+    </header>
+    <main class="lab-layout">
+      <section
+        class="stage-wrap"
+        aria-label="Interactive basketball player preview"
+      >
+        <div class="stage-heading">
+          <span class="eyebrow">THE NEXT GENERATION</span>
+          <h1>Built for<br />the blacktop.</h1>
+          <p>A closer look at your new streetball player.</p>
+        </div>
+        <div
+          id="player-stage"
+          tabindex="0"
+          aria-label="3D player. Drag to rotate; scroll to zoom."
+        ></div>
+        <div class="stage-foot">
+          <span id="asset-status" role="status">Getting your player ready…</span
+          ><span>DRAG TO ROTATE <span aria-hidden="true">↔</span></span>
+        </div>
+        <div class="view-controls">
+          <button id="view-front" type="button">Front</button
+          ><button id="view-back" type="button">Jersey back</button
+          ><button id="view-close" type="button">Close-up</button>
+        </div>
+      </section>
+      <aside class="lab-controls">
+        <div class="section-number">01 <span>YOUR PLAYER</span></div>
+        <h2>Make it yours.</h2>
+        <label for="jersey-name">Name on the jersey</label>
+        <div class="name-row">
+          <input
+            id="jersey-name"
+            value="CLARK"
+            maxlength="18"
+            autocomplete="off"
+            spellcheck="false"
+          /><button
+            id="show-name"
+            type="button"
+            aria-label="Show name on jersey back"
+          >
+            ↻
+          </button>
+        </div>
+        <label>Team colours</label>
+        <div class="team-options" role="group" aria-label="Team colours">
+          <button
+            class="team-button selected"
+            data-team="0"
+            type="button"
+            aria-pressed="true"
+          >
+            <i class="gold-dot"></i> Gold</button
+          ><button
+            class="team-button"
+            data-team="1"
+            type="button"
+            aria-pressed="false"
+          >
+            <i class="cyan-dot"></i> Cyan
+          </button>
+        </div>
+        <label for="player-look">Player look</label
+        ><select id="player-look">
+          <option value="0">Warm brown · Dark crop</option>
+          <option value="1">Tan · Chestnut crop</option>
+          <option value="2">Deep brown · Dark crop</option>
+          <option value="3">Light · Brown crop</option>
+        </select>
+        <div class="control-divider"></div>
+        <div class="section-number">02 <span>SEE IT MOVE</span></div>
+        <h2>More than a pose.</h2>
+        <div class="motion-options" role="group" aria-label="Player animation">
+          <button
+            data-motion="dribble"
+            class="selected"
+            aria-pressed="true"
+            type="button"
+          >
+            Dribble</button
+          ><button data-motion="run" aria-pressed="false" type="button">
+            Run</button
+          ><button data-motion="defend" aria-pressed="false" type="button">
+            Defend</button
+          ><button data-motion="dunk" aria-pressed="false" type="button">
+            Dunk</button
+          ><button data-motion="block" aria-pressed="false" type="button">
+            Block</button
+          ><button data-motion="swipe" aria-pressed="false" type="button">
+            Steal swipe
+          </button>
+        </div>
+        <div class="dunk-options" hidden>
+          <label for="dunk-style">Dunk style</label
+          ><select id="dunk-style">
+            <option value="tomahawk">Tomahawk</option>
+            <option value="windmill">Windmill</option>
+            <option value="360">360 slam</option>
+            <option value="reverse">Reverse</option>
+          </select>
+        </div>
+        <div class="playback-row">
+          <button id="toggle-animation" type="button" aria-pressed="false">
+            Pause motion</button
+          ><span id="motion-label">LIVE PREVIEW</span>
+        </div>
+        <p class="motion-note" id="motion-note">
+          A low stance, articulated hands and a ball-synced dribble.
+        </p>
+        <a class="match-button" href="/"
+          >Take it to the court <span aria-hidden="true">→</span></a
+        >
+        <p class="lab-caption">This player is also in the full game.</p>
+      </aside>
+    </main>
+    <script type="module" src="/client/playerLab.ts"></script>
+  </body>
+</html>

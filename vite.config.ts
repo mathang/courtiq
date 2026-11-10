@@ -27,6 +27,10 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
+      input: {
+        game: path.resolve(__dirname, 'index.html'),
+        playerLab: path.resolve(__dirname, 'player-lab.html'),
+      },
       output: {
         manualChunks: {
           three: ['three'],
