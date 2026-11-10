@@ -266,7 +266,7 @@
       "required": true,
       "kind": "asset-validation",
       "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
-      "observed": "glTF Transform4.5.1 validation: no errors, warnings, infos or hints. Asset under2MB and40000 triangles,10 material groups.",
+      "observed": "glTF Transform4.5.1: zero errors and warnings;10 informational unused-UV notices. UVs intentionally retained for runtime jersey mapping and asset editability. Asset under2MB and40000 triangles,10 material groups.",
       "evidence_path": "output/player/asset-validation.txt; public/assets/player/streetball-player.glb"
     },
     {
@@ -295,6 +295,15 @@
       "timestamp_utc": "2026-11-10T23:01:49.918880+00:00",
       "observed": "Preview6af3a18bd63fda9bbf590c91: browser preview inspected,10 build files verified; deployed two-student HTTP smoke confirms identical question/choices/reveal time, answer keys hidden and missed-swipe recovery. Index HTML differs only by observed Netlify Pretty URL anchor rewriting.",
       "evidence_path": "output/player/preview-assets.json; output/player/live-preview/preview-report.json; output/player/remote-release.json"
+    },
+    {
+      "id": "rigged-player-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-11-10T23:05:08.502090+00:00",
+      "observed": "GitHub main source5794b4f; Netlify production6af3a288d23b4ae44ce6032a. All application JS/CSS/GLB/licence hashes match tested dist. Both HTML entries match after only observed Netlify hosting comment/public HUD/Pretty URL transforms. Actual production browser preview modes, live names/colours and390px mobile inspected, no page errors or overflow. Normal solo flow creates an AI dunk1500ms after gaining possession. Two synthetic students confirm identical questions/choices/reveal timing, hidden keys and swipe recovery.",
+      "evidence_path": "output/player/production-assets.json; output/player/production-browser/preview-report.json; output/player/production-app-report.json; output/player/production-remote.json"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
