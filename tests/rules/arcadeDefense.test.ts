@@ -37,7 +37,7 @@ describe('Arcade dunks and risk/reward defense',()=>{
     step(e,500);expect(getAirPose(e.players[0]).y).toBeGreaterThan(1.6);
     const rig=dunkRig(e.players[0]);
     if(style==='360')expect(rig.twist).toBeGreaterThan(Math.PI);
-    if(style==='windmill')expect(rig.arm).toBeLessThan(-Math.PI);
+    if(style==='windmill')expect(rig.arm).toBeGreaterThan(0); // Single clockwise sweep, rather than repeated revolutions.
     if(style==='reverse')expect(rig.twist).toBeGreaterThan(1.5);
     expect(e.getBallPosition3D()).toEqual(dunkBallPosition(e.players[0],getAirPose(e.players[0])));
     step(e,400);expect(e.phase).toBe('Duel');expect(e.getBallPosition3D().y).toBeGreaterThan(3);

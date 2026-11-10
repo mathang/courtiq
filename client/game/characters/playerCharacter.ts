@@ -9,6 +9,7 @@ import {
   LegacyPlayerCharacter3D,
 } from "./legacyPlayerCharacter";
 import { StreetballRig } from "./streetballRig";
+import { smoothMotion } from "../../../shared/rules/motionCurves";
 export { APPEARANCE_PRESETS } from "./legacyPlayerCharacter";
 export type { AppearancePresetOption } from "./legacyPlayerCharacter";
 
@@ -22,6 +23,7 @@ export interface PlayerRenderParams {
   presentationDeltaSec: number;
   realDeltaSec: number;
   ballPosition?: { x: number; y: number; z: number };
+  inPlace?: boolean;
 }
 
 /** The procedural player stays usable while the single shared GLB loads, or if it fails. */
@@ -37,6 +39,9 @@ export class PlayerCharacter3D {
   private disposed = false;
   private initialized = false;
   private rotation = Math.PI;
+  private visualYaw = Math.PI;
+  private dunkStartYaw = Math.PI;
+  private wasDunk = false;
   private jerseyName = "";
   private readonly canvas = document.createElement("canvas");
   private readonly texture: THREE.CanvasTexture;
@@ -74,13 +79,11 @@ export class PlayerCharacter3D {
               .setHex(preset.skinHex)
               .lerp(new THREE.Color(0xbc815b), 0.18);
           if (m.name === "Hair") m.color.setHex(preset.hairHex);
-          if (m.name === "Jersey" || m.name === "TeamAccent")
+          if (m.name === "TeamAccent")
             m.color.setHex(slot === 0 ? 0xffbd2d : 0x29c6de);
-          if (m.name === "JerseyPrint") {
-            m.opacity = 1;
+          if (m.name === "Jersey") {
+            m.color.setHex(0xffffff);
             m.map = this.texture;
-            m.polygonOffset = true;
-            m.polygonOffsetFactor = -1;
             m.needsUpdate = true;
           }
         });
@@ -122,7 +125,13 @@ export class PlayerCharacter3D {
     if (this.jerseyName === name) return;
     this.jerseyName = name;
     const ctx = this.canvas.getContext("2d")!;
-    ctx.clearRect(0, 0, 1024, 1024);
+    ctx.fillStyle = this.slot === 0 ? "#ffbd2d" : "#29c6de";
+    ctx.fillRect(0, 0, 1024, 1024);
+    // Subtle woven cloth, baked into the same surface as the name and number.
+    ctx.fillStyle = "rgba(255,255,255,.055)";
+    for (let y = 0; y < 1024; y += 6) ctx.fillRect(0, y, 1024, 1);
+    ctx.fillStyle = "rgba(10,26,45,.035)";
+    for (let x = 0; x < 1024; x += 6) ctx.fillRect(x, 0, 1, 1024);
     const ink = this.slot === 0 ? "#111e36" : "#ffffff";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -132,19 +141,19 @@ export class PlayerCharacter3D {
     ] as const) {
       ctx.fillStyle = ink;
       const label = back ? name.toLocaleUpperCase() : "COURTIQ";
-      let size = back ? 72 : 64;
+      let size = back ? 48 : 43;
       do {
         ctx.font = `900 ${size}px "Arial",sans-serif`;
         size -= 2;
-      } while (ctx.measureText(label).width > 466 && size > 16);
-      ctx.fillText(label, x, back ? 115 : 130, 466);
-      ctx.font = '900 540px "Arial",sans-serif';
-      ctx.lineWidth = 13;
+      } while (ctx.measureText(label).width > 290 && size > 16);
+      ctx.fillText(label, x, back ? 215 : 255, 290);
+      ctx.font = '900 340px "Arial",sans-serif';
+      ctx.lineWidth = 8;
       ctx.strokeStyle = this.slot === 0 ? "#fff5db" : "#12213b";
-      ctx.strokeText(this.slot === 0 ? "9" : "5", x, 520);
-      ctx.fillText(this.slot === 0 ? "9" : "5", x, 520);
-      ctx.font = '700 26px "Arial",sans-serif';
-      ctx.fillText(back ? "STREETBALL" : "SPX  •  ATHLETICS", x, 890, 450);
+      ctx.strokeText(this.slot === 0 ? "9" : "5", x, 570);
+      ctx.fillText(this.slot === 0 ? "9" : "5", x, 570);
+      ctx.font = '700 20px "Arial",sans-serif';
+      ctx.fillText(back ? "STREETBALL" : "SPX  •  ATHLETICS", x, 845, 290);
     }
     this.texture.needsUpdate = true;
   }
@@ -158,9 +167,15 @@ export class PlayerCharacter3D {
     const { sim: p } = params,
       air = getAirPose(p),
       target = new THREE.Vector3(air.x, 0, air.z);
-    if (!this.initialized || this.root.position.distanceTo(target) > 3.5)
+    const dunk = p.finishKind === "dunk";
+    if (dunk && !this.wasDunk) this.dunkStartYaw = this.visualYaw;
+    if (!dunk && this.wasDunk) this.rotation = this.visualYaw;
+    if (!this.initialized || this.root.position.distanceTo(target) > 3.5) {
       this.root.position.copy(target);
-    else
+      this.rotation = p.facingAngle;
+      this.dunkStartYaw = p.facingAngle;
+      this.rig?.resetMotion();
+    } else
       this.root.position.lerp(target, 1 - Math.exp(-params.realDeltaSec * 32));
     this.initialized = true;
     const delta = Math.atan2(
@@ -168,10 +183,17 @@ export class PlayerCharacter3D {
       Math.cos(p.facingAngle - this.rotation),
     );
     this.rotation += delta * (1 - Math.exp(-params.presentationDeltaSec * 25));
-    // Dunks use the exact shared facing angle to keep the palm on the authoritative ball.
+    // Turn through the gather, preserving the displayed spin/stance at entry.
+    const gatherTurn = Math.atan2(
+      Math.sin(p.facingAngle - this.dunkStartYaw),
+      Math.cos(p.facingAngle - this.dunkStartYaw),
+    );
     this.body.rotation.set(
       0,
-      p.finishKind === "dunk" ? p.facingAngle : this.rotation,
+      dunk
+        ? this.dunkStartYaw +
+            gatherTurn * smoothMotion(p.finishElapsedSec / 0.18)
+        : this.rotation,
       0,
     );
     this.body.position.set(0, air.y, 0);
@@ -180,7 +202,10 @@ export class PlayerCharacter3D {
       params.isAttacker,
       params.presentationDeltaSec,
       params.ballPosition,
+      { inPlace: params.inPlace },
     );
+    this.visualYaw = this.body.rotation.y;
+    this.wasDunk = dunk;
     this.contest.visible = !params.isAttacker && params.showBlockEligibleRing;
     this.ring.material.opacity = params.isAttacker ? 0.85 : 0.38;
     this.ring.scale.setScalar(p.streetMove ? 1.2 : 1);

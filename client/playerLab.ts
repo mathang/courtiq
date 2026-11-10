@@ -1,10 +1,16 @@
+import { dribbleBallPosition } from "../shared/rules/dribble";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { PlayerCharacter3D } from "./game/characters/playerCharacter";
 import { AuthoritativeMatchEngine } from "../shared/rules/matchStateMachine";
 import { BUNDLED_QUESTION_PACKS } from "../content/packRegistry";
 import { COURT_GEOMETRY } from "../shared/config/balance";
-import { dunkBallPosition, type DunkStyle } from "../shared/rules/dunks";
+import {
+  dunkBallPosition,
+  DUNK_FINISH_HAND,
+  type DunkStyle,
+} from "../shared/rules/dunks";
+import { smoothMotion } from "../shared/rules/motionCurves";
 import { getAirPose } from "../shared/rules/streetMoves";
 
 const host = document.getElementById("player-stage")!;
@@ -26,10 +32,16 @@ let team: 0 | 1 = 0,
   time = 0,
   manual = false,
   paused = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let queuedMode: string | null = null;
+let displayedMotion = "dribble";
 let character = new PlayerCharacter3D(team, look);
 const scene = new THREE.Scene();
 const stage = new THREE.Group();
-stage.position.z = -COURT_GEOMETRY.hoopZ;
+stage.position.set(
+  DUNK_FINISH_HAND.x,
+  0,
+  -COURT_GEOMETRY.hoopZ + DUNK_FINISH_HAND.z,
+);
 scene.add(stage);
 stage.add(character.root);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -106,6 +118,7 @@ for (const axis of [0, 1, 2]) {
 const goal = new THREE.Group();
 scene.add(goal);
 goal.visible = false;
+goal.position.set(DUNK_FINISH_HAND.x, 0, DUNK_FINISH_HAND.z);
 const hoop = new THREE.Mesh(
   new THREE.TorusGeometry(0.23, 0.018, 10, 48),
   new THREE.MeshStandardMaterial({ color: 0xc55e26 }),
@@ -113,17 +126,6 @@ const hoop = new THREE.Mesh(
 hoop.rotation.x = Math.PI / 2;
 hoop.position.set(0, 3.17, 0);
 goal.add(hoop);
-const board = new THREE.Mesh(
-  new THREE.BoxGeometry(1.25, 0.73, 0.045),
-  new THREE.MeshPhysicalMaterial({
-    color: 0xdde5d3,
-    roughness: 0.3,
-    transparent: true,
-    opacity: 0.35,
-  }),
-);
-board.position.set(0, 3.63, 0.49);
-goal.add(board);
 for (let i = 0; i < 12; i++) {
   const a = (i / 12) * Math.PI * 2,
     pts = [
@@ -147,6 +149,7 @@ const notes: Record<string, string> = {
   dunk: "A full gather, airborne finish and controlled landing.",
   block: "Meet the finisher in the air with both arms extended.",
   swipe: "Reach for the ball, then recover before the next move.",
+  flow: "Watch a dribble, run, spin, dunk, landing and defensive recovery flow together.",
 };
 function resize() {
   const w = host.clientWidth,
@@ -178,7 +181,7 @@ function rebuild() {
   void loadCharacter();
 }
 function frameView(view: string) {
-  const dunk = mode === "dunk" || mode === "block";
+  const dunk = mode === "dunk" || mode === "block" || mode === "flow";
   const target = dunk
     ? new THREE.Vector3(0, 1.95, 0)
     : new THREE.Vector3(0, 1, 0);
@@ -191,7 +194,7 @@ function frameView(view: string) {
       .copy(target)
       .add(
         new THREE.Vector3(
-          view === "back" ? -2.2 : 2.7,
+          view === "back" ? -2.2 : dunk ? -2.7 : 2.7,
           dunk ? 0.4 : 0.85,
           view === "back" ? -4.6 : 4.5,
         ).multiplyScalar(dunk ? 1.7 : 1),
@@ -201,6 +204,7 @@ function frameView(view: string) {
   render(0);
 }
 function setMode(value: string) {
+  queuedMode = null;
   mode = value;
   time = 0;
   for (const b of document.querySelectorAll<HTMLButtonElement>(
@@ -211,12 +215,22 @@ function setMode(value: string) {
     b.setAttribute("aria-pressed", String(active));
   }
   document.querySelector<HTMLElement>(".dunk-options")!.hidden =
-    mode !== "dunk";
+    mode !== "dunk" && mode !== "flow";
   document.getElementById("motion-note")!.textContent = notes[mode];
   frameView("front");
 }
 for (const b of document.querySelectorAll<HTMLButtonElement>("[data-motion]"))
-  b.addEventListener("click", () => setMode(b.dataset.motion!));
+  b.addEventListener("click", () => {
+    if (
+      !paused &&
+      (mode === "dunk" || mode === "block") &&
+      getAirPose(sim).y > 0.025
+    ) {
+      queuedMode = b.dataset.motion!;
+      document.getElementById("motion-note")!.textContent =
+        "Finishing the landing, then changing moves.";
+    } else setMode(b.dataset.motion!);
+  });
 for (const b of document.querySelectorAll<HTMLButtonElement>("[data-team]"))
   b.addEventListener("click", () => {
     team = Number(b.dataset.team) as 0 | 1;
@@ -277,9 +291,38 @@ host.addEventListener("keydown", (e) => {
   }
 });
 function render(dt: number) {
-  const t = time % 3.1;
-  sim.x = 0;
-  sim.z = COURT_GEOMETRY.hoopZ;
+  let t = time % 3.1;
+  if (
+    queuedMode &&
+    ((mode === "dunk" && t > 1.94) || (mode === "block" && t > 0.89))
+  ) {
+    const next = queuedMode;
+    setMode(next);
+    return;
+  }
+  let action = mode;
+  const flowTime = time % 8;
+  if (mode === "flow") {
+    action =
+      flowTime < 0.7
+        ? "dribble"
+        : flowTime < 3.6
+          ? "run"
+          : flowTime < 5.6
+            ? "dunk"
+            : flowTime < 6.7
+              ? "defend"
+              : "swipe";
+    t =
+      action === "dunk"
+        ? flowTime - 3.6
+        : action === "swipe"
+          ? flowTime - 6.7
+          : flowTime;
+  }
+  displayedMotion = action;
+  sim.x = -DUNK_FINISH_HAND.x;
+  sim.z = COURT_GEOMETRY.hoopZ - DUNK_FINISH_HAND.z;
   sim.pseudonym =
     (document.getElementById("jersey-name") as HTMLInputElement).value.trim() ||
     "PLAYER";
@@ -294,39 +337,52 @@ function render(dt: number) {
   sim.defenseRecoverySec = 0;
   sim.dunkStyle = (document.getElementById("dunk-style") as HTMLSelectElement)
     .value as DunkStyle;
-  goal.visible = mode === "dunk" || mode === "block";
-  const attacking = mode !== "defend" && mode !== "block" && mode !== "swipe";
-  let ballPos = {
-    x: 0.34,
-    y: 0.24 + Math.abs(Math.sin(time * 14)) * 0.65,
-    z: sim.z + 0.28,
-  };
-  if (mode === "run") sim.vz = 3.2;
-  if (mode === "defend") {
+  goal.visible = action === "dunk" || action === "block";
+  const attacking =
+    action !== "defend" && action !== "block" && action !== "swipe";
+  let ballPos = dribbleBallPosition(sim, time);
+  if (action === "run")
+    sim.vz =
+      mode === "flow"
+        ? 3.6 *
+          smoothMotion((flowTime - 0.7) / 0.55) *
+          (1 - smoothMotion((flowTime - 3.15) / 0.45))
+        : 3.2;
+  if (mode === "flow" && flowTime >= 2.5 && flowTime < 2.98) {
+    sim.streetMove = "spin";
+    sim.moveElapsedSec = flowTime - 2.5;
+    sim.moveSide = 1;
+  }
+
+  ballPos = dribbleBallPosition(sim, time);
+  if (action === "defend") {
     sim.vx = Math.sin(time * 2) * 0.9;
     ball.visible = false;
-  } else ball.visible = mode !== "swipe" && mode !== "block";
-  if (mode === "dunk") {
+  } else ball.visible = action !== "swipe" && action !== "block";
+  if (action === "dunk") {
     sim.finishKind = "dunk";
     sim.animState = "shoot";
     sim.finishElapsedSec = Math.min(0.84, t);
     sim.finishResolutionSec = t > 1.15 ? t - 1.15 : -1;
-    sim.dunkBallStart = { x: 0.34, y: 0.86, z: sim.z + 0.28 };
+    sim.dunkBallStart = dribbleBallPosition(
+      { ...sim, streetMove: null, animState: "dribble" },
+      mode === "flow" ? 3.6 : 0,
+    );
     ballPos = dunkBallPosition(sim, getAirPose(sim));
     if (t > 1.45) {
       const d = t - 1.45;
       ballPos = {
-        x: 0,
-        z: sim.z,
+        x: COURT_GEOMETRY.hoopX,
+        z: COURT_GEOMETRY.hoopZ,
         y: Math.max(0.12, 3.17 - 1.5 * d - 4.9 * d * d),
       };
     }
-  } else if (mode === "block") {
+  } else if (action === "block") {
     sim.defenseAction = t < 0.88 ? "jump" : null;
     sim.defenseElapsedSec = t;
     sim.defenseTargetX = 0;
     sim.defenseTargetZ = sim.z;
-  } else if (mode === "swipe") {
+  } else if (action === "swipe") {
     sim.defenseAction = t < 1.32 ? "swipe" : null;
     sim.defenseElapsedSec = t;
     sim.defenseRecoverySec = t < 1.32 ? 1 : 0;
@@ -338,6 +394,7 @@ function render(dt: number) {
     presentationDeltaSec: dt,
     realDeltaSec: Math.max(dt, 1 / 60),
     ballPosition: ballPos,
+    inPlace: true,
   });
   ball.position.set(ballPos.x, ballPos.y, ballPos.z);
   ball.rotation.x = time * 2;
@@ -354,19 +411,21 @@ hooks.advanceTime = (ms) => {
   const n = Math.max(1, Math.ceil(ms / 16.667));
   for (let i = 0; i < n; i++) {
     if (!paused) time += ms / n / 1000;
-    render(ms / n / 1000);
+    render(paused ? 0 : ms / n / 1000);
   }
 };
 hooks.render_game_to_text = () =>
   JSON.stringify({
     mode,
+    motion: displayedMotion,
+    queuedMode,
     asset: character.assetState,
     name: sim.pseudonym,
     team,
     look,
     paused,
     time,
-    ball: ball.position.toArray(),
+    ball: ball.getWorldPosition(new THREE.Vector3()).toArray(),
     palm: character.getPalmPosition()?.toArray(),
     drawCalls: renderer.info.render.calls,
     triangles: renderer.info.render.triangles,
@@ -378,7 +437,7 @@ function loop(now: number) {
   last = now;
   if (!manual) {
     if (!paused) time += dt;
-    render(dt);
+    render(paused ? 0 : dt);
   }
   requestAnimationFrame(loop);
 }

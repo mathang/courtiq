@@ -1,3 +1,4 @@
+import { dribbleBallPosition } from './dribble';
 import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction } from './defense';
 import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_RANGE_M, DUNK_LABELS, isDunkStyle, dunkBallPosition } from './dunks';
 import { getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
@@ -1167,19 +1168,7 @@ export class AuthoritativeMatchEngine {
     }
     const att = this.scoreState.currentAttacker;
     const p = this.players[att];
-    const bounce =
-      p.animState === 'dribble'
-        ? Math.abs(Math.sin((this.rules.movementClockMs - this.movementClockRemainingMs) * 0.014)) * 0.65 + 0.24
-        : 1.15;
-    const moveU = p.streetMove ? p.moveElapsedSec / STREET_MOVES[p.streetMove].duration : 0;
-    const hand = p.streetMove === 'crossover' || p.streetMove === 'eurostep' ? Math.cos(moveU * Math.PI) * p.moveSide : 1;
-    const forwardX = Math.sin(p.facingAngle) * 0.28 + Math.cos(p.facingAngle) * 0.34 * hand;
-    const forwardZ = Math.cos(p.facingAngle) * 0.28 - Math.sin(p.facingAngle) * 0.34 * hand;
-    return {
-      x: p.x + forwardX,
-      y: bounce,
-      z: p.z + forwardZ,
-    };
+    return dribbleBallPosition(p,(this.rules.movementClockMs-this.movementClockRemainingMs)/1000);
   }
 
   public getLearningSummaries(): [PlayerLearningSummary, PlayerLearningSummary] {

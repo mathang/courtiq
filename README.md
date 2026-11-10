@@ -15,6 +15,12 @@
 
 ---
 
+## Integrated kit and smoother motion — 11 November 2026
+
+The singlet, shorts, sleeve and socks now share the skinned body surface, removing the floating cuffs and intersecting clothing shells. Jersey names and numbers are mapped directly onto the singlet. The fitted model is about 1 MB.
+
+Movement now blends between stances and moves, with a calmer shared dribble, hand changes during crossovers, planted running support feet, a single windmill sweep, a smoother gather and a cushioned landing. Close dunk launches step clear of the rim. Open the [Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) and choose **Full move sequence** to inspect a dribble, run, spin, dunk, landing and defensive recovery together. Pause holds the entire pose; an airborne preview finishes landing before a queued change of move.
+
 ## Rigged player and Player Lab — 11 November 2026
 
 [Open the Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) for an orbitable close-up with a live jersey name, two team colours, four skin/hair colour variants, and dribble/run/defend/dunk/block/swipe demos. The rigged player also appears in normal solo and student-versus-student matches. Both players keep their own skeleton, appearance, number and jersey name.
@@ -62,7 +68,7 @@ Solo settings pause the match. New trick bindings can be remapped in Settings; s
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (59 tests across 12 suites)
+# 2. Run the automated test suite (68 tests across 13 suites)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)

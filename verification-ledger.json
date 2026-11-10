@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:d061a86ff812311e84b7893fb76f8170f629e7d5c288c682037b6adbd6239fe4",
+  "revision_or_artifact_hash": "dist/index.html:sha256:d3e18c467eaa5980af14fcc2d28b97447351fa77a9c09a892a416eeadede0dd3",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -304,6 +304,51 @@
       "timestamp_utc": "2026-11-10T23:05:08.502090+00:00",
       "observed": "GitHub main source5794b4f; Netlify production6af3a288d23b4ae44ce6032a. All application JS/CSS/GLB/licence hashes match tested dist. Both HTML entries match after only observed Netlify hosting comment/public HUD/Pretty URL transforms. Actual production browser preview modes, live names/colours and390px mobile inspected, no page errors or overflow. Normal solo flow creates an AI dunk1500ms after gaining possession. Two synthetic students confirm identical questions/choices/reveal timing, hidden keys and swipe recovery.",
       "evidence_path": "output/player/production-assets.json; output/player/production-browser/preview-report.json; output/player/production-app-report.json; output/player/production-remote.json"
+    },
+    {
+      "id": "integrated-kit-surface-validation",
+      "status": "PASS",
+      "required": true,
+      "kind": "asset-and-regression",
+      "timestamp_utc": "2026-11-10T23:57:01.098989+00:00",
+      "observed": "Singlet/shorts/sleeve/socks/headband are partitions of the continuous body surface; no floating jersey decal. Shared seams remain within1.5mm through bent poses. Shipping GLB1,005,856bytes/22,174triangles/65bones/12mesh groups. Validator has zero errors/warnings.",
+      "evidence_path": "tests/render/playerAsset.test.ts; output/player-v2/asset-validation.txt"
+    },
+    {
+      "id": "smooth-motion-regressions",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit-and-build",
+      "timestamp_utc": "2026-11-10T23:57:01.098989+00:00",
+      "observed": "68/68 tests in13 suites; strict TypeScript and production build pass. Includes planted support foot, immutable paused targets, bounded run/dunk/defence transition, smooth curve joins and landing endpoints, single windmill, protected spin ball continuity and close-launch rim clearance.",
+      "evidence_path": "output/player-v2/tests-final.txt; output/player-v2/build-final.txt; tests/rules/motionCurves.test.ts"
+    },
+    {
+      "id": "integrated-kit-frame-review",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser-visual",
+      "timestamp_utc": "2026-11-10T23:57:01.098989+00:00",
+      "observed": "Original clipping screenshots re-examined; fitted front/back/colour views,20 sequence frames and an8s recording inspected. Enlarged handoffs for crossover/eurostep and real-game net depth checked. Observed cuff gaps, shoulder holes and layered torso intersections are removed.",
+      "evidence_path": "output/player-v2/contact-sheet.png; output/player-v2/motion-report.json; output/player-v2/movement-preview.mp4; output/player-v2/crossover-handoff.png; output/player-v2/eurostep-handoff.png"
+    },
+    {
+      "id": "integrated-kit-two-client-gameplay",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser-integration",
+      "timestamp_utc": "2026-11-10T23:57:01.098989+00:00",
+      "observed": "Two actual WebSocket browser clients pass tomahawk/windmill/360/reverse, timed swat, rooted missed swipe and drive-by, clean steal, shared question and390px touch role controls; no page errors or overflow.",
+      "evidence_path": "output/player-v2/arcade/browser-report.json"
+    },
+    {
+      "id": "compiled-motion-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-11-10T23:57:01.098989+00:00",
+      "observed": "Corrected preview6af3aeb97c25938fe51b58d8: all10 application files verified,20 motion frames and4 styles checked, paused rig drift0, no errors or mobile overflow. Deployed HTTP check passes same question/choices/reveal, hidden keys and missed-swipe recovery. A stale earlier scratch preview was rejected before release and replaced after fixing a test-fixture type error and completing a fresh build.",
+      "evidence_path": "output/player-v2/preview-assets.json; output/player-v2/preview-live/motion-report.json; output/player-v2/remote-release.json"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

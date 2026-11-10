@@ -2,6 +2,7 @@ import * as THREE from "three";
 import type { PlayerSimState } from "../../../shared/rules/matchStateMachine";
 import { dunkRig } from "../../../shared/rules/dunks";
 import { STREET_MOVES } from "../../../shared/rules/streetMoves";
+import { smoothMotion, unit } from "../../../shared/rules/motionCurves";
 
 const Y = new THREE.Vector3(0, 1, 0);
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -19,6 +20,42 @@ interface Reference {
 export class StreetballRig {
   private refs = new Map<string, Reference>();
   private phase = 0;
+  private lastBallY: number | null = null;
+  private offset = 0;
+  private pitch = 0;
+  private roll = 0;
+  private settled = false;
+  private direction = new THREE.Vector2(0, 1);
+  private hands = [v(-0.31, 1.08, 0.1), v(0.31, 1.02, 0.28)];
+  private feet = [-1, 1].map(() => ({
+    contact: false,
+    plant: null as THREE.Vector3 | null,
+    start: null as THREE.Vector3 | null,
+    end: null as THREE.Vector3 | null,
+  }));
+  public resetMotion(): void {
+    this.settled = false;
+    this.lastBallY = null;
+    this.movement = 0;
+    this.feet.forEach((f) => {
+      f.contact = false;
+      f.plant = f.start = f.end = null;
+    });
+  }
+  private floorPoint(point: THREE.Vector3): THREE.Vector3 {
+    point.applyAxisAngle(Y, this.body.rotation.y);
+    return this.body.parent!.localToWorld(point);
+  }
+  private canonicalPoint(
+    point: THREE.Vector3,
+    airY: number,
+    yaw: number,
+  ): THREE.Vector3 {
+    point.y += airY;
+    point.applyAxisAngle(Y, yaw);
+    return this.body.worldToLocal(this.body.parent!.localToWorld(point));
+  }
+
   private movement = 0;
   public readonly palm = new THREE.Vector3();
   constructor(
@@ -99,13 +136,13 @@ export class StreetballRig {
     if (palm) this.aim(end, clamped.clone().sub(elbow));
   }
   private point(point: THREE.Vector3): THREE.Vector3 {
-    return this.body.localToWorld(point);
+    return this.body.localToWorld(point.clone());
   }
   private hand(
     side: number,
     target: THREE.Vector3,
     pole: THREE.Vector3,
-    ballContact = false,
+    ballContact = 0,
   ): void {
     const suffix = side > 0 ? "l" : "r";
     const world = this.point(target);
@@ -114,7 +151,10 @@ export class StreetballRig {
         new THREE.Vector3(),
       );
       // Put the palm on the near surface, rather than inside the basketball.
-      world.addScaledVector(world.clone().sub(shoulder).normalize(), -0.075);
+      world.addScaledVector(
+        world.clone().sub(shoulder).normalize(),
+        -0.075 * ballContact,
+      );
     }
     this.solve(
       `upperarm_${suffix}`,
@@ -133,7 +173,7 @@ export class StreetballRig {
       for (const joint of ["01", "02", "03"]) {
         const ref = this.refs.get(`${finger}_${joint}_${suffix}`);
         if (ref)
-          ref.bone.rotateZ((side > 0 ? -1 : 1) * (ballContact ? 0.24 : 0.1));
+          ref.bone.rotateX((side > 0 ? 1 : -1) * (0.16 + 0.3 * ballContact));
       }
   }
   public update(
@@ -141,141 +181,275 @@ export class StreetballRig {
     isAttacker: boolean,
     dt: number,
     ball?: { x: number; y: number; z: number },
+    options: { inPlace?: boolean } = {},
   ): void {
+    const step = Math.max(0, Math.min(0.1, dt));
     for (const ref of this.refs.values()) ref.bone.quaternion.copy(ref.local);
-    const speed = Math.hypot(p.vx, p.vz);
-    this.movement = THREE.MathUtils.damp(
-      this.movement,
-      Math.min(1, speed / 2),
-      14,
-      dt,
+    const speed = Math.hypot(p.vx, p.vz),
+      airY = this.body.position.y;
+    const run = THREE.MathUtils.smoothstep(speed, 2, 5);
+    const movingTarget = Math.min(1, speed / 1.5);
+    this.movement = THREE.MathUtils.damp(this.movement, movingTarget, 11, step);
+    const cadence = THREE.MathUtils.lerp(
+      1 + speed * 0.28,
+      1.5 + speed * 0.14,
+      run,
     );
-    this.phase += dt * (speed > 0.1 ? speed * 4.6 : 1.8);
+    if (speed > 0.1) this.phase += step * cadence * Math.PI * 2;
     const stride = Math.sin(this.phase),
       moving = this.movement;
-    const air = p.finishKind || p.defenseAction === "jump";
-    const crouch = air ? 0 : isAttacker ? 0.085 : 0.14;
-    this.body.position.y -= crouch;
-    if (!air)
-      this.body.position.y += Math.abs(Math.cos(this.phase)) * 0.018 * moving;
-    const yaw = p.facingAngle;
-    const forward =
-      speed > 0.1 ? (Math.sin(yaw) * p.vx + Math.cos(yaw) * p.vz) / speed : 1;
-    const sideways =
+    const dunk = p.finishKind === "dunk",
+      shot = p.finishKind === "jump",
+      jump = p.defenseAction === "jump";
+    const r = p.finishResolutionSec;
+    const airborne = (dunk && r < 0.78) || shot || jump;
+    const landing =
+      dunk && r > 0.65 && r < 1.15
+        ? Math.sin(unit((r - 0.65) / 0.5) * Math.PI)
+        : 0;
+    const moveU = p.streetMove
+      ? unit(p.moveElapsedSec / STREET_MOVES[p.streetMove].duration)
+      : 0;
+    const trick = p.streetMove ? Math.sin(moveU * Math.PI) : 0;
+    const swipe =
+      p.defenseAction === "swipe"
+        ? Math.sin(unit(p.defenseElapsedSec / 0.32) * Math.PI)
+        : 0;
+    const crouch = isAttacker ? 0.075 : 0.145;
+    const offsetTarget = airborne
+      ? 0
+      : -crouch -
+        run * 0.025 -
+        moving * 0.014 * Math.cos(this.phase * 2) -
+        trick * 0.06 -
+        landing * 0.1;
+    const yaw = this.body.rotation.y;
+    const localX =
       speed > 0.1 ? (Math.cos(yaw) * p.vx - Math.sin(yaw) * p.vz) / speed : 0;
-    if (!air) {
-      this.body.rotation.x = 0.035 + moving * 0.045 * Math.max(0, forward);
-      this.body.rotation.z = -sideways * moving * 0.045;
+    const localZ =
+      speed > 0.1 ? (Math.sin(yaw) * p.vx + Math.cos(yaw) * p.vz) / speed : 1;
+    const dirAlpha = 1 - Math.exp(-step * 13);
+    if (speed > 0.1)
+      this.direction
+        .lerp(new THREE.Vector2(localX, localZ), dirAlpha)
+        .normalize();
+    let lean =
+      (airborne ? 0 : 0.025 + run * 0.09 * Math.max(0, localZ)) + swipe * 0.22;
+    let roll =
+      -localX * moving * 0.045 -
+      trick *
+        p.moveSide *
+        0.1 *
+        (p.streetMove === "eurostep" ? Math.cos(moveU * Math.PI) : 1);
+    if (p.wrongFootSec > 0) roll += Math.sin(p.wrongFootSec * 12) * 0.1;
+    if (!this.settled) {
+      this.offset = offsetTarget;
+      this.pitch = lean;
+      this.roll = roll;
+      this.settled = true;
     }
-    if (p.streetMove) {
-      const u = THREE.MathUtils.clamp(
-        p.moveElapsedSec / STREET_MOVES[p.streetMove].duration,
-        0,
-        1,
-      );
-      if (p.streetMove === "spin")
-        this.body.rotation.y += p.moveSide * u * Math.PI * 2;
-      this.body.position.y -= Math.sin(u * Math.PI) * 0.07;
-      this.body.rotation.z +=
-        Math.sin(u * Math.PI * (p.streetMove === "eurostep" ? 2 : 1)) *
-        -p.moveSide *
-        0.12;
-    }
-    if (p.wrongFootSec > 0)
-      this.body.rotation.z += Math.sin(p.wrongFootSec * 12) * 0.13;
-    if (p.finishKind === "dunk") this.body.rotation.y += dunkRig(p).twist;
+    this.offset = THREE.MathUtils.damp(this.offset, offsetTarget, 20, step);
+    this.pitch = THREE.MathUtils.damp(this.pitch, lean, 18, step);
+    this.roll = THREE.MathUtils.damp(this.roll, roll, 18, step);
+    this.body.position.y = airY + this.offset;
+    this.body.rotation.x = this.pitch;
+    this.body.rotation.z = this.roll;
+    if (p.streetMove === "spin")
+      this.body.rotation.y += p.moveSide * smoothMotion(moveU) * Math.PI * 2;
+    if (dunk) this.body.rotation.y += dunkRig(p).twist;
+    // A small shoulder/hip counter-rotation accompanies the stride.
+    const chest = this.bone("spine_03").bone;
+    chest.rotateY(stride * 0.035 * moving * (airborne ? 0 : 1));
+    this.bone("Head").bone.rotateX(-this.pitch * 0.45);
     this.body.updateWorldMatrix(true, true);
 
-    for (const side of [-1, 1]) {
+    const stance = THREE.MathUtils.lerp(0.6, 0.34, run);
+    const reach =
+      THREE.MathUtils.clamp(
+        (speed / Math.max(1, cadence)) * stance * 0.5,
+        0.14,
+        0.44,
+      ) * moving;
+    for (const [i, side] of [-1, 1].entries()) {
       const suffix = side > 0 ? "l" : "r",
-        cycle = this.phase + (side < 0 ? Math.PI : 0);
-      let x =
-        side * (isAttacker ? 0.15 : 0.235) +
-        Math.sin(cycle) * sideways * 0.29 * moving;
-      let z = Math.sin(cycle) * forward * 0.37 * moving;
-      let y = 0.091 + crouch + Math.max(0, Math.cos(cycle)) * 0.23 * moving;
-      if (p.finishKind === "dunk") {
-        const t = Math.sin(Math.min(1, p.finishElapsedSec / 0.84) * Math.PI);
-        x = side * 0.16;
-        z = (side > 0 ? -0.38 : 0.33) * t;
-        y = 0.1 + (side > 0 ? 0.46 : 0.32) * t;
-      } else if (p.defenseAction === "jump") {
-        y =
-          0.1 +
-          0.2 * Math.sin(Math.min(1, p.defenseElapsedSec / 0.88) * Math.PI);
-        z = side * 0.12;
-      } else if (p.finishKind === "jump") {
-        x = side * 0.15;
-        z = 0;
-        y = 0.1;
+        state = this.feet[i];
+      const u =
+        (((this.phase / (Math.PI * 2) + (side > 0 ? 0.5 : 0)) % 1) + 1) % 1;
+      const contact = u < stance,
+        swing = unit((u - stance) / (1 - stance));
+      const along = contact
+        ? THREE.MathUtils.lerp(reach, -reach, u / stance)
+        : THREE.MathUtils.lerp(-reach, reach, smoothMotion(swing));
+      const width =
+        side * THREE.MathUtils.lerp(isAttacker ? 0.155 : 0.23, 0.145, run);
+      let local = v(
+        width + along * this.direction.x,
+        0.092 + Math.sin(Math.PI * swing) ** 2 * (0.11 + 0.1 * run) * moving,
+        along * this.direction.y,
+      );
+      let target = this.floorPoint(local.clone());
+      if (airborne) {
+        const tuck = dunk
+          ? Math.sin(unit(p.finishElapsedSec / 0.84) * Math.PI) *
+            (1 - smoothMotion((r - 0.3) / 0.4))
+          : jump
+            ? Math.sin(unit(p.defenseElapsedSec / 0.88) * Math.PI)
+            : 0.15;
+        local = v(
+          side * 0.16,
+          airY + 0.095 + (side > 0 ? 0.35 : 0.25) * tuck,
+          (side > 0 ? -0.27 : 0.19) * tuck,
+        );
+        target = this.floorPoint(local);
+        state.plant = state.start = state.end = null;
+        state.contact = false;
+      } else if (moving > 0.15 && !options.inPlace && !p.streetMove) {
+        if (contact) {
+          if (!state.contact || !state.plant) state.plant = target.clone();
+          target.copy(state.plant);
+          state.start = target.clone();
+          state.end = null;
+        } else {
+          if (!state.start) state.start = target.clone();
+          if (!state.end) {
+            state.end = this.floorPoint(
+              v(
+                width + reach * this.direction.x,
+                0.092,
+                reach * this.direction.y,
+              ),
+            );
+            const remaining = (1 - u) / Math.max(1, cadence);
+            const root = this.body.parent!,
+              space = root.parent;
+            const velocity = v(p.vx, 0, p.vz);
+            if (space)
+              velocity
+                .transformDirection(space.matrixWorld)
+                .multiplyScalar(speed);
+            state.end.addScaledVector(velocity, remaining);
+          }
+          target.copy(state.start).lerp(state.end, smoothMotion(swing));
+          target.y +=
+            Math.sin(Math.PI * swing) ** 2 * (0.11 + 0.1 * run) * moving;
+        }
+        state.contact = contact;
+      } else {
+        state.plant = state.start = state.end = null;
+        state.contact = false;
       }
-      const target = this.point(v(x, y, z));
       this.solve(
         `thigh_${suffix}`,
         `calf_${suffix}`,
         `foot_${suffix}`,
         target,
-        this.point(v(side * 0.19, 0.55, 0.8)),
+        this.floorPoint(v(side * 0.18, airY + 0.52, 0.8)),
       );
-      // Keep soles facing the floor rather than inheriting the calf's rotation.
       const foot = this.bone(`foot_${suffix}`),
         frame = this.body.getWorldQuaternion(new THREE.Quaternion());
+      const flatFrame = this.body
+        .parent!.getWorldQuaternion(new THREE.Quaternion())
+        .multiply(
+          new THREE.Quaternion().setFromAxisAngle(Y, this.body.rotation.y),
+        );
       const parent = foot.bone
         .parent!.getWorldQuaternion(new THREE.Quaternion())
         .invert();
-      const tip = air ? -0.22 : Math.max(0, Math.cos(cycle)) * 0.22 * moving;
+      const toe = airborne
+        ? -0.12
+        : contact
+          ? -0.23 * smoothMotion(unit((u / stance - 0.65) / 0.35)) * moving
+          : 0.2 * Math.sin(Math.PI * swing) * moving;
       foot.bone.quaternion.copy(
         parent
-          .multiply(frame)
-          .multiply(new THREE.Quaternion().setFromAxisAngle(v(1, 0, 0), tip))
+          .multiply(flatFrame)
+          .multiply(new THREE.Quaternion().setFromAxisAngle(v(1, 0, 0), toe))
           .multiply(foot.rotation),
       );
     }
     this.body.updateWorldMatrix(true, true);
-    const right = v(0.31, 1.02, 0.26),
-      left = v(-0.31, 1.1, -stride * 0.19 * moving);
-    let contact = false;
+    let right = v(0.33, 1.03, 0.29),
+      left = v(-0.29, 1.13, -stride * 0.25 * moving);
     if (!isAttacker) {
-      right.set(0.48, 1.23, 0.31);
-      left.set(-0.48, 1.23, 0.31);
+      right.set(0.46, 1.26, 0.31);
+      left.set(-0.46, 1.26, 0.31);
     } else {
-      // Follow the authoritative bounce at the top; do not chase the ball to the floor.
-      const bounce = ball
-        ? THREE.MathUtils.clamp((ball.y - 0.24) / 0.65, 0, 1)
-        : 0.5 + 0.5 * Math.sin(this.phase * 1.4);
-      right.y = 0.93 + bounce * 0.1;
-      if (p.streetMove === "crossover" || p.streetMove === "eurostep") {
-        const u = p.moveElapsedSec / STREET_MOVES[p.streetMove].duration;
-        right.x = 0.34 * Math.cos(u * Math.PI) * p.moveSide;
+      if (ball && !dunk && !shot) {
+        const vertical =
+          this.lastBallY === null || step <= 0
+            ? 0
+            : THREE.MathUtils.clamp((ball.y - this.lastBallY) / step, -5, 5);
+        const point = v(
+          ball.x,
+          Math.max(1.025, ball.y + 0.115) + vertical * 0.007,
+          ball.z,
+        );
+        const space = this.body.parent!.parent;
+        if (space) space.localToWorld(point);
+        this.body.worldToLocal(point);
+        if (point.x < -0.035) {
+          left.copy(point);
+          right.set(0.29, 1.13, stride * 0.25 * moving);
+        } else right.copy(point);
+        this.lastBallY = ball.y;
       }
-      contact = !!ball && ball.y > 0.75;
     }
-    if (p.finishKind === "dunk") {
-      const rig = dunkRig(p);
-      right.set(rig.hand.x, rig.hand.y, rig.hand.z);
-      left.set(
-        -0.28,
-        1.53 - 0.58 * Math.cos(rig.guideArm),
-        -0.58 * Math.sin(rig.guideArm),
+    let contact = 0;
+    if (dunk) {
+      const rig = dunkRig(p),
+        release = 1 - smoothMotion((r - 0.34) / 0.6);
+      const actionRight = this.canonicalPoint(
+        v(rig.hand.x, rig.hand.y, rig.hand.z),
+        airY,
+        p.facingAngle + rig.twist,
       );
-      contact = true;
-    } else if (p.finishKind === "jump") {
-      const t = Math.min(1, p.finishElapsedSec / 0.24);
-      right.set(0.19, 1.1 + t * 0.94, 0.25);
-      left.set(-0.16, 1.1 + t * 0.91, 0.24);
-    } else if (p.defenseAction === "jump") {
-      right.set(0.29, 2.08, 0.13);
+      if (ball && r < 0.3) {
+        const point = v(ball.x, ball.y, ball.z),
+          space = this.body.parent!.parent;
+        if (space) space.localToWorld(point);
+        actionRight.copy(this.body.worldToLocal(point));
+      }
+      const actionLeft = this.canonicalPoint(
+        v(
+          -0.28,
+          1.53 - 0.57 * Math.cos(rig.guideArm),
+          -0.57 * Math.sin(rig.guideArm),
+        ),
+        airY,
+        p.facingAngle + rig.twist,
+      );
+      right.lerp(actionRight, release);
+      left.lerp(actionLeft, release);
+      contact = 1 - smoothMotion((r - 0.3) / 0.2);
+    } else if (shot) {
+      const raise = smoothMotion(p.finishElapsedSec / 0.25),
+        lower = r >= 0 ? 1 - smoothMotion((r - 0.2) / 0.55) : 1;
+      right.lerp(v(0.19, 2.02, 0.24), raise * lower);
+      left.lerp(v(-0.16, 1.97, 0.22), raise * lower);
+    } else if (jump) {
+      right.set(0.29, 2.08, 0.14);
       left.set(-0.29, 2.04, 0.14);
     } else if (p.defenseAction === "swipe") {
-      const reach = Math.sin(Math.min(1, p.defenseElapsedSec / 0.32) * Math.PI);
-      right.set(0.43 - reach * 0.31, 1.07, 0.2 + reach * 0.43);
-      left.set(-0.34, 1.04, -0.12);
-    } else if (p.defenseRecoverySec > 0) {
-      right.set(0.22, 0.99, 0.42);
-      left.set(-0.37, 1.06, -0.09);
+      right.set(0.43 - swipe * 0.3, 1.1, 0.22 + swipe * 0.4);
+      left.set(-0.33, 1.12, -0.08);
     }
-    this.hand(-1, left, v(-0.64, 1.22, -0.24));
-    this.hand(1, right, v(0.64, 1.22, -0.24), contact);
+    const targets = [left, right];
+    for (let i = 0; i < 2; i++) {
+      // Finish contact is exact after gathering; other targets follow a short settling spring.
+      const base = 1 - Math.exp(-step * (jump ? 30 : 22));
+      const alpha =
+        dunk && r < 0.3
+          ? Math.max(base, smoothMotion(p.finishElapsedSec / 0.18))
+          : base;
+      this.hands[i].lerp(targets[i], alpha);
+    }
+    this.hand(
+      -1,
+      this.hands[0],
+      v(-0.6, 1.2, -0.2),
+      dunk && p.dunkStyle !== "windmill" ? contact : 0,
+    );
+    this.hand(1, this.hands[1], v(0.6, 1.2, -0.2), contact);
     this.body.updateWorldMatrix(true, true);
   }
 }
