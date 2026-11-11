@@ -58,4 +58,27 @@ describe('CourtBot recovery and defensive judgement',()=>{
   const e=match(15);e.players[1].x=0;e.players[1].z=-5.8;e.players[0].x=0;e.players[0].z=-3.2;
   expect(shotTime(e,dt)).toBeLessThan(5000);expect(e.players[1].z).toBeGreaterThanOrEqual(-4.7);
  });
+ it('chains a second distinct trick on advanced difficulty and punishes missed human swipes',()=>{
+  const e=match(21,'advanced');
+  const bot=e.players[1],human=e.players[0];
+  bot.x=0.2;bot.z=0.8;bot.sprintStamina=1;
+  human.x=0.2;human.z=-0.7;
+  let maxCombo=0;
+  for(let t=0;t<3600&&e.phase==='Possession';t+=16.667){
+   e.step(16.667,[neutral,neutral]);
+   maxCombo=Math.max(maxCombo,bot.trickCombo);
+  }
+  expect(maxCombo).toBeGreaterThanOrEqual(2);
+
+  const brain=createAiBasketballBrainState(()=>0.95);
+  expect(brain.wantsDunk).toBe(false);
+  human.defenseResult='miss';
+  human.defenseRecoverySec=0.85;
+  const intent=stepAiBasketballDecision({
+   brain,isAttacker:true,aiPos:{x:0,z:1.2},opponentPos:{x:0,z:-0.2},
+   movementClockRemainingMs:12000,difficulty:'advanced',deltaSec:0.05,self:bot,opponent:human
+  });
+  expect(brain.wantsDunk).toBe(true);
+  expect(intent.sprint).toBe(true);
+ });
 });

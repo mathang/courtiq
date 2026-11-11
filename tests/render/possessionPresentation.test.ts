@@ -216,6 +216,8 @@ describe("possession presentation", () => {
       "swat",
       "answer",
       "buzzer",
+      "combo",
+      "fire",
       "air",
     ] as DesignedSound[]) {
       const a = createCourtSound(kind, 24000);

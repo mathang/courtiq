@@ -131,23 +131,42 @@ export class SoundEngine {
   }
   public setMuted(muted: boolean): void {
     this.muted = muted;
-    if (muted) this.stopSlowMoAtmosphere();
+    if (muted) {
+      this.stopSlowMoAtmosphere();
+      this.silenceActiveVoices();
+    }
     if (!muted) this.ensureContext();
-    this.master?.gain.setTargetAtTime(
-      muted || this.paused ? 0 : 0.7,
-      this.ctx!.currentTime,
-      0.008,
-    );
+    if (this.master && this.ctx) {
+      this.master.gain.setTargetAtTime(
+        muted || this.paused ? 0 : 0.7,
+        this.ctx.currentTime,
+        0.008,
+      );
+    }
   }
   public setPaused(paused: boolean): void {
     if (this.paused === paused) return;
     this.paused = paused;
-    if (paused) this.stopSlowMoAtmosphere();
-    this.master?.gain.setTargetAtTime(
-      paused || this.muted ? 0 : 0.7,
-      this.ctx!.currentTime,
-      0.012,
-    );
+    if (paused) {
+      this.stopSlowMoAtmosphere();
+      this.silenceActiveVoices();
+    }
+    if (this.master && this.ctx) {
+      this.master.gain.setTargetAtTime(
+        paused || this.muted ? 0 : 0.7,
+        this.ctx.currentTime,
+        0.01,
+      );
+    }
+  }
+  private silenceActiveVoices(): void {
+    if (!this.ctx) return;
+    const stopAt = this.ctx.currentTime + 0.015;
+    for (const v of this.voices) {
+      try {
+        v.stop(stopAt);
+      } catch {}
+    }
   }
   private buffer(name: DesignedSound): AudioBuffer {
     const key = "designed:" + name;
@@ -165,6 +184,7 @@ export class SoundEngine {
     gain = 0.7,
     pan = 0,
     delay = 0,
+    rateOverride?: number,
   ): void {
     const ctx = this.ensureContext();
     if (!ctx || !this.bus || this.voices.size >= 28) return;
@@ -174,7 +194,8 @@ export class SoundEngine {
       panner = ctx.createStereoPanner();
     volume.gain.value = gain;
     panner.pan.value = Math.max(-0.65, Math.min(0.65, pan));
-    source.playbackRate.value = 1 + Math.sin(this.serial++ * 2.399) * 0.035;
+    source.playbackRate.value =
+      rateOverride ?? 1 + Math.sin(this.serial++ * 2.399) * 0.035;
     source.connect(volume);
     volume.connect(panner);
     panner.connect(this.bus);
@@ -231,6 +252,14 @@ export class SoundEngine {
   }
   public playBuzzer(): void {
     this.play("buzzer", "buzzer", 0.5);
+  }
+  public playComboChain(chainLevel: number, pan = 0): void {
+    const pitch = chainLevel >= 3 ? 1.26 : chainLevel === 2 ? 1.12 : 1.0;
+    this.play("combo", "combo", 0.52, pan, 0, pitch);
+  }
+  public playOnFireIgnite(): void {
+    this.play("fire", "fire", 0.68, 0, 0, 1.0);
+    this.play("cheer", "net", 0.24, 0, 0.05);
   }
   public startSlowMoAtmosphere(): void {
     const ctx = this.ensureContext();

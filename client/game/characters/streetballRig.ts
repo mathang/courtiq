@@ -247,12 +247,19 @@ export class StreetballRig {
         ? Math.sin(unit(p.defenseElapsedSec / 0.32) * Math.PI)
         : 0;
     const crouch = isAttacker ? 0.075 : 0.145;
+    const missedSwipeFrozen =
+      !isAttacker && p.defenseRecoverySec > 0 && p.defenseResult === "miss"
+        ? Math.min(1, p.defenseRecoverySec / 0.6)
+        : 0;
+    const stumbleSink = p.wrongFootSec > 0 ? 0.055 : 0;
     const offsetTarget = airborne
       ? 0
       : -crouch -
         run * 0.025 -
         moving * 0.014 * Math.cos(this.phase * 2) -
-        trick * 0.06 -
+        trick * 0.068 -
+        stumbleSink -
+        missedSwipeFrozen * 0.045 -
         landing * 0.1;
     const yaw = this.body.rotation.y;
     const localX =
@@ -264,15 +271,25 @@ export class StreetballRig {
       this.direction
         .lerp(new THREE.Vector2(localX, localZ), dirAlpha)
         .normalize();
+    const fadeawayBackLean =
+      shot && p.lastTrick === "stepback"
+        ? -0.14 * Math.sin(unit(p.finishElapsedSec / 0.84) * Math.PI * 0.85)
+        : shot
+          ? -0.04
+          : 0;
     let lean =
-      (airborne ? 0 : 0.025 + run * 0.09 * Math.max(0, localZ)) + swipe * 0.22;
+      (airborne
+        ? fadeawayBackLean
+        : 0.025 + run * 0.095 * Math.max(0, localZ)) +
+      swipe * 0.22 +
+      missedSwipeFrozen * 0.15;
     let roll =
       -localX * moving * 0.045 -
       trick *
         p.moveSide *
-        0.1 *
+        0.115 *
         (p.streetMove === "eurostep" ? Math.cos(moveU * Math.PI) : 1);
-    if (p.wrongFootSec > 0) roll += Math.sin(p.wrongFootSec * 12) * 0.1;
+    if (p.wrongFootSec > 0) roll += Math.sin(p.wrongFootSec * 14) * 0.135;
     if (!this.settled) {
       this.offset = offsetTarget;
       this.pitch = lean;
@@ -354,12 +371,35 @@ export class StreetballRig {
             (1 - smoothMotion((r - 0.3) / 0.4))
           : jump
             ? Math.sin(unit(p.defenseElapsedSec / 0.88) * Math.PI)
-            : 0.15;
-        local = v(
-          side * 0.16,
-          airY + 0.095 + (side > 0 ? 0.35 : 0.25) * tuck,
-          (side > 0 ? -0.27 : 0.19) * tuck,
-        );
+            : shot
+              ? 0.22 * Math.sin(unit(p.finishElapsedSec / 0.72) * Math.PI * 0.85)
+              : 0.15;
+        const airFlair =
+          dunk && p.finishElapsedSec >= 0.22 && r < 0.28
+            ? smoothMotion((p.finishElapsedSec - 0.22) / 0.2)
+            : 0;
+        const airWidth = dunk
+          ? p.dunkStyle === "windmill"
+            ? side * (0.16 + 0.05 * airFlair * tuck)
+            : p.dunkStyle === "360"
+              ? side * (0.16 - 0.03 * airFlair * tuck)
+              : side * 0.16
+          : side * (shot ? 0.145 : 0.16);
+        const airLift = dunk
+          ? p.dunkStyle === "tomahawk"
+            ? (side > 0 ? 0.39 : 0.34) * tuck
+            : (side > 0 ? 0.35 : 0.25) * tuck
+          : (side > 0 ? 0.35 : 0.25) * tuck;
+        const airSweepZ = dunk
+          ? p.dunkStyle === "tomahawk"
+            ? -0.31 * tuck * (0.65 + 0.35 * airFlair)
+            : p.dunkStyle === "windmill"
+              ? (side > 0 ? -0.31 : 0.23) * tuck
+              : (side > 0 ? -0.27 : 0.19) * tuck
+          : shot
+            ? (side > 0 ? 0.12 : 0.05) * (p.lastTrick === "stepback" ? 1.4 : 1) * tuck
+            : (side > 0 ? -0.27 : 0.19) * tuck;
+        local = v(airWidth, airY + 0.095 + airLift, airSweepZ);
         target = this.floorPoint(local.clone());
         if (dunk && p.finishElapsedSec < 0.22) {
           // Carry the running feet into a short two-foot gather. Keep the soles
@@ -478,6 +518,8 @@ export class StreetballRig {
     this.body.updateWorldMatrix(true, true);
     let right = v(0.33, 1.03, 0.29),
       left = v(-0.29, 1.13, -stride * 0.25 * moving);
+    let leftGrip = 0,
+      rightGrip = 0;
     if (this.animator.available && isAttacker && !airborne) {
       left.lerp(authoredHands[0], 0.35 + 0.55 * moving);
       right.lerp(authoredHands[1], 0.35 + 0.55 * moving);
@@ -485,26 +527,60 @@ export class StreetballRig {
       right.x = Math.max(0.24, right.x);
     }
     if (!isAttacker) {
-      right.set(0.46, 1.26, 0.31);
-      left.set(-0.46, 1.26, 0.31);
+      if (p.wrongFootSec > 0) {
+        const wobble = Math.sin(p.wrongFootSec * 14) * 0.08;
+        right.set(0.54, 1.18 + wobble, 0.24);
+        left.set(-0.54, 1.18 - wobble, 0.24);
+      } else if (missedSwipeFrozen > 0) {
+        right.set(0.26, 0.98, 0.52 * missedSwipeFrozen + 0.2);
+        left.set(-0.38, 1.08, 0.05);
+      } else {
+        right.set(0.46, 1.26, 0.31);
+        left.set(-0.46, 1.26, 0.31);
+      }
     } else {
       if (ball && !dunk && !shot) {
         const vertical =
           this.lastBallY === null || step <= 0
             ? 0
             : THREE.MathUtils.clamp((ball.y - this.lastBallY) / step, -5, 5);
-        const point = v(
-          ball.x,
-          Math.max(1.025, ball.y + 0.115) + vertical * 0.007,
-          ball.z,
-        );
-        const space = this.body.parent!.parent;
-        if (space) space.localToWorld(point);
-        this.body.worldToLocal(point);
-        if (point.x < -0.035) {
-          left.copy(point);
-          right.set(0.29, 1.13, stride * 0.25 * moving);
-        } else right.copy(point);
+        const tripleThreatHold =
+          p.animState !== "dribble" && !p.streetMove && speed < 0.25;
+        if (tripleThreatHold) {
+          const center = v(ball.x, ball.y, ball.z);
+          const space = this.body.parent!.parent;
+          if (space) space.localToWorld(center);
+          this.body.worldToLocal(center);
+          // Two-hand athletic triple-threat pocket: primary hand cups back/side, guide hand cradles inner side.
+          right.set(center.x + 0.082, center.y + 0.032, center.z - 0.025);
+          left.set(center.x - 0.112, center.y + 0.018, center.z + 0.015);
+          rightGrip = 0.72;
+          leftGrip = 0.56;
+        } else {
+          const minPocketY = p.streetMove ? 0.7 : 0.78;
+          const point = v(
+            ball.x,
+            Math.max(minPocketY, ball.y + 0.115) + vertical * 0.008,
+            ball.z,
+          );
+          const space = this.body.parent!.parent;
+          if (space) space.localToWorld(point);
+          this.body.worldToLocal(point);
+          const pocketContact = THREE.MathUtils.clamp(
+            (ball.y - 0.32) / 0.52,
+            0.22,
+            0.68,
+          );
+          if (point.x < -0.035) {
+            left.copy(point);
+            right.set(0.3, 1.1, 0.18 + stride * 0.18 * moving);
+            leftGrip = pocketContact;
+          } else {
+            right.copy(point);
+            left.set(-0.3, 1.1, 0.18 - stride * 0.18 * moving);
+            rightGrip = pocketContact;
+          }
+        }
         this.lastBallY = ball.y;
       }
     }
@@ -537,10 +613,19 @@ export class StreetballRig {
       left.lerp(actionLeft, release);
       contact = 1 - smoothMotion((r - 0.3) / 0.2);
     } else if (shot) {
-      const raise = smoothMotion(p.finishElapsedSec / 0.25),
-        lower = r >= 0 ? 1 - smoothMotion((r - 0.2) / 0.55) : 1;
-      right.lerp(v(0.19, 2.02, 0.24), raise * lower);
-      left.lerp(v(-0.16, 1.97, 0.22), raise * lower);
+      const raise = smoothMotion(p.finishElapsedSec / 0.24),
+        releaseSnap = smoothMotion((p.finishElapsedSec - 0.28) / 0.22),
+        lower = r >= 0 ? 1 - smoothMotion((r - 0.18) / 0.45) : 1;
+      right.lerp(
+        v(0.16, 2.04 + releaseSnap * 0.1, 0.24 + releaseSnap * 0.06),
+        raise * lower,
+      );
+      left.lerp(
+        v(-0.13 - releaseSnap * 0.05, 1.98 - releaseSnap * 0.04, 0.22),
+        raise * lower,
+      );
+      rightGrip = 0.65 * raise * lower;
+      leftGrip = 0.35 * (1 - releaseSnap * 0.6) * raise * lower;
     } else if (jump) {
       right.set(0.29, 2.08, 0.14);
       left.set(-0.29, 2.04, 0.14);
@@ -574,9 +659,18 @@ export class StreetballRig {
       -1,
       this.hands[0],
       v(-0.6, 1.2, -0.2),
-      blockHand < 0 ? 1 : dunk && p.dunkStyle !== "windmill" ? contact : 0,
+      blockHand < 0
+        ? 1
+        : dunk && p.dunkStyle !== "windmill"
+          ? contact
+          : leftGrip,
     );
-    this.hand(1, this.hands[1], v(0.6, 1.2, -0.2), blockHand > 0 ? 1 : contact);
+    this.hand(
+      1,
+      this.hands[1],
+      v(0.6, 1.2, -0.2),
+      blockHand > 0 ? 1 : dunk ? contact : rightGrip,
+    );
     this.body.updateWorldMatrix(true, true);
   }
 }

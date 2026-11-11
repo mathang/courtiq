@@ -14,12 +14,15 @@ export function dribbleBallPosition(p: PlayerSimState, elapsedSec: number) {
   const yaw =
     p.facingAngle +
     (p.streetMove === "spin" ? p.moveSide * smoothMotion(u) * Math.PI * 2 : 0);
+  const tripleThreat = p.animState !== "dribble" && !p.streetMove;
+  const forward = tripleThreat ? 0.31 : 0.28;
+  const lateral = tripleThreat ? 0.2 : 0.34;
   return {
-    x: p.x + Math.sin(yaw) * 0.28 + Math.cos(yaw) * 0.34 * side,
+    x: p.x + Math.sin(yaw) * forward + Math.cos(yaw) * lateral * side,
     y:
       p.animState === "dribble"
         ? Math.abs(Math.sin(elapsedSec * 7.5)) * 0.65 + 0.24
-        : 1.15,
-    z: p.z + Math.cos(yaw) * 0.28 - Math.sin(yaw) * 0.34 * side,
+        : 1.07,
+    z: p.z + Math.cos(yaw) * forward - Math.sin(yaw) * lateral * side,
   };
 }

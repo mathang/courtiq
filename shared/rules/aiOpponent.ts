@@ -1,10 +1,12 @@
 import { canStealBall, DefenseAction } from './defense';
+import { DunkStyle } from './dunks';
 import type { PlayerSimState } from './matchStateMachine';
-import type { StreetMove } from './streetMoves';
+import { canTriggerOrChainTrick, type StreetMove } from './streetMoves';
 import {
   AI_DIFFICULTY_PRESETS,
   AiDifficultyId,
   COURT_GEOMETRY,
+  STREET_FLOW_CONFIG,
 } from '../config/balance';
 import { QuestionItem } from '../content/question-schema';
 import { computeDistance2D, CourtPoint2D } from './block';
@@ -74,6 +76,7 @@ export interface AiBasketballBrainState {
   minDribbleBeforeShotSec: number;
   observations: Array<{ age: number; x: number; z: number }>;
   wantsDunk: boolean;
+  preferredDunkStyle: DunkStyle;
   defenseTimerSec: number;
   driveSide: number;
   lastPosition: CourtPoint2D | null;
@@ -87,15 +90,23 @@ export interface AiBasketballBrainState {
 export function createAiBasketballBrainState(rng: () => number = Math.random): AiBasketballBrainState {
   const wantsDunk = rng() < 0.68;
   const driveSide = rng() < 0.5 ? -1 : 1;
+  const targetSpot = wantsDunk ? { x: driveSide * 1.4, z: -3.4 } : pickOffensiveTargetSpot(rng);
+  const retargetTimerSec = 2.0 + rng() * 0.8;
+  const styles: DunkStyle[] = ['tomahawk', 'windmill', '360', 'reverse'];
+  const styleUnit = clamp((retargetTimerSec - 2.0) / 0.8, 0, 0.999);
+  const preferredDunkStyle = styles[Math.floor(styleUnit * styles.length)];
   return {
-    targetSpot: wantsDunk ? { x: driveSide * 1.4, z: -3.4 } : pickOffensiveTargetSpot(rng),
-    retargetTimerSec: 2.0 + rng() * 0.8,
+    targetSpot,
+    retargetTimerSec,
     possessionElapsedSec: 0,
     minDribbleBeforeShotSec: 0.85 + rng() * 0.75,
-    observations: [], wantsDunk, driveSide,
+    observations: [],
+    wantsDunk,
+    preferredDunkStyle,
+    driveSide,
     defenseTimerSec: 0.8 + rng() * 0.7,
     lastPosition: null, stalledSec: 0, escapeTarget: null, escapeRemainingSec: 0,
-    trickTimerSec: 0.6, shotDecisionDeadlineSec: 3.6 + rng() * 0.8,
+    trickTimerSec: 0.55, shotDecisionDeadlineSec: 3.6 + rng() * 0.8,
   };
 }
 
@@ -115,6 +126,7 @@ export interface AiMovementIntent {
   sprint: boolean;
   shoot: boolean;
   dunk?: boolean;
+  dunkStyle?: DunkStyle;
   defense?: DefenseAction;
   trick?: StreetMove;
 }
@@ -196,19 +208,52 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
 
   const defenderDistance = computeDistance2D(aiPos, opponentPos);
   if (params.isAttacker) {
+    // Punish a visibly rooted defender who whiffed a swipe by immediately attacking the rim!
+    const defenderRootedOnWhiff =
+      params.difficulty !== 'beginner' &&
+      params.opponent?.defenseResult === 'miss' &&
+      (params.opponent.defenseRecoverySec ?? 0) > 0.25;
+    if (defenderRootedOnWhiff && !brain.wantsDunk) {
+      brain.wantsDunk = true;
+      brain.targetSpot = { x: brain.driveSide * 1.05, z: -3.45 };
+    }
+
     const hoopDistance = computeDistance2D(aiPos, { x: COURT_GEOMETRY.hoopX, z: COURT_GEOMETRY.hoopZ });
+    const maxDunkRange = self?.onFire ? STREET_FLOW_CONFIG.onFireDunkRangeM : 3.4;
     const behindRim = aiPos.z < COURT_GEOMETRY.hoopZ + 0.55;
     const frontOfRim = !behindRim;
     const clockUrgent = params.movementClockRemainingMs <= 2600;
     const rimFinish = frontOfRim && hoopDistance <= 2.35 && brain.possessionElapsedSec >= 0.35;
     const settled = brain.possessionElapsedSec >= brain.minDribbleBeforeShotSec;
     const nearTarget = computeDistance2D(aiPos, brain.targetSpot) < 0.8;
-    const open = defenderDistance > 1.85;
-    const plannedShot = settled && frontOfRim && hoopDistance <= (brain.wantsDunk ? 3.3 : 7.4) &&
-      (open || (nearTarget && brain.possessionElapsedSec > 1.5));
+    const open = defenderDistance > 1.85 || defenderRootedOnWhiff;
+    const stepbackCreatedSpace =
+      !brain.wantsDunk &&
+      self?.lastTrick === 'stepback' &&
+      defenderDistance > 1.65 &&
+      hoopDistance <= 7.2;
+    const plannedShot =
+      settled &&
+      frontOfRim &&
+      hoopDistance <= (brain.wantsDunk ? maxDunkRange - 0.1 : 7.4) &&
+      (open || stepbackCreatedSpace || (nearTarget && brain.possessionElapsedSec > 1.5));
     const decisiveShot = frontOfRim && hoopDistance <= 7.4 && brain.possessionElapsedSec >= brain.shotDecisionDeadlineSec;
     if (!recovering && (rimFinish || plannedShot || decisiveShot || clockUrgent)) {
-      return { moveX: 0, moveZ: 0, sprint: false, shoot: true, dunk: frontOfRim && hoopDistance <= 3.4 };
+      const doDunk = frontOfRim && hoopDistance <= maxDunkRange;
+      const dunkStyle: DunkStyle =
+        params.difficulty === 'beginner'
+          ? 'tomahawk'
+          : self?.onFire
+            ? '360'
+            : brain.preferredDunkStyle;
+      return {
+        moveX: 0,
+        moveZ: 0,
+        sprint: false,
+        shoot: true,
+        dunk: doDunk,
+        ...(doDunk ? { dunkStyle } : {}),
+      };
     }
 
     // A drive's lane is selected once, not from the sign of x on every tick.
@@ -216,18 +261,82 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
       brain.targetSpot = pickOffensiveTargetSpot(rng);
       brain.retargetTimerSec = 1.8;
     }
-    const goal = behindRim ? safeCourtTarget({ x: Math.abs(aiPos.x) < 0.4 ? brain.driveSide * 1.2 : aiPos.x, z: COURT_GEOMETRY.hoopZ + 1.8 }) : brain.targetSpot;
+    const goal = behindRim
+      ? safeCourtTarget({ x: Math.abs(aiPos.x) < 0.4 ? brain.driveSide * 1.2 : aiPos.x, z: COURT_GEOMETRY.hoopZ + 1.8 })
+      : brain.targetSpot;
     const route = routeAroundDefender(params, goal);
-    const canTrick = !recovering && brain.trickTimerSec <= 0 && defenderDistance < 1.9 &&
-      (!self || (self.moveCooldownSec <= 0 && !self.streetMove && self.sprintStamina > 0.3));
+
     let trick: StreetMove | undefined;
-    if (canTrick) {
-      trick = brain.wantsDunk ? (params.difficulty === 'beginner' ? 'crossover' : 'spin') : 'stepback';
-      brain.trickTimerSec = 1.35;
+    if (!recovering && defenderDistance < 2.65) {
+      if (!self) {
+        if (brain.trickTimerSec <= 0 && defenderDistance < 1.9) {
+          trick = brain.wantsDunk ? (params.difficulty === 'beginner' ? 'crossover' : 'spin') : 'stepback';
+          brain.trickTimerSec = 1.35;
+        }
+      } else if (self.sprintStamina > 0.3) {
+        // Legitimate 2-move chains on Intermediate & Advanced
+        const wantsChain =
+          params.difficulty !== 'beginner' &&
+          self.trickCombo === 1 &&
+          self.sprintStamina > 0.42 &&
+          (params.difficulty === 'advanced' || brain.possessionElapsedSec > 0.85);
+        if (wantsChain) {
+          const secondMove: StreetMove = brain.wantsDunk
+            ? self.lastTrick === 'crossover'
+              ? hoopDistance < 4.4
+                ? 'eurostep'
+                : 'spin'
+              : 'crossover'
+            : self.lastTrick === 'stepback'
+              ? 'crossover'
+              : 'stepback';
+          if (canTriggerOrChainTrick(self, secondMove)) {
+            trick = secondMove;
+            brain.trickTimerSec = 1.15;
+          }
+        } else if (
+          defenderDistance < (params.difficulty === 'beginner' ? 1.9 : 2.3) &&
+          (brain.trickTimerSec <= 0 ||
+            (params.difficulty === 'advanced' && brain.possessionElapsedSec >= 0.16)) &&
+          self.trickCombo === 0
+        ) {
+          const firstMove: StreetMove = brain.wantsDunk
+            ? params.difficulty === 'beginner'
+              ? 'crossover'
+              : hoopDistance < 4.2 && Math.abs(aiPos.x) > 1.2
+                ? 'eurostep'
+                : 'crossover'
+            : params.difficulty === 'beginner'
+              ? 'stepback'
+              : 'crossover';
+          if (canTriggerOrChainTrick(self, firstMove)) {
+            trick = firstMove;
+            brain.trickTimerSec = params.difficulty === 'beginner' ? 1.45 : 0.32;
+          }
+        }
+      }
     }
-    return { ...movementToward(aiPos, route, preset.moveSpeedMultiplier),
-      sprint: !recovering && (!self || self.sprintStamina > 0.25) && computeDistance2D(aiPos, route) > 1.3,
-      shoot: false, ...(trick ? { trick } : {}) };
+
+    // Subtle hesitation probe before bursting on Intermediate/Advanced
+    const hesitationWindow =
+      params.difficulty !== 'beginner' &&
+      !defenderRootedOnWhiff &&
+      defenderDistance > 2.2 &&
+      defenderDistance < 3.1 &&
+      brain.possessionElapsedSec > 0.45 &&
+      brain.possessionElapsedSec < 0.72;
+    const paceMultiplier = hesitationWindow ? preset.moveSpeedMultiplier * 0.76 : preset.moveSpeedMultiplier;
+
+    return {
+      ...movementToward(aiPos, route, paceMultiplier),
+      sprint:
+        !recovering &&
+        !hesitationWindow &&
+        (!self || self.sprintStamina > 0.25) &&
+        (defenderRootedOnWhiff || computeDistance2D(aiPos, route) > 1.25),
+      shoot: false,
+      ...(trick ? { trick } : {}),
+    };
   }
 
   // Preserve difficulty-specific reaction time; use observed court positions, never human intentions.
@@ -244,6 +353,13 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
   brain.targetSpot = goal;
   const route = routeAroundDefender(params, goal);
   brain.defenseTimerSec -= deltaSec;
+  if (
+    params.difficulty !== 'beginner' &&
+    (params.opponent?.trickOverexposedSec ?? 0) > 0.12 &&
+    brain.defenseTimerSec > 0.08
+  ) {
+    brain.defenseTimerSec = 0.08;
+  }
   const canChallenge = !recovering && (!self || (self.defenseCooldownSec <= 0 && self.sprintStamina > 0.18));
   const exposedBall = self && params.opponent && params.ballPos ? canStealBall(self, params.opponent, params.ballPos) : defenderDistance < 1.4;
   const swipe = brain.defenseTimerSec <= 0 && canChallenge && exposedBall;

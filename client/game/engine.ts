@@ -27,6 +27,7 @@ export class CourtIqRenderer {
 
   private renderer: THREE.WebGLRenderer | null = null;
   private scene: THREE.Scene | null = null;
+  private keyLight: THREE.DirectionalLight | null = null;
   private cameraCtrl: CourtCameraController | null = null;
   private arena: CourtIqArena3D | null = null;
   private chars: [PlayerCharacter3D, PlayerCharacter3D] | null = null;
@@ -60,7 +61,9 @@ export class CourtIqRenderer {
       );
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.12;
+      renderer.toneMappingExposure = 1.14;
+      renderer.shadowMap.enabled = this.qualityMode === 'high';
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       this.renderer = renderer;
       this.container.innerHTML = '';
@@ -68,19 +71,33 @@ export class CourtIqRenderer {
 
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color(0x091324);
-      this.scene.fog = new THREE.FogExp2(0x091324, 0.018);
+      this.scene.fog = new THREE.FogExp2(0x0d1d35, 0.013);
 
-      // Inexpensive studio arena lighting (Section 20)
-      const hemi = new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 1.6);
+      // Floodlit streetball stadium lighting + real directional shadow map in High quality
+      const hemi = new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 1.55);
       this.scene.add(hemi);
 
-      const keyLight = new THREE.DirectionalLight(0xfffbeb, 2.6);
-      keyLight.position.set(5, 14, 8);
+      const keyLight = new THREE.DirectionalLight(0xfff7ed, 2.75);
+      keyLight.position.set(5.8, 14.5, 8.2);
+      keyLight.castShadow = this.qualityMode === 'high';
+      keyLight.shadow.mapSize.set(1024, 1024);
+      keyLight.shadow.camera.near = 2;
+      keyLight.shadow.camera.far = 34;
+      keyLight.shadow.camera.left = -10.5;
+      keyLight.shadow.camera.right = 10.5;
+      keyLight.shadow.camera.top = 10.5;
+      keyLight.shadow.camera.bottom = -10.5;
+      keyLight.shadow.bias = -0.0005;
+      this.keyLight = keyLight;
       this.scene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.55);
-      rimLight.position.set(-7, 9, -6);
+      const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.72);
+      rimLight.position.set(-8.5, 9.5, -6.5);
       this.scene.add(rimLight);
+
+      const warmFill = new THREE.DirectionalLight(0xfdb913, 0.34);
+      warmFill.position.set(8.5, 7.5, -7.2);
+      this.scene.add(warmFill);
 
       this.cameraCtrl = new CourtCameraController(
         (this.container.clientWidth || window.innerWidth) /
@@ -148,6 +165,10 @@ export class CourtIqRenderer {
     this.renderer.setPixelRatio(
       mode === 'low' ? 1 : Math.min(window.devicePixelRatio || 1, 2)
     );
+    this.renderer.shadowMap.enabled = mode === 'high';
+    if (this.keyLight) {
+      this.keyLight.castShadow = mode === 'high';
+    }
     this.arena?.setQualityMode(mode === 'low');
   }
 
@@ -173,9 +194,15 @@ export class CourtIqRenderer {
     }
   }
 
-  public triggerBasketCelebration(): void {
-    this.arena?.triggerNetSwish();
+  public triggerBasketCelebration(isDunk = false): void {
+    this.arena?.triggerNetSwish(isDunk);
+    this.ballCtrl?.triggerRimBurst(0xfdb913);
     this.cameraCtrl?.triggerImpact('basket');
+  }
+
+  public triggerRimMissEffect(): void {
+    this.arena?.triggerRimFlex(0.42);
+    this.cameraCtrl?.triggerImpact('miss');
   }
 
   public getPlayerAssetStates(): string[] {
@@ -189,7 +216,8 @@ export class CourtIqRenderer {
   }
 
   public triggerBlockEffect(): void {
-    this.arena?.triggerCrowdExcitement();
+    this.arena?.triggerRimFlex(0.62, 'block');
+    this.ballCtrl?.triggerRimBurst(0xef4444);
     this.cameraCtrl?.triggerImpact('block');
   }
   private updateOverlayBounds(): void {
@@ -253,6 +281,9 @@ export class CourtIqRenderer {
       state.players[1].appearancePreset
     );
 
+    const attacker = state.players[state.attackerSlot];
+    const anyOnFire = state.players[0].onFire || state.players[1].onFire;
+
     this.arena.updateScoreboard({
       p0Name: state.players[0].pseudonym,
       p1Name: state.players[1].pseudonym,
@@ -260,8 +291,14 @@ export class CourtIqRenderer {
       score1: state.scores[1],
       shotClockSec: state.shotClockSec,
       attackerSlot: state.attackerSlot,
+      onFire: anyOnFire,
+      comboCount: attacker.trickCombo,
     });
-    this.arena.update(realDeltaSec, nowSec, state.reducedMotion);
+    this.arena.update(realDeltaSec, nowSec, state.reducedMotion, {
+      phase: state.phase,
+      shotClockSec: state.shotClockSec,
+      onFire: anyOnFire,
+    });
 
     this.chars[0].update({
       sim: state.players[0],
@@ -285,6 +322,8 @@ export class CourtIqRenderer {
       phase: state.phase,
       reducedMotion: state.reducedMotion,
       deltaSec: realDeltaSec,
+      onFire: attacker.onFire,
+      comboCount: attacker.trickCombo,
     });
 
     this.cameraCtrl.update({

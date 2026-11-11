@@ -36,6 +36,9 @@ export class PlayerCharacter3D {
   private rig: StreetballRig | null = null;
   private ring!: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
   private contest!: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
+  private fireRing!: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
+  private accentMaterial: THREE.MeshStandardMaterial | null = null;
+  private auraPulse = 0;
   private shadow: THREE.Mesh<
     THREE.PlaneGeometry,
     THREE.MeshBasicMaterial
@@ -83,8 +86,10 @@ export class PlayerCharacter3D {
               .setHex(preset.skinHex)
               .lerp(new THREE.Color(0xbc815b), 0.18);
           if (m.name === "Hair") m.color.setHex(preset.hairHex);
-          if (m.name === "TeamAccent")
+          if (m.name === "TeamAccent") {
             m.color.setHex(slot === 0 ? 0xffbd2d : 0x29c6de);
+            this.accentMaterial = m;
+          }
           if (m.name === "Jersey") {
             m.color.setHex(0xffffff);
             m.map = this.texture;
@@ -120,11 +125,13 @@ export class PlayerCharacter3D {
         this.fallback = null;
         this.ring = this.floorRing(
           0.37,
-          0.405,
+          0.41,
           slot === 0 ? 0xffbd2d : 0x29c6de,
         );
-        this.contest = this.floorRing(0.53, 0.56, 0x34d399);
+        this.contest = this.floorRing(0.53, 0.565, 0x34d399);
         this.contest.visible = false;
+        this.fireRing = this.floorRing(0.45, 0.515, 0xff6b00);
+        this.fireRing.visible = false;
         this.assetState = "ready";
       })
       .catch(() => {
@@ -232,11 +239,30 @@ export class PlayerCharacter3D {
     this.visualYaw = this.body.rotation.y;
     this.wasDunk = dunk;
     this.contest.visible = !params.isAttacker && params.showBlockEligibleRing;
-    this.ring.material.opacity = params.isAttacker ? 0.85 : 0.38;
+    this.auraPulse += params.presentationDeltaSec * 7.5;
+    const comboGlow = p.onFire || p.trickCombo >= 2;
+    this.fireRing.visible = comboGlow;
+    if (comboGlow) {
+      const pulse = 1 + Math.sin(this.auraPulse) * 0.085;
+      this.fireRing.scale.setScalar(pulse * (p.onFire ? 1.12 : 1.0));
+      this.fireRing.material.color.setHex(p.onFire ? 0xff6b00 : 0xfdb913);
+      this.fireRing.material.opacity = p.onFire ? 0.86 : 0.58;
+    }
+    if (this.accentMaterial) {
+      this.accentMaterial.emissive.setHex(
+        p.onFire ? 0xff5500 : p.trickCombo >= 2 ? 0xfdb913 : 0x000000,
+      );
+      this.accentMaterial.emissiveIntensity = p.onFire
+        ? 0.42
+        : p.trickCombo >= 2
+          ? 0.18
+          : 0;
+    }
+    this.ring.material.opacity = params.isAttacker ? 0.88 : 0.4;
     this.ring.scale.setScalar(p.streetMove ? 1.2 : 1);
     if (this.shadow) {
       this.shadow.scale.setScalar(1 + Math.max(0, air.y) * 0.2);
-      this.shadow.material.opacity = 0.52 / (1 + Math.max(0, air.y) * 1.2);
+      this.shadow.material.opacity = 0.34 / (1 + Math.max(0, air.y) * 1.2);
     }
   }
   /** A world-space contact point for asset verification, never used to decide game outcomes. */
@@ -258,7 +284,7 @@ export class PlayerCharacter3D {
     this.fallback?.dispose();
     this.ownedMaterials.forEach((m) => m.dispose());
     this.texture.dispose();
-    for (const ring of [this.ring, this.contest]) {
+    for (const ring of [this.ring, this.contest, this.fireRing]) {
       ring?.geometry.dispose();
       ring?.material.dispose();
     }

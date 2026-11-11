@@ -24,8 +24,14 @@
         <div class="scoreboard-strip" aria-live="polite">
           <div id="hud-p0-card" class="player-score-card slot-0 active-attacker">
             <div class="player-meta">
-              <span id="hud-p0-role" class="role-pill">🏀 ATT</span>
+              <div class="role-row">
+                <span id="hud-p0-role" class="role-pill">🏀 ATT</span>
+                <span id="hud-p0-combo" class="combo-mini-pill hidden">🔥 ON FIRE</span>
+              </div>
               <span id="hud-p0-name" class="player-name">Player 1</span>
+              <div class="flow-mini-track" title="Street Flow Momentum Meter">
+                <div id="hud-p0-flow-fill" class="flow-mini-fill" style="width: 0%"></div>
+              </div>
             </div>
             <div id="hud-p0-score" class="player-score">0</div>
           </div>
@@ -39,8 +45,14 @@
           <div id="hud-p1-card" class="player-score-card slot-1">
             <div id="hud-p1-score" class="player-score">0</div>
             <div class="player-meta right">
+              <div class="role-row right">
+                <span id="hud-p1-combo" class="combo-mini-pill hidden">🔥 ON FIRE</span>
+                <span id="hud-p1-role" class="role-pill">🛡️ DEF</span>
+              </div>
               <span id="hud-p1-name" class="player-name">CourtBot</span>
-              <span id="hud-p1-role" class="role-pill">🛡️ DEF</span>
+              <div class="flow-mini-track" title="Street Flow Momentum Meter">
+                <div id="hud-p1-flow-fill" class="flow-mini-fill" style="width: 0%"></div>
+              </div>
             </div>
           </div>
         </div>

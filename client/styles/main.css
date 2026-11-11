@@ -150,6 +150,51 @@ kbd {
   align-items: flex-end;
 }
 
+.role-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.role-row.right {
+  justify-content: flex-end;
+}
+
+.combo-mini-pill {
+  font-size: 0.62rem;
+  font-weight: 900;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff6b00, #fdb913);
+  color: #091324;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.flow-mini-track {
+  width: 88px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 1px;
+}
+
+.flow-mini-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--gold));
+  transition: width 0.12s ease-out;
+}
+
+.flow-mini-fill.on-fire {
+  background: linear-gradient(90deg, #ff4d00, #ffd15c);
+  box-shadow: 0 0 8px rgba(255, 107, 0, 0.85);
+}
+
+.player-score-card.on-fire {
+  box-shadow: 0 0 16px rgba(255, 107, 0, 0.42);
+}
+
 .role-pill {
   font-size: 0.68rem;
   font-weight: 800;
@@ -1073,7 +1118,8 @@ textarea {
 }
 
 /* Street controls keep the playfield clear; keyboard legend yields to touch. */
-.street-status { position:absolute; z-index:21; top:106px; left:50%; transform:translateX(-50%); padding:6px 14px; border-radius:20px; background:rgba(7,16,31,.86); color:var(--gold-bright); font-size:.72rem; font-weight:850; letter-spacing:.08em; pointer-events:none; white-space:nowrap; }
+.street-status { position:absolute; z-index:21; top:106px; left:50%; transform:translateX(-50%); padding:6px 15px; border-radius:20px; background:rgba(7,16,31,.88); border:1px solid rgba(253,185,19,.35); color:var(--gold-bright); font-size:.73rem; font-weight:850; letter-spacing:.08em; pointer-events:none; white-space:nowrap; transition:transform .12s ease, border-color .15s ease, background .15s ease; }
+.street-status.callout-hot { background:linear-gradient(135deg,rgba(124,45,18,.94),rgba(15,23,42,.94)); border-color:#ff8c38; color:#fff7ed; box-shadow:0 6px 20px rgba(255,107,0,.38); transform:translateX(-50%) scale(1.04); }
 .touch-action-buttons { display:grid; grid-template-columns:repeat(3,64px); gap:8px; }
 .touch-btn { width:64px; height:56px; border-radius:16px; font-size:.62rem; }
 .trick-btn { background:rgba(15,23,42,.88); border:1px solid var(--gold); }
@@ -1117,30 +1163,55 @@ textarea {
 .possession-hint-pill kbd { font-size:.65rem; padding:1px 3px; }
 @media (max-width:1100px) { .possession-hint-pill { white-space:normal; text-align:center; width:90%; } }
 
-/* Keep an upper court window during the duel; long questions scroll as one card. */
-@media (max-width:760px) {
-  .question-overlay { left:10px; right:10px; bottom:max(10px,env(safe-area-inset-bottom)); }
-  .question-panel { max-height:57dvh; overflow-y:auto; overscroll-behavior:contain; scrollbar-color:var(--gold) var(--panel-solid); padding:11px 12px; border-radius:14px; }
-  .question-top-bar { align-items:flex-start; }
-  .question-badges { gap:4px; }
-  .q-badge { font-size:.63rem; padding:2px 6px; }
-  .question-timer-cluster { gap:5px; flex-shrink:0; }
-  .reading-pill { font-size:.62rem; max-width:83px; padding:3px 5px; }
-  .q-timer-text { font-size:1rem; }
-  .question-stem { font-size:.94rem; line-height:1.35; margin-bottom:9px; }
-  .options-grid { gap:7px; }
-  .option-btn { min-height:44px; padding:9px; gap:8px; border-radius:9px; }
-  .opt-text { font-size:.86rem; line-height:1.3; }
-  .opt-key { padding:3px 5px; font-size:.67rem; }
-  .question-footer-status { font-size:.68rem; gap:9px; }
+/* Keep an upper court window during the duel AND clear any bottom-right hosting badge
+   (e.g. fixed 148x38px badge at right:12px, bottom:12px) on narrow/portrait viewports
+   without requiring scroll to reveal Option D or status text. */
+@media (max-width:1240px) {
+  .question-overlay,
+  .feedback-overlay {
+    bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
+  }
 }
 
-/* Keep the hosting badge visible without covering answers or question status.
-   The reserved footer scrolls with the card, so every answer remains reachable. */
-body:has(> #nl-badge-frame) .question-panel {
-  max-height:57dvh;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  padding-bottom:80px;
-  scroll-padding-bottom:80px;
+@media (max-width:760px) {
+  .flow-mini-track { width:56px; height:4px; }
+  .combo-mini-pill { font-size:.48rem; padding:1px 4px; }
+  .question-overlay,
+  .feedback-overlay {
+    left:10px;
+    right:10px;
+    bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
+  }
+  .question-panel {
+    max-height:min(51dvh, calc(100dvh - 156px));
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-color:var(--gold) var(--panel-solid);
+    padding:9px 11px;
+    border-radius:14px;
+  }
+  .question-top-bar { align-items:center; margin-bottom:5px; }
+  .question-badges { gap:4px; }
+  .q-badge { font-size:.6rem; padding:2px 6px; }
+  .question-timer-cluster { gap:5px; flex-shrink:0; }
+  .reading-pill { font-size:.58rem; max-width:96px; padding:2px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .q-timer-text { font-size:.96rem; }
+  .timer-progress-track { height:5px; margin-bottom:6px; }
+  .question-stem { font-size:.86rem; line-height:1.26; margin-bottom:7px; }
+  .options-grid { gap:5px; margin-bottom:6px; }
+  .option-btn { min-height:44px; padding:6px 9px; gap:7px; border-radius:9px; }
+  .opt-text { font-size:.79rem; line-height:1.2; }
+  .opt-key { padding:2px 5px; font-size:.64rem; }
+  .question-footer-status { font-size:.64rem; gap:8px; }
+  .feedback-card {
+    max-height:min(54dvh, calc(100dvh - 156px));
+    overflow-y:auto;
+    padding:12px 14px;
+  }
+}
+
+/* Fallback if a taller injected badge frame is present on ultra-wide viewports */
+body:has(> #nl-badge-frame) .question-overlay,
+body:has(> #nl-badge-frame) .feedback-overlay {
+  bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
 }

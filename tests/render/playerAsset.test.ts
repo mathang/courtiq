@@ -11,6 +11,7 @@ import {
   dunkBallPosition,
   dunkReboundPosition,
 } from "../../shared/rules/dunks";
+import { dribbleBallPosition } from "../../shared/rules/dribble";
 import { getAirPose } from "../../shared/rules/streetMoves";
 
 const bytes = readFileSync(
@@ -220,6 +221,30 @@ describe("shipped streetball player", () => {
         expect(y).toBeGreaterThan(0.065);
         expect(y).toBeLessThan(0.115);
       }
+    }
+  });
+  it("cradles the basketball with both hands in the idle triple-threat pocket", () => {
+    const a = actor(),
+      p = player();
+    p.x = 0;
+    p.z = 2.6;
+    p.facingAngle = Math.PI;
+    p.vx = p.vz = 0;
+    p.animState = "idle";
+    const ball = dribbleBallPosition(p, 0);
+    a.root.position.set(p.x, 0, p.z);
+    for (let i = 0; i < 45; i++) {
+      a.body.position.set(0, 0, 0);
+      a.body.rotation.set(0, p.facingAngle, 0);
+      a.rig.update(p, true, 1 / 60, ball);
+    }
+    a.root.updateMatrixWorld(true);
+    const ballCenter = new THREE.Vector3(ball.x, ball.y, ball.z);
+    for (const handName of ["hand_l", "hand_r"]) {
+      const wrist = a.model
+        .getObjectByName(handName)!
+        .getWorldPosition(new THREE.Vector3());
+      expect(wrist.distanceTo(ballCenter)).toBeLessThan(0.24);
     }
   });
   it("holds the emitted hand pose when presentation time is paused", () => {

@@ -6,6 +6,7 @@ import {
   COURT_GEOMETRY,
   RoomPresetId,
   SessionLengthId,
+  STREET_FLOW_CONFIG,
 } from '../shared/config/balance';
 import {
   PublicDuelQuestion,
@@ -76,6 +77,8 @@ class CourtIqApp {
   private lastPhase: MatchPhase = 'Lobby';
   private lastFeedbackDuelId: string | null = null;
   private dunkImpactPlayed = false;
+  private lastComboBySlot: [number, number] = [0, 0];
+  private lastOnFireBySlot: [boolean, boolean] = [false, false];
 
   constructor() {
     const viewport = document.getElementById('viewport-container')!;
@@ -680,6 +683,19 @@ class CourtIqApp {
     this.sound.setPaused(paused);
     const cues = this.cueTracker.update(phase, players, attackerSlot, ballPosition, paused);
     const pan = Math.max(-0.5, Math.min(0.5, ballPosition.x / 10));
+    if (!paused) {
+      for (const s of [0, 1] as const) {
+        const pl = players[s];
+        if (pl.trickCombo >= 2 && pl.trickCombo > this.lastComboBySlot[s]) {
+          this.sound.playComboChain(pl.trickCombo, pan);
+        }
+        if (pl.onFire && !this.lastOnFireBySlot[s]) {
+          this.sound.playOnFireIgnite();
+        }
+        this.lastComboBySlot[s] = pl.trickCombo;
+        this.lastOnFireBySlot[s] = pl.onFire;
+      }
+    }
     for (const cue of cues) {
       if (cue === 'bounce') this.sound.playBounce(pan);
       else if (cue === 'cut') this.sound.playCut(pan);
@@ -694,13 +710,16 @@ class CourtIqApp {
         this.dunkImpactPlayed = true;
         if (cue === 'basket') {
           this.sound.playDunkSlam();
-          this.renderer.triggerBasketCelebration();
+          this.renderer.triggerBasketCelebration(true);
         }
         else if (cue === 'block') {
           this.sound.playBlockSwat();
           this.renderer.triggerBlockEffect();
         }
-        else this.sound.playRimClank();
+        else {
+          this.sound.playRimClank();
+          this.renderer.triggerRimMissEffect();
+        }
       }
     }
     if (!paused && (phase === 'QuestionReady' || phase === 'Duel')) this.sound.startSlowMoAtmosphere();
@@ -728,12 +747,13 @@ class CourtIqApp {
         // The slam/swat already played at the visible contact frame.
       } else if (feedback.outcome === 'basket') {
         this.sound.playSwish();
-        this.renderer.triggerBasketCelebration();
+        this.renderer.triggerBasketCelebration(false);
       } else if (feedback.outcome === 'block') {
         this.sound.playBlockSwat();
         this.renderer.triggerBlockEffect();
       } else if (feedback.outcome === 'miss') {
         this.sound.playRimClank();
+        this.renderer.triggerRimMissEffect();
       } else {
         this.sound.playBuzzer();
       }
@@ -843,24 +863,67 @@ class CourtIqApp {
     const active = phase === 'Possession' || phase === 'QuestionReady' || phase === 'Duel' || phase === 'Resolution';
     badge.classList.toggle('hidden', !active || phase === 'Duel');
     const defending = you.slot !== attacker.slot;
-    const dunkRange = Math.hypot(attacker.x - COURT_GEOMETRY.hoopX, attacker.z - COURT_GEOMETRY.hoopZ) <= DUNK_RANGE_M;
+    const effectiveDunkRange = attacker.onFire
+      ? STREET_FLOW_CONFIG.onFireDunkRangeM
+      : DUNK_RANGE_M;
+    const dunkRange =
+      Math.hypot(
+        attacker.x - COURT_GEOMETRY.hoopX,
+        attacker.z - COURT_GEOMETRY.hoopZ
+      ) <= effectiveDunkRange;
     const selectedStyle = DUNK_LABELS[this.input.dunkStyle];
     const styleBtn = document.getElementById('btn-touch-style');
     if (styleBtn) styleBtn.textContent = `STYLE: ${selectedStyle}`;
     document.querySelectorAll('[data-attack-control]').forEach((e) => e.classList.toggle('hidden', defending));
     document.querySelectorAll('[data-defense-control]').forEach((e) => e.classList.toggle('hidden', !defending));
     const physicalSwat = this.onlineSnapshot?.activeDuel?.physicalBlock ?? this.soloEngine?.activeDuel?.physicalBlock ?? false;
-    const label = physicalSwat && (phase === 'QuestionReady' || phase === 'Duel') ? 'SWAT CONNECTED • QUESTION STILL COUNTS' :
-      defending && attacker.defenseResult === 'steal' && attacker.defenseElapsedSec < 1.2 ? 'BALL STOLEN! GET BACK ON DEFENSE' :
-      you.defenseResult === 'steal' && you.defenseElapsedSec < 1.2 ? 'CLEAN STEAL! DRIVE!' :
-      you.defenseResult === 'timed-block' && (phase === 'QuestionReady' || phase === 'Duel') ? 'GET THAT OUT! TIMED SWAT' :
-      you.defenseAction === 'swipe' ? `SWIPE ${you.defenseResult === 'miss' ? 'MISSED' : 'ATTEMPT'} • RECOVER ${you.defenseRecoverySec.toFixed(1)}s` :
-      you.defenseAction === 'jump' ? 'BLOCK ATTEMPT' :
-      attacker.finishKind === 'dunk' ? `${DUNK_LABELS[attacker.dunkStyle]} • ${defending && phase === 'QuestionReady' ? 'B / SPACE: SWAT NOW!' : 'ABOVE THE RIM'}` :
-      phase !== 'Possession' ? 'SHOT DUEL • ANSWER TO SCORE / BLOCK' :
-      defending ? (you.defenseCooldownSec > 0 ? `DEFENSE RECHARGING ${you.defenseCooldownSec.toFixed(1)}s` : 'Z: SWIPE • B / SPACE: JUMP BLOCK') :
-      you.wrongFootSec > 0 ? 'WRONG FOOTED' : you.streetMove ? STREET_MOVES[you.streetMove].label :
-      dunkRange ? `DUNK ZONE • R: ${selectedStyle} • V: CHANGE` : `R: DUNK • V: ${selectedStyle}`;
+    const liveCallout =
+      attacker.calloutSec > 0 && attacker.calloutText
+        ? attacker.calloutText
+        : you.calloutSec > 0 && you.calloutText
+          ? you.calloutText
+          : null;
+    const isHot = Boolean(
+      liveCallout ||
+      attacker.onFire ||
+      attacker.trickCombo >= 2 ||
+      you.defenseResult === 'steal' ||
+      you.defenseResult === 'timed-block'
+    );
+    badge.classList.toggle('callout-hot', isHot);
+
+    const label =
+      physicalSwat && (phase === 'QuestionReady' || phase === 'Duel')
+        ? 'SWAT CONNECTED • QUESTION STILL COUNTS'
+        : defending && attacker.defenseResult === 'steal' && attacker.defenseElapsedSec < 1.2
+          ? 'BALL STOLEN! GET BACK ON DEFENSE'
+          : you.defenseResult === 'steal' && you.defenseElapsedSec < 1.2
+            ? 'COOKIE SNATCH! DRIVE TO THE RIM!'
+            : you.defenseResult === 'timed-block' && (phase === 'QuestionReady' || phase === 'Duel')
+              ? 'GET THAT OUT! TIMED SWAT'
+              : you.defenseAction === 'swipe'
+                ? `SWIPE ${you.defenseResult === 'miss' ? 'MISSED' : 'ATTEMPT'} • RECOVER ${you.defenseRecoverySec.toFixed(1)}s`
+                : you.defenseAction === 'jump'
+                  ? 'BLOCK ATTEMPT'
+                  : liveCallout
+                    ? `${attacker.onFire ? '🔥 ' : ''}${liveCallout}`
+                    : attacker.finishKind === 'dunk'
+                      ? `${attacker.onFire ? '🔥 ' : ''}${DUNK_LABELS[attacker.dunkStyle]} • ${defending && phase === 'QuestionReady' ? 'B / SPACE: SWAT NOW!' : 'ABOVE THE RIM'}`
+                      : phase !== 'Possession'
+                        ? 'SHOT DUEL • ANSWER TO SCORE / BLOCK'
+                        : defending
+                          ? attacker.trickOverexposedSec > 0
+                            ? '⚡ BALL EXPOSED! PRESS Z TO STEAL!'
+                            : you.defenseCooldownSec > 0
+                              ? `DEFENSE RECHARGING ${you.defenseCooldownSec.toFixed(1)}s`
+                              : 'Z: SWIPE • B / SPACE: JUMP BLOCK'
+                          : you.wrongFootSec > 0
+                            ? 'WRONG FOOTED'
+                            : you.streetMove
+                              ? `${you.trickCombo >= 2 ? `${you.trickCombo}x CHAIN • ` : ''}${STREET_MOVES[you.streetMove].label}`
+                              : dunkRange
+                                ? `${you.onFire ? '🔥 ON FIRE • ' : ''}DUNK ZONE • R: ${selectedStyle} • V: STYLE`
+                                : `${you.onFire ? '🔥 ON FIRE • ' : you.trickCombo >= 1 ? `${you.trickCombo}x COMBO • CHAIN C/Q/E/X • ` : ''}R: DUNK • V: ${selectedStyle}`;
     if (badge.textContent !== label) badge.textContent = label;
   }
 
@@ -965,6 +1028,30 @@ class CourtIqApp {
     const p1Card = document.getElementById('hud-p1-card');
     p0Card?.classList.toggle('active-attacker', params.attackerSlot === 0);
     p1Card?.classList.toggle('active-attacker', params.attackerSlot === 1);
+    p0Card?.classList.toggle('on-fire', params.players[0].onFire);
+    p1Card?.classList.toggle('on-fire', params.players[1].onFire);
+
+    for (const slot of [0, 1] as const) {
+      const pl = params.players[slot];
+      const flowEl = document.getElementById(`hud-p${slot}-flow-fill`);
+      if (flowEl) {
+        flowEl.style.width = `${Math.round(pl.streetFlow * 100)}%`;
+        flowEl.classList.toggle('on-fire', pl.onFire);
+      }
+      const comboEl = document.getElementById(`hud-p${slot}-combo`);
+      if (comboEl) {
+        const showCombo = pl.onFire || pl.trickCombo >= 2;
+        comboEl.classList.toggle('hidden', !showCombo);
+        if (showCombo) {
+          comboEl.textContent =
+            pl.onFire && pl.trickCombo >= 2
+              ? `🔥 ${pl.trickCombo}x`
+              : pl.onFire
+                ? '🔥 FIRE'
+                : `⚡ ${pl.trickCombo}x`;
+        }
+      }
+    }
 
     const setTxt = (id: string, val: string) => {
       const el = document.getElementById(id);
@@ -1010,16 +1097,28 @@ class CourtIqApp {
       { x: COURT_GEOMETRY.hoopX, z: COURT_GEOMETRY.hoopZ }
     );
     const { zone, pointValue } = classifyShotZone(dist);
+    const comboIdx = Math.min(
+      STREET_FLOW_CONFIG.comboSetupBonus.length - 1,
+      attPlayer.trickCombo
+    );
+    const liveSetupBonus =
+      STREET_FLOW_CONFIG.comboSetupBonus[comboIdx] +
+      (attPlayer.onFire ? STREET_FLOW_CONFIG.onFireSetupBonus : 0);
     const baseProb = Math.round(
       computeBaseShotProbability({
         zone,
         heavilyContested: params.blockEligible,
-        releasedWhileSprinting: attPlayer.isSprinting,
+        releasedWhileSprinting: attPlayer.isSprinting && !attPlayer.finishKind,
+        setupBonus: liveSetupBonus,
       }) * 100
     );
+    const bonusTag =
+      liveSetupBonus > 0
+        ? ` (+${Math.round(liveSetupBonus * 100)}% Flow)`
+        : '';
     setTxt(
       'hud-zone-badge',
-      `${pointValue}PT ${zone.toUpperCase()} • Base ${baseProb}%`
+      `${pointValue}PT ${zone.toUpperCase()} • Base ${baseProb}%${bonusTag}`
     );
 
     // Subtle "Block available" indicator (Section 8)

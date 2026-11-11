@@ -10,6 +10,8 @@ export type DesignedSound =
   | "swat"
   | "answer"
   | "buzzer"
+  | "combo"
+  | "fire"
   | "air";
 export function createCourtSound(
   kind: DesignedSound,
@@ -19,12 +21,16 @@ export function createCourtSound(
     kind === "air"
       ? 3
       : kind === "slam"
-        ? 0.6
-        : kind === "net"
-          ? 0.4
-          : kind === "buzzer"
-            ? 0.5
-            : 0.24;
+        ? 0.62
+        : kind === "fire"
+          ? 0.52
+          : kind === "net"
+            ? 0.4
+            : kind === "buzzer"
+              ? 0.5
+              : kind === "combo"
+                ? 0.28
+                : 0.24;
   const out = new Float32Array(Math.ceil(rate * duration));
   let seed = 7349,
     low = 0,
@@ -52,13 +58,33 @@ export function createCourtSound(
           high * 0.11 * Math.exp(-t * 110)) *
         attack;
     } else if (kind === "slam" || kind === "rim") {
+      const spring = Math.sin(t * 2 * Math.PI * (286 + 18 * Math.sin(t * 36))) * 0.11 * Math.exp(-t * 9.5);
       value =
-        (Math.sin(t * 2 * Math.PI * 61) * 0.48 * Math.exp(-t * 16) +
-          Math.sin(t * 2 * Math.PI * 438) * 0.19 * Math.exp(-t * 11) +
-          Math.sin(t * 2 * Math.PI * 731) * 0.13 * Math.exp(-t * 18) +
-          high * 0.21 * Math.exp(-t * 70)) *
+        (Math.sin(t * 2 * Math.PI * 61) * 0.46 * Math.exp(-t * 15) +
+          Math.sin(t * 2 * Math.PI * 438) * 0.18 * Math.exp(-t * 11) +
+          Math.sin(t * 2 * Math.PI * 731) * 0.12 * Math.exp(-t * 18) +
+          spring +
+          high * 0.2 * Math.exp(-t * 70)) *
         attack;
-      if (kind === "rim") value *= 0.6;
+      if (kind === "rim") value *= 0.62;
+    } else if (kind === "combo") {
+      const sweep = 440 + 330 * Math.min(1, t / 0.14);
+      phase += (2 * Math.PI * sweep) / rate;
+      value =
+        (Math.sin(phase) * 0.26 +
+          Math.sin(phase * 1.5) * 0.14 +
+          high * 0.18 * Math.exp(-t * 26)) *
+        Math.exp(-t * 12) *
+        attack;
+    } else if (kind === "fire") {
+      value =
+        (Math.sin(t * 2 * Math.PI * 220) * 0.24 +
+          Math.sin(t * 2 * Math.PI * 277.18) * 0.2 +
+          Math.sin(t * 2 * Math.PI * 329.63) * 0.2 +
+          Math.sin(t * 2 * Math.PI * 440) * 0.16 +
+          high * 0.14 * Math.exp(-t * 9)) *
+        Math.exp(-t * 5.2) *
+        attack;
     } else if (kind === "net")
       value = high * 0.48 * Math.exp(-t * 11) * Math.sin(Math.PI * u) ** 0.6;
     else if (kind === "swat")

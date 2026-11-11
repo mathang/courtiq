@@ -8,6 +8,7 @@ export class ShowcasePossession {
   public active = true;
   private elapsed = 0;
   private cut = false;
+  private chained = false;
   public next(
     players: [PlayerSimState, PlayerSimState],
     phase: MatchPhase,
@@ -56,9 +57,18 @@ export class ShowcasePossession {
             sprint: true,
             shoot: false,
           };
-    if (distance < 4.0 && !this.cut) {
+    if (distance < 5.05 && !this.cut) {
       input.trick = "crossover";
       this.cut = true;
+    } else if (
+      this.cut &&
+      !this.chained &&
+      distance < 4.15 &&
+      ((p.streetMove === "crossover" && p.moveElapsedSec >= 0.25) ||
+        (!p.streetMove && p.trickCombo >= 1))
+    ) {
+      input.trick = "spin";
+      this.chained = true;
     }
     if (this.elapsed > 5) {
       input.shoot = true;

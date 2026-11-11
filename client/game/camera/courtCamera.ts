@@ -111,12 +111,21 @@ export class CourtCameraController {
     );
     this.mode = approach ? "drive" : "broadcast";
     if (approach) {
+      const comboEnergy = attacker.onFire
+        ? 0.45
+        : attacker.trickCombo >= 2
+          ? 0.28
+          : 0;
       look.set(
-        attacker.x * 0.4,
-        1.1,
+        attacker.x * 0.42,
+        1.14 + comboEnergy * 0.12,
         (attacker.z + COURT_GEOMETRY.hoopZ) * 0.5,
       );
-      position.set(2.8 + attacker.x * 0.3, 6.9, 8.5);
+      position.set(
+        2.8 + attacker.x * 0.34,
+        6.9 - comboEnergy * 0.55,
+        8.5 - comboEnergy * 0.45,
+      );
     }
     if (shot && (duel || phase === "Resolution")) {
       this.mode = duel
@@ -129,7 +138,7 @@ export class CourtCameraController {
         Math.max(1.35, attackPose.y + 1.0),
         COURT_GEOMETRY.hoopZ + 0.25,
       );
-      position.set(this.shotSide * 4.8, 4.8, 2.9);
+      position.set(this.shotSide * 4.85, 4.78, 3.05);
     } else if (phase === "Feedback") {
       this.mode = "recovery";
     }
