@@ -53,6 +53,7 @@ class CourtIqApp {
   private input: InputGuardController;
 
   private packs: QuestionPack[] = [...BUNDLED_QUESTION_PACKS];
+  private soloPackSelection: string | null = null;
   private soloEngine: AuthoritativeMatchEngine | null = null;
 
   // Online client state
@@ -185,7 +186,8 @@ class CourtIqApp {
       ).length;
       const opt = document.createElement('option');
       opt.value = p.packId;
-      opt.textContent = `${p.title} (${approvedCount} Approved Qs • v${p.packVersion})`;
+      opt.textContent = p.title.replace(/^SPX101\s+/, '').replace(/\s*\(.*/, '');
+      opt.title = `${p.title} · ${approvedCount} approved questions · v${p.packVersion}`;
       sel.appendChild(opt);
     }
     if (currentVal && this.packs.some((p) => p.packId === currentVal)) {
@@ -208,6 +210,14 @@ class CourtIqApp {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
         return;
       }
+      // Menu buttons and native disclosures keep their normal Space/Enter behaviour.
+      if ((this.onlineSnapshot?.phase ?? this.soloEngine?.phase) === 'Lobby') {
+        if (e.code === this.input.bindings.pause) {
+          document.getElementById('settings-modal')?.classList.add('hidden');
+          document.getElementById('tutorial-modal')?.classList.add('hidden');
+        }
+        return;
+      }
       if (e.code !== this.input.bindings.pause && ['settings-modal', 'tutorial-modal'].some((id) => !document.getElementById(id)?.classList.contains('hidden'))) return;
       this.input.handleKeyDown(e);
     });
@@ -219,7 +229,7 @@ class CourtIqApp {
     window.addEventListener('blur', () => this.input.reset());
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.input.reset(); });
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'KeyF' && !e.repeat && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
+      if (e.code === 'KeyF' && !e.repeat && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement) && !(e.target instanceof HTMLSelectElement)) {
         if (document.fullscreenElement) void document.exitFullscreen();
         else void document.documentElement.requestFullscreen().catch(() => {});
       }
@@ -228,26 +238,24 @@ class CourtIqApp {
       e.preventDefault();
       this.input.triggerTouchTrick();
     });
-    // Mode tabs
-    const tabs: Array<[string, string]> = [
-      ['tab-solo', 'panel-solo-actions'],
-      ['tab-online', 'panel-online-actions'],
-      ['tab-content', 'panel-content-validator'],
-    ];
-    for (const [tabId, panelId] of tabs) {
-      document.getElementById(tabId)?.addEventListener('click', () => {
-        for (const [t, p] of tabs) {
-          const isTarget = t === tabId;
-          const tabEl = document.getElementById(t);
-          const panelEl = document.getElementById(p);
-          tabEl?.classList.toggle('active', isTarget);
-          tabEl?.setAttribute('aria-selected', String(isTarget));
-          panelEl?.classList.toggle('hidden', !isTarget);
-        }
-        const aiGroup = document.getElementById('ai-difficulty-group');
-        aiGroup?.classList.toggle('hidden', tabId !== 'tab-solo');
+    const modes = ['solo', 'online'] as const;
+    for (const mode of modes) {
+      const tab = document.getElementById(`tab-${mode}`);
+      tab?.addEventListener('click', () => this.selectLobbyMode(mode));
+      tab?.addEventListener('keydown', e => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+        e.preventDefault();
+        const next = e.key === 'Home' ? 'solo' : e.key === 'End' ? 'online' : mode === 'solo' ? 'online' : 'solo';
+        this.selectLobbyMode(next);
+        document.getElementById(`tab-${next}`)?.focus();
       });
     }
+    document.getElementById('btn-lobby-settings')?.addEventListener('click', () => this.toggleSettingsModal(true));
+    document.getElementById('btn-lobby-help')?.addEventListener('click', () => {
+      this.input.reset();
+      document.getElementById('tutorial-modal')?.classList.remove('hidden');
+    });
+    document.getElementById('btn-leave-room')?.addEventListener('click', () => this.sendWsMessage({ type: 'LEAVE_ROOM' }));
 
     // Appearance selector live preview
     document
@@ -551,11 +559,38 @@ class CourtIqApp {
     this.soloEngine.startMatch();
   }
 
+  private selectLobbyMode(mode: 'solo' | 'online'): void {
+    if (this.onlineLobby) return;
+    const select = document.getElementById('select-pack') as HTMLSelectElement;
+    const wasOnline = document.getElementById('tab-online')?.getAttribute('aria-selected') === 'true';
+    if (mode === 'online' && !wasOnline) this.soloPackSelection = select.value;
+    for (const option of select.options) {
+      option.disabled = mode === 'online' && !BUNDLED_QUESTION_PACKS.some(p => p.packId === option.value);
+    }
+    if (mode === 'online' && select.selectedOptions[0]?.disabled) select.value = BUNDLED_QUESTION_PACKS[0].packId;
+    if (mode === 'solo' && wasOnline && this.soloPackSelection) select.value = this.soloPackSelection;
+    for (const m of ['solo', 'online'] as const) {
+      const selected = m === mode;
+      const tab = document.getElementById(`tab-${m}`);
+      tab?.classList.toggle('active', selected);
+      tab?.setAttribute('aria-selected', String(selected));
+      tab?.setAttribute('tabindex', selected ? '0' : '-1');
+      document.getElementById(`panel-${m}-actions`)?.classList.toggle('hidden', !selected);
+    }
+    document.getElementById('ai-difficulty-group')?.classList.toggle('hidden', mode !== 'solo');
+  }
+
   private returnToLobby(): void {
     this.showcase = null;
     this.input.reset();
     this.closeOnlineConnection();
     this.onlineSnapshot = null;
+    this.onlineLobby = null;
+    document.getElementById('lobby-mode-tabs')?.classList.remove('hidden');
+    document.getElementById('online-waiting-room')?.classList.add('hidden');
+    document.getElementById('online-room-entry')?.classList.remove('hidden');
+    document.getElementById('lobby-config-grid')?.classList.remove('hidden');
+    document.getElementById('lobby-options')?.classList.remove('hidden');
     this.sound.stopSlowMoAtmosphere();
     this.initLobbyPreviewEngine();
   }
@@ -801,6 +836,7 @@ class CourtIqApp {
     });
 
     // Show/hide overlays by phase
+    document.getElementById('hud-top')?.classList.toggle('hidden', eng.phase === 'Lobby');
     document
       .getElementById('lobby-overlay')
       ?.classList.toggle('hidden', eng.phase !== 'Lobby');
@@ -911,7 +947,9 @@ class CourtIqApp {
               : you.defenseAction === 'swipe'
                 ? `SWIPE ${you.defenseResult === 'miss' ? 'MISSED' : 'ATTEMPT'} • RECOVER ${you.defenseRecoverySec.toFixed(1)}s`
                 : you.defenseAction === 'jump'
-                  ? 'BLOCK ATTEMPT'
+                  ? 'BLOCK ATTEMPT • KEEP MOVING'
+                  : you.wrongFootSec > 0
+                    ? 'OFF BALANCE • KEEP MOVING'
                   : liveCallout
                     ? `${attacker.onFire ? '🔥 ' : ''}${liveCallout}`
                     : attacker.finishKind === 'dunk'
@@ -972,6 +1010,7 @@ class CourtIqApp {
       blockEligible: snap.liveBlockEligibility.eligible,
     });
 
+    document.getElementById('hud-top')?.classList.remove('hidden');
     document.getElementById('lobby-overlay')?.classList.add('hidden');
     document.getElementById('btn-return-lobby')?.classList.remove('hidden');
     document
@@ -1756,6 +1795,10 @@ class CourtIqApp {
   }
 
   private handleServerMessage(msg: ServerToClientMessage): void {
+    if (msg.type === 'ROOM_LEFT') {
+      this.returnToLobby();
+      return;
+    }
     if (msg.type === 'ROOM_JOINED') {
       this.onlineRoomCode = msg.roomCode;
       this.onlineSlot = msg.yourSlot;
@@ -1796,6 +1839,18 @@ class CourtIqApp {
   }
 
   private renderOnlineWaitingRoom(lobby: RoomLobbySnapshot): void {
+    document.getElementById('lobby-mode-tabs')?.classList.add('hidden');
+    this.onlineReady = lobby.players[this.onlineSlot]?.ready ?? false;
+    const ready = document.getElementById('btn-toggle-ready');
+    if (ready) {
+      ready.textContent = this.onlineReady ? '✓ Ready' : 'Ready to play';
+      ready.setAttribute('aria-pressed', String(this.onlineReady));
+    }
+    document.getElementById('online-room-entry')?.classList.add('hidden');
+    document.getElementById('lobby-config-grid')?.classList.add('hidden');
+    document.getElementById('lobby-options')?.classList.add('hidden');
+    const topic = document.getElementById('online-room-topic');
+    if (topic) topic.textContent = lobby.packTitle.replace(/^SPX101\s+/, '').replace(/\s*\(.*/, '');
     const waitEl = document.getElementById('online-waiting-room');
     waitEl?.classList.remove('hidden');
 
@@ -1858,6 +1913,7 @@ class CourtIqApp {
         this.packs.push(validPack);
       }
       this.populatePackDropdown();
+      this.selectLobbyMode('solo');
       const sel = document.getElementById('select-pack') as HTMLSelectElement;
       if (sel) sel.value = validPack.packId;
 

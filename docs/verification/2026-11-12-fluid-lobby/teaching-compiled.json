@@ -1,0 +1,12 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "errors": [],
+  "secrecyChecks": 251,
+  "primaryDunkAndBlock": true,
+  "sameQuestion": true,
+  "sameChoices": true,
+  "perStudentFeedback": true,
+  "missedSwipeFrozen": true,
+  "bothContinueRequired": true,
+  "question": "spx101-w09-027"
+}

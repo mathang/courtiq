@@ -97,6 +97,7 @@ export type ClientToServerMessage =
       type: 'SET_READY';
       ready: boolean;
     }
+  | { type: 'LEAVE_ROOM' }
   | {
       type: 'MOVE_INTENT';
       input: PlayerMoveInput;
@@ -124,6 +125,7 @@ export type ClientToServerMessage =
 // ============================================================================
 
 export type ServerToClientMessage =
+  | { type: 'ROOM_LEFT' }
   | {
       type: 'ROOM_JOINED';
       roomCode: string;

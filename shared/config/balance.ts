@@ -65,6 +65,11 @@ export const MOVEMENT_CONFIG = {
   braking: 34,
   playerCollisionRadiusM: 0.48,
   minPlayerSeparationM: 0.82,
+  /** Soft body contact can compress this far before the torso safety limit. */
+  contactCompressionM: 0.12,
+  contactResponse: 22,
+  contactVelocityResponse: 16,
+  motionStepSec: 1 / 120,
   /** Sprint stamina (0..1) */
   sprintDrainPerSec: 0.30,
   sprintRegenPerSec: 0.35,

@@ -10,11 +10,17 @@ export const DEFENSE_CONFIG = {
   overexposedExtraReachM: 0.20,
   jumpDurationSec: 0.88,
   jumpCooldownSec: 0.95,
+  jumpSteeringMultiplier: 0.72,
   blockWindowStartSec: 0.02,
   blockWindowEndSec: 0.84,
   jumpActiveStartSec: 0.02,
   jumpActiveEndSec: 0.86,
 } as const;
+
+/** Only a committed steal swipe roots movement; jumps and being wrong-footed do not. */
+export function isStealRecovery(p: Pick<PlayerSimState, 'defenseAction' | 'defenseRecoverySec'>): boolean {
+  return p.defenseAction === 'swipe' && p.defenseRecoverySec > 0;
+}
 
 export function isDefenseAction(v: unknown): v is DefenseAction {
   return v === 'swipe' || v === 'jump';

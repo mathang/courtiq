@@ -1,0 +1,365 @@
+{
+  "baseCommit": "dffb1ded34442a4803c072da019b51fdbf5d2ee7",
+  "branch": "feat/fluid-defense-simple-lobby",
+  "sourceFingerprint": "5b42a6f18dc7ca1b31841ad0b876c19746bf6e51acb7e3fe6b269a144825f30e",
+  "sourceFiles": [
+    {
+      "file": "client/game/animation/ballTrajectory.ts",
+      "sha256": "d96b4cb8012b3b94359a39c0be3376eb7f37c01d64ce70312161c6a04b73855c"
+    },
+    {
+      "file": "client/game/audio/courtSoundBank.ts",
+      "sha256": "2eaabfaadb84bb2713f80abf61948cc3233fba6087b65976ae4cd209ce4393af"
+    },
+    {
+      "file": "client/game/audio/soundEngine.ts",
+      "sha256": "a90555f35560a0b4f05f0a7707fa6673ef940ee1d912fad45cbb9211c77fb0d4"
+    },
+    {
+      "file": "client/game/camera/courtCamera.ts",
+      "sha256": "0c2037af33a2e0fb20ee59cbf5b8bc0f4d0f1343d24ebff843c2d6183b285292"
+    },
+    {
+      "file": "client/game/characters/basketballAnimator.ts",
+      "sha256": "66efe52634d42c75b12a8317b7085e257605231f47bec70a1e87aaf731c9da33"
+    },
+    {
+      "file": "client/game/characters/legacyPlayerCharacter.ts",
+      "sha256": "240a9c7a22fd76cedc98f250690e958fa4aa0cc15f7a4c13a0a91c0d1a7b4235"
+    },
+    {
+      "file": "client/game/characters/playerCharacter.ts",
+      "sha256": "d8098b2e5c0a9eb23046d0a6799ccd8fec2f10ef3eb93d55c4b4377ec5760573"
+    },
+    {
+      "file": "client/game/characters/streetballRig.ts",
+      "sha256": "97fa42313ad05248956c38c33b60b63e167d7009815e547db4e25d6bf3b50a84"
+    },
+    {
+      "file": "client/game/court/arena.ts",
+      "sha256": "2c744895233188a53f64d9a35210b09bfee4905ecab45098e7ec0f685a531963"
+    },
+    {
+      "file": "client/game/engine.ts",
+      "sha256": "58bfb2b0bf8b1e60da44fc6a98c238ac31f60dc7bcaac11349f333d9f2914473"
+    },
+    {
+      "file": "client/game/input/controls.ts",
+      "sha256": "1894e8adc1a1cd5bd735e214543961b97a3286a957ebc381646095e2b099ad51"
+    },
+    {
+      "file": "client/game/presentation/possessionCues.ts",
+      "sha256": "81ebdcb7c2c32605102d0af0fcc0a5c3b8178a0504f3733f977683ce8333ec81"
+    },
+    {
+      "file": "client/game/presentation/showcasePossession.ts",
+      "sha256": "64bc91bbe722eb45f18bbbbc4480a08c439ae8d61248930468660e86d8f500b6"
+    },
+    {
+      "file": "client/main.ts",
+      "sha256": "df7ed7c9c0aee24f3dfe3e7e7e2429e766b6698c7441ee919dcdc15ae1a0c5b9"
+    },
+    {
+      "file": "client/playerLab.ts",
+      "sha256": "ce94500a03305043d4007f7f2238553471f0247108375152ec05c24901ce023a"
+    },
+    {
+      "file": "client/styles/main.css",
+      "sha256": "f2bad6a8b834cc263a725deef2d3ec8d5082452a213fa0182ae04d0225b80a98"
+    },
+    {
+      "file": "client/styles/playerLab.css",
+      "sha256": "bf1cb9cc7ae5604781a94e0b1b17d5328d118967116082ab7ad909a70a0c8ffc"
+    },
+    {
+      "file": "content/approved-packs/spx101-w05-measurement-quality.json",
+      "sha256": "c002e7c887a24c182705cbe4e27a58a3894402d5d07e6e0aa063e0879168d7d2"
+    },
+    {
+      "file": "content/approved-packs/spx101-w09-performance-analysis.json",
+      "sha256": "1b9f2c76bb05fa3f59426a49febb4d6afd3a3d6b209e70b313cbde4bdf43a2e0"
+    },
+    {
+      "file": "content/packRegistry.ts",
+      "sha256": "27ed2733074550d8401658e87ff7d40ba48b471b9646b306e5243ef85dd0f8c8"
+    },
+    {
+      "file": "index.html",
+      "sha256": "4301826c9127ac5730eaf777990553c782df16e16a9da2e50c880ad2130114fd"
+    },
+    {
+      "file": "netlify/functions/health.ts",
+      "sha256": "e20cacb7b2c839c6352c60933ca4ddfbde6f113449900326e3d297d6a65152c1"
+    },
+    {
+      "file": "netlify/functions/room.ts",
+      "sha256": "0357bcbd119da18076ad574db159c7b0780b4ebfa3b45a43bdb5b534eddd0770"
+    },
+    {
+      "file": "netlify.toml",
+      "sha256": "570fe1e77b620db86a64306f34767f706ab676c9b370275d2b4a5a17ffe453f6"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "7ab9141b287e6ac4d6ea5e4a6a2c0c4fadf4085e98d7f498a6de9aa388c8748e"
+    },
+    {
+      "file": "package.json",
+      "sha256": "c5e38f44bab10dd34f8d4adc98255eadf40bd952f31a5c974f6390677a109aa6"
+    },
+    {
+      "file": "player-lab.html",
+      "sha256": "9497aaebb520e9a603fc3557ac54bbfbc040edfa20d62c792ed254b60764af44"
+    },
+    {
+      "file": "public/assets/audio/CC0-LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "public/assets/audio/README.md",
+      "sha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545"
+    },
+    {
+      "file": "public/assets/audio/bounce-1.wav",
+      "sha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8"
+    },
+    {
+      "file": "public/assets/audio/bounce-2.wav",
+      "sha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886"
+    },
+    {
+      "file": "public/assets/audio/bounce-3.wav",
+      "sha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174"
+    },
+    {
+      "file": "public/assets/audio/cheer.wav",
+      "sha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2"
+    },
+    {
+      "file": "public/assets/audio/squeak-1.wav",
+      "sha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9"
+    },
+    {
+      "file": "public/assets/audio/squeak-2.wav",
+      "sha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7"
+    },
+    {
+      "file": "public/assets/audio/squeak-3.wav",
+      "sha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334"
+    },
+    {
+      "file": "public/assets/player/ANIMATION-LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "public/assets/player/QUATERNIUS-LICENSE.txt",
+      "sha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e"
+    },
+    {
+      "file": "public/assets/player/streetball-player.glb",
+      "sha256": "246df806eb9b7dc497dc8e5a6ddb7a31b01d1679f1558523aaa9262db8bb4467"
+    },
+    {
+      "file": "server/answer-validation/duelValidator.ts",
+      "sha256": "de0fdce3296f209cc256cf62d5f6c14dfb36251d2dfff6cbbf4ae28a17905d33"
+    },
+    {
+      "file": "server/index.ts",
+      "sha256": "660e11df0f4f46229cb37ee27aaa6586aa2ce6ee0dcc09d942dc06078e06a073"
+    },
+    {
+      "file": "server/match-events/eventLogger.ts",
+      "sha256": "9956f9ff18784d162e84fbc1ac3fa4500a115fb1352a80cd323e21fb6ba8ca68"
+    },
+    {
+      "file": "server/question-service/packService.ts",
+      "sha256": "796518ed6d52fddbc06c3b7dcbe01b8490b57196e036269f54ff3d2be7c6d35f"
+    },
+    {
+      "file": "server/rooms/roomManager.ts",
+      "sha256": "a4ec08864ad4adc3a5d7e011111c255340259a66cd9aeb08344ece65a21e2d38"
+    },
+    {
+      "file": "server/simulation/authoritativeMatch.ts",
+      "sha256": "90fdfb51c6095a1b1988de6328191448f47a1099275f51af337b316eff7521fe"
+    },
+    {
+      "file": "shared/config/balance.ts",
+      "sha256": "cffcb293e1a84afe818056f1b3e63e9ebd8aca1cde35c6b5344254be55c5bdf5"
+    },
+    {
+      "file": "shared/content/question-schema.ts",
+      "sha256": "f91ad6ab369bd18fc4c55d8b8cbf4117eb20884bc964cb48ffa193a30e27bf22"
+    },
+    {
+      "file": "shared/protocol/messages.ts",
+      "sha256": "05522e754ed555e8aacf0f287d18e53f9ab404d5757d867ce3ad7752ef80edfd"
+    },
+    {
+      "file": "shared/rules/aiOpponent.ts",
+      "sha256": "46e72566d60b8d9d15fd2e25a62b6d6c90bf45ac79a4ef8e05f4c8f695e225c1"
+    },
+    {
+      "file": "shared/rules/block.ts",
+      "sha256": "559d210932202b94523d0dfa23afa118d2a602d12f0363b0d7b5d5c5f850153e"
+    },
+    {
+      "file": "shared/rules/contact.ts",
+      "sha256": "132d644d1736a58aa5e2d1fe12391f7a762e0fd37add47cc648dac9c0c285575"
+    },
+    {
+      "file": "shared/rules/defense.ts",
+      "sha256": "4b9c6476addc405dd553a1cdc1338cf9aba4eb3d28a9988c900515ce1a31301a"
+    },
+    {
+      "file": "shared/rules/dribble.ts",
+      "sha256": "026945dc270dd02a9a486f4461406b76fb755299be7b5512cf336d710992ff07"
+    },
+    {
+      "file": "shared/rules/dunks.ts",
+      "sha256": "b380d19f75aa84506d64f1d276eca443604a8079571807383525c63d48b3ac13"
+    },
+    {
+      "file": "shared/rules/finishing.ts",
+      "sha256": "012a63a42f0fe9f11f724e03289c5046205e2667110833b99012e76ffb3294ce"
+    },
+    {
+      "file": "shared/rules/learningFeedback.ts",
+      "sha256": "66f03bc1b58765c945581e1f3d150f470615a89c7f6aba99c0417ea2b30fe847"
+    },
+    {
+      "file": "shared/rules/matchStateMachine.ts",
+      "sha256": "e72125ae6ec5effe7bd15cc2dd80510e8f9a9a4e8f69f8e297e2bd8a7c430b50"
+    },
+    {
+      "file": "shared/rules/motionCurves.ts",
+      "sha256": "4d136ca8c1c15e866c47b20f91808a7b5707dcb58f34d879ffa9a182b4eaae64"
+    },
+    {
+      "file": "shared/rules/possession.ts",
+      "sha256": "a8e331ac3d4384d981cc7666f07530f4f85a4f359cc15967713391c3207c387a"
+    },
+    {
+      "file": "shared/rules/shot.ts",
+      "sha256": "06a948bc2652cb3ad12bb3ae9d2334ce8173a3ab19b00d142371f86eea1c1bb1"
+    },
+    {
+      "file": "shared/rules/streetMoves.ts",
+      "sha256": "93d2bf1b65965d74c5e49e8748584a6e84957203234ef2ba65f4d9918dfd1d46"
+    },
+    {
+      "file": "shared/rules/timing.ts",
+      "sha256": "a46693211e71f6920be7e1f60618de4df23eacee74b935ec092e7d5282d97d58"
+    },
+    {
+      "file": "tsconfig.json",
+      "sha256": "1a7e515b74f36d4667cb763ee878a98f9c8e56e40009608ecd9804dc21bef90d"
+    },
+    {
+      "file": "vite.config.ts",
+      "sha256": "260a5b9b299103ce66c7ad2a2b307b1a9e5bee08d68f48aa69aa21d8aba20cdf"
+    }
+  ],
+  "distFiles": [
+    {
+      "file": "assets/audio/CC0-LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "bytes": 7048
+    },
+    {
+      "file": "assets/audio/README.md",
+      "sha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545",
+      "bytes": 847
+    },
+    {
+      "file": "assets/audio/bounce-1.wav",
+      "sha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8",
+      "bytes": 28450
+    },
+    {
+      "file": "assets/audio/bounce-2.wav",
+      "sha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886",
+      "bytes": 28450
+    },
+    {
+      "file": "assets/audio/bounce-3.wav",
+      "sha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174",
+      "bytes": 28450
+    },
+    {
+      "file": "assets/audio/cheer.wav",
+      "sha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2",
+      "bytes": 110514
+    },
+    {
+      "file": "assets/audio/squeak-1.wav",
+      "sha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9",
+      "bytes": 23132
+    },
+    {
+      "file": "assets/audio/squeak-2.wav",
+      "sha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7",
+      "bytes": 23132
+    },
+    {
+      "file": "assets/audio/squeak-3.wav",
+      "sha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334",
+      "bytes": 23132
+    },
+    {
+      "file": "assets/game-BB4ZICDv.css",
+      "sha256": "47c4e98dcc1836df9743039a1f2356b641f91bc6d6fe4fcd171865edf1e2e409",
+      "bytes": 24755
+    },
+    {
+      "file": "assets/game-DNoYiCa8.js",
+      "sha256": "b57922db6f0a6bff17f1a5e71adf36dd8ead13eae9539d44fd4d3063cca37e5c",
+      "bytes": 99817
+    },
+    {
+      "file": "assets/player/ANIMATION-LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "bytes": 7048
+    },
+    {
+      "file": "assets/player/QUATERNIUS-LICENSE.txt",
+      "sha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e",
+      "bytes": 806
+    },
+    {
+      "file": "assets/player/streetball-player.glb",
+      "sha256": "246df806eb9b7dc497dc8e5a6ddb7a31b01d1679f1558523aaa9262db8bb4467",
+      "bytes": 1286024
+    },
+    {
+      "file": "assets/playerCharacter-DTyNWooy.js",
+      "sha256": "7ed9a1342b1849c3b76761ea4c271177b2b349336e28c5bd5894b0a739d9b595",
+      "bytes": 266180
+    },
+    {
+      "file": "assets/playerLab-BOjgjvqB.js",
+      "sha256": "d8c16dcd7aeb16d34712468865d93057cd02b733cbd71903e9e223d998c0358d",
+      "bytes": 26978
+    },
+    {
+      "file": "assets/playerLab-CpIJaJLo.css",
+      "sha256": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f",
+      "bytes": 6063
+    },
+    {
+      "file": "assets/three-C3aAHTDY.js",
+      "sha256": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03",
+      "bytes": 559766
+    },
+    {
+      "file": "index.html",
+      "sha256": "c243a90a887014f54a7eb097ea4e67b712d40a6b60db4f39218b5f10f695becc",
+      "bytes": 25852
+    },
+    {
+      "file": "player-lab.html",
+      "sha256": "fdd7eae86f57d9766ca52d9980eb86e02b83a5825d2976a896b772ad0d207346",
+      "bytes": 5328
+    }
+  ]
+}

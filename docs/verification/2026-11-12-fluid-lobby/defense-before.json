@@ -1,0 +1,12 @@
+[
+  {
+    "scenario": "off-balance",
+    "defenderDistanceM": 0,
+    "velocity": 0
+  },
+  {
+    "scenario": "jump",
+    "defenderDistanceM": 0,
+    "velocity": 0
+  }
+]

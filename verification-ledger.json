@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:a9d226d76d013c6e7c80ed7a103acc70911e97749f48d561e0523c53a8ba637b",
+  "revision_or_artifact_hash": "dist/index.html:sha256:c243a90a887014f54a7eb097ea4e67b712d40a6b60db4f39218b5f10f695becc",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -553,9 +553,74 @@
       "observed": "Production 6af4d6de8a44959c9894be9b is current and ready. All 20 files match tested dist with only documented Netlify HTML normalisation. Both deployed function digests match the verified preview. Live C 1/2/3/4 taps, three-correct Fire/+20pp third shot and next-wrong reset, personal rationales, both-party Continue, missed-swipe root and primary-action paint dunk/block pass. 35 online pre-resolution secrecy checks; zero page errors. Genuine hosting badge and all four choices/Continue are visible and separate in inspected live captures.",
       "evidence_path": "docs/verification/2026-11-12-simple-controls",
       "reason": "No paid APIs, asset purchases, new services, billing changes or extra-credit fallback. Human instruction review and real-device/classroom assessment remain separate."
+    },
+    {
+      "id": "fluid-defense-rules-build",
+      "kind": "rules-and-build",
+      "observed": "141 tests across 19 files PASS; strict tsc + Vite build PASS. New steering/contact/low-FPS/swipe/question-freeze and authenticated room-leave regressions pass.",
+      "evidence_path": "docs/verification/2026-11-12-fluid-lobby",
+      "status": "PASS",
+      "required": true,
+      "environment": "Local isolated Chromium and deterministic TypeScript simulation",
+      "timestamp_utc": "2026-11-11T22:03:32.706850+00:00",
+      "command_or_action": "npm test; npm run build; compiled Playwright matches and rendered report/source review",
+      "expected": "Current implementation is supported by relevant tests and inspected rendering.",
+      "reason": "Hardware/classroom/retail-controller and auditory validation remain outside this evidence."
+    },
+    {
+      "id": "fluid-lobby-compiled-browser",
+      "kind": "rendered-browser",
+      "observed": "Compiled desktop/390x844 two-client steering, bump/slide and active off-balance snapshots pass. Shared questions/choices, 251 pre-resolution secrecy checks, personal feedback, both-party Continue and primary dunk/manual swat pass. Four lobby sizes, keyboard/native Space, teacher import and hidden settings pass.",
+      "evidence_path": "docs/verification/2026-11-12-fluid-lobby",
+      "status": "PASS",
+      "required": true,
+      "environment": "Local isolated Chromium and deterministic TypeScript simulation",
+      "timestamp_utc": "2026-11-11T22:03:32.706850+00:00",
+      "command_or_action": "npm test; npm run build; compiled Playwright matches and rendered report/source review",
+      "expected": "Current implementation is supported by relevant tests and inspected rendering.",
+      "reason": "Hardware/classroom/retail-controller and auditory validation remain outside this evidence."
+    },
+    {
+      "id": "nba2k-benchmark-report",
+      "kind": "source-research-and-render",
+      "observed": "Sourced 2K27/2K26 benchmark and prioritised roadmap; sampled 1-on-1 footage/press imagery inspected with method limits stated. Standalone HTML: 17 sections, seven tables, both embedded own-game images load, 1440/390 layouts without document overflow.",
+      "evidence_path": "docs/research/NBA_2K_BLACKTOP_BENCHMARK_2026-11-12.md",
+      "status": "PASS",
+      "required": true,
+      "environment": "Local isolated Chromium and deterministic TypeScript simulation",
+      "timestamp_utc": "2026-11-11T22:03:32.706850+00:00",
+      "command_or_action": "npm test; npm run build; compiled Playwright matches and rendered report/source review",
+      "expected": "Current implementation is supported by relevant tests and inspected rendering.",
+      "reason": "Hardware/classroom/retail-controller and auditory validation remain outside this evidence."
+    },
+    {
+      "id": "fluid-lobby-hosted-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "hosted-browser-and-asset-integrity",
+      "environment": "Netlify final preview / isolated Chromium Apple M4 Pro Metal; desktop and 390x844 two-player HTTP matches; four lobby sizes",
+      "timestamp_utc": "2026-11-11T22:12:18.369734+00:00",
+      "command_or_action": "Upload strict build, compare all 20 files, normal-input two-student contact and room lifecycle checks, inspect captures",
+      "expected": "Deployed build matches source and the new control/lobby behaviour works in the hosted game.",
+      "observed": "Final preview 6af4e6e6f82f7e6222bbdd88 ready. All 20 files match dist; exact non-HTML hashes, documented platform HTML transforms only. Bump/slide, jump steering, off-balance velocity in authenticated HTTP response snapshots, Leave/rejoin and hidden waiting-room mode switch pass. Lobby start/options/teacher import and custom-pack mode restrictions pass at 1440/768/390/844 widths. Zero page errors.",
+      "evidence_path": "docs/verification/2026-11-12-fluid-lobby",
+      "reason": "Coarse HTTP snapshots can skip short reactions in rendered frames; physical mobile hardware and campus concurrency remain untested."
+    },
+    {
+      "id": "fluid-lobby-preview-teaching-contracts",
+      "status": "PASS",
+      "required": true,
+      "kind": "two-student-hosted-browser",
+      "environment": "Netlify preview / isolated desktop +390x844 Chromium Metal",
+      "timestamp_utc": "2026-11-11T22:14:42.444698+00:00",
+      "command_or_action": "Normal keyboard controls through miss swipe, shared question, personal feedback/Continue and manual dunk swat",
+      "expected": "Teaching and prior simplified controls remain intact in the deployed build.",
+      "observed": "Final preview 6af4e6e6f82f7e6222bbdd88: same question/choices, 33 key/explanation secrecy checks, individual feedback and both-party Continue, zero-velocity recovery snapshots, primary paint dunk and physical block all pass. Zero page errors.",
+      "evidence_path": "docs/verification/2026-11-12-fluid-lobby/teaching-preview.json",
+      "reason": "Short recovery observations use authoritative response snapshots; exact one-second duration remains regression-tested."
     }
   ],
-  "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",
+  "release_decision": "PASS_VERIFIED_PREVIEW_PRODUCTION_PENDING",
   "remaining_risks": [
     "All numerical balance settings (base shot probabilities 20%/12%/7%, up to +8% Street Flow/Combo setup bonus, 35% correctness bonus, 35% speed bonus, 200ms tie tolerance) are deterministic playtest values and remain subject to empirical SPX101 educator calibration.",
     "Netlify HTTP rooms (/api/room) store state in warm serverless container memory (15-minute idle TTL); large multi-region or cold-start classroom sessions should run the standalone Node WebSocket server (npm run server) or attach durable KV storage.",

@@ -1,7 +1,8 @@
 import { buildStudentQuestionFeedback, StudentQuestionFeedback } from './learningFeedback';
 import { isDrivingInPaint } from './finishing';
 import { dribbleBallPosition } from './dribble';
-import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction } from './defense';
+import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction, isStealRecovery } from './defense';
+import { stepPlayerMotion, MotionTarget } from './contact';
 import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
 import { canTriggerOrChainTrick, getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
@@ -564,7 +565,11 @@ export class AuthoritativeMatchEngine {
       }
     }
 
-    // Update both players' movement
+    const motionTargets: [MotionTarget, MotionTarget] = [
+      { x: 0, z: 0, response: MOVEMENT_CONFIG.braking },
+      { x: 0, z: 0, response: MOVEMENT_CONFIG.braking },
+    ];
+    // Update both players' movement intentions before resolving shared body contact.
     for (const slot of [0, 1] as const) {
       const p = this.players[slot];
       const inp = effectiveInputs[slot];
@@ -685,6 +690,7 @@ export class AuthoritativeMatchEngine {
       const isMoving = mag > 0.06;
 
       const canSprint =
+        !isStealRecovery(p) &&
         inp.sprint &&
         isMoving &&
         (p.isSprinting
@@ -730,21 +736,14 @@ export class AuthoritativeMatchEngine {
         targetX = (p.moveForwardX * forward - p.moveForwardZ * side) / len * move.speed;
         targetZ = (p.moveForwardZ * forward + p.moveForwardX * side) / len * move.speed;
       }
-      if (p.wrongFootSec > 0 || p.defenseRecoverySec > 0) { targetX = 0; targetZ = 0; }
-      if (p.defenseRecoverySec > 0) { p.vx = 0; p.vz = 0; }
-      const blend = 1 - Math.exp(-(isMoving || p.streetMove ? MOVEMENT_CONFIG.acceleration : MOVEMENT_CONFIG.braking) * deltaSec);
-      p.vx += (targetX - p.vx) * blend;
-      p.vz += (targetZ - p.vz) * blend;
-      p.x = clamp(
-        p.x + p.vx * deltaSec,
-        COURT_GEOMETRY.minX,
-        COURT_GEOMETRY.maxX
-      );
-      p.z = clamp(
-        p.z + p.vz * deltaSec,
-        COURT_GEOMETRY.minZ,
-        COURT_GEOMETRY.maxZ
-      );
+      if (p.defenseAction === 'jump') {
+        targetX *= DEFENSE_CONFIG.jumpSteeringMultiplier;
+        targetZ *= DEFENSE_CONFIG.jumpSteeringMultiplier;
+      }
+      motionTargets[slot] = {
+        x: targetX, z: targetZ,
+        response: isMoving || p.streetMove ? MOVEMENT_CONFIG.acceleration : MOVEMENT_CONFIG.braking,
+      };
 
       if (p.defenseRecoverySec > 0) {
         p.animState = p.defenseAction === 'jump' ? 'block' : 'idle';
@@ -768,23 +767,7 @@ export class AuthoritativeMatchEngine {
       }
     }
 
-    // Simple player-to-player collision separation
-    const p0 = this.players[0];
-    const p1 = this.players[1];
-    const dx = p1.x - p0.x;
-    const dz = p1.z - p0.z;
-    const dist = Math.hypot(dx, dz);
-    if (dist < MOVEMENT_CONFIG.minPlayerSeparationM && dist > 1e-5) {
-      const overlap = MOVEMENT_CONFIG.minPlayerSeparationM - dist;
-      const nx = dx / dist, nz = dz / dist;
-      const frozen0 = p0.defenseRecoverySec > 0, frozen1 = p1.defenseRecoverySec > 0;
-      const weight0 = frozen0 ? 0 : frozen1 ? 1 : 0.5;
-      const weight1 = frozen1 ? 0 : frozen0 ? 1 : 0.5;
-      p0.x = clamp(p0.x - nx * overlap * weight0, COURT_GEOMETRY.minX, COURT_GEOMETRY.maxX);
-      p0.z = clamp(p0.z - nz * overlap * weight0, COURT_GEOMETRY.minZ, COURT_GEOMETRY.maxZ);
-      p1.x = clamp(p1.x + nx * overlap * weight1, COURT_GEOMETRY.minX, COURT_GEOMETRY.maxX);
-      p1.z = clamp(p1.z + nz * overlap * weight1, COURT_GEOMETRY.minZ, COURT_GEOMETRY.maxZ);
-    }
+    stepPlayerMotion(this.players, motionTargets, deltaSec);
 
     const defender = this.players[def];
     if (defender.defenseAction === 'swipe' && defender.defenseResult === null &&

@@ -1,0 +1,12 @@
+[
+  {
+    "scenario": "off-balance",
+    "defenderDistanceM": 1.4522309675780019,
+    "velocity": 5.496958035964187
+  },
+  {
+    "scenario": "jump",
+    "defenderDistanceM": 1.0456062966561614,
+    "velocity": 3.9578097858942143
+  }
+]

@@ -24,7 +24,7 @@
 
 ## Polished possession — 11 November 2026
 
-Choose **Preview a full possession** in the lobby to watch a drive, crossover, spin and a randomly styled take-off, answer the normal question, then see the finish and landing. Movement immediately takes control, and the match continues normally afterwards.
+Choose **Options → Watch a possession** in the lobby to watch a drive, crossover, spin and a randomly styled take-off, answer the normal question, then see the finish and landing. Movement immediately takes control, and the match continues normally afterwards.
 
 The player now carries 17 keyframed clips, with blended walk/jog/sprint, basketball accents, planted feet and hand/ball contact. A possession camera follows the approach, shifts for take-off and keeps the airborne action above the question card. Reduced Motion uses steady framing. Soft floor shadows and brighter arena lighting improve depth.
 
@@ -70,6 +70,16 @@ All **255 wrong choices across 85 bundled questions** have a specific explanatio
 
 Solo settings pause the match. Controls can be remapped; old movement/shot bindings are preserved and an old crossover binding migrates to the single trick key. Mobile has two game actions plus Sprint and the joystick. Question and feedback controls clear the hosting badge.
 
+## Fluid defence, simpler lobby and 2K benchmark — 12 November 2026
+
+Defenders keep moving while off balance and can steer during a block jump at 72% of normal speed. Body contact yields and preserves sliding around the opponent, with small motion steps to prevent tunnelling. The deliberate one-second missed-steal freeze and the shared-question pause remain in place.
+
+The lobby now starts with **Play computer / Play a classmate**, your name and question topic. **Options** contains difficulty, appearance, timing, match length, sound/controls, the possession preview, Player Lab and teacher tools. Online rooms show the code, players and readiness; **Leave room** releases the pre-match slot and resets readiness. Custom imported packs are available for computer matches; online topics use the server's bundled packs.
+
+The [NBA 2K Blacktop benchmark report](docs/research/NBA_2K_BLACKTOP_BENCHMARK_2026-11-12.md) compares the current game with published 2K27/2K26 mechanics and inspected 1-on-1 footage. It sets out the next player motor, animation/contact, finishing, graphics, networking and teaching work, with priorities and proposed acceptance targets. Sampled footage and publisher material are distinguished from unperformed hands-on retail testing.
+
+Current validation and limitations are recorded in [the release evidence](docs/verification/2026-11-12-fluid-lobby/README.md).
+
 ## Quick Start
 
 ### Prerequisites
@@ -81,7 +91,7 @@ Solo settings pause the match. Controls can be remapped; old movement/shot bindi
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (93 tests across 15 suites)
+# 2. Run the automated test suite (141 tests across 19 files)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)

@@ -307,6 +307,24 @@ export class RoomManager {
     }
     room.lastActivityMs = Date.now();
 
+    if (msg.type === 'LEAVE_ROOM') {
+      if (room.simulation) {
+        send({ type: 'ERROR', message: 'The match has already started.' });
+        return;
+      }
+      room.players[assoc.slot] = null;
+      this.clientToRoom.delete(clientHandle);
+      this.httpOutboxes.delete(`${assoc.roomCode}:${assoc.slot}`);
+      send({ type: 'ROOM_LEFT' });
+      for (const p of room.players) if (p) p.ready = false;
+      if (room.players.every(p => p === null)) this.rooms.delete(assoc.roomCode);
+      else {
+        const lobby = this.toLobbySnapshot(room);
+        for (const p of room.players) p?.send({ type: 'LOBBY_UPDATE', lobby });
+      }
+      return;
+    }
+
     if (msg.type === 'UPDATE_ROOM_SETTINGS') {
       if (room.simulation) {
         return;

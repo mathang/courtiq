@@ -111,146 +111,116 @@
         </div>
       </div>
 
-      <!-- Lobby Overlay (Compact side/center card keeping 3D court visible) -->
-      <section id="lobby-overlay" class="lobby-overlay" aria-label="Match Setup Lobby">
+      <!-- Student-first lobby: two modes and one primary action. -->
+      <section id="lobby-overlay" class="lobby-overlay" aria-label="CourtIQ lobby">
         <div class="lobby-card">
-          <div class="lobby-header">
-            <div>
-              <span class="eyebrow-badge">ORIGINAL 3D BASKETBALL LEARNING GAME</span>
-              <h1>CourtIQ: Slow-Motion Question Duel</h1>
-              <p class="lobby-lead">
-                Launch tomahawks, windmills, 360s and reverses. Beat a defender’s swipe and take it to the rim — or time a jump to swat their dunk. As the ball rises in slow motion, both students receive the same course question in each duel and race to answer: knowledge and speed boost shot probability, while an in-range defender who answers first blocks the shot!
-              </p>
-            </div>
+          <header class="lobby-header">
+            <h1><span aria-hidden="true">🏀</span> CourtIQ</h1>
+            <p class="lobby-lead">Play basketball. Build your knowledge.</p>
+          </header>
+
+          <div id="lobby-mode-tabs" class="mode-tabs" role="tablist" aria-label="Who do you want to play?">
+            <button id="tab-solo" class="mode-tab active" role="tab" aria-selected="true" aria-controls="panel-solo-actions" tabindex="0" type="button">Play computer</button>
+            <button id="tab-online" class="mode-tab" role="tab" aria-selected="false" aria-controls="panel-online-actions" tabindex="-1" type="button">Play a classmate</button>
           </div>
 
-          <div class="mode-tabs" role="tablist">
-            <button id="tab-solo" class="mode-tab active" role="tab" aria-selected="true" type="button">
-              🤖 Solo vs Computer
-            </button>
-            <button id="tab-online" class="mode-tab" role="tab" aria-selected="false" type="button">
-              🌐 Play a Friend (Online Room)
-            </button>
-            <button id="tab-content" class="mode-tab" role="tab" aria-selected="false" type="button">
-              📚 Question Packs &amp; Validator
-            </button>
-          </div>
-
-          <!-- Shared Player & Match Configuration -->
-          <div id="lobby-config-grid" class="lobby-grid">
+          <div id="lobby-config-grid" class="lobby-grid lobby-essentials">
             <div class="form-group">
-              <label for="input-pseudonym">Your Nickname (Temporary)</label>
+              <label for="input-pseudonym">Your name</label>
               <input id="input-pseudonym" type="text" maxlength="18" value="Student A" autocomplete="off" />
             </div>
-
             <div class="form-group">
-              <label for="select-appearance">Player Character Style</label>
-              <select id="select-appearance">
-                <option value="0">Style A (Warm Brown • Dark Crop)</option>
-                <option value="1">Style B (Tan • Chestnut Crop)</option>
-                <option value="2">Style C (Deep Brown • Dark Crop)</option>
-                <option value="3">Style D (Light • Brown Crop)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="select-pack">Approved Question Pack</label>
+              <label for="select-pack">Question topic</label>
               <select id="select-pack"></select>
             </div>
-
-            <div class="form-group">
-              <label for="select-room-preset">Timing &amp; Reading Preset</label>
-              <select id="select-room-preset">
-                <option value="standard">Standard Classroom (12s window, 2s reading)</option>
-                <option value="arcade">Arcade Fast Duel (10s window, 1.5s reading)</option>
-                <option value="learning">Learning Focus (18s window, 3s reading)</option>
-                <option value="practice">Untimed Practice (No speed bonus penalty)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="select-session-length">Match Length</label>
-              <select id="select-session-length">
-                <option value="standard">Standard Match (First to 11 pts, max 10 poss)</option>
-                <option value="quick">Quick Match (First to 7 pts, max 5 poss)</option>
-                <option value="practice">Practice Session (8 possessions each)</option>
-              </select>
-            </div>
-
-            <div id="ai-difficulty-group" class="form-group">
-              <label for="select-ai-difficulty">Computer Opponent Preset</label>
-              <select id="select-ai-difficulty">
-                <option value="beginner">Beginner (45% accuracy, 6–10s response)</option>
-                <option value="intermediate" selected>Intermediate (65% accuracy, 4–8s response)</option>
-                <option value="advanced">Advanced (80% accuracy, 3–6s response)</option>
-              </select>
-            </div>
           </div>
 
-          <!-- Solo Actions -->
-          <div id="panel-solo-actions" class="lobby-actions-row">
-            <a href="/player-lab.html" class="secondary-cta-btn">Player close-up ↗</a>
-            <button id="btn-start-solo" class="primary-cta-btn" type="button">
-              🏀 Start 1v1 Solo Match
-            </button>
-            <button id="btn-quick-demo-shot" class="secondary-cta-btn" type="button" title="Watch the drive to the rim, then answer the question to finish the play. Move to take control.">
-              ▶ Preview a full possession
-            </button>
+          <div id="panel-solo-actions" class="lobby-actions-row" role="tabpanel" aria-labelledby="tab-solo">
+            <button id="btn-start-solo" class="primary-cta-btn" type="button">Start game</button>
           </div>
 
-          <!-- Online Room Section -->
-          <div id="panel-online-actions" class="online-room-panel hidden">
-            <div class="online-split">
-              <div class="online-box">
-                <h3>Create a Private Room</h3>
-                <p>Generate a 6-character code for a classmate on another device or browser window.</p>
-                <button id="btn-create-room" class="primary-cta-btn" type="button">
-                  ➕ Create Private Room
-                </button>
-              </div>
-              <div class="online-box">
-                <h3>Join with Room Code</h3>
-                <div class="join-code-row">
-                  <input id="input-join-code" type="text" maxlength="8" placeholder="ENTER CODE" />
-                  <button id="btn-join-room" class="secondary-cta-btn" type="button">
-                    Join Room
-                  </button>
-                </div>
+          <div id="panel-online-actions" class="online-room-panel hidden" role="tabpanel" aria-labelledby="tab-online">
+            <div id="online-room-entry">
+              <button id="btn-create-room" class="primary-cta-btn" type="button">Create room</button>
+              <div class="join-code-row">
+                <label class="visually-hidden" for="input-join-code">Classmate’s room code</label>
+                <input id="input-join-code" type="text" maxlength="6" placeholder="Room code" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+                <button id="btn-join-room" class="secondary-cta-btn" type="button">Join</button>
               </div>
             </div>
-
             <div id="online-waiting-room" class="online-waiting-room hidden">
               <div class="room-code-banner">
-                <span>PRIVATE ROOM CODE:</span>
+                <span>SHARE THIS CODE</span>
                 <strong id="display-room-code" class="room-code-pill">------</strong>
-                <button id="btn-copy-room-code" class="small-btn" type="button">Copy Code</button>
+                <button id="btn-copy-room-code" class="small-btn" type="button">Copy</button>
               </div>
+              <p id="online-room-topic" class="small-muted"></p>
               <div id="online-players-list" class="online-players-list"></div>
               <div class="online-ready-row">
-                <button id="btn-toggle-ready" class="primary-cta-btn" type="button">
-                  ✓ Mark Ready to Play
-                </button>
-                <span id="online-status-note" class="online-status-note">Waiting for both players to mark Ready...</span>
+                <button id="btn-toggle-ready" class="primary-cta-btn" type="button">Ready to play</button>
+                <button id="btn-leave-room" class="small-btn" type="button">Leave room</button>
               </div>
+              <p id="online-status-note" class="small-muted">Waiting for both players.</p>
             </div>
           </div>
 
-          <!-- Content Pack Validator & Custom Import Section -->
-          <div id="panel-content-validator" class="content-validator-panel hidden">
-            <h3>Teacher Question-Pack Inspector &amp; JSON Import</h3>
-            <p class="small-muted">
-              All competitive matches freeze an approved question pack version before tip-off. Paste a custom JSON pack below to validate required fields, 4 stable option IDs, explanations, and source references.
-            </p>
-            <textarea id="textarea-custom-pack" rows="5" placeholder='{"packId":"custom-spx101","packVersion":1,"title":"Custom Pack","course":"SPX101","questions":[...]}'></textarea>
-            <div class="validator-actions">
-              <button id="btn-validate-pack" class="secondary-cta-btn" type="button">
-                🔍 Validate &amp; Load Custom JSON Pack
-              </button>
-              <button id="btn-load-sample-pack-json" class="small-btn" type="button">
-                Load Sample Question Template
-              </button>
+          <div class="lobby-secondary">
+          <details id="lobby-options" class="lobby-options">
+            <summary>Options</summary>
+            <div class="lobby-options-body">
+              <div class="lobby-grid">
+                <div id="ai-difficulty-group" class="form-group">
+                  <label for="select-ai-difficulty">Computer difficulty</label>
+                  <select id="select-ai-difficulty">
+                    <option value="beginner">Easy</option>
+                    <option value="intermediate" selected>Normal</option>
+                    <option value="advanced">Hard</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-appearance">Player style</label>
+                  <select id="select-appearance">
+                    <option value="0">Style A</option><option value="1">Style B</option>
+                    <option value="2">Style C</option><option value="3">Style D</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-room-preset">Question timing</label>
+                  <select id="select-room-preset">
+                    <option value="standard">Standard</option><option value="arcade">Fast</option>
+                    <option value="learning">More reading time</option><option value="practice">Untimed practice</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-session-length">Match length</label>
+                  <select id="select-session-length">
+                    <option value="standard">Standard · first to 11</option><option value="quick">Quick · first to 7</option>
+                    <option value="practice">Practice · 8 possessions each</option>
+                  </select>
+                </div>
+              </div>
+              <div class="lobby-extra-actions">
+                <button id="btn-lobby-settings" class="small-btn" type="button">Sound &amp; controls</button>
+                <button id="btn-quick-demo-shot" class="small-btn" type="button">Watch a possession</button>
+                <a href="/player-lab.html" class="small-btn">Player lab ↗</a>
+              </div>
+              <details id="lobby-teacher-tools" class="teacher-tools">
+                <summary>Teacher tools</summary>
+                <div id="panel-content-validator" class="content-validator-panel">
+                  <h3>Question pack</h3>
+                  <p class="small-muted">Validate and load your own questions for computer matches.</p>
+                  <label class="visually-hidden" for="textarea-custom-pack">Question pack JSON</label>
+                  <textarea id="textarea-custom-pack" rows="5" placeholder='{"packId":"custom-spx101","packVersion":1,"title":"Custom Pack","course":"SPX101","questions":[...]}'></textarea>
+                  <div class="validator-actions">
+                    <button id="btn-validate-pack" class="secondary-cta-btn" type="button">Validate &amp; load</button>
+                    <button id="btn-load-sample-pack-json" class="small-btn" type="button">Sample pack</button>
+                  </div>
+                  <div id="pack-validation-output" class="validation-output" aria-live="polite"></div>
+                </div>
+              </details>
             </div>
-            <div id="pack-validation-output" class="validation-output" aria-live="polite"></div>
+          </details>
+          <button id="btn-lobby-help" class="lobby-help" type="button">How to play</button>
           </div>
         </div>
       </section>
