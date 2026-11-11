@@ -10,6 +10,11 @@ Prior instructions also authorise updating the GitHub repository and live game. 
 
 ## Correct project, baseline and access
 
+### Hard cost constraint confirmed by Ross
+
+Use only the included Antigravity subscription quota. No additional money, AI credits, credit overages, top-ups, paid APIs, asset purchases or new paid services are authorised. The resumed CLI run explicitly sets `useG1Credits: false`; never re-enable it or launch another agent/model process that bypasses that restriction. If the included quota is exhausted, stop and report it or wait for the included quota to refresh. Existing hosting/publishing must also remain within existing included allowances; do not enable paid overages. Continue useful local work when an external step would require spending.
+
+
 - Authorised working repository: `/Users/ross_mac/Documents/Codex/2026-10-31/courtiq`.
 - Git remote: `https://github.com/mathang/courtiq.git`; live game: `https://courtiq-spx101.netlify.app/`.
 - Work on the prepared branch `feat/aaa-teaching-basketball`, based on `6495948382145088be1cf69d1348c9e4b4276587`. Do not discard unrelated edits or rewrite published history. Check current status before changes.

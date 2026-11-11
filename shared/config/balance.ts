@@ -57,19 +57,56 @@ export const COURT_GEOMETRY = {
 } as const;
 
 export const MOVEMENT_CONFIG = {
-  baseSpeedMps: 5.4,
-  dribbleSpeedMps: 5.8,
+  baseSpeedMps: 5.5,
+  dribbleSpeedMps: 5.95,
   sprintMultiplier: 1.5,
-  acceleration: 22,
-  braking: 30,
+  acceleration: 25,
+  braking: 34,
   playerCollisionRadiusM: 0.48,
   minPlayerSeparationM: 0.82,
   /** Sprint stamina (0..1) */
   sprintDrainPerSec: 0.30,
-  sprintRegenPerSec: 0.34,
+  sprintRegenPerSec: 0.35,
   minStaminaToStartSprint: 0.15,
   /** Settling window after releasing sprint during which shot still incurs sprint penalty */
   sprintSettleWindowMs: 350,
+} as const;
+
+export const STREET_FLOW_CONFIG = {
+  /** Authoritative input buffer window across solo, WS, and HTTP rooms */
+  inputBufferWindowSec: 0.28,
+  /** Normalized progress [0..1] in current trick when a DISTINCT trick can cancel-chain */
+  trickCancelFraction: 0.65,
+  /** Normalized progress [0..1] in current trick when shoot/dunk can cancel-chain into gather */
+  finishCancelFraction: 0.45,
+  /** Post-move window to continue an active Trick Combo chain */
+  comboGraceSec: 0.36,
+  /** Maximum distinct moves in a single combo chain before cooldown resets */
+  maxTrickChain: 3,
+  /** Cooldown after a single unchained move or completed 3-move chain */
+  baseMoveCooldownSec: 0.88,
+  /** Vulnerability window if over-dribbling / repeating spam into a close defender */
+  overexposedDurationSec: 0.55,
+  /** Street Flow [0..1] threshold for ON FIRE status */
+  onFireThreshold: 0.80,
+  /** Extended showtime dunk launch radius while ON FIRE */
+  onFireDunkRangeM: 3.95,
+  /** Bounded shot setup quality bonus by combo count (0, 1x, 2x, 3x) — never bypasses learning */
+  comboSetupBonus: [0, 0.02, 0.04, 0.05] as readonly number[],
+  /** Additional bounded base setup bonus when ON FIRE */
+  onFireSetupBonus: 0.03,
+  /** Flow meter gains & penalties */
+  flowCleanTrick: 0.07,
+  flowComboStepBonus: 0.05,
+  flowAnkleBreaker: 0.13,
+  flowCleanSteal: 0.24,
+  flowTimedBlock: 0.26,
+  flowQuestionBlock: 0.24,
+  flowCorrectAnswerBase: 0.14,
+  flowCorrectAnswerSpeedWeight: 0.12,
+  flowTurnoverPenalty: 0.20,
+  /** Post-cashout flow level after sinking an ON FIRE basket */
+  onFireAfterMakeFlow: 0.42,
 } as const;
 
 export const SHOT_BALANCE_CONFIG = {

@@ -15,6 +15,9 @@ export interface ShotReleaseSnapshot {
   readonly heavilyContested: boolean;
   readonly releasedWhileSprinting: boolean;
   readonly baseProbability: number;
+  readonly setupBonus: number;
+  readonly comboCount: number;
+  readonly onFire: boolean;
   readonly blockEligibility: BlockEligibilitySnapshot;
 }
 
@@ -51,6 +54,7 @@ export function computeBaseShotProbability(params: {
   zone: ShotZone;
   heavilyContested: boolean;
   releasedWhileSprinting: boolean;
+  setupBonus?: number;
 }): number {
   let base = SHOT_BALANCE_CONFIG.baseProbabilities[params.zone];
   if (params.heavilyContested) {
@@ -59,7 +63,11 @@ export function computeBaseShotProbability(params: {
   if (params.releasedWhileSprinting) {
     base -= SHOT_BALANCE_CONFIG.sprintingPenalty;
   }
-  return Math.max(0.01, Number(base.toFixed(4)));
+  if (params.setupBonus && Number.isFinite(params.setupBonus)) {
+    // Bounded setup bonus (max +0.08) rewards trick separation & Street Flow without guaranteeing scores
+    base += clamp(params.setupBonus, 0, 0.08);
+  }
+  return clamp(Number(base.toFixed(4)), 0.01, 0.42);
 }
 
 /**
@@ -70,6 +78,9 @@ export function captureShotReleaseSnapshot(params: {
   defenderPos: CourtPoint2D;
   releasedWhileSprinting: boolean;
   blockEligibility: BlockEligibilitySnapshot;
+  setupBonus?: number;
+  comboCount?: number;
+  onFire?: boolean;
 }): ShotReleaseSnapshot {
   const distanceToHoopM = computeDistance2D(params.shooterPos, {
     x: COURT_GEOMETRY.hoopX,
@@ -78,10 +89,12 @@ export function captureShotReleaseSnapshot(params: {
   const { zone, pointValue } = classifyShotZone(distanceToHoopM);
   const heavilyContested =
     params.blockEligibility.withinRange && params.blockEligibility.facingShooter;
+  const setupBonus = clamp(params.setupBonus ?? 0, 0, 0.08);
   const baseProbability = computeBaseShotProbability({
     zone,
     heavilyContested,
     releasedWhileSprinting: params.releasedWhileSprinting,
+    setupBonus,
   });
 
   return Object.freeze({
@@ -93,6 +106,9 @@ export function captureShotReleaseSnapshot(params: {
     heavilyContested,
     releasedWhileSprinting: params.releasedWhileSprinting,
     baseProbability,
+    setupBonus: Number(setupBonus.toFixed(4)),
+    comboCount: params.comboCount ?? 0,
+    onFire: Boolean(params.onFire),
     blockEligibility: params.blockEligibility,
   });
 }

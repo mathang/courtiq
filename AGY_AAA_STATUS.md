@@ -1,0 +1,73 @@
+# CourtIQ AAA Arcade-Basketball & Teaching Transformation — Status & Checkpoints
+
+- **Authorised Repository**: `/Users/ross_mac/Documents/Codex/2026-10-31/courtiq`
+- **Active Branch**: `feat/aaa-teaching-basketball` (based on `6495948382145088be1cf69d1348c9e4b4276587` / `origin/main`; handoff commit `90746f1cce84d70ddd16c4881da777887f028241`)
+- **GitHub Remote**: `https://github.com/mathang/courtiq.git`
+- **Live Production Site**: `https://courtiq-spx101.netlify.app/` (Netlify Site ID `0163a0e9-643d-4a4e-b835-b789dcee1204`, baseline verified deploy `6af425c3b8df11e6c2dbcf0a`)
+- **Verification Workflow**: **Ross Build & Verify** (`/Users/ross_mac/.gemini/config/plugins/ross-build-verify/skills/ross-build-verify/SKILL.md`) loaded and active (`PASS` / `FAIL` / `NOT_TESTED` only, with reproducible evidence).
+- **Hard Cost & Quota Constraint (Enforced)**: **Included Antigravity subscription quota ONLY (`useG1Credits: false`)**. Zero additional AI credits, credit overages, money, paid APIs, asset purchases, paid generation services, or paid hosting overages. Local port `8787` (`PID 68527`) is left untouched; all local servers bind to dynamic/free ports.
+
+---
+
+## 1. Baseline Inspection & Hands-On Playtest Summary (`PASS` on baseline checks; concrete AAA gaps identified)
+
+- **Baseline Unit/Integration Tests**: `npm test` -> `PASS` (`14` test files, `82` tests in `3.32s`).
+- **Baseline Strict Build**: `npm run build` (`tsc --noEmit && vite build`) -> `PASS` (`611ms`).
+- **Live Site Reachability**: `curl -sI https://courtiq-spx101.netlify.app/` -> `HTTP/2 200` (`etag: "f21b0b4af07ecc7e1c35a9ad7a0365b2-ssl"`).
+- **Hands-On Local Playtest**: Executed solo attacking/defending possessions vs CourtBot, `390x844` portrait badge check, and two-client WebSocket room duel (`HUV3LW`) on `http://127.0.0.1:63117` (`output/aaa-baseline-audit/baseline-report.json` + `01..04.png`), alongside inspection of `output/possession-polish/` captures.
+  - Online duel invariants verified at baseline: `sameDuelId: true`, `sameStem: true`, `leakedAnswerKeyHost: false`, `leakedAnswerKeyGuest: false`.
+  - JS Heap footprint at baseline: `12.11 MB` used / `20.69 MB` total. (Note: SwiftShader CPU WebGL averaged `71.02 ms`; hardware Metal/WebGL vs software WebGL will be benchmarked separately in Milestone 5.)
+
+### Ranked Concrete Quality Gaps Observed (from Live Playtest + Frame Captures)
+
+1. **[P0 — Gameplay / Separation & Counterplay] Unfair Mid-Crossover Strip & Zero Trick Chaining / Input Buffering**
+   - *Observed in live playtest (`output/aaa-baseline-audit/baseline-report.json` lines 253–453)*: At tip-off (`z = 2.6`), `CourtBot (INT)` closed to `z = 1.35` and swiped; when `Student A` pressed `KeyC` (`crossover`), `canStealBall()` (`shared/rules/defense.ts:6-12`) only protected `spin` and `eurostep`, allowing the defender to **steal the ball `0.064s` into an active crossover** (`defenseResult: "steal"`) while also inflicting `wrongFootSec = 0.30` on the stripped attacker! Conversely, repeating tricks into a defender has no structured anti-spam exposure window.
+   - *Dropped Inputs & No Combos*: `InputGuardController.consumeMoveInput()` (`client/game/input/controls.ts:303-306`) immediately clears `pendingTrick`, `pendingDunk`, `shootTriggeredFresh`, and `pendingDefense` on the very next frame even when `moveCooldownSec` (`0.95s`) blocks execution. Pressing Spin (`KeyQ`) near the end of a Crossover drops the input completely, preventing *NBA Street*-style `Crossover -> Spin -> Gather Dunk` or `Crossover -> Stepback -> Jumper` chains.
+2. **[P0 — Arcade Depth + Teaching Synergy] Missing Momentum / Trick Combo / Street Flow System**
+   - Currently tricks only move the player for `0.32–0.56s` and apply a brief `wrongFootSec` once per `0.95s`. There is no authoritative **Trick Combo Counter**, **Street Flow / Hype Meter (`0..100` / `ON FIRE`)**, ankle-breaker stumble feedback, or synergy connecting clean basketball setup + fast accurate SPX101 answers to electric presentation and bounded shot-setup quality bonuses (without ever bypassing course knowledge or overriding blocks).
+3. **[P0 — Geometry Clipping & Pose Quality] Stanchion Body Intersection, Awkward Jump-Shot Hold, & Floating Idle Dribble Hand**
+   - *Stanchion Clipping (`output/possession-polish/contested/tomahawk-finish.png` & `arena.ts:154-160`)*: `basePad` is a massive `0.95 x 2.1 x 0.95m` box centered at `z = -6.55` (front face `z = -6.075`, inside playable `minZ = -6.2` and right behind the `z = -5.25` rim!). Baseline drives and dunk finishes clip straight into the blue stanchion block.
+   - *Jump Shot / Feedback Pose Bug (`02-solo-dunk-duel.png`, `03-solo-defense-outcome.png`, `baseline-report.json:1094-1095, 1298`)*: For `finishKind === 'jump'`, `getAirPose()` drops `y` to `0` at `t = 0.80s` while `ActiveClip` stays `court_air` (`weight: 0.998`) standing flat on the floor during the `Duel`, and remains stuck in `animState: "shoot"` / `court_land` throughout `Feedback`! Stepbacks and jumpers also lack signature fadeaway/elevation polish, and dunks lack rim flex / backboard shake / net snap energy.
+   - *Ball-to-Hand Pocket Alignment (`local-lab/jersey-back.png` & `dribble.ts:18-23`)*: In idle/triple-threat, the ball floats at `(-0.34, 1.15, 2.32)` away from both hands; active dribbles use a simple `|sin|` curve without crisp hand push/pocket reception.
+4. **[P1 — Arena Atmosphere & Visual Quality] Bowling-Pin Crowd, Unshadowed Flat Court, Void Background, & Clipped Wall Banners**
+   - *Observed in `01-lobby-court.png`, `02-solo-dunk-duel.png`, `desktop-drive-0.png`*: Spectators are bright primary-colored `Cylinder + Sphere` pegs against an empty `#091324` void; the main renderer (`client/game/engine.ts`) never enables `shadowMap` (only flat blob ovals); hardwood lacks realistic plank variation and clearcoat specular sheen; and back-wall banners are sliced in half by the top HUD bar.
+5. **[P1 — Portrait Accessibility & Hosting Badge Clearance] Unscrolled Option D Overlaps Netlify Badge on `390x844`**
+   - *Observed in `04-portrait-badge-overlap.png`*: On `390x844` mobile portrait at initial scroll position (`scrollTop = 0`), the bottom-right `148x38px` hosting badge directly covers the lock badge and right edge of **Option 4/D** plus the reading-status footer. All 4 answer options must fit cleanly above the reserved badge zone without requiring scrolling during a timed duel.
+6. **[P1 — CourtBot AI & Camera/Audio Polish]**
+   - CourtBot only triggers single isolated tricks (`crossover`/`spin` or `stepback`), swipes predictably on timer, and doesn't chain moves, vary hesitation/burst pace, or punish over-aggressive human swipes dynamically.
+   - Camera needs smoother anti-occlusion framing around the redesigned pro stanchion and heightened low-angle drive / dunk / On-Fire drama while keeping `Reduced Motion` rock steady. Audio needs combo-chain chimes/whooshes, rim-flex/backboard impact layers, and crowd hype swell synced to Street Flow.
+
+---
+
+## 2. Ranked Implementation Milestones
+
+- [x] **Milestone 0 — Baseline Verification, Profile Fix & Live Playtest Audit**
+  - Fixed stale path in `project-profile.md`, verified `82/82` tests + build, ran live hands-on solo/portrait/online playtest (`output/aaa-baseline-audit/`), and documented ranked defects + cost constraint here.
+- [x] **Milestone 1 — NBA Street Core Mechanics: Input Buffering, Legitimate Trick Chains, Fair Separation/Steals & Street Flow System**
+  - Authoritative `280ms` input buffer queue (`PlayerSimState` / `matchStateMachine.ts`) so tricks, dunks, jumpers, and blocks pressed during active move/recovery windows fire seamlessly across Solo, WebSocket, and HTTP rooms (`60/30/20/10 Hz` verified).
+  - Legitimate 2–3 move **Trick Chains** (`>= 65%` cancel window or `360ms` combo grace into a *distinct* move: e.g., `Crossover -> Spin -> Dunk`, `Crossover -> Eurostep -> Reverse`, `Spin -> Stepback -> Fadeaway`) with combo callouts, escalating stamina cost, and **anti-spam ball exposure** (`trickOverexposedSec = 0.55s` when mashing repeat tricks on cooldown `< 1.32m` or greedy 3rd-chain `< 1.15m`, whereas a fresh clean first crossover/stepback protects the ball during its separation burst!).
+  - Authoritative **Street Flow / Hype Meter (`0..1`, `ON FIRE` at `>= 0.80`)** & **Combo Counter**: earned through clean trick separation, ankle-breakers, timed blocks, clean steals, and fast/accurate SPX101 answers. Grants electric presentation + a bounded setup bonus (`up to +0.08` total with On-Fire + 3x chain on base shot quality $B$, strictly respecting `[0.03, 0.95]` and **never** bypassing question accuracy or overriding physical/question blocks).
+  - Fixed jump-shot suspension hold during `Duel` (`getAirPose`) and eliminated stuck `animState === 'shoot'` during `Feedback`.
+  - Preserved full `1.0s` missed-swipe root and all SPX101 duel/clock/privacy contracts; verified `91/91` tests across `15` test files (`tests/rules/streetFlowAndCombos.test.ts` added) + `npm run build`.
+- [ ] **Milestone 2 — AAA Athlete Rig, Ball-Hand Sync, Signature Dunks/Jumpers & Pro Hoop/Stanchion Physics**
+  - Fix triple-threat two-hand/hip pocket hold and active dribble push/receive IK across crossovers, spins, eurosteps, and stepbacks.
+  - Upgrade `tomahawk`, `windmill`, `360`, and `reverse` dunks + elevated jump-shot/stepback fadeaway suspension & clean landing/idle transitions (eliminating the stuck `shoot` pose during `Feedback`).
+  - Redesign hoop assembly (`arena.ts`): pro overhang boom stanchion set safely behind the baseline (`z = -7.05` instead of `-6.55`) so baseline drives and dunks **never** intersect the stanchion pad; add dynamic **rim flex, backboard shake, LED shot-clock/duel frame, and multi-strand net whip** on slams/contests.
+  - Validate `streetball-player.glb` (`0` glTF-Transform errors/warnings, dynamic jersey back names/numbers intact, `drift === 0` in Player Lab pause).
+- [ ] **Milestone 3 — AAA Urban/Campus Streetball Arena, Camera Director, HUD Flow Meter & Portrait Badge Fix**
+  - Replace primitive peg crowd and empty dark void with an atmospheric floodlit campus rooftop/courtyard streetball arena: rich multi-plank maple court + specular reflections, real directional `PCFSoftShadowMap` in High quality (cleanly off in Low/Classroom), architectural fencing/light towers/skyline/banners positioned clear of the top HUD, articulated multi-part courtside spectators, and crisp pebbled basketball + On-Fire trail/rim sparks.
+  - Upgrade `CourtCameraController` for punchy drive/combo/dunk framing with zero stanchion/HUD occlusion and steady `Reduced Motion`.
+  - Add sleek HUD **Street Flow / Combo Meter** + on-court arcade callouts (`CROSS x2!`, `ANKLE BREAKER!`, `ON FIRE!`, `SWATTED!`), and fix `390x844` portrait `question-overlay` layout so **all 4 options + reading footer sit 100% clear above the Netlify badge without scrolling**.
+- [ ] **Milestone 4 — Intelligent CourtBot AI & Dynamic Street Audio**
+  - Upgrade `stepAiBasketballDecision()` across Beginner / Intermediate / Advanced: committed lane attacks, hesitation/pace changes, legitimate 2-move combos on Intermediate/Advanced, smart stepback jumpers, baiting/punishing missed human swipes, zero under-hoop stalls, and strict Delayed-Observation fairness (no hidden input or answer-key reading).
+  - Upgrade `courtSoundBank.ts` / `soundEngine.ts` / `possessionCues.ts` with combo-chain pitch-rising chimes/whooshes, rim-flex metallic clank + backboard thud, On-Fire crowd swell, bounded voice count, and instant mute/pause tail cutoff (keeping human speaker listening labeled `NOT_TESTED`).
+- [ ] **Milestone 5 — End-to-End Build & Verify Gate, GitHub Checkpoints, Preview & Live Netlify Production Deploy**
+  - Full unit/integration/HTTP-room/WS-room/low-FPS test suite, strict build, GLB validator, multi-frame Playwright captures of all moves, combos, all 4 dunks (both sides), jumpers, blocks, steals, 1s swipe freeze, portrait/desktop badge clearance, Player Lab pause, and GPU vs software frame-time/memory profiling.
+  - Visually inspect all new captures via `read_file`, fix any remaining visual/UI defects, push checkpoints to `feat/aaa-teaching-basketball`, verify Netlify preview deploy, merge to `main`, deploy verified production to `https://courtiq-spx101.netlify.app/`, verify live asset hashes + 2-client live shared-question duel, and update `HANDOFF.md`, `README.md`, `progress.md`, `project-profile.md`, `verification-ledger.json`, and `AGY_AAA_STATUS.md`.
+
+---
+
+## 3. Checkpoint Log
+
+- **2026-11-11 18:52 AEST**: Completed baseline verification (`82/82` tests, `npm run build`), live hands-on solo/portrait/online playtest (`output/aaa-baseline-audit/`), corrected `project-profile.md`, recorded hard included-quota-only constraint (`useG1Credits: false`), and initialized `AGY_AAA_STATUS.md`. Starting **Milestone 1**.
+- **2026-11-11 19:11 AEST**: Completed & verified **Milestone 1** (`shared/config/balance.ts`, `shared/rules/streetMoves.ts`, `shared/rules/defense.ts`, `shared/rules/shot.ts`, `shared/rules/matchStateMachine.ts`, `tests/rules/streetFlowAndCombos.test.ts`). `91/91` tests passing across `15` test files + strict `npm run build`. Continuing under hard included-subscription-quota-only (`useG1Credits: false`) rule into **Milestone 2**.

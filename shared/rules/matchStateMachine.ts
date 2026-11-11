@@ -1,7 +1,7 @@
 import { dribbleBallPosition } from './dribble';
 import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction } from './defense';
 import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_RANGE_M, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
-import { getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
+import { canTriggerOrChainTrick, getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
   AiDifficultyId,
   COURT_GEOMETRY,
@@ -10,6 +10,7 @@ import {
   RoomPresetId,
   SESSION_LENGTH_PRESETS,
   SessionLengthId,
+  STREET_FLOW_CONFIG,
 } from '../config/balance';
 import {
   createSeededRng,
@@ -117,6 +118,24 @@ export interface PlayerSimState {
   defenseResult: 'miss' | 'steal' | 'timed-block' | 'jump' | null;
   defenseTargetX: number;
   defenseTargetZ: number;
+  /** NBA Street-inspired momentum & combo state (0..1, ON FIRE >= 0.80) */
+  streetFlow: number;
+  onFire: boolean;
+  trickCombo: number;
+  lastTrick: StreetMove | null;
+  comboGraceSec: number;
+  trickOverexposedSec: number;
+  /** Authoritative input buffer across Solo, WebSocket, and HTTP rooms */
+  bufferedTrick: StreetMove | null;
+  bufferedTrickSec: number;
+  bufferedFinish: 'shoot' | 'dunk' | null;
+  bufferedFinishStyle: DunkStyle | null;
+  bufferedFinishSec: number;
+  bufferedDefense: DefenseAction | null;
+  bufferedDefenseSec: number;
+  /** Synced arcade callout banner for HUD/3D presentation */
+  calloutText: string | null;
+  calloutSec: number;
 }
 
 export interface PlayerMoveInput {
@@ -267,6 +286,12 @@ export class AuthoritativeMatchEngine {
         dunkStyle: 'tomahawk', dunkBallStart: null, finishOutcome: null,
         defenseAction: null, defenseElapsedSec: 0, defenseRecoverySec: 0, defenseCooldownSec: 0,
         defenseResult: null, defenseTargetX: 0, defenseTargetZ: 0,
+        streetFlow: 0, onFire: false, trickCombo: 0, lastTrick: null,
+        comboGraceSec: 0, trickOverexposedSec: 0,
+        bufferedTrick: null, bufferedTrickSec: 0,
+        bufferedFinish: null, bufferedFinishStyle: null, bufferedFinishSec: 0,
+        bufferedDefense: null, bufferedDefenseSec: 0,
+        calloutText: null, calloutSec: 0,
       },
       {
         slot: 1,
@@ -289,8 +314,32 @@ export class AuthoritativeMatchEngine {
         dunkStyle: 'tomahawk', dunkBallStart: null, finishOutcome: null,
         defenseAction: null, defenseElapsedSec: 0, defenseRecoverySec: 0, defenseCooldownSec: 0,
         defenseResult: null, defenseTargetX: 0, defenseTargetZ: 0,
+        streetFlow: 0, onFire: false, trickCombo: 0, lastTrick: null,
+        comboGraceSec: 0, trickOverexposedSec: 0,
+        bufferedTrick: null, bufferedTrickSec: 0,
+        bufferedFinish: null, bufferedFinishStyle: null, bufferedFinishSec: 0,
+        bufferedDefense: null, bufferedDefenseSec: 0,
+        calloutText: null, calloutSec: 0,
       },
     ];
+  }
+
+  private emitCallout(slot: PlayerSlot, text: string, durationSec = 1.35): void {
+    const p = this.players[slot];
+    p.calloutText = text;
+    p.calloutSec = Math.max(p.calloutSec, durationSec);
+  }
+
+  private adjustStreetFlow(slot: PlayerSlot, delta: number, callout?: string): void {
+    const p = this.players[slot];
+    const wasOnFire = p.onFire;
+    p.streetFlow = Number(clamp(p.streetFlow + delta, 0, 1).toFixed(4));
+    p.onFire = p.streetFlow >= STREET_FLOW_CONFIG.onFireThreshold;
+    if (!wasOnFire && p.onFire) {
+      this.emitCallout(slot, '🔥 ON FIRE!', 1.8);
+    } else if (callout) {
+      this.emitCallout(slot, callout, 1.3);
+    }
   }
 
   public startMatch(): void {
@@ -328,6 +377,10 @@ export class AuthoritativeMatchEngine {
       p.wrongFootSec = 0; p.finishKind = null; p.finishElapsedSec = 0; p.finishResolutionSec = -1;
       p.defenseAction = null; p.defenseElapsedSec = 0; p.defenseRecoverySec = 0; p.defenseCooldownSec = 0;
       p.defenseResult = null; p.dunkBallStart = null; p.finishOutcome = null;
+      p.trickCombo = 0; p.lastTrick = null; p.comboGraceSec = 0; p.trickOverexposedSec = 0;
+      p.bufferedTrick = null; p.bufferedTrickSec = 0;
+      p.bufferedFinish = null; p.bufferedFinishStyle = null; p.bufferedFinishSec = 0;
+      p.bufferedDefense = null; p.bufferedDefenseSec = 0;
     }
     this.movementClockRemainingMs = this.rules.movementClockMs;
     this.ballFlight = null;
@@ -389,6 +442,8 @@ export class AuthoritativeMatchEngine {
         p.defenseElapsedSec += deltaSec;
         p.defenseRecoverySec = Math.max(0, p.defenseRecoverySec - deltaSec);
         p.defenseCooldownSec = Math.max(0, p.defenseCooldownSec - deltaSec);
+        p.calloutSec = Math.max(0, p.calloutSec - deltaSec);
+        if (p.calloutSec <= 0) p.calloutText = null;
         if (p.defenseRecoverySec <= 0) p.defenseAction = null;
       }
       if (p.finishKind && this.phase !== 'Possession' && this.phase !== 'Lobby') {
@@ -469,37 +524,141 @@ export class AuthoritativeMatchEngine {
       });
     }
 
+    const defPlayer = this.players[def];
+    defPlayer.bufferedDefenseSec = Math.max(0, defPlayer.bufferedDefenseSec - deltaSec);
+    if (defPlayer.bufferedDefenseSec <= 0) defPlayer.bufferedDefense = null;
+
     if (effectiveInputs[def].defense || effectiveInputs[def].shoot) {
       const action = effectiveInputs[def].defense ?? 'jump';
-      if (isDefenseAction(action)) this.tryDefenseAction(def, action);
+      if (isDefenseAction(action)) {
+        if (!this.tryDefenseAction(def, action)) {
+          // Buffer defensive intent only when near cooldown end (never bypasses 1.0s missed-swipe freeze)
+          if (defPlayer.defenseRecoverySec <= 0.18 && defPlayer.defenseCooldownSec <= STREET_FLOW_CONFIG.inputBufferWindowSec) {
+            defPlayer.bufferedDefense = action;
+            defPlayer.bufferedDefenseSec = STREET_FLOW_CONFIG.inputBufferWindowSec;
+          }
+        }
+      }
+    } else if (defPlayer.bufferedDefense && defPlayer.bufferedDefenseSec > 0) {
+      if (this.tryDefenseAction(def, defPlayer.bufferedDefense)) {
+        defPlayer.bufferedDefense = null;
+        defPlayer.bufferedDefenseSec = 0;
+      }
     }
+
     // Update both players' movement
     for (const slot of [0, 1] as const) {
       const p = this.players[slot];
       const inp = effectiveInputs[slot];
       const isAttacker = slot === att;
+      const opponent = this.players[slot === 0 ? 1 : 0];
 
       p.moveCooldownSec = Math.max(0, p.moveCooldownSec - deltaSec);
       p.wrongFootSec = Math.max(0, p.wrongFootSec - deltaSec);
+      p.comboGraceSec = Math.max(0, p.comboGraceSec - deltaSec);
+      p.trickOverexposedSec = Math.max(0, p.trickOverexposedSec - deltaSec);
+      p.bufferedTrickSec = Math.max(0, p.bufferedTrickSec - deltaSec);
+      if (p.bufferedTrickSec <= 0) p.bufferedTrick = null;
+      p.bufferedFinishSec = Math.max(0, p.bufferedFinishSec - deltaSec);
+      if (p.bufferedFinishSec <= 0) {
+        p.bufferedFinish = null;
+        p.bufferedFinishStyle = null;
+      }
+
       if (p.streetMove) {
         p.moveElapsedSec += deltaSec;
-        if (p.moveElapsedSec >= STREET_MOVES[p.streetMove].duration) p.streetMove = null;
-      }
-      if (isAttacker && isStreetMove(inp.trick) && !p.streetMove && p.moveCooldownSec <= 0 &&
-          p.sprintStamina >= STREET_MOVES[inp.trick].cost) {
-        p.streetMove = inp.trick; p.moveElapsedSec = 0; p.moveCooldownSec = 0.95;
-        p.sprintStamina -= STREET_MOVES[inp.trick].cost;
-        const dx = COURT_GEOMETRY.hoopX - p.x, dz = COURT_GEOMETRY.hoopZ - p.z;
-        const d = Math.hypot(dx, dz) || 1;
-        p.moveForwardX = dx / d; p.moveForwardZ = dz / d;
-        const lateral = inp.moveX * -p.moveForwardZ + inp.moveZ * p.moveForwardX;
-        p.moveSide = Math.abs(lateral) > 0.1 ? Math.sign(lateral) : -p.moveSide;
-        const opponent = this.players[def];
-        // A well-timed move beats a nearby planted defender, once per cooldown.
-        if (computeDistance2D(p, opponent) < 2.5 && opponent.wrongFootSec <= 0) {
-          opponent.wrongFootSec = inp.trick === 'spin' ? 0.42 : 0.32;
+        if (p.moveElapsedSec >= STREET_MOVES[p.streetMove].duration) {
+          p.streetMove = null;
         }
       }
+      if (!p.streetMove && p.comboGraceSec <= 0 && !p.finishKind) {
+        p.trickCombo = 0;
+        if (p.moveCooldownSec <= 0) {
+          p.lastTrick = null;
+        }
+      }
+
+      if (isAttacker && isStreetMove(inp.trick)) {
+        const sameActiveOrRecent =
+          inp.trick === p.streetMove || (!p.streetMove && inp.trick === p.lastTrick && p.moveCooldownSec > 0);
+        if (sameActiveOrRecent) {
+          const defenderReadyOrSwiping =
+            opponent.wrongFootSec <= 0 &&
+            (opponent.defenseRecoverySec <= 0 ||
+              (opponent.defenseAction === 'swipe' && opponent.defenseResult === null));
+          // Anti-spam counterplay: mashing the same trick right in a close defender's chest exposes the handle
+          if (
+            (!p.streetMove || p.moveElapsedSec > 0.25) &&
+            computeDistance2D(p, opponent) < 1.32 &&
+            defenderReadyOrSwiping
+          ) {
+            p.trickOverexposedSec = STREET_FLOW_CONFIG.overexposedDurationSec;
+            this.emitCallout(slot, 'BALL EXPOSED!', 0.95);
+          }
+        } else {
+          p.bufferedTrick = inp.trick;
+          p.bufferedTrickSec = STREET_FLOW_CONFIG.inputBufferWindowSec;
+        }
+      }
+
+      if (isAttacker && p.bufferedTrick && p.bufferedTrickSec > 0) {
+        const nextTrick = p.bufferedTrick;
+        const check = canTriggerOrChainTrick(p, nextTrick);
+        if (check.allowed) {
+          p.bufferedTrick = null;
+          p.bufferedTrickSec = 0;
+          p.streetMove = nextTrick;
+          p.lastTrick = nextTrick;
+          p.moveElapsedSec = 0;
+          p.trickCombo = check.isChain
+            ? Math.min(STREET_FLOW_CONFIG.maxTrickChain, p.trickCombo + 1)
+            : 1;
+          p.comboGraceSec = STREET_MOVES[nextTrick].duration + STREET_FLOW_CONFIG.comboGraceSec;
+          p.moveCooldownSec = STREET_FLOW_CONFIG.baseMoveCooldownSec;
+          p.sprintStamina = clamp(p.sprintStamina - check.cost, 0, 1);
+
+          const dx = COURT_GEOMETRY.hoopX - p.x;
+          const dz = COURT_GEOMETRY.hoopZ - p.z;
+          const d = Math.hypot(dx, dz) || 1;
+          p.moveForwardX = dx / d;
+          p.moveForwardZ = dz / d;
+          const lateral = inp.moveX * -p.moveForwardZ + inp.moveZ * p.moveForwardX;
+          p.moveSide = Math.abs(lateral) > 0.15 ? Math.sign(lateral) : -p.moveSide;
+
+          const distToDef = computeDistance2D(p, opponent);
+          // Greedy 3rd-chain right into an unshaken chest-to-chest defender exposes the ball!
+          if (
+            p.trickCombo >= STREET_FLOW_CONFIG.maxTrickChain &&
+            distToDef < 1.15 &&
+            opponent.wrongFootSec <= 0 &&
+            opponent.defenseRecoverySec <= 0
+          ) {
+            p.trickOverexposedSec = STREET_FLOW_CONFIG.overexposedDurationSec;
+            this.emitCallout(slot, 'OVERDRIBBLE — EXPOSED!', 1.05);
+          } else {
+            let brokeAnkles = false;
+            if (distToDef < 2.55 && opponent.wrongFootSec <= 0) {
+              const baseFreeze = nextTrick === 'spin' ? 0.44 : nextTrick === 'crossover' ? 0.36 : 0.32;
+              opponent.wrongFootSec = baseFreeze + (check.isChain ? 0.08 : 0);
+              brokeAnkles = true;
+            }
+            const flowGain =
+              STREET_FLOW_CONFIG.flowCleanTrick +
+              (check.isChain ? STREET_FLOW_CONFIG.flowComboStepBonus : 0) +
+              (brokeAnkles ? STREET_FLOW_CONFIG.flowAnkleBreaker : 0);
+            const comboLabel =
+              p.trickCombo >= 3
+                ? `3x SHOWTIME CHAIN!`
+                : p.trickCombo === 2
+                  ? `2x ${STREET_MOVES[nextTrick].label} CHAIN!`
+                  : brokeAnkles
+                    ? `ANKLE BREAKER!`
+                    : undefined;
+            this.adjustStreetFlow(slot, flowGain, comboLabel);
+          }
+        }
+      }
+
       const safeX = Number.isFinite(inp.moveX) ? inp.moveX : 0;
       const safeZ = Number.isFinite(inp.moveZ) ? inp.moveZ : 0;
       const mag = Math.hypot(safeX, safeZ);
@@ -516,8 +675,9 @@ export class AuthoritativeMatchEngine {
 
       if (canSprint) {
         p.isSprinting = true;
+        const drainScale = p.onFire ? 0.82 : 1;
         p.sprintStamina = clamp(
-          p.sprintStamina - MOVEMENT_CONFIG.sprintDrainPerSec * deltaSec,
+          p.sprintStamina - MOVEMENT_CONFIG.sprintDrainPerSec * drainScale * deltaSec,
           0,
           1
         );
@@ -538,15 +698,16 @@ export class AuthoritativeMatchEngine {
       const baseSpeed = isAttacker
         ? MOVEMENT_CONFIG.dribbleSpeedMps
         : MOVEMENT_CONFIG.baseSpeedMps;
+      const onFireSpeedMult = p.onFire ? 1.05 : 1;
       const speed =
-        baseSpeed * (p.isSprinting ? MOVEMENT_CONFIG.sprintMultiplier : 1);
+        baseSpeed * onFireSpeedMult * (p.isSprinting ? MOVEMENT_CONFIG.sprintMultiplier : 1);
 
       let targetX = normX * speed, targetZ = normZ * speed;
       if (p.streetMove) {
         const move = STREET_MOVES[p.streetMove];
         const u = p.moveElapsedSec / move.duration;
-        const forward = p.streetMove === 'stepback' ? -1 : p.streetMove === 'crossover' ? 0.35 : 0.82;
-        const side = p.streetMove === 'stepback' ? 0 : p.moveSide * (p.streetMove === 'eurostep' && u > 0.48 ? -0.72 : 0.72);
+        const forward = p.streetMove === 'stepback' ? -1 : p.streetMove === 'crossover' ? 0.38 : 0.84;
+        const side = p.streetMove === 'stepback' ? 0 : p.moveSide * (p.streetMove === 'eurostep' && u > 0.48 ? -0.74 : 0.74);
         const len = Math.hypot(forward, side);
         targetX = (p.moveForwardX * forward - p.moveForwardZ * side) / len * move.speed;
         targetZ = (p.moveForwardZ * forward + p.moveForwardX * side) / len * move.speed;
@@ -572,7 +733,7 @@ export class AuthoritativeMatchEngine {
       } else if (isMoving || p.streetMove) {
         const facing = p.streetMove ? Math.atan2(p.moveForwardX, p.moveForwardZ) : Math.atan2(normX, normZ);
         const turn = Math.atan2(Math.sin(facing - p.facingAngle), Math.cos(facing - p.facingAngle));
-        p.facingAngle += turn * (1 - Math.exp(-18 * deltaSec));
+        p.facingAngle += turn * (1 - Math.exp(-20 * deltaSec));
         p.animState = isAttacker ? 'dribble' : 'run';
       } else {
         // Defender naturally faces attacker when stationary; attacker faces hoop
@@ -614,10 +775,34 @@ export class AuthoritativeMatchEngine {
         defender.defenseResult = 'steal'; this.completeSteal(def); return;
       }
       defender.defenseResult = 'miss';
+      this.emitCallout(def, 'MISSED SWIPE — FROZEN!', 0.95);
     }
-    // Defense resolves before a same-tick shot; only the authoritative attacker may shoot.
-    if ((effectiveInputs[att].shoot || effectiveInputs[att].dunk) && this.players[att].defenseRecoverySec <= 0) {
-      this.initiateShotAttempt(effectiveInputs[att]);
+
+    // Buffer shot/dunk input and fire immediately when neutral or at trick cancel window
+    const attacker = this.players[att];
+    if (effectiveInputs[att].shoot || effectiveInputs[att].dunk) {
+      attacker.bufferedFinish = effectiveInputs[att].dunk ? 'dunk' : 'shoot';
+      attacker.bufferedFinishStyle = isDunkStyle(effectiveInputs[att].dunkStyle)
+        ? effectiveInputs[att].dunkStyle
+        : attacker.bufferedFinishStyle;
+      attacker.bufferedFinishSec = STREET_FLOW_CONFIG.inputBufferWindowSec;
+    }
+    if (attacker.bufferedFinish && attacker.bufferedFinishSec > 0 && attacker.defenseRecoverySec <= 0) {
+      const canCancelTrickToFinish =
+        !attacker.streetMove ||
+        attacker.moveElapsedSec / STREET_MOVES[attacker.streetMove].duration >= STREET_FLOW_CONFIG.finishCancelFraction;
+      if (canCancelTrickToFinish) {
+        const finishInput: PlayerMoveInput = {
+          ...effectiveInputs[att],
+          shoot: attacker.bufferedFinish === 'shoot',
+          dunk: attacker.bufferedFinish === 'dunk',
+          dunkStyle: attacker.bufferedFinishStyle ?? effectiveInputs[att].dunkStyle,
+        };
+        attacker.bufferedFinish = null;
+        attacker.bufferedFinishStyle = null;
+        attacker.bufferedFinishSec = 0;
+        this.initiateShotAttempt(finishInput);
+      }
     }
   }
 
@@ -638,6 +823,10 @@ export class AuthoritativeMatchEngine {
     const defender = this.players[def];
 
     const ballAtGather = this.getBallPosition3D();
+    const activeCombo = attacker.streetMove || attacker.comboGraceSec > 0 ? attacker.trickCombo : 0;
+    const wasEurostep = attacker.streetMove === 'eurostep' || attacker.lastTrick === 'eurostep';
+    const wasStepback = attacker.streetMove === 'stepback' || attacker.lastTrick === 'stepback';
+
     // Automatic facing towards the basket when shooting (Section 4)
     attacker.facingAngle = Math.atan2(
       COURT_GEOMETRY.hoopX - attacker.x,
@@ -649,11 +838,20 @@ export class AuthoritativeMatchEngine {
     defender.vz = 0;
     attacker.animState = 'shoot';
     const distance = Math.hypot(COURT_GEOMETRY.hoopX - attacker.x, COURT_GEOMETRY.hoopZ - attacker.z);
-    attacker.finishKind = distance <= DUNK_RANGE_M && (input?.dunk || attacker.isSprinting || attacker.streetMove === 'eurostep' || distance <= 1.8) ? 'dunk' : 'jump';
-    attacker.dunkStyle = isDunkStyle(input?.dunkStyle) ? input.dunkStyle : DUNK_STYLES[this.possessionIndex % DUNK_STYLES.length];
+    const maxDunkRange = attacker.onFire ? STREET_FLOW_CONFIG.onFireDunkRangeM : DUNK_RANGE_M;
+    attacker.finishKind =
+      distance <= maxDunkRange &&
+      (input?.dunk || attacker.isSprinting || wasEurostep || distance <= 1.8)
+        ? 'dunk'
+        : 'jump';
+    attacker.dunkStyle = isDunkStyle(input?.dunkStyle)
+      ? input.dunkStyle
+      : DUNK_STYLES[(this.possessionIndex + activeCombo) % DUNK_STYLES.length];
     attacker.dunkBallStart = ballAtGather;
     attacker.finishElapsedSec = 0; attacker.finishResolutionSec = -1; attacker.finishOutcome = null;
     attacker.streetMove = null;
+    attacker.bufferedTrick = null; attacker.bufferedTrickSec = 0;
+    attacker.bufferedFinish = null; attacker.bufferedFinishStyle = null; attacker.bufferedFinishSec = 0;
     defender.animState = 'idle';
 
     // Freeze block eligibility at release (Section 8)
@@ -665,13 +863,21 @@ export class AuthoritativeMatchEngine {
     });
 
     const releasedWhileSprinting =
-      attacker.isSprinting || attacker.sprintSettleRemainingMs > 0;
+      (attacker.isSprinting || attacker.sprintSettleRemainingMs > 0) && !wasStepback;
+
+    const comboTier = Math.min(STREET_FLOW_CONFIG.comboSetupBonus.length - 1, activeCombo);
+    const setupBonus =
+      (STREET_FLOW_CONFIG.comboSetupBonus[comboTier] ?? 0) +
+      (attacker.onFire ? STREET_FLOW_CONFIG.onFireSetupBonus : 0);
 
     const releaseSnapshot = captureShotReleaseSnapshot({
       shooterPos: { x: attacker.x, z: attacker.z },
       defenderPos: { x: defender.x, z: defender.z },
       releasedWhileSprinting,
       blockEligibility,
+      setupBonus,
+      comboCount: activeCombo,
+      onFire: attacker.onFire,
     });
 
     const question = this.selectNextQuestion();
@@ -887,14 +1093,52 @@ export class AuthoritativeMatchEngine {
       );
     }
 
+    // Award Street Flow for SPX101 knowledge + speed & defensive blocks!
+    if (duelSummary.attackerCorrect) {
+      const knowledgeFlow =
+        STREET_FLOW_CONFIG.flowCorrectAnswerBase +
+        STREET_FLOW_CONFIG.flowCorrectAnswerSpeedWeight * duelSummary.attackerSpeedScore;
+      this.adjustStreetFlow(att, knowledgeFlow);
+    }
+    if (duelSummary.defenderCorrect) {
+      const defSpeedScore = defenderAnswer
+        ? clamp(
+            1 -
+              (defenderAnswer.acceptedTimeMs - this.activeDuel.config.readingMs) /
+                Math.max(1, this.activeDuel.config.answerWindowMs - this.activeDuel.config.readingMs),
+            0,
+            1
+          )
+        : 0;
+      const defKnowledgeFlow =
+        STREET_FLOW_CONFIG.flowCorrectAnswerBase +
+        STREET_FLOW_CONFIG.flowCorrectAnswerSpeedWeight * defSpeedScore;
+      this.adjustStreetFlow(def, defKnowledgeFlow);
+    }
+
     if (resolvedOutcome.outcome === 'block') {
       this.players[def].animState = 'block';
       this.players[def].defenseAction = 'jump'; this.players[def].defenseElapsedSec = 0;
       this.players[def].defenseRecoverySec = 0.88;
       const dunkPose = getAirPose(this.players[att]);
       this.players[def].defenseTargetX = dunkPose.x; this.players[def].defenseTargetZ = dunkPose.z;
+      this.adjustStreetFlow(
+        def,
+        this.activeDuel.physicalBlock
+          ? STREET_FLOW_CONFIG.flowTimedBlock
+          : STREET_FLOW_CONFIG.flowQuestionBlock,
+        this.activeDuel.physicalBlock ? 'MONSTER SWAT!' : 'KNOWLEDGE BLOCK!'
+      );
+      this.adjustStreetFlow(att, -STREET_FLOW_CONFIG.flowTurnoverPenalty);
     } else if (resolvedOutcome.outcome === 'basket') {
       this.players[att].animState = 'celebrate';
+      if (this.activeDuel.releaseSnapshot.onFire) {
+        this.emitCallout(att, '🔥 SHOWTIME BUCKET!', 1.8);
+        this.players[att].streetFlow = STREET_FLOW_CONFIG.onFireAfterMakeFlow;
+        this.players[att].onFire = false;
+      } else if (this.activeDuel.releaseSnapshot.comboCount >= 2 && duelSummary.attackerCorrect) {
+        this.emitCallout(att, '⚡ BRAIN + BUCKET!', 1.6);
+      }
     }
 
     this.players[att].finishResolutionSec = 0;
@@ -1006,6 +1250,8 @@ export class AuthoritativeMatchEngine {
       remainingRealMs: roomPreset.explanationMs,
     };
 
+    this.players[att].animState = outcome.outcome === 'basket' ? 'celebrate' : 'idle';
+    this.players[def].animState = outcome.outcome === 'block' ? 'celebrate' : 'idle';
     this.phase = 'Feedback';
   }
 
@@ -1025,13 +1271,15 @@ export class AuthoritativeMatchEngine {
 
   private checkTimedDunkBlock(): void {
     const duel = this.activeDuel;
+    const defSlot: PlayerSlot = this.scoreState.currentAttacker === 0 ? 1 : 0;
     if (!duel || duel.physicalBlock || this.players[this.scoreState.currentAttacker].finishKind !== 'dunk') return;
-    const d = this.players[this.scoreState.currentAttacker === 0 ? 1 : 0];
+    const d = this.players[defSlot];
     const time = this.questionReadyTimerMs / 1000;
     if (duel.releaseSnapshot.blockEligibility.eligible && d.defenseAction === 'jump' &&
         d.defenseElapsedSec >= 0.10 && d.defenseElapsedSec <= 0.60 &&
         time >= DEFENSE_CONFIG.blockWindowStartSec && time <= DEFENSE_CONFIG.blockWindowEndSec) {
       duel.physicalBlock = true; d.defenseResult = 'timed-block';
+      this.emitCallout(defSlot, '🛡️ TIMED SWAT!', 1.6);
     }
   }
 
@@ -1043,7 +1291,12 @@ export class AuthoritativeMatchEngine {
     this.aiBrain = createAiBasketballBrainState(this.rng);
     this.players[oldAtt].wrongFootSec = 0.30;
     this.players[oldAtt].streetMove = null;
+    this.players[oldAtt].trickCombo = 0;
+    this.players[oldAtt].comboGraceSec = 0;
+    this.players[oldAtt].trickOverexposedSec = 0;
     this.players[def].defenseRecoverySec = 0.22;
+    this.adjustStreetFlow(def, STREET_FLOW_CONFIG.flowCleanSteal, '🖐️ COOKIE SNATCH!');
+    this.adjustStreetFlow(oldAtt, -STREET_FLOW_CONFIG.flowTurnoverPenalty);
     for (const p of this.players) { p.finishKind = null; p.vx = 0; p.vz = 0; }
     this.phase = this.scoreState.isMatchOver ? 'MatchEnd' : 'Possession';
   }
