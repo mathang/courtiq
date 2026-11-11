@@ -76,3 +76,8 @@
 - Locomotion and ball-hand contact run via measured procedural curves, 17-clip pose blending, and analytical two-bone IK on the existing 65-bone streetball rig rather than AAA motion-matching mocap databases, full-body physics/cloth simulation, or finger-per-phalange contact solving.
 - During live dribbling the carrying hand tracks a smooth waist/hip reception pocket above the bounce rather than physically simulating palm-ball contact impulses on every bounce frame.
 - Temporary verification servers on ports `5183` and `8793` were stopped and verified free after capture.
+
+## Commits on `feat/carbon-high-basketball-motion`
+- **Baseline (`origin/main`)**: `22a46b0f3ab6cae809ce307f1d61e84d9498f440`
+- **Implementation & Regression Tests**: `f4599d33500fa156438343a1c9dcabacc65057c1`
+- **Remaining Work**: None in this worktree; ready for Codex sibling integration across both 65-bone athletes and final combined verification/release.
