@@ -6,7 +6,7 @@ import { clone } from "three/addons/utils/SkeletonUtils.js";
 import { StreetballRig } from "../../client/game/characters/streetballRig";
 import { AuthoritativeMatchEngine } from "../../shared/rules/matchStateMachine";
 import { BUNDLED_QUESTION_PACKS } from "../../content/packRegistry";
-import { DUNK_STYLES, dunkBallPosition } from "../../shared/rules/dunks";
+import { DUNK_STYLES, dunkBallPosition, dunkReboundPosition } from "../../shared/rules/dunks";
 import { getAirPose } from "../../shared/rules/streetMoves";
 
 const bytes = readFileSync(
@@ -261,5 +261,58 @@ describe("shipped streetball player", () => {
       previous = point;
     }
     expect(maxStep).toBeLessThan(0.3);
+  });
+  it("carries the sprinting feet into the gather without snapping or sinking through court", () => {
+    for (const runFrames of [30, 36, 42, 48, 54, 60]) {
+      const a = actor(), p = player();
+      p.x = 1.8; p.z = 0.5; p.facingAngle = Math.PI; p.vz = -4.2;
+      const update = () => {
+        const air = getAirPose(p);
+        a.root.position.set(air.x, 0, air.z);
+        a.body.position.set(0, air.y, 0); a.body.rotation.set(0, p.facingAngle, 0);
+        a.rig.update(p, true, 1 / 60); a.root.updateMatrixWorld(true);
+      };
+      for (let i=0;i<runFrames;i++) { p.z += p.vz / 60; update(); }
+      const before = ['foot_l','foot_r'].map(n => a.model.getObjectByName(n)!.getWorldPosition(new THREE.Vector3()));
+      p.finishKind = 'dunk'; p.vz = 0;
+      for (let i=0;i<14;i++) {
+        p.finishElapsedSec = i/60; update();
+        if (i===0) ['foot_l','foot_r'].forEach((n,j) => {
+          expect(a.model.getObjectByName(n)!.getWorldPosition(new THREE.Vector3()).distanceTo(before[j])).toBeLessThan(0.08);
+        });
+        a.model.traverse(o => {
+          if (!(o instanceof THREE.SkinnedMesh) || !o.name.includes('Shoe')) return;
+          o.skeleton.update();
+          let minimum=Infinity;
+          for (let j=0;j<o.geometry.attributes.position.count;j++)
+            minimum=Math.min(minimum,o.localToWorld(o.getVertexPosition(j,new THREE.Vector3())).y);
+          expect(minimum, `${runFrames} frame run, gather ${i}`).toBeGreaterThan(-0.003);
+        });
+      }
+    }
+  });
+  it("keeps misses and swats clear of the descending head from either lane", () => {
+    for (const style of DUNK_STYLES) for (const facing of [-2.36, -0.7, 0.7, 2.36]) {
+      const a=actor(),p=player();
+      p.x=1.9;p.z=-3.3;p.facingAngle=facing;p.finishKind='dunk';p.dunkStyle=style;p.finishElapsedSec=2;
+      const skin=a.model.getObjectByName('Body_Skin') as THREE.SkinnedMesh;
+      const attr=skin.geometry.attributes,indices=skin.geometry.index!;
+      const headTriangles:number[][]=[];
+      const isHead=(i:number)=>{
+        let weight=0;
+        for(let j=0;j<4;j++)if(['Head','neck_01'].includes(skin.skeleton.bones[attr.skinIndex.getComponent(i,j)].name))weight+=attr.skinWeight.getComponent(i,j);
+        return weight>0.5;
+      };
+      for(let i=0;i<indices.count;i+=3){const ids=[indices.getX(i),indices.getX(i+1),indices.getX(i+2)];if(ids.every(isHead))headTriangles.push(ids);}
+      for(const outcome of ['miss','block'] as const) for(const r of [.35,.4,.45,.5,.55,.65,.75]){
+        p.finishResolutionSec=r;const air=getAirPose(p);
+        a.root.position.set(air.x,0,air.z);a.body.position.set(0,air.y,0);a.body.rotation.set(0,facing,0);a.rig.update(p,true,1/60);a.root.updateMatrixWorld(true);skin.skeleton.update();
+        const b=dunkReboundPosition(p,air,outcome),center=new THREE.Vector3(b.x,b.y,b.z);
+        for(const ids of headTriangles){
+          const triangle=new THREE.Triangle(...ids.map(i=>skin.localToWorld(skin.getVertexPosition(i,new THREE.Vector3()))) as [THREE.Vector3,THREE.Vector3,THREE.Vector3]);
+          expect(triangle.closestPointToPoint(center,new THREE.Vector3()).distanceTo(center)).toBeGreaterThan(0.145);
+        }
+      }
+    }
   });
 });

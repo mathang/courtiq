@@ -1,6 +1,6 @@
 import { dribbleBallPosition } from './dribble';
 import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction } from './defense';
-import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_RANGE_M, DUNK_LABELS, isDunkStyle, dunkBallPosition } from './dunks';
+import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_RANGE_M, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
 import { getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
   AiDifficultyId,
@@ -1158,10 +1158,7 @@ export class AuthoritativeMatchEngine {
       if (r < 0.30) {
         return dunkBallPosition(finisher, pose);
       }
-      const t = r - 0.30;
-      return { x: COURT_GEOMETRY.hoopX + (outcome === 'block' ? t * 3 : outcome === 'miss' ? t * 1.7 : 0),
-        z: COURT_GEOMETRY.hoopZ + (outcome === 'basket' ? 0 : t * 1.4),
-        y: Math.max(0.18, 3.17 - 1.5 * t - 4.9 * t * t) };
+      return dunkReboundPosition(finisher, pose, outcome);
     }
     if (this.ballFlight) {
       return evaluateBallPosition(this.ballFlight);

@@ -30,10 +30,16 @@ export function getAirPose(p: PlayerSimState): {
       p.defenseAction === "jump"
         ? Math.sin(Math.min(1, p.defenseElapsedSec / 0.88) * Math.PI) ** 2
         : 0;
+    const dx = p.defenseTargetX - p.x;
+    const dz = p.defenseTargetZ - p.z;
+    const distance = Math.hypot(dx, dz);
+    // The block lunge reaches towards the ball while leaving room for both
+    // torsos. This changes presentation only; contest timing stays authoritative.
+    const travel = (distance - 0.72) * jump;
     return {
-      x: p.x + (p.defenseTargetX - p.x) * jump * 0.85,
+      x: p.x + (distance > 1e-6 ? dx / distance : Math.sin(p.facingAngle)) * travel,
       y: jump * 1.25,
-      z: p.z + (p.defenseTargetZ - p.z) * jump * 0.85,
+      z: p.z + (distance > 1e-6 ? dz / distance : Math.cos(p.facingAngle)) * travel,
       progress: jump,
     };
   }

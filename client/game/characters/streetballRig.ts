@@ -25,6 +25,7 @@ export class StreetballRig {
   private pitch = 0;
   private roll = 0;
   private settled = false;
+  private wasDunk = false;
   private direction = new THREE.Vector2(0, 1);
   private hands = [v(-0.31, 1.08, 0.1), v(0.31, 1.02, 0.28)];
   private feet = [-1, 1].map(() => ({
@@ -32,14 +33,18 @@ export class StreetballRig {
     plant: null as THREE.Vector3 | null,
     start: null as THREE.Vector3 | null,
     end: null as THREE.Vector3 | null,
+    last: null as THREE.Vector3 | null,
+    gather: null as THREE.Vector3 | null,
   }));
   public resetMotion(): void {
     this.settled = false;
     this.lastBallY = null;
     this.movement = 0;
+    this.wasDunk = false;
     this.feet.forEach((f) => {
       f.contact = false;
       f.plant = f.start = f.end = null;
+      f.last = f.gather = null;
     });
   }
   private floorPoint(point: THREE.Vector3): THREE.Vector3 {
@@ -201,6 +206,9 @@ export class StreetballRig {
     const dunk = p.finishKind === "dunk",
       shot = p.finishKind === "jump",
       jump = p.defenseAction === "jump";
+    if (dunk && !this.wasDunk)
+      this.feet.forEach((f) => { f.gather = f.last?.clone() ?? null; });
+    this.wasDunk = dunk;
     const r = p.finishResolutionSec;
     const airborne = (dunk && r < 0.78) || shot || jump;
     const landing =
@@ -300,7 +308,18 @@ export class StreetballRig {
           airY + 0.095 + (side > 0 ? 0.35 : 0.25) * tuck,
           (side > 0 ? -0.27 : 0.19) * tuck,
         );
-        target = this.floorPoint(local);
+        target = this.floorPoint(local.clone());
+        if (dunk && p.finishElapsedSec < 0.22) {
+          // Carry the running feet into a short two-foot gather. Keep the soles
+          // on court during the crouch, then lift with the player's push-off.
+          const planted = this.floorPoint(v(side * 0.16, 0.095, side * 0.06));
+          const gather = state.gather?.clone() ?? planted.clone();
+          gather.lerp(planted, smoothMotion(p.finishElapsedSec / 0.14));
+          target.copy(gather);
+          const lift = this.floorPoint(local);
+          target.lerp(lift, smoothMotion((p.finishElapsedSec - 0.12) / 0.1));
+          target.y = Math.max(0.095, target.y);
+        }
         state.plant = state.start = state.end = null;
         state.contact = false;
       } else if (moving > 0.15 && !options.inPlace && !p.streetMove) {
@@ -356,7 +375,7 @@ export class StreetballRig {
         .parent!.getWorldQuaternion(new THREE.Quaternion())
         .invert();
       const toe = airborne
-        ? -0.12
+        ? -0.12 * (dunk ? smoothMotion((p.finishElapsedSec - 0.12) / 0.1) : 1)
         : contact
           ? -0.23 * smoothMotion(unit((u / stance - 0.65) / 0.35)) * moving
           : 0.2 * Math.sin(Math.PI * swing) * moving;
@@ -366,6 +385,8 @@ export class StreetballRig {
           .multiply(new THREE.Quaternion().setFromAxisAngle(v(1, 0, 0), toe))
           .multiply(foot.rotation),
       );
+      foot.bone.updateWorldMatrix(true, false);
+      state.last = foot.bone.getWorldPosition(state.last ?? new THREE.Vector3());
     }
     this.body.updateWorldMatrix(true, true);
     let right = v(0.33, 1.03, 0.29),
@@ -395,6 +416,7 @@ export class StreetballRig {
       }
     }
     let contact = 0;
+    let blockHand = 0;
     if (dunk) {
       const rig = dunkRig(p),
         release = 1 - smoothMotion((r - 0.34) / 0.6);
@@ -429,6 +451,16 @@ export class StreetballRig {
     } else if (jump) {
       right.set(0.29, 2.08, 0.14);
       left.set(-0.29, 2.04, 0.14);
+      if (ball) {
+        const point = v(ball.x, ball.y, ball.z);
+        const space = this.body.parent!.parent;
+        if (space) space.localToWorld(point);
+        this.body.worldToLocal(point);
+        blockHand = point.x < 0 ? -1 : 1;
+        // Reach with the nearer hand as the jump rises, then settle on landing.
+        const reach = Math.sin(unit(p.defenseElapsedSec / 0.88) * Math.PI) ** 2;
+        (blockHand < 0 ? left : right).lerp(point, reach);
+      }
     } else if (p.defenseAction === "swipe") {
       right.set(0.43 - swipe * 0.3, 1.1, 0.22 + swipe * 0.4);
       left.set(-0.33, 1.12, -0.08);
@@ -447,9 +479,9 @@ export class StreetballRig {
       -1,
       this.hands[0],
       v(-0.6, 1.2, -0.2),
-      dunk && p.dunkStyle !== "windmill" ? contact : 0,
+      blockHand < 0 ? 1 : dunk && p.dunkStyle !== "windmill" ? contact : 0,
     );
-    this.hand(1, this.hands[1], v(0.6, 1.2, -0.2), contact);
+    this.hand(1, this.hands[1], v(0.6, 1.2, -0.2), blockHand > 0 ? 1 : contact);
     this.body.updateWorldMatrix(true, true);
   }
 }

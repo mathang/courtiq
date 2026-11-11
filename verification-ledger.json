@@ -358,6 +358,15 @@
       "timestamp_utc": "2026-11-11T00:00:37.263313+00:00",
       "observed": "Source317c5e5 on GitHub main; Netlify production6af3af78b608bbe4ee5d8486. Ten application/asset files match the tested dist (only observed Netlify HTML transforms normalised). Production motion review:20 frames,all4 styles,paused drift0,no errors/overflow; live screenshots inspected. Normal solo AI creates a dunk1750ms after possession. Two deployed synthetic students pass identical question/choices/reveal,hidden keys and swipe recovery.",
       "evidence_path": "output/player-v2/production-assets.json; output/player-v2/production-live/motion-report.json; output/player-v2/production-app-report.json; output/player-v2/production-remote.json"
+    },
+    {
+      "id": "actual-match-animation-review",
+      "status": "PASS",
+      "required": true,
+      "kind": "rendered-gameplay",
+      "timestamp_utc": "2026-11-11T04:34:55.742485+00:00",
+      "observed": "Actual live-site baseline followed by normal-input solo and two-browser authoritative matches. All4 dunk styles, spin/eurostep entry, nearer-rim reverse and AI drive captured. Frame inspection found/fixed foot snapping, crouch sole penetration, head-brushing miss path and overlapping block bodies.71 tests pass; deformed shoe surfaces checked to3mm tolerance and rebound head clearance checked for4 styles/4 headings. Full WebSocket gameplay/defence/shared-question/touch checks pass without page errors. Hosted preview6af3ef94e58e433cb9d01450 matches10 assets and passes actual-match/HTTP checks.",
+      "evidence_path": "output/match-review/baseline; output/match-review/fixed-tomahawk; output/match-review/fixed-windmill; output/match-review/fixed-360; output/match-review/fixed-reverse; output/match-review/contested/browser-report.json; output/match-review/hosted-preview/report.json; output/match-review/tests.txt"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

@@ -1,5 +1,6 @@
 import type { PlayerSimState } from "./matchStateMachine";
 import { smoothMotion, unit } from "./motionCurves";
+import { COURT_GEOMETRY } from "../config/balance";
 export const DUNK_STYLES = ["tomahawk", "windmill", "360", "reverse"] as const;
 export type DunkStyle = (typeof DUNK_STYLES)[number];
 export const DUNK_LABELS: Record<DunkStyle, string> = {
@@ -76,5 +77,23 @@ export function dunkBallPosition(
     x: origin.x + (hand.x - origin.x) * t,
     y: origin.y + (hand.y - origin.y) * t,
     z: origin.z + (hand.z - origin.z) * t,
+  };
+}
+
+/** Send misses and swats away from the descending finisher, from any lane. */
+export function dunkReboundPosition(
+  p: PlayerSimState,
+  body: { x: number; z: number },
+  outcome: 'basket' | 'miss' | 'block' | null | undefined,
+) {
+  const t = Math.max(0, p.finishResolutionSec - 0.30);
+  const dx = COURT_GEOMETRY.hoopX - body.x;
+  const dz = COURT_GEOMETRY.hoopZ - body.z;
+  const length = Math.hypot(dx, dz);
+  const speed = outcome === 'block' ? 3.3 : outcome === 'miss' ? 2.2 : 0;
+  return {
+    x: COURT_GEOMETRY.hoopX + (length > 1e-6 ? dx / length : 1) * speed * t,
+    z: COURT_GEOMETRY.hoopZ + (length > 1e-6 ? dz / length : 0) * speed * t,
+    y: Math.max(0.18, 3.17 - 1.5 * t - 4.9 * t * t),
   };
 }

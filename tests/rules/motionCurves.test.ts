@@ -108,4 +108,15 @@ describe("continuous basketball motion", () => {
     expect(normal.x).toBeCloseTo(previous.x, 6);
     expect(normal.z).toBeCloseTo(previous.z, 6);
   });
+  it("leaves space between a blocking defender and the dunker's body", () => {
+    for (const [x,z] of [[0,-3.7],[1,-4.5],[-1,-4.5],[0.1,-5],[0,-5.25]]) {
+      const p=player();p.x=x;p.z=z;p.defenseAction='jump';
+      p.defenseTargetX=0;p.defenseTargetZ=-5.25;
+      p.defenseElapsedSec=.44;
+      const pose=getAirPose(p);
+      expect(Math.hypot(pose.x-p.defenseTargetX,pose.z-p.defenseTargetZ)).toBeGreaterThanOrEqual(.719);
+      expect(pose.y).toBeCloseTo(1.25);
+      for(const t of [0,.88]){p.defenseElapsedSec=t;const end=getAirPose(p);expect(end.x).toBeCloseTo(x);expect(end.z).toBeCloseTo(z);expect(end.y).toBeCloseTo(0);}
+    }
+  });
 });
