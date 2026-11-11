@@ -96,7 +96,7 @@ npm run server
 | **Move** | `WASD` or Arrow Keys | Left Virtual Joystick |
 | **Sprint** | `Shift` | `SPRINT` Button |
 | **Shoot** | `Space` | `SHOOT` Button |
-| **Select Answer (A–D)** | `1`, `2`, `3`, `4` | Four Large Option Buttons (`≥ 48px` targets) |
+| **Select Answer (A–D)** | `1`, `2`, `3`, `4` | Four Large Option Buttons (`≥ 44px` targets) |
 | **Settings / Pause** | `Escape` | Top-Right `Settings & Controls` Button |
 
 ### Built-In Input Safeguards
