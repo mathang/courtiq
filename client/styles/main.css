@@ -1134,3 +1134,13 @@ textarea {
   .opt-key { padding:3px 5px; font-size:.67rem; }
   .question-footer-status { font-size:.68rem; gap:9px; }
 }
+
+/* Keep the hosting badge visible without covering answers or question status.
+   The reserved footer scrolls with the card, so every answer remains reachable. */
+body:has(> #nl-badge-frame) .question-panel {
+  max-height:57dvh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding-bottom:80px;
+  scroll-padding-bottom:80px;
+}
