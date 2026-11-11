@@ -3,11 +3,20 @@ import type { PlayerSimState } from "../../../shared/rules/matchStateMachine";
 import { STREET_MOVES } from "../../../shared/rules/streetMoves";
 import { clone } from "three/addons/utils/SkeletonUtils.js";
 
+const CYCLIC_CLIPS = new Set([
+  "court_idle",
+  "court_defend",
+  "court_walk",
+  "court_jog",
+  "court_sprint",
+]);
+
 /** Clip playback owns the performance; IK adds ball contact and planted feet. */
 export class BasketballAnimator {
   private mixer: THREE.AnimationMixer;
   private actions = new Map<string, THREE.AnimationAction>();
   private weights = new Map<string, number>();
+  private lastPhase = new Map<string, number>();
   public active = "court_idle";
   public readonly available: boolean;
   public floorHeight: [number, number] = [0, 0];
@@ -104,27 +113,44 @@ export class BasketballAnimator {
       const previous = this.weights.get(name)!;
       const next = initial
         ? (desired.get(name) ?? 0)
-        : THREE.MathUtils.damp(previous, desired.get(name) ?? 0, 18, dt);
+        : THREE.MathUtils.damp(previous, desired.get(name) ?? 0, 14, dt);
       this.weights.set(name, next);
       total += next;
     }
-    this.floorHeight = [0, 0];
+    const floorSum: [number, number] = [0, 0];
+    let floorWeight = 0;
     for (const [name, action] of this.actions) {
       const weight = (this.weights.get(name) ?? 0) / Math.max(total, 1e-8);
       action.enabled = true;
       action.weight = weight;
       const special = desired.has(name) && time !== null;
-      const phase = special
-        ? THREE.MathUtils.clamp(time!, 0, 1)
-        : ((cycle % 1) + 1) % 1;
+      let phase: number;
+      if (special) {
+        phase = THREE.MathUtils.clamp(time!, 0, 1);
+        this.lastPhase.set(name, phase);
+      } else if (CYCLIC_CLIPS.has(name)) {
+        phase = ((cycle % 1) + 1) % 1;
+      } else {
+        phase = this.lastPhase.get(name) ?? 1;
+      }
       action.time = Math.min(
         action.getClip().duration - 1e-6,
         phase * action.getClip().duration,
       );
       const floor = this.heights[name];
-      if (floor)
-        for (let i = 0; i < 2; i++) this.floorHeight[i] += floor[i] * weight;
+      // Un-IK'd crouch/airborne clips (e.g. court_defend ~0.57m, court_air ~0.43m)
+      // must not inflate the grounded locomotion floor reference (0.10m..0.28m).
+      if (floor && floor[0] < 0.35 && floor[1] < 0.35) {
+        floorSum[0] += floor[0] * weight;
+        floorSum[1] += floor[1] * weight;
+        floorWeight += weight;
+      }
     }
+    const idleFloor = this.heights.court_idle ?? [0.124, 0.124];
+    this.floorHeight =
+      floorWeight > 1e-5
+        ? [floorSum[0] / floorWeight, floorSum[1] / floorWeight]
+        : [idleFloor[0], idleFloor[1]];
     this.mixer.update(0);
     for (const { live, pose } of this.bones) {
       live.quaternion.copy(pose.quaternion);

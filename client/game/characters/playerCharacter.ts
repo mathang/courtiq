@@ -214,7 +214,11 @@ export class PlayerCharacter3D {
       Math.sin(p.facingAngle - this.rotation),
       Math.cos(p.facingAngle - this.rotation),
     );
-    this.rotation += delta * (1 - Math.exp(-params.presentationDeltaSec * 25));
+    const turnDt =
+      p.finishKind || p.defenseAction === "jump"
+        ? Math.max(params.presentationDeltaSec, params.realDeltaSec)
+        : params.presentationDeltaSec;
+    this.rotation += delta * (1 - Math.exp(-turnDt * 25));
     // Turn through the gather, preserving the displayed spin/stance at entry.
     const gatherTurn = Math.atan2(
       Math.sin(p.facingAngle - this.dunkStartYaw),
