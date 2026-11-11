@@ -1,0 +1,147 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "files": [
+    {
+      "file": "assets/audio/CC0-LICENSE.txt",
+      "bytes": 7048,
+      "sourceSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "deliveredSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/README.md",
+      "bytes": 847,
+      "sourceSha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545",
+      "deliveredSha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/bounce-1.wav",
+      "bytes": 28450,
+      "sourceSha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8",
+      "deliveredSha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/bounce-2.wav",
+      "bytes": 28450,
+      "sourceSha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886",
+      "deliveredSha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/bounce-3.wav",
+      "bytes": 28450,
+      "sourceSha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174",
+      "deliveredSha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/cheer.wav",
+      "bytes": 110514,
+      "sourceSha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2",
+      "deliveredSha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/squeak-1.wav",
+      "bytes": 23132,
+      "sourceSha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9",
+      "deliveredSha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/squeak-2.wav",
+      "bytes": 23132,
+      "sourceSha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7",
+      "deliveredSha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/squeak-3.wav",
+      "bytes": 23132,
+      "sourceSha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334",
+      "deliveredSha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/game-BB4ZICDv.css",
+      "bytes": 24755,
+      "sourceSha256": "47c4e98dcc1836df9743039a1f2356b641f91bc6d6fe4fcd171865edf1e2e409",
+      "deliveredSha256": "47c4e98dcc1836df9743039a1f2356b641f91bc6d6fe4fcd171865edf1e2e409",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/game-DNoYiCa8.js",
+      "bytes": 99817,
+      "sourceSha256": "b57922db6f0a6bff17f1a5e71adf36dd8ead13eae9539d44fd4d3063cca37e5c",
+      "deliveredSha256": "b57922db6f0a6bff17f1a5e71adf36dd8ead13eae9539d44fd4d3063cca37e5c",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/ANIMATION-LICENSE.txt",
+      "bytes": 7048,
+      "sourceSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "deliveredSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/QUATERNIUS-LICENSE.txt",
+      "bytes": 806,
+      "sourceSha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e",
+      "deliveredSha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/streetball-player.glb",
+      "bytes": 1286024,
+      "sourceSha256": "246df806eb9b7dc497dc8e5a6ddb7a31b01d1679f1558523aaa9262db8bb4467",
+      "deliveredSha256": "246df806eb9b7dc497dc8e5a6ddb7a31b01d1679f1558523aaa9262db8bb4467",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/playerCharacter-DTyNWooy.js",
+      "bytes": 266180,
+      "sourceSha256": "7ed9a1342b1849c3b76761ea4c271177b2b349336e28c5bd5894b0a739d9b595",
+      "deliveredSha256": "7ed9a1342b1849c3b76761ea4c271177b2b349336e28c5bd5894b0a739d9b595",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/playerLab-BOjgjvqB.js",
+      "bytes": 26978,
+      "sourceSha256": "d8c16dcd7aeb16d34712468865d93057cd02b733cbd71903e9e223d998c0358d",
+      "deliveredSha256": "d8c16dcd7aeb16d34712468865d93057cd02b733cbd71903e9e223d998c0358d",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/playerLab-CpIJaJLo.css",
+      "bytes": 6063,
+      "sourceSha256": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f",
+      "deliveredSha256": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/three-C3aAHTDY.js",
+      "bytes": 559766,
+      "sourceSha256": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03",
+      "deliveredSha256": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "index.html",
+      "bytes": 25852,
+      "sourceSha256": "c243a90a887014f54a7eb097ea4e67b712d40a6b60db4f39218b5f10f695becc",
+      "deliveredSha256": "d2b75a441a2d6995f7ab717cf2bc2b505b8b5bcfa9d6276f4b6376bb690223a0",
+      "platformHtmlTransform": true
+    },
+    {
+      "file": "player-lab.html",
+      "bytes": 5328,
+      "sourceSha256": "fdd7eae86f57d9766ca52d9980eb86e02b83a5825d2976a896b772ad0d207346",
+      "deliveredSha256": "d1ff081d0dc7e86ed917a9e5a1de4fd1bafe9adec998466295eb2c02c525c0e7",
+      "platformHtmlTransform": true
+    }
+  ],
+  "pass": true,
+  "htmlNormalisation": "Only observed Netlify hosting comment, public HUD script and Pretty URL link serialisation removed for comparison; application JS/CSS/GLB/audio/credits/licence hashes exact."
+}

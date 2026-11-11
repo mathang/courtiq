@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "228d865",
+  "preview": {
+    "id": "6af4e6e6f82f7e6222bbdd88",
+    "state": "ready",
+    "error": null,
+    "functions": [
+      {
+        "name": "health",
+        "digest": "b5464ad5e6914d5f5128e6bdc13c8d9e20cc96e02b7b0b05a6c2d03273b8c787"
+      },
+      {
+        "name": "room",
+        "digest": "af615dcd09cad4bab5b93958404126da3a21cc300dc49c7c4437957dcf479b62"
+      }
+    ]
+  },
+  "production": {
+    "id": "6af4e9057e899e565a159b39",
+    "state": "ready",
+    "error": null,
+    "functions": [
+      {
+        "name": "health",
+        "digest": "b5464ad5e6914d5f5128e6bdc13c8d9e20cc96e02b7b0b05a6c2d03273b8c787"
+      },
+      {
+        "name": "room",
+        "digest": "af615dcd09cad4bab5b93958404126da3a21cc300dc49c7c4437957dcf479b62"
+      }
+    ]
+  },
+  "teamPlan": "Free",
+  "functionDigestsMatch": true,
+  "publicUrl": "https://courtiq-spx101.netlify.app/"
+}

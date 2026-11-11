@@ -1,0 +1,65 @@
+{
+  "verifiedAtUtc": "2026-11-11T22:20:03.114414+00:00",
+  "sourceCommit": "228d865e71e066e1119410fe78f24ba60d21af11",
+  "buildSourceFingerprint": "5b42a6f18dc7ca1b31841ad0b876c19746bf6e51acb7e3fe6b269a144825f30e",
+  "production": {
+    "siteId": "0163a0e9-643d-4a4e-b835-b789dcee1204",
+    "url": "https://courtiq-spx101.netlify.app",
+    "publishedDeployId": "6af4e9057e899e565a159b39",
+    "state": "ready",
+    "plan": "nf_team_dev",
+    "repositoryUrl": null
+  },
+  "previewId": "6af4e6e6f82f7e6222bbdd88",
+  "tests": {
+    "passed": 141,
+    "files": 19
+  },
+  "strictProductionBuild": "PASS",
+  "shippedFilesMatched": 20,
+  "twoStudentTeaching": {
+    "secrecyChecks": 37,
+    "sameQuestion": true,
+    "sameChoices": true,
+    "personalFeedback": true,
+    "bothContinue": true,
+    "missedSwipeRoot": true,
+    "primaryDunkAndManualBlock": true
+  },
+  "fluidDefense": {
+    "bump": true,
+    "slide": true,
+    "jumpSteering": true,
+    "offBalanceSteering": true,
+    "lobbyLeaveRejoin": true
+  },
+  "lobbyViewports": [
+    "1440x900",
+    "768x1024",
+    "390x844",
+    "844x390"
+  ],
+  "pageErrors": [],
+  "humanValidationOutstanding": [
+    "Instructor review of draft distractor rationales",
+    "Physical mobile devices/campus concurrency",
+    "Human play balance and auditory listening",
+    "Installed NBA 2K retail/controller benchmarking"
+  ],
+  "researchNotes": [
+    "Full NBA 2K production parity is not claimed",
+    "Warm-instance HTTP rooms require architectural work for durable classroom concurrency",
+    "Shared outcome headline could be clearer beside the personal learning verdict"
+  ],
+  "costControls": "Existing Netlify Free site; no paid API/assets/services, billing changes, extra-credit fallback or new Antigravity turn.",
+  "researchReport": {
+    "markdownPath": "docs/research/NBA_2K_BLACKTOP_BENCHMARK_2026-11-12.md",
+    "wordCount": 5311,
+    "standaloneHtml": "output/fluid-lobby/CourtIQ-NBA2K-Report.html",
+    "htmlSha256": "bbb25578ca288bcacca4360d738ed2a599840488739de1f1d5b4eb290edf7e14",
+    "layoutCheckedWidths": [
+      1440,
+      390
+    ]
+  }
+}

@@ -618,9 +618,22 @@
       "observed": "Final preview 6af4e6e6f82f7e6222bbdd88: same question/choices, 33 key/explanation secrecy checks, individual feedback and both-party Continue, zero-velocity recovery snapshots, primary paint dunk and physical block all pass. Zero page errors.",
       "evidence_path": "docs/verification/2026-11-12-fluid-lobby/teaching-preview.json",
       "reason": "Short recovery observations use authoritative response snapshots; exact one-second duration remains regression-tested."
+    },
+    {
+      "id": "fluid-lobby-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "production-browser-and-asset-integrity",
+      "environment": "Existing Netlify Free site / isolated Apple M4 Pro Metal Chromium desktop, portrait, tablet and landscape",
+      "timestamp_utc": "2026-11-11T22:20:03.114414+00:00",
+      "command_or_action": "Verify active ready production, exact shipped-file hashes/function digests and real two-client match/lobby flows; open production screenshots",
+      "expected": "Live game is the verified source revision and preserves fluid defensive agency, simple entry and teaching contracts.",
+      "observed": "Source 228d865e71e066e1119410fe78f24ba60d21af11 is on GitHub main. Production 6af4e9057e899e565a159b39 current/ready, all20 files match final dist and both function digests match the tested preview. Live bump/slide, jump/off-balance steering, Leave/rejoin, all four lobby sizes, custom-pack safety, shared questions/choices,37 pre-resolution secrecy checks, personal feedback, both-party Continue, swipe root and primary dunk/manual swat pass; zero page errors. Genuine badge clear in inspected captures.",
+      "evidence_path": "docs/verification/2026-11-12-fluid-lobby",
+      "reason": "Physical device/classroom/human listening and instructor review remain separate; future gameplay/animation/networking work is proposed in the sourced report."
     }
   ],
-  "release_decision": "PASS_VERIFIED_PREVIEW_PRODUCTION_PENDING",
+  "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",
   "remaining_risks": [
     "All numerical balance settings (base shot probabilities 20%/12%/7%, up to +8% Street Flow/Combo setup bonus, 35% correctness bonus, 35% speed bonus, 200ms tie tolerance) are deterministic playtest values and remain subject to empirical SPX101 educator calibration.",
     "Netlify HTTP rooms (/api/room) store state in warm serverless container memory (15-minute idle TTL); large multi-region or cold-start classroom sessions should run the standalone Node WebSocket server (npm run server) or attach durable KV storage.",

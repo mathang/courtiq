@@ -254,6 +254,8 @@ There is also an assessment boundary: online pre-resolution payloads omit answer
 
 Preserve the useful existing contracts: the same question and choice set for both students, shared reveal/reading timing, stable option IDs, one locked answer, personal feedback, learning credit independent of the basket, and both students confirming Continue.
 
+One rendered feedback detail still needs clearer wording: a shared basketball-outcome headline can begin with “Correct” above an individual student's incorrect-answer verdict. Label that shared outcome explicitly as the basketball result, and keep the student's own answer verdict visually primary. Separating the data is necessary; the wording must make the distinction equally clear.
+
 The 255 new wrong-choice rationales need instructor review before they are described as approved feedback. Check that each addresses the actual misconception, uses course terminology and does not introduce unsupported detail.
 
 Next, record misconception categories rather than only right/wrong totals. A practice session can revisit an explanation after a few possessions and later ask a related transfer question. Keep this scheduling fair in competitive matches; personalised revision can occur between matches or in solo practice.

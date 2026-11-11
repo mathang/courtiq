@@ -1,0 +1,50 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "results": [
+    {
+      "width": 1440,
+      "height": 900,
+      "oneVisibleTopicSelector": true,
+      "startVisibleWithoutScroll": true,
+      "keyboardTabsAndSpace": true,
+      "teacherImport": true,
+      "customPackModeSafety": true,
+      "selectedOptionsPreserved": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "oneVisibleTopicSelector": true,
+      "startVisibleWithoutScroll": true,
+      "keyboardTabsAndSpace": true,
+      "teacherImport": true,
+      "customPackModeSafety": true,
+      "selectedOptionsPreserved": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "oneVisibleTopicSelector": true,
+      "startVisibleWithoutScroll": true,
+      "keyboardTabsAndSpace": true,
+      "teacherImport": true,
+      "customPackModeSafety": true,
+      "selectedOptionsPreserved": true,
+      "overflow": false
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "oneVisibleTopicSelector": true,
+      "startVisibleWithoutScroll": true,
+      "keyboardTabsAndSpace": true,
+      "teacherImport": true,
+      "customPackModeSafety": true,
+      "selectedOptionsPreserved": true,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

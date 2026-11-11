@@ -1,0 +1,57 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "errors": [],
+  "secrecyChecks": 37,
+  "recoverySnapshots": [
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.75
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.677
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.47400000000000003
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.394
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.18
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.09799999999999999
+    }
+  ],
+  "recoveryObservation": "Authoritative WebSocket/HTTP snapshots while directional input is held; full one-second duration separately regression-tested",
+  "primaryDunkAndBlock": true,
+  "sameQuestion": true,
+  "sameChoices": true,
+  "perStudentFeedback": true,
+  "missedSwipeFrozen": true,
+  "bothContinueRequired": true,
+  "question": "spx101-w09-023"
+}
