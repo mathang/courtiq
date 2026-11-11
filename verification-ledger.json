@@ -540,6 +540,19 @@
       "observed": "Draft rationales derived from existing course question content; no instructor sign-off claimed.",
       "evidence_path": "content/approved-packs",
       "reason": "Original approved stems, choices, keys, explanations and sources are unchanged."
+    },
+    {
+      "id": "simple-controls-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-browser-and-asset-integrity",
+      "environment": "Existing Netlify Free site / isolated Chromium desktop, 390x844 portrait and 844x390 landscape",
+      "timestamp_utc": "2026-11-11T21:01:46.489725+00:00",
+      "command_or_action": "Publish tested dist; verify current deploy and function hashes; compare all 20 shipped files; run controls/Fire and two-student online browser matches; open screenshots",
+      "expected": "The actual live game corresponds to tested source and preserves all new control and teaching contracts.",
+      "observed": "Production 6af4d6de8a44959c9894be9b is current and ready. All 20 files match tested dist with only documented Netlify HTML normalisation. Both deployed function digests match the verified preview. Live C 1/2/3/4 taps, three-correct Fire/+20pp third shot and next-wrong reset, personal rationales, both-party Continue, missed-swipe root and primary-action paint dunk/block pass. 35 online pre-resolution secrecy checks; zero page errors. Genuine hosting badge and all four choices/Continue are visible and separate in inspected live captures.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "No paid APIs, asset purchases, new services, billing changes or extra-credit fallback. Human instruction review and real-device/classroom assessment remain separate."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",
