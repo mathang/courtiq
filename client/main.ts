@@ -1,5 +1,5 @@
 import { isDrivingInPaint } from '../shared/rules/finishing';
-import { appearanceFor, characterForAppearance, opponentAppearance, type CharacterId } from '../shared/config/appearance';
+import { appearanceFor, characterForAppearance, opponentAppearance, paletteForAppearance, type CharacterId } from '../shared/config/appearance';
 import { DUNK_LABELS } from '../shared/rules/dunks';
 import { STREET_MOVES } from '../shared/rules/streetMoves';
 import { BUNDLED_QUESTION_PACKS } from '../content/packRegistry';
@@ -499,6 +499,12 @@ class CourtIqApp {
   }
 
   private updateLobbyAppearance(): void {
+    const palette = paletteForAppearance(this.getSelectedAppearance());
+    for (const choice of document.querySelectorAll<HTMLButtonElement>('#lobby-character-picker [data-character]')) {
+      const character = characterForAppearance(appearanceFor(Number(choice.dataset.character), palette));
+      const image = choice.querySelector('img');
+      if (image) image.src = `/assets/player/portrait-${character.key}${palette ? `-${palette}` : ''}.png`;
+    }
     if (this.soloEngine?.phase === 'Lobby') {
       this.soloEngine.players[0].appearancePreset = this.getSelectedAppearance();
       this.soloEngine.players[1].appearancePreset = opponentAppearance(this.getSelectedAppearance());

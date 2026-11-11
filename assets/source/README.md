@@ -76,4 +76,4 @@ adedf28000a0716f689b009a70314506fc62f827498f77ba852acb5610f3f3f4  Superhero_Fema
 3a8220a485b33d05d879115a50697728b45a151781106033afb8b8c243fca208  Superhero_Female_FullBody.bin
 ```
 
-The two small `portrait-*.png` chooser images are local renders of the shipping GLBs, captured from Player Lab and cropped to the face. They add no rendering loop or external image/generation dependency to the lobby.
+The eight small `portrait-*.png` chooser images are local renders of the shipping GLBs, captured from Player Lab and cropped to the face. They follow the selected colour palette and add no rendering loop or external image/generation dependency to the lobby.
