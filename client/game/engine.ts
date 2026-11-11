@@ -209,7 +209,12 @@ export class CourtIqRenderer {
     return this.chars?.map(c => c.assetState) ?? [];
   }
   public getPresentationState() {
-    return { camera: this.cameraCtrl?.snapshot(), animations: this.chars?.map(c => c.getAnimationState()) };
+    return {
+      camera: this.cameraCtrl?.snapshot(),
+      animations: this.chars?.map(c => c.getAnimationState()),
+      palms: this.chars?.map(c => c.getPalmPosition()?.toArray() ?? null),
+      avatarRoots: this.chars?.map(c => c.root.position.toArray()),
+    };
   }
   public consumeFootContacts() {
     return this.chars?.flatMap((c, slot) => c.consumeFootContacts().map(intensity => ({ intensity, slot }))) ?? [];

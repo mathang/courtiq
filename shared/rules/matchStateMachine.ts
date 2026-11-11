@@ -357,7 +357,7 @@ export class AuthoritativeMatchEngine {
       p.correctAnswerStreak = this.activeDuel.answersBySlot[slot]?.isCorrect
         ? p.correctAnswerStreak + 1 : 0;
       p.onFire = p.correctAnswerStreak >= LEARNING_STREAK_CONFIG.correctAnswersToIgnite;
-      if (!wasOnFire && p.onFire) this.emitCallout(slot, "🔥 HE'S ON FIRE! • 3 CORRECT IN A ROW", 3.5);
+      if (!wasOnFire && p.onFire) this.emitCallout(slot, "🔥 ON FIRE! • 3 CORRECT IN A ROW", 3.5);
       else if (wasOnFire && !p.onFire) this.emitCallout(slot, 'STREAK ENDED • BUILD IT AGAIN', 2);
     }
   }

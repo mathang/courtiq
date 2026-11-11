@@ -1343,7 +1343,7 @@ class CourtIqApp {
     const showReason = learning && learning.status !== 'correct' && learning.reason !== fb.explanation;
     setTxt('fb-choice-reason', showReason ? `Why: ${learning.reason}` : '');
     document.getElementById('fb-choice-reason')?.classList.toggle('hidden', !showReason);
-    setTxt('fb-streak-text', !learning ? '' : learning.onFire ? `🔥 HE’S ON FIRE! ${learning.correctAnswerStreak} correct in a row • 20% faster • +20 percentage points to shooting` : learning.correctAnswerStreak ? `✓ ${learning.correctAnswerStreak} correct in a row — ${3 - learning.correctAnswerStreak} more for On Fire` : 'Your learning streak is reset. Use the explanation to build it again.');
+    setTxt('fb-streak-text', !learning ? '' : learning.onFire ? `🔥 ON FIRE! ${learning.correctAnswerStreak} correct in a row • 20% faster • +20 percentage points to shooting` : learning.correctAnswerStreak ? `✓ ${learning.correctAnswerStreak} correct in a row — ${3 - learning.correctAnswerStreak} more for On Fire` : 'Your learning streak is reset. Use the explanation to build it again.');
     const next = document.getElementById('btn-next-possession') as HTMLButtonElement | null;
     if (next) {
       const waiting = Boolean(fb.continueReady?.[slot]);

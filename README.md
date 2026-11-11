@@ -64,7 +64,7 @@ On defence, press or hold **Space** during the dunk take-off. The jump faces the
 
 In **student-versus-student rooms**, both students receive the same question, choices, reading period and answer deadline. Choice order can differ. Public online payloads omit answer keys and explanations until resolution. Each student gets their own correct/incorrect/unanswered verdict and selected-option feedback. Neither can dismiss the other student's explanation: both confirm Continue before play resumes.
 
-Each student's HUD tracks **three consecutive correct answers** towards **“HE’S ON FIRE!”**. Fire gives **20% faster movement** and **+20 percentage points** to shooting, up to 95%. The third correct answer boosts that shot too. Wrong or unanswered questions reset the streak; a basketball miss or block does not. Learning results remain separate from basketball scores.
+Each student's HUD tracks **three consecutive correct answers** towards **“ON FIRE!”**. Fire gives **20% faster movement** and **+20 percentage points** to shooting, up to 95%. The third correct answer boosts that shot too. Wrong or unanswered questions reset the streak; a basketball miss or block does not. Learning results remain separate from basketball scores.
 
 All **255 wrong choices across 85 bundled questions** have a specific explanation, derived from the existing course questions and reasoning. These new rationales are **draft additions for instructor review**; original stems, choices, answer keys, explanations and source references are unchanged. Custom packs can supply `optionFeedback` keyed by stable option ID; packs without it retain their existing explanation.
 

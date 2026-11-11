@@ -445,29 +445,19 @@ describe("shipped streetball player: " + assetFile, () => {
         p.finishKind = "dunk";
         p.dunkStyle = style;
         p.finishElapsedSec = 2;
-        const skin = a.model.getObjectByName("Body_Skin") as THREE.SkinnedMesh;
-        const attr = skin.geometry.attributes,
-          indices = skin.geometry.index!;
-        const headTriangles: number[][] = [];
-        const isHead = (i: number) => {
-          let weight = 0;
-          for (let j = 0; j < 4; j++)
-            if (
-              ["Head", "neck_01"].includes(
-                skin.skeleton.bones[attr.skinIndex.getComponent(i, j)].name,
-              )
-            )
-              weight += attr.skinWeight.getComponent(i, j);
-          return weight > 0.5;
-        };
-        for (let i = 0; i < indices.count; i += 3) {
-          const ids = [
-            indices.getX(i),
-            indices.getX(i + 1),
-            indices.getX(i + 2),
-          ];
-          if (ids.every(isHead)) headTriangles.push(ids);
-        }
+        const headSurfaces: Array<{mesh:THREE.SkinnedMesh;triangles:number[][]}> = [];
+        a.model.traverse(object => {
+          if (!(object instanceof THREE.SkinnedMesh)) return;
+          const attr=object.geometry.attributes,indices=object.geometry.index!;
+          const isHead=(i:number)=>{
+            let weight=0;
+            for(let j=0;j<4;j++)if(['Head','neck_01'].includes(object.skeleton.bones[attr.skinIndex.getComponent(i,j)].name))weight+=attr.skinWeight.getComponent(i,j);
+            return weight>.5;
+          };
+          const triangles:number[][]=[];
+          for(let i=0;i<indices.count;i+=3){const ids=[indices.getX(i),indices.getX(i+1),indices.getX(i+2)];if(ids.every(isHead))triangles.push(ids);}
+          if(triangles.length)headSurfaces.push({mesh:object,triangles});
+        });
         for (const outcome of ["miss", "block"] as const)
           for (const r of [0.35, 0.4, 0.45, 0.5, 0.55, 0.65, 0.75]) {
             p.finishResolutionSec = r;
@@ -477,23 +467,15 @@ describe("shipped streetball player: " + assetFile, () => {
             a.body.rotation.set(0, facing, 0);
             a.rig.update(p, true, 1 / 60);
             a.root.updateMatrixWorld(true);
-            skin.skeleton.update();
+            for(const {mesh} of headSurfaces)mesh.skeleton.update();
             const b = dunkReboundPosition(p, air, outcome),
               center = new THREE.Vector3(b.x, b.y, b.z);
-            for (const ids of headTriangles) {
-              const triangle = new THREE.Triangle(
-                ...(ids.map((i) =>
-                  skin.localToWorld(
-                    skin.getVertexPosition(i, new THREE.Vector3()),
-                  ),
-                ) as [THREE.Vector3, THREE.Vector3, THREE.Vector3]),
-              );
-              expect(
-                triangle
-                  .closestPointToPoint(center, new THREE.Vector3())
-                  .distanceTo(center),
-              ).toBeGreaterThan(0.145);
+            let closest=Infinity;
+            for(const {mesh,triangles} of headSurfaces)for(const ids of triangles){
+              const triangle=new THREE.Triangle(...ids.map(i=>mesh.localToWorld(mesh.getVertexPosition(i,new THREE.Vector3()))) as [THREE.Vector3,THREE.Vector3,THREE.Vector3]);
+              closest=Math.min(closest,triangle.closestPointToPoint(center,new THREE.Vector3()).distanceTo(center));
             }
+            expect(closest,`${assetFile} ${style}, ${facing}, ${outcome}, ${r}; includes hair/eyes/headband`).toBeGreaterThan(.145);
           }
       }
   });
