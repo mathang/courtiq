@@ -32,6 +32,9 @@ import {
 } from '../shared/rules/possession';
 import { classifyShotZone, computeBaseShotProbability } from '../shared/rules/shot';
 import { SoundEngine } from './game/audio/soundEngine';
+import { PossessionCueTracker } from './game/presentation/possessionCues';
+import { ShowcasePossession } from './game/presentation/showcasePossession';
+import type { Vector3D } from '../shared/rules/shot';
 import { CourtIqRenderer, RenderQualityMode } from './game/engine';
 import {
   DEFAULT_KEY_BINDINGS,
@@ -42,6 +45,8 @@ import {
 class CourtIqApp {
   private renderer: CourtIqRenderer;
   private sound = new SoundEngine();
+  private cueTracker = new PossessionCueTracker();
+  private showcase: ShowcasePossession | null = null;
   private input: InputGuardController;
 
   private packs: QuestionPack[] = [...BUNDLED_QUESTION_PACKS];
@@ -83,6 +88,8 @@ class CourtIqApp {
     });
 
     this.loadPreferences();
+    window.addEventListener('pointerdown', () => this.sound.unlock(), { once: true, capture: true });
+    window.addEventListener('keydown', () => this.sound.unlock(), { once: true, capture: true });
     this.populatePackDropdown();
     this.bindUiEvents();
     this.renderRemapGrid();
@@ -100,7 +107,7 @@ class CourtIqApp {
       const frames = Math.max(1, Math.ceil(ms / (1000 / 60)));
       for (let i = 0; i < frames; i++) {
         manualNow += ms / frames;
-        this.tickFrame(ms / frames, manualNow);
+        this.tickFrame(ms / frames, manualNow, i === frames - 1);
       }
     };
     hooks.render_game_to_text = () => {
@@ -115,6 +122,9 @@ class CourtIqApp {
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
         players, ball: online?.ballPosition ?? eng?.getBallPosition3D(),
         playerModels: this.renderer.getPlayerAssetStates(),
+        presentation: this.renderer.getPresentationState(),
+        audio: this.sound.diagnostics(),
+        showcase: Boolean(this.showcase?.active),
         paused: !document.getElementById('settings-modal')?.classList.contains('hidden'),
         duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected, physicalBlock: online.activeDuel.physicalBlock } : eng?.activeDuel ? {
           id: eng.activeDuel.duelId, elapsedMs: eng.activeDuel.elapsedRealMs,
@@ -254,7 +264,7 @@ class CourtIqApp {
       .getElementById('btn-start-solo')
       ?.addEventListener('click', () => this.startSoloMatch(false));
 
-    // Quick Demo Shot Duel Preview
+    // Full possession preview; normal movement immediately takes control.
     document
       .getElementById('btn-quick-demo-shot')
       ?.addEventListener('click', () => this.startSoloMatch(true));
@@ -497,9 +507,13 @@ class CourtIqApp {
     };
   }
 
-  private startSoloMatch(instantShotPreview = false, overridePack?: QuestionPack): void {
+  private startSoloMatch(previewPossession = false, overridePack?: QuestionPack): void {
     this.closeOnlineConnection();
     this.onlineSnapshot = null;
+    this.input.reset();
+    this.cueTracker.reset();
+    this.sound.stopSlowMoAtmosphere();
+    this.showcase = previewPossession ? new ShowcasePossession() : null;
 
     const cfg = this.getSelectedConfig();
     const activePack = overridePack ?? cfg.pack;
@@ -507,10 +521,11 @@ class CourtIqApp {
     this.soloEngine = new AuthoritativeMatchEngine({
       matchId: `solo-${Date.now()}`,
       mode: 'solo',
+      ...(previewPossession ? { seed: 42 } : {}),
       pack: activePack,
       roomPresetId: cfg.roomPresetId,
       sessionLengthId: cfg.sessionLengthId,
-      aiDifficulty: cfg.aiDifficulty,
+      aiDifficulty: previewPossession ? 'beginner' : cfg.aiDifficulty,
       player0: {
         id: 'student-local',
         pseudonym: cfg.pseudonym,
@@ -518,25 +533,17 @@ class CourtIqApp {
       },
       player1: {
         id: 'ai-opponent',
-        pseudonym: `CourtBot (${cfg.aiDifficulty.slice(0, 3).toUpperCase()})`,
+        pseudonym: previewPossession ? 'CourtBot' : `CourtBot (${cfg.aiDifficulty.slice(0, 3).toUpperCase()})`,
         isAi: true,
         appearancePreset: (cfg.appearancePreset + 1) % 4,
       },
     });
 
     this.soloEngine.startMatch();
-
-    if (instantShotPreview) {
-      // Position player at a clean mid-range wing spot and immediately trigger a shot duel
-      this.soloEngine.players[0].x = -2.1;
-      this.soloEngine.players[0].z = -2.1;
-      this.soloEngine.players[1].x = -1.1;
-      this.soloEngine.players[1].z = -2.9;
-      this.soloEngine.initiateShotAttempt();
-    }
   }
 
   private returnToLobby(): void {
+    this.showcase = null;
     this.input.reset();
     this.closeOnlineConnection();
     this.onlineSnapshot = null;
@@ -568,7 +575,7 @@ class CourtIqApp {
     }
   }
 
-  private tickFrame(realDeltaMs: number, nowMs: number): void {
+  private tickFrame(realDeltaMs: number, nowMs: number, draw = true): void {
     const realDeltaSec = realDeltaMs / 1000;
     const nowSec = nowMs / 1000;
 
@@ -595,8 +602,10 @@ class CourtIqApp {
           reducedMotion: this.reducedMotion,
         },
         realDeltaSec,
-        nowSec
+        nowSec,
+        draw
       );
+      this.playFootContacts(snap.phase);
       return;
     }
 
@@ -616,10 +625,14 @@ class CourtIqApp {
       displayedOptions: activeDuel?.displayedOptionsBySlot[0] ?? [],
     });
 
-    const moveInput0 = this.input.consumeMoveInput(eng.phase);
+    const paused = ['settings-modal', 'tutorial-modal'].some((id) => !document.getElementById(id)?.classList.contains('hidden'));
+    const userInput0 = this.input.consumeMoveInput(eng.phase);
+    const previewInput = !paused
+      ? this.showcase?.next(eng.players, eng.phase, eng.scoreState.currentAttacker, realDeltaSec, userInput0)
+      : null;
+    const moveInput0 = previewInput ?? userInput0;
     const neutralInput = { moveX: 0, moveZ: 0, sprint: false, shoot: false };
 
-    const paused = ['settings-modal', 'tutorial-modal'].some((id) => !document.getElementById(id)?.classList.contains('hidden'));
     if (eng.phase !== 'Lobby' && !paused) {
       eng.step(realDeltaMs, [moveInput0, neutralInput]);
     }
@@ -629,7 +642,8 @@ class CourtIqApp {
       eng.phase,
       eng.players,
       eng.feedbackState,
-      nowMs
+      eng.getBallPosition3D(),
+      eng.scoreState.currentAttacker
     );
 
     const liveBlock = eng.getLiveBlockEligibility();
@@ -647,27 +661,52 @@ class CourtIqApp {
         reducedMotion: this.reducedMotion,
       },
       realDeltaSec,
-      nowSec
+      nowSec,
+      draw
     );
+    this.playFootContacts(eng.phase);
   }
 
   private handlePhaseAudioEffects(
     phase: MatchPhase,
     players: [PlayerSimState, PlayerSimState],
     feedback: FeedbackBannerState | null,
-    nowMs: number
+    ballPosition: Vector3D,
+    attackerSlot: PlayerSlot
   ): void {
-    if (
-      phase === 'Possession' &&
-      (players[0].animState === 'dribble' || players[1].animState === 'dribble')
-    ) {
-      this.sound.maybePlayDribbleStep(nowMs);
+    const paused = document.hidden || ['settings-modal', 'tutorial-modal'].some(
+      id => !document.getElementById(id)?.classList.contains('hidden')
+    );
+    this.sound.setPaused(paused);
+    const cues = this.cueTracker.update(phase, players, attackerSlot, ballPosition, paused);
+    const pan = Math.max(-0.5, Math.min(0.5, ballPosition.x / 10));
+    for (const cue of cues) {
+      if (cue === 'bounce') this.sound.playBounce(pan);
+      else if (cue === 'cut') this.sound.playCut(pan);
+      else if (cue === 'swipe') this.sound.playBlockSwat();
+      else if (cue === 'gather') {
+        this.sound.playGather(pan);
+        this.dunkImpactPlayed = false;
+      }
+      else if (cue === 'takeoff') this.sound.playShotRelease();
+      else if (cue === 'land') this.sound.playLanding(pan);
+      else {
+        this.dunkImpactPlayed = true;
+        if (cue === 'basket') {
+          this.sound.playDunkSlam();
+          this.renderer.triggerBasketCelebration();
+        }
+        else if (cue === 'block') {
+          this.sound.playBlockSwat();
+          this.renderer.triggerBlockEffect();
+        }
+        else this.sound.playRimClank();
+      }
     }
-
+    if (!paused && (phase === 'QuestionReady' || phase === 'Duel')) this.sound.startSlowMoAtmosphere();
+    else this.sound.stopSlowMoAtmosphere();
     if (this.lastPhase === 'Possession' && phase === 'QuestionReady') {
       this.dunkImpactPlayed = false;
-      this.sound.playShotRelease();
-      this.sound.startSlowMoAtmosphere();
     }
 
     if (
@@ -678,12 +717,6 @@ class CourtIqApp {
     }
 
     const dunk = players.find(p => p.finishKind === 'dunk');
-    if (phase === 'Resolution' && dunk && dunk.finishResolutionSec >= 0.30 && !this.dunkImpactPlayed) {
-      this.dunkImpactPlayed = true;
-      if (dunk.finishOutcome === 'basket') { this.sound.playDunkSlam(); this.renderer.triggerBasketCelebration(); }
-      else if (dunk.finishOutcome === 'block') { this.sound.playBlockSwat(); this.renderer.triggerBlockEffect(); }
-      else this.sound.playRimClank();
-    }
     if (
       phase === 'Feedback' &&
       feedback &&
@@ -707,6 +740,11 @@ class CourtIqApp {
     }
 
     this.lastPhase = phase;
+  }
+  private playFootContacts(phase: MatchPhase): void {
+    for (const cue of this.renderer.consumeFootContacts()) {
+      if (phase === 'Possession') this.sound.playFootstep(cue.slot === 0 ? -0.16 : 0.16, cue.intensity);
+    }
   }
 
   private updateDomOverlaysForSolo(
@@ -803,7 +841,7 @@ class CourtIqApp {
     const badge = document.getElementById('street-status');
     if (!badge) return;
     const active = phase === 'Possession' || phase === 'QuestionReady' || phase === 'Duel' || phase === 'Resolution';
-    badge.classList.toggle('hidden', !active);
+    badge.classList.toggle('hidden', !active || phase === 'Duel');
     const defending = you.slot !== attacker.slot;
     const dunkRange = Math.hypot(attacker.x - COURT_GEOMETRY.hoopX, attacker.z - COURT_GEOMETRY.hoopZ) <= DUNK_RANGE_M;
     const selectedStyle = DUNK_LABELS[this.input.dunkStyle];
@@ -843,7 +881,8 @@ class CourtIqApp {
       snap.phase,
       snap.players,
       snap.feedbackState,
-      performance.now()
+      snap.ballPosition,
+      snap.scoreState.currentAttacker
     );
 
     this.updateTopHud({

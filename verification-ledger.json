@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:ecc9e2dbebf418f6466adf2f1e627d5cb8cf665f59967cde9d0b126dc147ae44",
+  "revision_or_artifact_hash": "dist/index.html:sha256:6679c7291c81c8fd1b1c9e16e23ef366d3e217f7bac54477efa9cb54e5f8adfa",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -376,6 +376,24 @@
       "timestamp_utc": "2026-11-11T04:39:01.422513+00:00",
       "observed": "Source ad3de29 on GitHub main; production 6af3f085866e9dee1db0cba9 confirmed ready. All 10 application/model/licence files match the tested build. Final actual normal-input match contains 58 captured frames and no page errors; production review sheet and AI shot screenshot inspected. AI chose a jump shot in production; separate local AI match includes a windmill dunk. Live student-duel HTTP checks preserve identical questions/choices/reveal time, hidden keys and missed-swipe recovery. 71 tests pass; tightened actual sole-surface test passes at 3 mm tolerance.",
       "evidence_path": "output/match-review/production/report.json; output/match-review/production-review.jpg; output/match-review/production-assets.json; output/match-review/remote-release.json; output/match-review/contested/browser-report.json; output/match-review/tests.txt; output/match-review/floor-check.txt"
+    },
+    {
+      "id": "polished-possession-local",
+      "status": "PASS",
+      "required": true,
+      "kind": "rendered-gameplay-and-audio",
+      "timestamp_utc": "2026-11-11T08:03:24.994526+00:00",
+      "observed": "82 tests across14 files and strict build pass. Shipping GLB1286024bytes/17 retargeted keyframed clips/65bones/22174triangles:validator0errors0warnings. Independent pose buffer, foot/hand IK and per-foot sound contacts pass. Actual solo desktop/portrait preview completes drive/crossover/windmill/question/finish/landing with17frames each,no browser errors/overflow, actors above measured question, mute and Reduced Motion pass. All4 contested styles/timed swat/swipe root/clean steal/shared-question/touch WebSocket checks pass; screenshots opened and examined. Actual engine offline mix decodes7 recordings, peak0.496 and muted tailRMS0; auditory listening and physical-device performance not claimed. Final Player Lab mid-gather check exposed root and hand settling while paused; both fixed, four-style unit regression and actual browser pause drift0 pass.",
+      "evidence_path": "output/possession-polish/tests.txt; output/possession-polish/build.txt; output/possession-polish/asset-validation.txt; output/possession-polish/showcase-local/report.json; output/possession-polish/contested/browser-report.json; output/possession-polish/audio-report.json; output/possession-polish/local-lab/report.json"
+    },
+    {
+      "id": "polished-possession-hosted-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-11-11T08:10:31.493724+00:00",
+      "observed": "Corrected preview 6af422a3948f91715f6c2cd7 matches all20 dist files (observed Netlify HTML transforms normalised; JS/CSS/GLB/WAV/licence bytes exact). Compiled desktop/portrait full possession each17frames:drive/crossover/windmill/question/basket/landing, no errors/overflow, one gather/takeoff/impact, mute and Reduced Motion pass. Player Lab names/modes/paused palm drift0 pass. Deployed two-student HTTP question/choices/reveal parity, hidden keys and swipe recovery pass. First preview was not promoted after pause smoke exposed settling; corrected source rebuilt and reverified.",
+      "evidence_path": "output/possession-polish/preview-assets.json; output/possession-polish/showcase-preview/report.json; output/possession-polish/preview-lab/report.json; output/possession-polish/preview-remote.json; output/possession-polish/netlify-preview.json"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",

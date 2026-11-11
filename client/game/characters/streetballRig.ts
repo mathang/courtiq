@@ -3,6 +3,7 @@ import type { PlayerSimState } from "../../../shared/rules/matchStateMachine";
 import { dunkRig } from "../../../shared/rules/dunks";
 import { STREET_MOVES } from "../../../shared/rules/streetMoves";
 import { smoothMotion, unit } from "../../../shared/rules/motionCurves";
+import { BasketballAnimator } from "./basketballAnimator";
 
 const Y = new THREE.Vector3(0, 1, 0);
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -26,6 +27,8 @@ export class StreetballRig {
   private roll = 0;
   private settled = false;
   private wasDunk = false;
+  private contacts: number[] = [];
+  private animator: BasketballAnimator;
   private direction = new THREE.Vector2(0, 1);
   private hands = [v(-0.31, 1.08, 0.1), v(0.31, 1.02, 0.28)];
   private feet = [-1, 1].map(() => ({
@@ -35,16 +38,20 @@ export class StreetballRig {
     end: null as THREE.Vector3 | null,
     last: null as THREE.Vector3 | null,
     gather: null as THREE.Vector3 | null,
+    swingElapsed: 0,
+    soundCooldown: 0,
   }));
   public resetMotion(): void {
     this.settled = false;
     this.lastBallY = null;
     this.movement = 0;
     this.wasDunk = false;
+    this.contacts = [];
     this.feet.forEach((f) => {
       f.contact = false;
       f.plant = f.start = f.end = null;
       f.last = f.gather = null;
+      f.soundCooldown = 0;
     });
   }
   private floorPoint(point: THREE.Vector3): THREE.Vector3 {
@@ -66,7 +73,9 @@ export class StreetballRig {
   constructor(
     private model: THREE.Object3D,
     private body: THREE.Group,
+    clips: THREE.AnimationClip[] = [],
   ) {
+    this.animator = new BasketballAnimator(model, clips);
     model.updateWorldMatrix(true, true);
     model.traverse((o) => {
       if (!(o instanceof THREE.Bone)) return;
@@ -84,6 +93,17 @@ export class StreetballRig {
         direction: direction.normalize(),
       });
     });
+  }
+  public animationState() {
+    return this.animator.snapshot();
+  }
+  public consumeFootContacts() {
+    const out = this.contacts;
+    this.contacts = [];
+    return out;
+  }
+  public dispose() {
+    this.animator.dispose();
   }
   private bone(name: string) {
     return this.refs.get(name)!;
@@ -201,13 +221,16 @@ export class StreetballRig {
       run,
     );
     if (speed > 0.1) this.phase += step * cadence * Math.PI * 2;
+    this.animator.update(p, isAttacker, step, this.phase / (Math.PI * 2));
     const stride = Math.sin(this.phase),
       moving = this.movement;
     const dunk = p.finishKind === "dunk",
       shot = p.finishKind === "jump",
       jump = p.defenseAction === "jump";
     if (dunk && !this.wasDunk)
-      this.feet.forEach((f) => { f.gather = f.last?.clone() ?? null; });
+      this.feet.forEach((f) => {
+        f.gather = f.last?.clone() ?? null;
+      });
     this.wasDunk = dunk;
     const r = p.finishResolutionSec;
     const airborne = (dunk && r < 0.78) || shot || jump;
@@ -267,9 +290,19 @@ export class StreetballRig {
     if (dunk) this.body.rotation.y += dunkRig(p).twist;
     // A small shoulder/hip counter-rotation accompanies the stride.
     const chest = this.bone("spine_03").bone;
-    chest.rotateY(stride * 0.035 * moving * (airborne ? 0 : 1));
+    chest.rotateY(stride * 0.012 * moving * (airborne ? 0 : 1));
     this.bone("Head").bone.rotateX(-this.pitch * 0.45);
     this.body.updateWorldMatrix(true, true);
+    const authoredFeet = ["foot_l", "foot_r"].map((n) =>
+      this.body.worldToLocal(
+        this.bone(n).bone.getWorldPosition(new THREE.Vector3()),
+      ),
+    );
+    const authoredHands = ["hand_r", "hand_l"].map((n) =>
+      this.body.worldToLocal(
+        this.bone(n).bone.getWorldPosition(new THREE.Vector3()),
+      ),
+    );
 
     const stance = THREE.MathUtils.lerp(0.6, 0.34, run);
     const reach =
@@ -281,11 +314,13 @@ export class StreetballRig {
     for (const [i, side] of [-1, 1].entries()) {
       const suffix = side > 0 ? "l" : "r",
         state = this.feet[i];
+      const wasContact = state.contact;
+      state.soundCooldown = Math.max(0, state.soundCooldown - step);
       const u =
         (((this.phase / (Math.PI * 2) + (side > 0 ? 0.5 : 0)) % 1) + 1) % 1;
-      const contact = u < stance,
-        swing = unit((u - stance) / (1 - stance));
-      const along = contact
+      let contact = u < stance;
+      const swing = unit((u - stance) / (1 - stance));
+      let along = contact
         ? THREE.MathUtils.lerp(reach, -reach, u / stance)
         : THREE.MathUtils.lerp(-reach, reach, smoothMotion(swing));
       const width =
@@ -295,6 +330,23 @@ export class StreetballRig {
         0.092 + Math.sin(Math.PI * swing) ** 2 * (0.11 + 0.1 * run) * moving,
         along * this.direction.y,
       );
+      if (this.animator.available && !airborne && !p.streetMove) {
+        const index = side > 0 ? 0 : 1;
+        const pose = authoredFeet[index];
+        const lift =
+          THREE.MathUtils.clamp(
+            pose.y - this.animator.floorHeight[index] * 1.05,
+            0,
+            0.28,
+          ) * moving;
+        along = THREE.MathUtils.clamp(pose.z, -0.44, 0.44) * moving;
+        contact = lift < 0.032;
+        local.set(
+          width + along * this.direction.x,
+          contact ? 0.092 : 0.095 + lift,
+          along * this.direction.y,
+        );
+      }
       let target = this.floorPoint(local.clone());
       if (airborne) {
         const tuck = dunk
@@ -328,29 +380,43 @@ export class StreetballRig {
           target.copy(state.plant);
           state.start = target.clone();
           state.end = null;
+          state.swingElapsed = 0;
         } else {
-          if (!state.start) state.start = target.clone();
-          if (!state.end) {
-            state.end = this.floorPoint(
-              v(
-                width + reach * this.direction.x,
-                0.092,
-                reach * this.direction.y,
-              ),
-            );
-            const remaining = (1 - u) / Math.max(1, cadence);
-            const root = this.body.parent!,
-              space = root.parent;
-            const velocity = v(p.vx, 0, p.vz);
-            if (space)
-              velocity
-                .transformDirection(space.matrixWorld)
-                .multiplyScalar(speed);
-            state.end.addScaledVector(velocity, remaining);
+          if (this.animator.available) {
+            if (!state.start)
+              state.start = state.last?.clone() ?? target.clone();
+            state.swingElapsed += step;
+            const goal = target.clone();
+            target
+              .copy(state.start)
+              .lerp(
+                goal,
+                smoothMotion((state.swingElapsed * cadence) / (1 - stance)),
+              );
+          } else {
+            if (!state.start) state.start = target.clone();
+            if (!state.end) {
+              state.end = this.floorPoint(
+                v(
+                  width + reach * this.direction.x,
+                  0.092,
+                  reach * this.direction.y,
+                ),
+              );
+              const remaining = (1 - u) / Math.max(1, cadence);
+              const root = this.body.parent!,
+                space = root.parent;
+              const velocity = v(p.vx, 0, p.vz);
+              if (space)
+                velocity
+                  .transformDirection(space.matrixWorld)
+                  .multiplyScalar(speed);
+              state.end.addScaledVector(velocity, remaining);
+            }
+            target.copy(state.start).lerp(state.end, smoothMotion(swing));
+            target.y +=
+              Math.sin(Math.PI * swing) ** 2 * (0.11 + 0.1 * run) * moving;
           }
-          target.copy(state.start).lerp(state.end, smoothMotion(swing));
-          target.y +=
-            Math.sin(Math.PI * swing) ** 2 * (0.11 + 0.1 * run) * moving;
         }
         state.contact = contact;
       } else {
@@ -375,10 +441,16 @@ export class StreetballRig {
         .parent!.getWorldQuaternion(new THREE.Quaternion())
         .invert();
       const toe = airborne
-        ? -0.12 * (dunk ? smoothMotion((p.finishElapsedSec - 0.12) / 0.1) : 1)
-        : contact
-          ? -0.23 * smoothMotion(unit((u / stance - 0.65) / 0.35)) * moving
-          : 0.2 * Math.sin(Math.PI * swing) * moving;
+        ? -0.12 *
+          (dunk
+            ? smoothMotion((p.finishElapsedSec - 0.12) / 0.1) *
+              (r >= 0.3 ? smoothMotion(Math.max(0, airY) / 0.12) : 1)
+            : 1)
+        : this.animator.available && contact
+          ? 0
+          : contact
+            ? -0.23 * smoothMotion(unit((u / stance - 0.65) / 0.35)) * moving
+            : 0.2 * Math.sin(Math.PI * swing) * moving;
       foot.bone.quaternion.copy(
         parent
           .multiply(flatFrame)
@@ -386,11 +458,32 @@ export class StreetballRig {
           .multiply(foot.rotation),
       );
       foot.bone.updateWorldMatrix(true, false);
-      state.last = foot.bone.getWorldPosition(state.last ?? new THREE.Vector3());
+      state.last = foot.bone.getWorldPosition(
+        state.last ?? new THREE.Vector3(),
+      );
+      if (
+        step > 0 &&
+        !airborne &&
+        contact &&
+        !wasContact &&
+        speed > 0.7 &&
+        !options.inPlace &&
+        !p.streetMove &&
+        state.soundCooldown === 0
+      ) {
+        this.contacts.push(Math.min(1, speed / 6));
+        state.soundCooldown = 0.16;
+      }
     }
     this.body.updateWorldMatrix(true, true);
     let right = v(0.33, 1.03, 0.29),
       left = v(-0.29, 1.13, -stride * 0.25 * moving);
+    if (this.animator.available && isAttacker && !airborne) {
+      left.lerp(authoredHands[0], 0.35 + 0.55 * moving);
+      right.lerp(authoredHands[1], 0.35 + 0.55 * moving);
+      left.x = Math.min(-0.24, left.x);
+      right.x = Math.max(0.24, right.x);
+    }
     if (!isAttacker) {
       right.set(0.46, 1.26, 0.31);
       left.set(-0.46, 1.26, 0.31);
@@ -470,9 +563,11 @@ export class StreetballRig {
       // Finish contact is exact after gathering; other targets follow a short settling spring.
       const base = 1 - Math.exp(-step * (jump ? 30 : 22));
       const alpha =
-        dunk && r < 0.3
-          ? Math.max(base, smoothMotion(p.finishElapsedSec / 0.18))
-          : base;
+        step <= 0
+          ? 0
+          : dunk && r < 0.3
+            ? Math.max(base, smoothMotion(p.finishElapsedSec / 0.18))
+            : base;
       this.hands[i].lerp(targets[i], alpha);
     }
     this.hand(

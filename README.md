@@ -15,9 +15,17 @@
 
 ---
 
+## Polished possession — 11 November 2026
+
+Choose **Preview a full possession** in the lobby to watch a drive, crossover and windmill take-off, answer the normal question, then see the finish and landing. Movement immediately takes control, and the match continues normally afterwards.
+
+The player now carries 17 keyframed clips, with blended walk/jog/sprint, basketball accents, planted feet and hand/ball contact. A possession camera follows the approach, shifts for take-off and keeps the airborne action above the question card. Reduced Motion uses steady framing. Soft floor shadows and brighter arena lighting improve depth.
+
+Recorded CC0 ball, shoe and crowd sounds sit alongside original designed impacts and net sounds. Cues follow visible contacts, with bounded voices, immediate master mute and pause handling. The player GLB is 1.29 MB; seven audio recordings total 265 kB. Provenance, licences and rebuild instructions are in [assets/source/README.md](assets/source/README.md).
+
 ## Integrated kit and smoother motion — 11 November 2026
 
-The singlet, shorts, sleeve and socks now share the skinned body surface, removing the floating cuffs and intersecting clothing shells. Jersey names and numbers are mapped directly onto the singlet. The fitted model is about 1 MB.
+The singlet, shorts, sleeve and socks share the skinned body surface, removing the floating cuffs and intersecting clothing shells. Jersey names and numbers are mapped directly onto the singlet.
 
 Movement now blends between stances and moves, with a calmer shared dribble, hand changes during crossovers, planted running support feet, a single windmill sweep, a smoother gather and a cushioned landing. Close dunk launches step clear of the rim. Open the [Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) and choose **Full move sequence** to inspect a dribble, run, spin, dunk, landing and defensive recovery together. Pause holds the entire pose; an airborne preview finishes landing before a queued change of move.
 
@@ -25,7 +33,7 @@ Movement now blends between stances and moves, with a calmer shared dribble, han
 
 [Open the Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) for an orbitable close-up with a live jersey name, two team colours, four skin/hair colour variants, and dribble/run/defend/dunk/block/swipe demos. The rigged player also appears in normal solo and student-versus-student matches. Both players keep their own skeleton, appearance, number and jersey name.
 
-The 65-bone Quaternius CC0 humanoid has original CourtIQ clothing, trainers, hair and jersey artwork. Basketball motion is authored in the game, with two-bone IK for planted stances and dunk hand contact; it is not a new physics engine or a motion-capture pack. The original procedural rig remains playable during loading or a failed asset download. See [asset provenance and rebuilding](assets/source/README.md).
+The 65-bone Quaternius CC0 humanoid has original CourtIQ clothing, trainers, hair and jersey artwork. Keyframed locomotion from Quaternius's CC0 animation library is retargeted onto the player, with basketball accents and two-bone IK for planted stances and dunk hand contact. The original procedural rig remains playable during loading or a failed asset download. See [asset provenance and rebuilding](assets/source/README.md).
 
 `npm run build:player` regenerates and optimises the GLB with pinned glTF Transform tools. The checked-in asset is used by normal `npm run build`; rebuilding it is optional. Preserve the jersey UV attribute during optimisation because names and numbers are mapped at runtime.
 
@@ -68,7 +76,7 @@ Solo settings pause the match. New trick bindings can be remapped in Settings; s
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (68 tests across 13 suites)
+# 2. Run the automated test suite (82 tests across 14 suites)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)
@@ -110,7 +118,7 @@ npm run server
 
 ### Modes
 1. **Solo vs. CourtBot AI**: Play offline or online against an AI opponent (`Beginner / Rookie`, `Intermediate / Varsity`, or `Advanced / Pro`) whose answer correctness and response time are committed at duel start using seeded probability distributions.
-2. **1-Click Shot Duel Preview**: Launches directly into a live slow-motion shot and question duel from the wing so instructors or students can preview the core mechanic in one click.
+2. **Full Possession Preview**: Drives through a crossover and windmill into the normal question duel in one click. Movement immediately takes over; the match continues after the finish.
 3. **2-Player Online Private Room**: Create a 6-character room code and join from a second device. Supports both persistent WebSockets (`/ws` via `npm run server`) and serverless HTTP room synchronization (`/api/room` via Netlify Functions).
 4. **Teacher Question-Pack Validator**: Paste or load custom JSON question packs in the browser to validate schema compliance, option uniqueness, reading windows, and explanations, then playtest immediately.
 

@@ -36,6 +36,8 @@ export class CourtIqRenderer {
   private fallbackCtx: CanvasRenderingContext2D | null = null;
 
   private currentPresets: [number, number] = [0, 1];
+  private overlayBounds = { top: 0.13, bottom: 0.55 };
+  private previousPhase: MatchPhase | null = null;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -57,6 +59,8 @@ export class CourtIqRenderer {
         this.container.clientHeight || window.innerHeight
       );
       renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.12;
 
       this.renderer = renderer;
       this.container.innerHTML = '';
@@ -67,10 +71,10 @@ export class CourtIqRenderer {
       this.scene.fog = new THREE.FogExp2(0x091324, 0.018);
 
       // Inexpensive studio arena lighting (Section 20)
-      const hemi = new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 1.15);
+      const hemi = new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 1.6);
       this.scene.add(hemi);
 
-      const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.35);
+      const keyLight = new THREE.DirectionalLight(0xfffbeb, 2.6);
       keyLight.position.set(5, 14, 8);
       this.scene.add(keyLight);
 
@@ -84,6 +88,14 @@ export class CourtIqRenderer {
       );
 
       this.arena = new CourtIqArena3D(this.qualityMode === 'low');
+      this.cameraCtrl.resize(
+        this.container.clientWidth || window.innerWidth,
+        this.container.clientHeight || window.innerHeight
+      );
+      const observer = new ResizeObserver(() => this.updateOverlayBounds());
+      for (const element of [document.getElementById('hud-top'), document.querySelector('.question-panel')]) {
+        if (element) observer.observe(element);
+      }
       this.scene.add(this.arena.group);
 
       this.chars = [
@@ -163,17 +175,37 @@ export class CourtIqRenderer {
 
   public triggerBasketCelebration(): void {
     this.arena?.triggerNetSwish();
+    this.cameraCtrl?.triggerImpact('basket');
   }
 
   public getPlayerAssetStates(): string[] {
     return this.chars?.map(c => c.assetState) ?? [];
   }
+  public getPresentationState() {
+    return { camera: this.cameraCtrl?.snapshot(), animations: this.chars?.map(c => c.getAnimationState()) };
+  }
+  public consumeFootContacts() {
+    return this.chars?.flatMap((c, slot) => c.consumeFootContacts().map(intensity => ({ intensity, slot }))) ?? [];
+  }
 
   public triggerBlockEffect(): void {
     this.arena?.triggerCrowdExcitement();
+    this.cameraCtrl?.triggerImpact('block');
+  }
+  private updateOverlayBounds(): void {
+    const h = this.container.clientHeight || window.innerHeight;
+    const hud = document.getElementById('hud-top')?.getBoundingClientRect();
+    const panel = document.querySelector('.question-panel')?.getBoundingClientRect();
+    const visible = !document.getElementById('question-overlay')?.classList.contains('hidden');
+    const top = Math.min(0.3, Math.max(0.09, (hud?.bottom ?? h * 0.1) / h + 0.02));
+    this.overlayBounds = {
+      top,
+      bottom: visible && panel?.height ? Math.max(top + 0.16, Math.min(0.58, panel.top / h - 0.025)) : 0.55
+    };
   }
 
   public handleResize(): void {
+    this.updateOverlayBounds();
     const w = this.container.clientWidth || window.innerWidth;
     const h = this.container.clientHeight || window.innerHeight;
 
@@ -190,12 +222,17 @@ export class CourtIqRenderer {
   public renderFrame(
     state: RenderFrameState,
     realDeltaSec: number,
-    nowSec: number
+    nowSec: number,
+    draw = true
   ): void {
     // Slow-motion presentation clock scaling during QuestionReady & Duel (Section 9)
     const presentationScale =
       state.phase === 'QuestionReady' || state.phase === 'Duel' ? 0.14 : 1.0;
     const presentationDeltaSec = realDeltaSec * presentationScale;
+    if (this.previousPhase !== state.phase) {
+      this.previousPhase = state.phase;
+      this.updateOverlayBounds();
+    }
 
     if (
       this.qualityMode === 'fallback2d' ||
@@ -207,7 +244,7 @@ export class CourtIqRenderer {
       !this.chars ||
       !this.ballCtrl
     ) {
-      this.renderFallback2D(state);
+      if (draw) this.renderFallback2D(state);
       return;
     }
 
@@ -253,12 +290,15 @@ export class CourtIqRenderer {
     this.cameraCtrl.update({
       phase: state.phase,
       players: state.players,
+      attackerSlot: state.attackerSlot,
       ballPos: state.ballPos,
       reducedMotion: state.reducedMotion,
       deltaSec: realDeltaSec,
+      safeTop: this.overlayBounds.top,
+      safeBottom: this.overlayBounds.bottom,
     });
 
-    this.renderer.render(this.scene, this.cameraCtrl.camera);
+    if (draw) this.renderer.render(this.scene, this.cameraCtrl.camera);
   }
 
   private renderFallback2D(state: RenderFrameState): void {

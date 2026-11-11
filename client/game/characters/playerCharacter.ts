@@ -36,6 +36,10 @@ export class PlayerCharacter3D {
   private rig: StreetballRig | null = null;
   private ring!: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
   private contest!: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
+  private shadow: THREE.Mesh<
+    THREE.PlaneGeometry,
+    THREE.MeshBasicMaterial
+  > | null = null;
   private disposed = false;
   private initialized = false;
   private rotation = Math.PI;
@@ -89,7 +93,28 @@ export class PlayerCharacter3D {
         });
         this.body.add(avatar);
         this.root.add(this.body);
-        this.rig = new StreetballRig(avatar, this.body);
+        this.rig = new StreetballRig(avatar, this.body, gltf.animations);
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 64;
+        const context = canvas.getContext("2d")!,
+          gradient = context.createRadialGradient(32, 32, 3, 32, 32, 32);
+        gradient.addColorStop(0, "rgba(0,0,0,.7)");
+        gradient.addColorStop(0.5, "rgba(0,0,0,.3)");
+        gradient.addColorStop(1, "rgba(0,0,0,0)");
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 64, 64);
+        this.shadow = new THREE.Mesh(
+          new THREE.PlaneGeometry(1.2, 0.95),
+          new THREE.MeshBasicMaterial({
+            map: new THREE.CanvasTexture(canvas),
+            transparent: true,
+            depthWrite: false,
+            opacity: 0.48,
+          }),
+        );
+        this.shadow.rotation.x = -Math.PI / 2;
+        this.shadow.position.y = 0.009;
+        this.root.add(this.shadow);
         this.fallback?.dispose();
         if (this.fallback) this.root.remove(this.fallback.root);
         this.fallback = null;
@@ -209,13 +234,27 @@ export class PlayerCharacter3D {
     this.contest.visible = !params.isAttacker && params.showBlockEligibleRing;
     this.ring.material.opacity = params.isAttacker ? 0.85 : 0.38;
     this.ring.scale.setScalar(p.streetMove ? 1.2 : 1);
+    if (this.shadow) {
+      this.shadow.scale.setScalar(1 + Math.max(0, air.y) * 0.2);
+      this.shadow.material.opacity = 0.52 / (1 + Math.max(0, air.y) * 1.2);
+    }
   }
   /** A world-space contact point for asset verification, never used to decide game outcomes. */
   public getPalmPosition(): THREE.Vector3 | null {
     return this.rig?.palm.clone() ?? null;
   }
+  public getAnimationState() {
+    return this.rig?.animationState() ?? null;
+  }
+  public consumeFootContacts() {
+    return this.rig?.consumeFootContacts() ?? [];
+  }
   public dispose(): void {
     this.disposed = true;
+    this.rig?.dispose();
+    this.shadow?.geometry.dispose();
+    this.shadow?.material.map?.dispose();
+    this.shadow?.material.dispose();
     this.fallback?.dispose();
     this.ownedMaterials.forEach((m) => m.dispose());
     this.texture.dispose();

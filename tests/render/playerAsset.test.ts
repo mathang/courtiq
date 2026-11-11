@@ -6,7 +6,11 @@ import { clone } from "three/addons/utils/SkeletonUtils.js";
 import { StreetballRig } from "../../client/game/characters/streetballRig";
 import { AuthoritativeMatchEngine } from "../../shared/rules/matchStateMachine";
 import { BUNDLED_QUESTION_PACKS } from "../../content/packRegistry";
-import { DUNK_STYLES, dunkBallPosition, dunkReboundPosition } from "../../shared/rules/dunks";
+import {
+  DUNK_STYLES,
+  dunkBallPosition,
+  dunkReboundPosition,
+} from "../../shared/rules/dunks";
 import { getAirPose } from "../../shared/rules/streetMoves";
 
 const bytes = readFileSync(
@@ -23,7 +27,12 @@ function actor() {
   model.scale.setScalar(1.05);
   body.add(model);
   root.add(body);
-  return { root, body, model, rig: new StreetballRig(model, body) };
+  return {
+    root,
+    body,
+    model,
+    rig: new StreetballRig(model, body, asset.animations),
+  };
 }
 function player() {
   return new AuthoritativeMatchEngine({
@@ -38,6 +47,45 @@ function player() {
   }).players[0];
 }
 describe("shipped streetball player", () => {
+  it("ships editable skeletal clips and uses independent blended playback with contact IK", () => {
+    expect(asset.animations).toHaveLength(17);
+    for (const name of [
+      "court_idle",
+      "court_walk",
+      "court_jog",
+      "court_sprint",
+      "court_crossover",
+      "court_eurostep",
+      "court_spin",
+      "court_land",
+      "court_block",
+      "court_swipe",
+      ...DUNK_STYLES.map((s) => "court_dunk_" + s),
+    ])
+      expect(asset.animations.some((c) => c.name === name)).toBe(true);
+    for (const clip of asset.animations)
+      for (const track of clip.tracks)
+        expect([...track.values].every(Number.isFinite)).toBe(true);
+    const a = actor(),
+      b = actor(),
+      p = player();
+    p.x = p.z = p.facingAngle = 0;
+    p.vz = 6;
+    for (let i = 0; i < 60; i++) {
+      a.body.position.set(0, 0, 0);
+      a.body.rotation.set(0, 0, 0);
+      a.rig.update(p, true, 1 / 60);
+    }
+    expect(a.rig.animationState().active).toBe("court_sprint");
+    expect(b.rig.animationState().active).toBe("court_idle");
+    p.vz = 0;
+    for (let i = 0; i < 30; i++) {
+      a.body.position.set(0, 0, 0);
+      a.body.rotation.set(0, 0, 0);
+      a.rig.update(p, true, 1 / 60);
+    }
+    expect(a.rig.animationState().active).toBe("court_idle");
+  });
   it("has a complete, finite skinned asset inside the browser budget", () => {
     let bones = 0,
       meshes = 0,
@@ -196,6 +244,50 @@ describe("shipped streetball player", () => {
     for (let i = 0; i < 30; i++) update(0);
     expect(a.rig.palm.distanceTo(before)).toBeLessThan(1e-7);
   });
+  it("freezes hand settling when paused in the middle of a dunk gather", () => {
+    for (const style of DUNK_STYLES) {
+      const a = actor(),
+        p = player();
+      p.x = p.z = p.facingAngle = 0;
+      p.finishKind = "dunk";
+      p.dunkStyle = style;
+      p.finishElapsedSec = 0.15;
+      p.finishResolutionSec = -1;
+      const air = getAirPose(p),
+        ball = dunkBallPosition(p, air);
+      const update = (dt: number) => {
+        a.root.position.set(air.x, 0, air.z);
+        a.body.position.set(0, air.y, 0);
+        a.body.rotation.set(0, 0, 0);
+        a.rig.update(p, true, dt, ball, { inPlace: true });
+      };
+      update(1 / 60);
+      const before = a.rig.palm.clone();
+      for (let i = 0; i < 30; i++) update(0);
+      expect(a.rig.palm.distanceTo(before)).toBeLessThan(1e-7);
+    }
+  });
+  it("emits footstep contacts without replaying a sound every frame of a cut", () => {
+    const a = actor(),
+      p = player();
+    p.x = p.z = p.facingAngle = 0;
+    p.vz = 5;
+    let steps = 0;
+    for (let i = 0; i < 120; i++) {
+      p.z += p.vz / 60;
+      p.streetMove = i >= 30 && i < 51 ? "crossover" : null;
+      p.moveElapsedSec = (i - 30) / 60;
+      a.root.position.set(0, 0, p.z);
+      a.body.position.set(0, 0, 0);
+      a.body.rotation.set(0, 0, 0);
+      a.rig.update(p, true, 1 / 60);
+      const emitted = a.rig.consumeFootContacts();
+      if (p.streetMove) expect(emitted).toHaveLength(0);
+      steps += emitted.length;
+    }
+    expect(steps).toBeGreaterThan(3);
+    expect(steps).toBeLessThan(18);
+  });
   it("keeps a support foot planted while the player travels", () => {
     const a = actor(),
       p = player();
@@ -245,9 +337,9 @@ describe("shipped streetball player", () => {
         p.finishElapsedSec = Math.min(0.84, t - 1);
         p.finishResolutionSec = t > 2.2 ? t - 2.2 : -1;
       } else if (t >= 3.8 && p.finishKind) {
-        const landed=getAirPose(p);
-        p.x=landed.x;
-        p.z=landed.z;
+        const landed = getAirPose(p);
+        p.x = landed.x;
+        p.z = landed.z;
         p.finishKind = null;
       }
       const air = getAirPose(p);
@@ -256,63 +348,127 @@ describe("shipped streetball player", () => {
       a.body.rotation.set(0, p.facingAngle, 0);
       a.rig.update(p, t < 3.8, 1 / 60);
       const point = a.rig.palm.clone();
-      if (previous)
-        maxStep = Math.max(maxStep, point.distanceTo(previous));
+      if (previous) maxStep = Math.max(maxStep, point.distanceTo(previous));
       previous = point;
     }
     expect(maxStep).toBeLessThan(0.3);
   });
   it("carries the sprinting feet into the gather without snapping or sinking through court", () => {
     for (const runFrames of [30, 36, 42, 48, 54, 60]) {
-      const a = actor(), p = player();
-      p.x = 1.8; p.z = 0.5; p.facingAngle = Math.PI; p.vz = -4.2;
+      const a = actor(),
+        p = player();
+      p.x = 1.8;
+      p.z = 0.5;
+      p.facingAngle = Math.PI;
+      p.vz = -4.2;
       const update = () => {
         const air = getAirPose(p);
         a.root.position.set(air.x, 0, air.z);
-        a.body.position.set(0, air.y, 0); a.body.rotation.set(0, p.facingAngle, 0);
-        a.rig.update(p, true, 1 / 60); a.root.updateMatrixWorld(true);
+        a.body.position.set(0, air.y, 0);
+        a.body.rotation.set(0, p.facingAngle, 0);
+        a.rig.update(p, true, 1 / 60);
+        a.root.updateMatrixWorld(true);
       };
-      for (let i=0;i<runFrames;i++) { p.z += p.vz / 60; update(); }
-      const before = ['foot_l','foot_r'].map(n => a.model.getObjectByName(n)!.getWorldPosition(new THREE.Vector3()));
-      p.finishKind = 'dunk'; p.vz = 0;
-      for (let i=0;i<14;i++) {
-        p.finishElapsedSec = i/60; update();
-        if (i===0) ['foot_l','foot_r'].forEach((n,j) => {
-          expect(a.model.getObjectByName(n)!.getWorldPosition(new THREE.Vector3()).distanceTo(before[j])).toBeLessThan(0.08);
-        });
-        a.model.traverse(o => {
-          if (!(o instanceof THREE.SkinnedMesh) || !o.name.includes('Shoe')) return;
+      for (let i = 0; i < runFrames; i++) {
+        p.z += p.vz / 60;
+        update();
+      }
+      const before = ["foot_l", "foot_r"].map((n) =>
+        a.model.getObjectByName(n)!.getWorldPosition(new THREE.Vector3()),
+      );
+      p.finishKind = "dunk";
+      p.vz = 0;
+      for (let i = 0; i < 14; i++) {
+        p.finishElapsedSec = i / 60;
+        update();
+        if (i === 0)
+          ["foot_l", "foot_r"].forEach((n, j) => {
+            expect(
+              a.model
+                .getObjectByName(n)!
+                .getWorldPosition(new THREE.Vector3())
+                .distanceTo(before[j]),
+            ).toBeLessThan(0.08);
+          });
+        a.model.traverse((o) => {
+          if (!(o instanceof THREE.SkinnedMesh) || !o.name.includes("Shoe"))
+            return;
           o.skeleton.update();
-          let minimum=Infinity;
-          for (let j=0;j<o.geometry.attributes.position.count;j++)
-            minimum=Math.min(minimum,o.localToWorld(o.getVertexPosition(j,new THREE.Vector3())).y);
-          expect(minimum, `${runFrames} frame run, gather ${i}`).toBeGreaterThan(-0.003);
+          let minimum = Infinity;
+          for (let j = 0; j < o.geometry.attributes.position.count; j++)
+            minimum = Math.min(
+              minimum,
+              o.localToWorld(o.getVertexPosition(j, new THREE.Vector3())).y,
+            );
+          expect(
+            minimum,
+            `${runFrames} frame run, gather ${i}`,
+          ).toBeGreaterThan(-0.003);
         });
       }
     }
   });
   it("keeps misses and swats clear of the descending head from either lane", () => {
-    for (const style of DUNK_STYLES) for (const facing of [-2.36, -0.7, 0.7, 2.36]) {
-      const a=actor(),p=player();
-      p.x=1.9;p.z=-3.3;p.facingAngle=facing;p.finishKind='dunk';p.dunkStyle=style;p.finishElapsedSec=2;
-      const skin=a.model.getObjectByName('Body_Skin') as THREE.SkinnedMesh;
-      const attr=skin.geometry.attributes,indices=skin.geometry.index!;
-      const headTriangles:number[][]=[];
-      const isHead=(i:number)=>{
-        let weight=0;
-        for(let j=0;j<4;j++)if(['Head','neck_01'].includes(skin.skeleton.bones[attr.skinIndex.getComponent(i,j)].name))weight+=attr.skinWeight.getComponent(i,j);
-        return weight>0.5;
-      };
-      for(let i=0;i<indices.count;i+=3){const ids=[indices.getX(i),indices.getX(i+1),indices.getX(i+2)];if(ids.every(isHead))headTriangles.push(ids);}
-      for(const outcome of ['miss','block'] as const) for(const r of [.35,.4,.45,.5,.55,.65,.75]){
-        p.finishResolutionSec=r;const air=getAirPose(p);
-        a.root.position.set(air.x,0,air.z);a.body.position.set(0,air.y,0);a.body.rotation.set(0,facing,0);a.rig.update(p,true,1/60);a.root.updateMatrixWorld(true);skin.skeleton.update();
-        const b=dunkReboundPosition(p,air,outcome),center=new THREE.Vector3(b.x,b.y,b.z);
-        for(const ids of headTriangles){
-          const triangle=new THREE.Triangle(...ids.map(i=>skin.localToWorld(skin.getVertexPosition(i,new THREE.Vector3()))) as [THREE.Vector3,THREE.Vector3,THREE.Vector3]);
-          expect(triangle.closestPointToPoint(center,new THREE.Vector3()).distanceTo(center)).toBeGreaterThan(0.145);
+    for (const style of DUNK_STYLES)
+      for (const facing of [-2.36, -0.7, 0.7, 2.36]) {
+        const a = actor(),
+          p = player();
+        p.x = 1.9;
+        p.z = -3.3;
+        p.facingAngle = facing;
+        p.finishKind = "dunk";
+        p.dunkStyle = style;
+        p.finishElapsedSec = 2;
+        const skin = a.model.getObjectByName("Body_Skin") as THREE.SkinnedMesh;
+        const attr = skin.geometry.attributes,
+          indices = skin.geometry.index!;
+        const headTriangles: number[][] = [];
+        const isHead = (i: number) => {
+          let weight = 0;
+          for (let j = 0; j < 4; j++)
+            if (
+              ["Head", "neck_01"].includes(
+                skin.skeleton.bones[attr.skinIndex.getComponent(i, j)].name,
+              )
+            )
+              weight += attr.skinWeight.getComponent(i, j);
+          return weight > 0.5;
+        };
+        for (let i = 0; i < indices.count; i += 3) {
+          const ids = [
+            indices.getX(i),
+            indices.getX(i + 1),
+            indices.getX(i + 2),
+          ];
+          if (ids.every(isHead)) headTriangles.push(ids);
         }
+        for (const outcome of ["miss", "block"] as const)
+          for (const r of [0.35, 0.4, 0.45, 0.5, 0.55, 0.65, 0.75]) {
+            p.finishResolutionSec = r;
+            const air = getAirPose(p);
+            a.root.position.set(air.x, 0, air.z);
+            a.body.position.set(0, air.y, 0);
+            a.body.rotation.set(0, facing, 0);
+            a.rig.update(p, true, 1 / 60);
+            a.root.updateMatrixWorld(true);
+            skin.skeleton.update();
+            const b = dunkReboundPosition(p, air, outcome),
+              center = new THREE.Vector3(b.x, b.y, b.z);
+            for (const ids of headTriangles) {
+              const triangle = new THREE.Triangle(
+                ...(ids.map((i) =>
+                  skin.localToWorld(
+                    skin.getVertexPosition(i, new THREE.Vector3()),
+                  ),
+                ) as [THREE.Vector3, THREE.Vector3, THREE.Vector3]),
+              );
+              expect(
+                triangle
+                  .closestPointToPoint(center, new THREE.Vector3())
+                  .distanceTo(center),
+              ).toBeGreaterThan(0.145);
+            }
+          }
       }
-    }
   });
 });

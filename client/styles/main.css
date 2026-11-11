@@ -1116,3 +1116,21 @@ textarea {
 .possession-hint-pill { font-size:.67rem; padding:6px 9px; }
 .possession-hint-pill kbd { font-size:.65rem; padding:1px 3px; }
 @media (max-width:1100px) { .possession-hint-pill { white-space:normal; text-align:center; width:90%; } }
+
+/* Keep an upper court window during the duel; long questions scroll as one card. */
+@media (max-width:760px) {
+  .question-overlay { left:10px; right:10px; bottom:max(10px,env(safe-area-inset-bottom)); }
+  .question-panel { max-height:57dvh; overflow-y:auto; overscroll-behavior:contain; scrollbar-color:var(--gold) var(--panel-solid); padding:11px 12px; border-radius:14px; }
+  .question-top-bar { align-items:flex-start; }
+  .question-badges { gap:4px; }
+  .q-badge { font-size:.63rem; padding:2px 6px; }
+  .question-timer-cluster { gap:5px; flex-shrink:0; }
+  .reading-pill { font-size:.62rem; max-width:83px; padding:3px 5px; }
+  .q-timer-text { font-size:1rem; }
+  .question-stem { font-size:.94rem; line-height:1.35; margin-bottom:9px; }
+  .options-grid { gap:7px; }
+  .option-btn { min-height:44px; padding:9px; gap:8px; border-radius:9px; }
+  .opt-text { font-size:.86rem; line-height:1.3; }
+  .opt-key { padding:3px 5px; font-size:.67rem; }
+  .question-footer-status { font-size:.68rem; gap:9px; }
+}

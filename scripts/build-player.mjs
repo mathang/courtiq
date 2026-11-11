@@ -13,6 +13,7 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
+import { createBasketballAnimations } from './player-animations.mjs';
 
 globalThis.FileReader = class {
   async readAsArrayBuffer(blob) {
@@ -552,7 +553,8 @@ exported.userData = {
   sourceSha256: createHash("sha256").update(bytes).digest("hex"),
 };
 for (const child of [...scene.children]) exported.add(child);
-const glb = await new GLTFExporter().parseAsync(exported, { binary: true });
+const animations = await createBasketballAnimations(exported);
+const glb = await new GLTFExporter().parseAsync(exported, { binary: true, animations });
 await fs.writeFile(
   "public/assets/player/streetball-player.glb",
   Buffer.from(glb),
@@ -596,6 +598,7 @@ console.log(
       bones: skeleton.bones.length,
       triangles,
       meshes: parts.size,
+      animations: animations.length,
       bodySourceTriangles: retainedTriangles,
       kitTopology: "single-source-surface",
     },

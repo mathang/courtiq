@@ -392,7 +392,8 @@ function render(dt: number) {
     isAttacker: attacking,
     showBlockEligibleRing: false,
     presentationDeltaSec: dt,
-    realDeltaSec: Math.max(dt, 1 / 60),
+    // Pausing must stop root interpolation as well as clip playback and IK.
+    realDeltaSec: dt,
     ballPosition: ballPos,
     inPlace: true,
   });

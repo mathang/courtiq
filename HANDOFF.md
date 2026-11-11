@@ -77,7 +77,7 @@ courtiq/
 │       ├── animation/ballTrajectory.ts # 3D basketball mesh, dynamic arc ribbon & rim lighting effects
 │       ├── camera/courtCamera.ts       # Dynamic broadcast & slow-motion framing camera controller
 │       ├── input/controls.ts           # Keyboard/touch state machine & accidental-answer prevention guards
-│       └── audio/soundEngine.ts        # WebAudio procedural sound effects (dribble, release, swish, block, buzzer)
+│       └── audio/soundEngine.ts        # Contact-timed recorded Foley and designed Web Audio layers
 └── tests/
     ├── rules/
     │   ├── shot.test.ts                # Base/final shot probabilities & continuous 4-stage ball trajectory tests
@@ -214,7 +214,7 @@ CourtIQ supports two interchangeable authoritative transports:
 
 ### Automated Verification (`PASS`)
 - **`npm run build`**: TypeScript strict typecheck (`tsc --noEmit`) across `client`, `shared`, `server`, `netlify`, `tests`, and `content`, followed by Vite production bundle build (`dist/`).
-- **`npm test`**: **21/21 passing tests** across 8 test suites (`shot.test.ts`, `block.test.ts`, `timing.test.ts`, `possession.test.ts`, `content.test.ts`, `aiOpponent.test.ts`, `roomAuthoritative.test.ts`, `uiAndInput.test.ts`).
+- **`npm test`**: **82/82 passing tests** across 14 test files, including rules, both room transports, input, shipped player geometry/animation and possession presentation.
 
 ### Remaining Items Requiring Live Classroom Hardware (`NOT_TESTED`)
 1. **Multi-Device Campus Wi-Fi Jitter & Cold-Start Evaluation (`NOT_TESTED`)**:
@@ -290,3 +290,16 @@ CourtIQ supports two interchangeable authoritative transports:
 - Verification: 71 tests across 13 suites and strict production build pass. Actual skinned soles are checked across six launch stride phases to 3 mm court tolerance; miss/swat paths are checked against the deformed head for four styles/four headings. Two real browser clients pass all four styles, timed block, swipe miss recovery/drive-by, clean steal, shared questions and portrait touch controls without page errors or overflow.
 - Source `ad3de29` is on GitHub main. Preview `6af3ef94e58e433cb9d01450` passed compiled actual-match and deployed HTTP checks. Production `6af3f085866e9dee1db0cba9` is ready; all 10 application assets match the tested build. Its 58-frame actual match capture and shared-question HTTP check pass. Production AI chose a jump shot; local AI windmill footage is retained separately.
 - Evidence: `output/match-review/production-review.jpg`, the four `fixed-*` scenario directories, `contested/browser-report.json`, `hosted-preview/report.json`, `production/report.json`, `production-assets.json`, `remote-release.json`, `tests.txt`, `floor-check.txt`, `build.txt`. One immediate-after-resize headless screenshot cleared the canvas; stable portrait rendering was separately inspected in the two-client test. Physical-phone performance remains untested. No required work is outstanding.
+
+
+## Polished possession presentation — 11 November 2026
+
+- The shipping player contains 17 keyframed clips. Quaternius CC0 locomotion and jumps are retargeted in `scripts/player-animations.mjs`, with basketball torso accents for cuts, defence and four dunks. `BasketballAnimator` blends speed states in a separate pose buffer; `StreetballRig` adds live ball-hand IK, world foot planting, gather continuity and landing clearance. The independent buffer prevents paused-pose drift. Actual floor-contact edges trigger footsteps, with per-foot cooldowns and no repeated crossover cues. GLB: 1,286,024 bytes, 65 bones, 22,174 triangles, 12 mesh groups. Source and licences are retained. No bespoke motion capture or Blender authoring is claimed.
+- `CourtCameraController` directs broadcast, drive, take-off/hold, finish and recovery views. It fits airborne player/ball/hoop bounds above the measured question card, chooses a side that exposes the finisher, eases transitions and adds a restrained impact pulse. Reduced Motion uses steady framing. The renderer adds soft floor shadows and ACES-tonemapped lighting. Portrait questions are capped at 57dvh with internal scrolling and 44px minimum answer targets.
+- `PossessionCueTracker` deduplicates visible bounce, move, gather, take-off, rim and landing events across solo and online snapshots. `SoundEngine` mixes seven edited CC0 BigSoundBank recordings with original deterministic DSP, stereo placement, short room reflections, compression, a 28-voice limit and master mute/pause. Seven recordings total 265,260 bytes. `npm run build:audio` uses ffmpeg; normal builds use checked-in WAVs. See `assets/source/README.md` for authors, hashes and licences.
+- The lobby's **Preview a full possession** uses ordinary authoritative movement inputs for a drive, crossover and windmill. Any player movement/action interrupts it; the normal curriculum question and match follow. It uses seed 42 and beginner CourtBot only for the preview. Standard matches retain their selected settings. No answer/scoring bypass was introduced.
+- Verification: 82 tests across 14 files, strict typecheck and production build; GLB validator reports zero errors/warnings. Actual browser captures cover solo drive-to-dunk, all four contested styles, timed block, swipe freeze/drive-by, clean steal and shared questions. Desktop and portrait full-preview flows each contain 17 captured frames with no page errors/overflow; camera subject bounds, mute and Reduced Motion pass. Final contact fix reduces the first-possession sound count from 39 to 18 step-layer cues (including squeaks/landing), with exactly one gather/take-off/impact.
+- Audio was rendered through the actual engine into an OfflineAudioContext: all seven samples decode, mix peak 0.496, RMS 0.0333, and a master mute removes an already-playing effect tail. These are objective software checks; auditory listening and physical-device performance are not claimed.
+- Evidence: `output/possession-polish/tests.txt`, `build.txt`, `asset-validation.txt`, `contested/browser-report.json`, `showcase-local/report.json`, `audio-report.json`, `court-audio-review.wav`, and `skill-showcase/`. Current screenshots were opened and examined. Player Lab root interpolation and gather-hand settling also freeze exactly on pause, including mid-gather. Hosted release verification follows below.
+
+- Corrected hosted preview `6af422a3948f91715f6c2cd7` passes all 20-file asset comparisons, compiled desktop/portrait full possession flows, Player Lab pause/name/mode smoke and deployed two-student question/choices/reveal/hidden-key/recovery checks. The earlier preview was not promoted after its pause defect was found.
