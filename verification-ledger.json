@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:91b68064dafec7c47f40bd5372f9e50eff39cdf4dba922da3f1d7925270fb035",
+  "revision_or_artifact_hash": "dist/index.html:sha256:3a5c4850281d9c3350ce858d5758de4449383f81bc91073a99d861bc832b3257",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -403,11 +403,58 @@
       "timestamp_utc": "2026-11-11T08:25:49.679550+00:00",
       "observed": "Source56c18c3 plus layout fix79d19d9 on GitHub main; production6af425c3b8df11e6c2dbcf0a confirmed ready.20 files match dist (only observed Netlify HTML transforms normalised). Actual compiled desktop/portrait drive/crossover/windmill/question/finish/landing pass18frames each; real hosting badge visible, all4 answers readable/clickable/focusable, camera bounds, mute and Reduced Motion pass with no page errors/overflow and one gather/takeoff/impact. Final live screenshots and skill capture opened and inspected. Same compiled Player Lab JS passes names/modes/paused drift0. Live two-student HTTP shared question/choices/reveal/hidden-key/swipe recovery passes.82 tests/14files, strict build and GLB0errors0warnings pass. Audio7sample decode/peak0.496/muted tail0 technically verified; listening and physical-device/network performance not claimed.",
       "evidence_path": "output/possession-polish/showcase-production-final/report.json; output/possession-polish/production-final-assets.json; output/possession-polish/production-final-remote.json; output/possession-polish/production-lab/report.json; output/possession-polish/skill-production-final; output/possession-polish/netlify-production-final.json; output/possession-polish/tests.txt; output/possession-polish/build.txt; output/possession-polish/audio-report.json"
+    },
+    {
+      "id": "aaa-streetball-rules-flow-and-ai-regressions",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit-and-integration",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8",
+      "timestamp_utc": "2026-11-11T09:59:41Z",
+      "command_or_action": "npm test && npm run build",
+      "observed": "93/93 tests pass across 15 suites and strict TypeScript + Vite production build pass (597ms). Covers 280ms authoritative input buffering across 60/30/20/10 Hz, 2-3 move distinct trick chains, single-move spam rejection, fair first-move separation protection vs 0.55s overexposed counter-steal window, Street Flow / On-Fire bounds (setupBonus <= +0.08 inside [0.03, 0.95], zero block/knowledge bypass), two-hand triple-threat ball cradle (<0.24m), CourtBot 2-move chains with delayed observations, and combo/fire DSP headroom (<=0.80, DC <0.02).",
+      "evidence_path": "tests/rules/streetFlowAndCombos.test.ts; tests/rules/aiPositioning.test.ts; tests/render/playerAsset.test.ts; tests/render/possessionPresentation.test.ts"
+    },
+    {
+      "id": "aaa-streetball-rendered-playtest-and-badge-clearance",
+      "status": "PASS",
+      "required": true,
+      "kind": "rendered-gameplay-and-browser",
+      "environment": "macOS Apple M4 Pro Metal WebGL (ANGLE Metal) + CPU SwiftShader comparison via Playwright",
+      "timestamp_utc": "2026-11-11T10:01:26Z",
+      "command_or_action": "./node_modules/.bin/tsx scratch/aaa-full-playtest.mjs && ./node_modules/.bin/tsx scratch/verify-http-and-mute.mjs --verify-assets",
+      "observed": "Apple M4 Pro Metal WebGL measured 16.36-16.59ms avg frame time (~60 FPS, p95 19.0ms, 20.69MB JS heap); SwiftShader CPU fallback measured 65.2ms. Inspected 16 PNG captures across floodlit twilight arena, pro overhang stanchion (z=-7.38, zero body clipping), breakaway rim/LED backboard/woven net, Player Lab jersey back name/number and paused drift===0, 2x/3x trick chains, all 4 dunk styles on left/right lanes, stepback fadeaway jumper, clean Feedback standing/celebrate pose, 1.0s missed-swipe freeze, Advanced CourtBot 2x chain, full MatchEnd results/review, Reduced Motion steady camera, immediate mute/pause active-voice disconnect (voices===0), and 390x844 portrait question + touch controls clearing the 148x38px Netlify badge at scrollTop=0 (0 overlaps, min option height 46.3px). Zero console/page errors.",
+      "evidence_path": "output/aaa-final-verification/verification-report.json; output/aaa-final-verification/http-and-mute-report.json; output/aaa-final-verification/01-lobby-arena.png..15-match-results-review.png (local generated, gitignored)"
+    },
+    {
+      "id": "aaa-streetball-preview-and-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "environment": "GitHub main (00da591) + Netlify Preview (6af43ec4134dccb8631b5f63) + Netlify Production (6af43fcdd67606bf8bbde52a)",
+      "timestamp_utc": "2026-11-11T10:16:11Z",
+      "command_or_action": "netlify deploy --prod --dir=dist --functions=netlify/functions && tsx scratch/verify-http-and-mute.mjs --url https://courtiq-spx101.netlify.app --verify-assets --browser",
+      "observed": "Verified hosted preview 6af43ec4134dccb8631b5f63 first (20/20 assets verified, room KDAY8P passed), then fast-forwarded main to gameplay commit 00da591 and deployed production 6af43fcdd67606bf8bbde52a to https://courtiq-spx101.netlify.app. All 20 live files verified (18 non-HTML JS/CSS/GLB/WAV/licence files byte-for-byte SHA-256 identical; 2 HTML entries contain exact hashed asset bundles after platform transforms). Live 2-student HTTP room PRK4DX passed 1.0s missed-swipe recovery, identical duelId/questionId/stem/4-choice set/reveal time/reading window, zero pre-resolution answer-key leakage, reconnect restoration, and browser mute/pause voices===0.",
+      "evidence_path": "https://courtiq-spx101.netlify.app; output/aaa-final-verification/netlify-preview.json; output/aaa-final-verification/preview-verification.json; output/aaa-final-verification/netlify-production.json; output/aaa-final-verification/production-verification.json"
+    },
+    {
+      "id": "human-audio-listening-and-serverless-coldstart-concurrency",
+      "status": "NOT_TESTED",
+      "required": false,
+      "kind": "human-and-infrastructure",
+      "environment": "Physical speakers/headphones, physical iOS/Android phones, and multi-container serverless load",
+      "timestamp_utc": null,
+      "command_or_action": "Human perceptual listening pass & multi-device classroom load test",
+      "expected": "Perceptual mix balance verified on physical speakers/headphones; persistent Node server or external KV backing evaluated if scaling beyond single warm Netlify Function container memory.",
+      "observed": "",
+      "evidence_path": null,
+      "reason": "Automated DSP headroom/RMS/mute-cutoff checks do not replace human ears; emulated 390x844 Playwright mobile checks do not replace physical phone GPU/touch testing; Netlify HTTP rooms store active room state in warm serverless instance memory."
     }
   ],
-  "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
+  "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",
   "remaining_risks": [
-    "All numerical balance settings (base shot probabilities 20%/12%/7%, 35% correctness bonus, 35% speed bonus, 200ms tie tolerance) are starting playtest values and require empirical calibration during the Stage 8 classroom pilot.",
-    "Online room synchronization was verified on local loopback WebSockets; real university Wi-Fi jitter and physical mobile touch ergonomics remain NOT_TESTED until multi-device pilot testing."
+    "All numerical balance settings (base shot probabilities 20%/12%/7%, up to +8% Street Flow/Combo setup bonus, 35% correctness bonus, 35% speed bonus, 200ms tie tolerance) are deterministic playtest values and remain subject to empirical SPX101 educator calibration.",
+    "Netlify HTTP rooms (/api/room) store state in warm serverless container memory (15-minute idle TTL); large multi-region or cold-start classroom sessions should run the standalone Node WebSocket server (npm run server) or attach durable KV storage.",
+    "Physical phone/tablet GPU & touch ergonomics and a human speaker/headphone perceptual listening pass remain NOT_TESTED."
   ]
 }
