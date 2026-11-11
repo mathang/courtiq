@@ -1,6 +1,7 @@
 import {
   COURT_GEOMETRY,
   SHOT_BALANCE_CONFIG,
+  LEARNING_STREAK_CONFIG,
   ShotZone,
 } from '../config/balance';
 import { BlockEligibilitySnapshot, CourtPoint2D, computeDistance2D } from './block';
@@ -55,6 +56,7 @@ export function computeBaseShotProbability(params: {
   heavilyContested: boolean;
   releasedWhileSprinting: boolean;
   setupBonus?: number;
+  onFire?: boolean;
 }): number {
   let base = SHOT_BALANCE_CONFIG.baseProbabilities[params.zone];
   if (params.heavilyContested) {
@@ -67,7 +69,8 @@ export function computeBaseShotProbability(params: {
     // Bounded setup bonus (max +0.08) rewards trick separation & Street Flow without guaranteeing scores
     base += clamp(params.setupBonus, 0, 0.08);
   }
-  return clamp(Number(base.toFixed(4)), 0.01, 0.42);
+  const normalBase = clamp(Number(base.toFixed(4)), 0.01, 0.42);
+  return Number((normalBase + (params.onFire ? LEARNING_STREAK_CONFIG.shootingBonus : 0)).toFixed(4));
 }
 
 /**
@@ -95,6 +98,7 @@ export function captureShotReleaseSnapshot(params: {
     heavilyContested,
     releasedWhileSprinting: params.releasedWhileSprinting,
     setupBonus,
+    onFire: params.onFire,
   });
 
   return Object.freeze({

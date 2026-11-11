@@ -102,6 +102,10 @@ export type ClientToServerMessage =
       input: PlayerMoveInput;
     }
   | {
+      type: 'CONTINUE_FEEDBACK';
+      duelId: string;
+    }
+  | {
       type: 'DUEL_PRELOAD_ACK';
       duelId: string;
     }

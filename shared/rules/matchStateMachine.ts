@@ -1,11 +1,14 @@
+import { buildStudentQuestionFeedback, StudentQuestionFeedback } from './learningFeedback';
+import { isDrivingInPaint } from './finishing';
 import { dribbleBallPosition } from './dribble';
 import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction } from './defense';
-import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_RANGE_M, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
+import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
 import { canTriggerOrChainTrick, getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
   AiDifficultyId,
   COURT_GEOMETRY,
   MOVEMENT_CONFIG,
+  LEARNING_STREAK_CONFIG,
   ROOM_PRESETS,
   RoomPresetId,
   SESSION_LENGTH_PRESETS,
@@ -118,9 +121,10 @@ export interface PlayerSimState {
   defenseResult: 'miss' | 'steal' | 'timed-block' | 'jump' | null;
   defenseTargetX: number;
   defenseTargetZ: number;
-  /** NBA Street-inspired momentum & combo state (0..1, ON FIRE >= 0.80) */
+  /** Style momentum is separate from the consecutive-correct learning Fire streak. */
   streetFlow: number;
   onFire: boolean;
+  correctAnswerStreak: number;
   trickCombo: number;
   lastTrick: StreetMove | null;
   comboGraceSec: number;
@@ -180,6 +184,9 @@ export interface FeedbackBannerState {
   pointsAwarded: 0 | 2 | 3;
   finalProbability: number;
   remainingRealMs: number;
+  questionStem?: string;
+  learningBySlot?: [StudentQuestionFeedback, StudentQuestionFeedback];
+  continueReady?: [boolean, boolean];
 }
 
 export interface MatchEngineOptions {
@@ -224,6 +231,8 @@ export class AuthoritativeMatchEngine {
   private readonly approvedQuestions: readonly QuestionItem[];
   private usedQuestionIds = new Set<string>();
   private rng: () => number;
+  private readonly dunkRng: () => number;
+  private lastDunkStyle: DunkStyle | null = null;
   private aiBrain: AiBasketballBrainState;
   private questionReadyTimerMs = 0;
 
@@ -259,6 +268,8 @@ export class AuthoritativeMatchEngine {
       options.seed !== undefined
         ? createSeededRng(options.seed)
         : () => Math.random();
+    // Style variety must not consume the question/answer/shot RNG stream.
+    this.dunkRng = options.seed !== undefined ? createSeededRng(options.seed ^ 0x5d6a7b8c) : () => Math.random();
     this.aiBrain = createAiBasketballBrainState(this.rng);
 
     this.scoreState = createInitialPossessionScoreState(0);
@@ -286,7 +297,7 @@ export class AuthoritativeMatchEngine {
         dunkStyle: 'tomahawk', dunkBallStart: null, finishOutcome: null,
         defenseAction: null, defenseElapsedSec: 0, defenseRecoverySec: 0, defenseCooldownSec: 0,
         defenseResult: null, defenseTargetX: 0, defenseTargetZ: 0,
-        streetFlow: 0, onFire: false, trickCombo: 0, lastTrick: null,
+        streetFlow: 0, onFire: false, correctAnswerStreak: 0, trickCombo: 0, lastTrick: null,
         comboGraceSec: 0, trickOverexposedSec: 0,
         bufferedTrick: null, bufferedTrickSec: 0,
         bufferedFinish: null, bufferedFinishStyle: null, bufferedFinishSec: 0,
@@ -314,7 +325,7 @@ export class AuthoritativeMatchEngine {
         dunkStyle: 'tomahawk', dunkBallStart: null, finishOutcome: null,
         defenseAction: null, defenseElapsedSec: 0, defenseRecoverySec: 0, defenseCooldownSec: 0,
         defenseResult: null, defenseTargetX: 0, defenseTargetZ: 0,
-        streetFlow: 0, onFire: false, trickCombo: 0, lastTrick: null,
+        streetFlow: 0, onFire: false, correctAnswerStreak: 0, trickCombo: 0, lastTrick: null,
         comboGraceSec: 0, trickOverexposedSec: 0,
         bufferedTrick: null, bufferedTrickSec: 0,
         bufferedFinish: null, bufferedFinishStyle: null, bufferedFinishSec: 0,
@@ -332,13 +343,20 @@ export class AuthoritativeMatchEngine {
 
   private adjustStreetFlow(slot: PlayerSlot, delta: number, callout?: string): void {
     const p = this.players[slot];
-    const wasOnFire = p.onFire;
     p.streetFlow = Number(clamp(p.streetFlow + delta, 0, 1).toFixed(4));
-    p.onFire = p.streetFlow >= STREET_FLOW_CONFIG.onFireThreshold;
-    if (!wasOnFire && p.onFire) {
-      this.emitCallout(slot, '🔥 ON FIRE!', 1.8);
-    } else if (callout) {
-      this.emitCallout(slot, callout, 1.3);
+    if (callout) this.emitCallout(slot, callout, 1.3);
+  }
+
+  private updateLearningStreaks(): void {
+    if (!this.activeDuel) return;
+    for (const slot of [0, 1] as const) {
+      const p = this.players[slot];
+      const wasOnFire = p.onFire;
+      p.correctAnswerStreak = this.activeDuel.answersBySlot[slot]?.isCorrect
+        ? p.correctAnswerStreak + 1 : 0;
+      p.onFire = p.correctAnswerStreak >= LEARNING_STREAK_CONFIG.correctAnswersToIgnite;
+      if (!wasOnFire && p.onFire) this.emitCallout(slot, "🔥 HE'S ON FIRE! • 3 CORRECT IN A ROW", 3.5);
+      else if (wasOnFire && !p.onFire) this.emitCallout(slot, 'STREAK ENDED • BUILD IT AGAIN', 2);
     }
   }
 
@@ -698,7 +716,7 @@ export class AuthoritativeMatchEngine {
       const baseSpeed = isAttacker
         ? MOVEMENT_CONFIG.dribbleSpeedMps
         : MOVEMENT_CONFIG.baseSpeedMps;
-      const onFireSpeedMult = p.onFire ? 1.05 : 1;
+      const onFireSpeedMult = p.onFire ? LEARNING_STREAK_CONFIG.movementMultiplier : 1;
       const speed =
         baseSpeed * onFireSpeedMult * (p.isSprinting ? MOVEMENT_CONFIG.sprintMultiplier : 1);
 
@@ -785,7 +803,10 @@ export class AuthoritativeMatchEngine {
       attacker.bufferedFinishStyle = isDunkStyle(effectiveInputs[att].dunkStyle)
         ? effectiveInputs[att].dunkStyle
         : attacker.bufferedFinishStyle;
-      attacker.bufferedFinishSec = STREET_FLOW_CONFIG.inputBufferWindowSec;
+      const cancelWait = attacker.streetMove
+        ? Math.max(0, STREET_MOVES[attacker.streetMove].duration * STREET_FLOW_CONFIG.finishCancelFraction - attacker.moveElapsedSec)
+        : 0;
+      attacker.bufferedFinishSec = cancelWait + STREET_FLOW_CONFIG.inputBufferWindowSec;
     }
     if (attacker.bufferedFinish && attacker.bufferedFinishSec > 0 && attacker.defenseRecoverySec <= 0) {
       const canCancelTrickToFinish =
@@ -823,8 +844,8 @@ export class AuthoritativeMatchEngine {
     const defender = this.players[def];
 
     const ballAtGather = this.getBallPosition3D();
+    const drivingInPaint = isDrivingInPaint(attacker);
     const activeCombo = attacker.streetMove || attacker.comboGraceSec > 0 ? attacker.trickCombo : 0;
-    const wasEurostep = attacker.streetMove === 'eurostep' || attacker.lastTrick === 'eurostep';
     const wasStepback = attacker.streetMove === 'stepback' || attacker.lastTrick === 'stepback';
 
     // Automatic facing towards the basket when shooting (Section 4)
@@ -837,16 +858,12 @@ export class AuthoritativeMatchEngine {
     defender.vx = 0;
     defender.vz = 0;
     attacker.animState = 'shoot';
-    const distance = Math.hypot(COURT_GEOMETRY.hoopX - attacker.x, COURT_GEOMETRY.hoopZ - attacker.z);
-    const maxDunkRange = attacker.onFire ? STREET_FLOW_CONFIG.onFireDunkRangeM : DUNK_RANGE_M;
-    attacker.finishKind =
-      distance <= maxDunkRange &&
-      (input?.dunk || attacker.isSprinting || wasEurostep || distance <= 1.8)
-        ? 'dunk'
-        : 'jump';
-    attacker.dunkStyle = isDunkStyle(input?.dunkStyle)
-      ? input.dunkStyle
-      : DUNK_STYLES[(this.possessionIndex + activeCombo) % DUNK_STYLES.length];
+    attacker.finishKind = drivingInPaint ? 'dunk' : 'jump';
+    if (attacker.finishKind === 'dunk') {
+      const styles = DUNK_STYLES.filter(style => style !== this.lastDunkStyle);
+      attacker.dunkStyle = styles[Math.floor(this.dunkRng() * styles.length)];
+      this.lastDunkStyle = attacker.dunkStyle;
+    }
     attacker.dunkBallStart = ballAtGather;
     attacker.finishElapsedSec = 0; attacker.finishResolutionSec = -1; attacker.finishOutcome = null;
     attacker.streetMove = null;
@@ -866,9 +883,7 @@ export class AuthoritativeMatchEngine {
       (attacker.isSprinting || attacker.sprintSettleRemainingMs > 0) && !wasStepback;
 
     const comboTier = Math.min(STREET_FLOW_CONFIG.comboSetupBonus.length - 1, activeCombo);
-    const setupBonus =
-      (STREET_FLOW_CONFIG.comboSetupBonus[comboTier] ?? 0) +
-      (attacker.onFire ? STREET_FLOW_CONFIG.onFireSetupBonus : 0);
+    const setupBonus = STREET_FLOW_CONFIG.comboSetupBonus[comboTier] ?? 0;
 
     const releaseSnapshot = captureShotReleaseSnapshot({
       shooterPos: { x: attacker.x, z: attacker.z },
@@ -1075,8 +1090,11 @@ export class AuthoritativeMatchEngine {
     );
 
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
+    this.updateLearningStreaks();
+    const frozenRelease = this.activeDuel.releaseSnapshot;
     const resolvedOutcome = resolveAuthoritativeShot({
-      release: this.activeDuel.releaseSnapshot,
+      // Keep release geometry frozen; the just-resolved learning answer determines Fire.
+      release: captureShotReleaseSnapshot({ ...frozenRelease, onFire: this.players[att].onFire }),
       duel: this.activeDuel.physicalBlock ? { ...duelSummary, shotBlocked: true, statusBannerText: 'TIMED SWAT! The defender met the dunk at take-off.' } : duelSummary,
       randomDraw: this.rng(),
       correctBaseBonus: roomPreset.correctBaseBonus,
@@ -1132,10 +1150,11 @@ export class AuthoritativeMatchEngine {
       this.adjustStreetFlow(att, -STREET_FLOW_CONFIG.flowTurnoverPenalty);
     } else if (resolvedOutcome.outcome === 'basket') {
       this.players[att].animState = 'celebrate';
-      if (this.activeDuel.releaseSnapshot.onFire) {
-        this.emitCallout(att, '🔥 SHOWTIME BUCKET!', 1.8);
+      if (this.players[att].onFire) {
+        if (this.players[att].correctAnswerStreak > LEARNING_STREAK_CONFIG.correctAnswersToIgnite) {
+          this.emitCallout(att, '🔥 SHOWTIME BUCKET!', 1.8);
+        }
         this.players[att].streetFlow = STREET_FLOW_CONFIG.onFireAfterMakeFlow;
-        this.players[att].onFire = false;
       } else if (this.activeDuel.releaseSnapshot.comboCount >= 2 && duelSummary.attackerCorrect) {
         this.emitCallout(att, '⚡ BRAIN + BUCKET!', 1.6);
       }
@@ -1226,7 +1245,6 @@ export class AuthoritativeMatchEngine {
       outcome.pointsAwarded
     );
 
-    const roomPreset = ROOM_PRESETS[this.roomPresetId];
     const headline =
       outcome.outcome === 'block'
         ? (this.activeDuel.physicalBlock ? 'DUNK SWATTED!' : 'SHOT BLOCKED!')
@@ -1234,6 +1252,10 @@ export class AuthoritativeMatchEngine {
           ? `${this.players[att].finishKind === 'dunk' ? DUNK_LABELS[this.players[att].dunkStyle] + ' SLAM!' : 'SWISH!'} +${outcome.pointsAwarded} POINTS!`
           : 'RIM MISS — NO SCORE';
 
+    const learningForSlot = (slot: PlayerSlot) => buildStudentQuestionFeedback(
+      q, this.activeDuel!.answersBySlot[slot],
+      this.players[slot].correctAnswerStreak, this.players[slot].onFire
+    );
     this.feedbackState = {
       duelId: this.activeDuel.duelId,
       headline,
@@ -1247,7 +1269,10 @@ export class AuthoritativeMatchEngine {
       outcome: outcome.outcome,
       pointsAwarded: outcome.pointsAwarded,
       finalProbability: outcome.finalProbability,
-      remainingRealMs: roomPreset.explanationMs,
+      remainingRealMs: 0,
+      questionStem: q.stem,
+      learningBySlot: [learningForSlot(0), learningForSlot(1)],
+      continueReady: [this.players[0].isAi, this.players[1].isAi],
     };
 
     this.players[att].animState = outcome.outcome === 'basket' ? 'celebrate' : 'idle';
@@ -1265,6 +1290,7 @@ export class AuthoritativeMatchEngine {
     p.defenseRecoverySec = action === 'swipe' ? DEFENSE_CONFIG.swipeRecoverySec : DEFENSE_CONFIG.jumpDurationSec;
     p.defenseCooldownSec = action === 'swipe' ? DEFENSE_CONFIG.swipeCooldownSec : DEFENSE_CONFIG.jumpCooldownSec;
     p.defenseTargetX = target.x; p.defenseTargetZ = target.z;
+    if (action === 'jump') p.facingAngle = Math.atan2(target.x - p.x, target.z - p.z);
     p.sprintStamina -= 0.12; p.vx = 0; p.vz = 0; p.isSprinting = false;
     return true;
   }
@@ -1275,8 +1301,16 @@ export class AuthoritativeMatchEngine {
     if (!duel || duel.physicalBlock || this.players[this.scoreState.currentAttacker].finishKind !== 'dunk') return;
     const d = this.players[defSlot];
     const time = this.questionReadyTimerMs / 1000;
-    if (duel.releaseSnapshot.blockEligibility.eligible && d.defenseAction === 'jump' &&
-        d.defenseElapsedSec >= 0.10 && d.defenseElapsedSec <= 0.60 &&
+    // A jump automatically faces the release point; proximity and court-side
+    // positioning still matter, without requiring a second aiming input.
+    const release = duel.releaseSnapshot;
+    const jumpContest = evaluateBlockEligibilityAtRelease({
+      shooterPos: release.shooterPos, defenderPos: release.defenderPos,
+      defenderFacingAngle: Math.atan2(release.shooterPos.x - release.defenderPos.x, release.shooterPos.z - release.defenderPos.z),
+      blockingDisabledByRule: d.wrongFootSec > 0,
+    });
+    if (jumpContest.eligible && d.defenseAction === 'jump' &&
+        d.defenseElapsedSec >= DEFENSE_CONFIG.jumpActiveStartSec && d.defenseElapsedSec <= DEFENSE_CONFIG.jumpActiveEndSec &&
         time >= DEFENSE_CONFIG.blockWindowStartSec && time <= DEFENSE_CONFIG.blockWindowEndSec) {
       duel.physicalBlock = true; d.defenseResult = 'timed-block';
       this.emitCallout(defSlot, '🛡️ TIMED SWAT!', 1.6);
@@ -1381,6 +1415,9 @@ export class AuthoritativeMatchEngine {
     if (!this.feedbackState) {
       return;
     }
+    // Learning explanations stay visible until both students are ready.
+    // Non-question turnovers retain their brief automatic transition.
+    if (this.feedbackState.learningBySlot) return;
     this.feedbackState.remainingRealMs = Math.max(
       0,
       this.feedbackState.remainingRealMs - realDeltaMs
@@ -1388,6 +1425,13 @@ export class AuthoritativeMatchEngine {
     if (this.feedbackState.remainingRealMs <= 0) {
       this.advanceFromFeedback();
     }
+  }
+
+  public acknowledgeFeedback(slot: PlayerSlot, duelId: string): void {
+    if (this.phase !== 'Feedback' || !this.feedbackState || this.feedbackState.duelId !== duelId) return;
+    if (!this.feedbackState.continueReady) { this.advanceFromFeedback(); return; }
+    this.feedbackState.continueReady[slot] = true;
+    if (this.feedbackState.continueReady.every(Boolean)) this.advanceFromFeedback();
   }
 
   public advanceFromFeedback(): void {

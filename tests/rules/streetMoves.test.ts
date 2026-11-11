@@ -30,7 +30,8 @@ describe('Street basketball movement and finishes', () => {
   });
   it('makes a step-back create a clean shot outside contest range', () => {
     const e = game();
-    expect(e.getLiveBlockEligibility().eligible).toBe(false); // 2m check-ball spacing
+    e.players[1].z = e.players[0].z - 3;
+    expect(e.getLiveBlockEligibility().eligible).toBe(false);
     e.players[1].z = e.players[0].z - 1.1;
     expect(e.getLiveBlockEligibility().eligible).toBe(true);
     step(e, 1, { ...neutral, trick: 'stepback' }); step(e, 24);
@@ -56,7 +57,7 @@ describe('Street basketball movement and finishes', () => {
     }
   });
   it('takes off for a dunk, holds before the rim for the question, resolves and lands', () => {
-    const e = game(); e.players[0].z = -3.4; e.players[0].isSprinting = true; e.players[1].x = 4;
+    const e = game(); e.players[0].z = -3.4; e.players[0].vz = -2; e.players[0].isSprinting = true; e.players[1].x = 4;
     e.initiateShotAttempt();
     expect(e.players[0].finishKind).toBe('dunk');
     expect(getAirPose(e.players[0]).y).toBeCloseTo(0);
@@ -84,10 +85,12 @@ describe('Street basketball movement and finishes', () => {
     expect(e.movementClockRemainingMs).toBe(clock);
   });
   it('requires a fresh trick keypress, clears buffered tricks in duels and resets on blur', () => {
-    const input = new InputGuardController(); input.handleKeyDown({ code: 'KeyQ' });
-    expect(input.consumeMoveInput('Possession').trick).toBe('spin');
-    input.handleKeyDown({ code: 'KeyQ', repeat: true }); expect(input.consumeMoveInput('Possession').trick).toBeUndefined();
-    input.handleKeyUp({ code: 'KeyQ' }); input.handleKeyDown({ code: 'KeyQ' });
+    const input = new InputGuardController();
+    input.syncDuelContext({phase:'Possession',duelId:null,readingProtected:false,displayedOptions:[]});
+    input.handleKeyDown({ code: 'KeyC' });
+    expect(input.consumeMoveInput('Possession', 500).trick).toBe('crossover');
+    input.handleKeyDown({ code: 'KeyC', repeat: true }); expect(input.consumeMoveInput('Possession').trick).toBeUndefined();
+    input.handleKeyUp({ code: 'KeyC' }); input.handleKeyDown({ code: 'KeyC' });
     input.consumeMoveInput('Duel'); expect(input.consumeMoveInput('Possession').trick).toBeUndefined();
     input.handleKeyDown({ code: 'KeyW' }); input.reset(); expect(input.consumeMoveInput('Possession').moveZ).toBe(0);
   });

@@ -154,6 +154,7 @@ describe('Authoritative online multiplayer server & room synchronization (Sectio
     const rawQ0 = preload0.publicQuestion as unknown as Record<string, unknown>;
     expect('correctOptionId' in rawQ0).toBe(false);
     expect('explanation' in rawQ0).toBe(false);
+    expect('optionFeedback' in rawQ0).toBe(false);
 
     // Acknowledge preload and step into Duel phase
     c0.send({ type: 'DUEL_PRELOAD_ACK', duelId: preload0.duelId });
@@ -284,6 +285,15 @@ describe('Authoritative online multiplayer server & room synchronization (Sectio
     expect(restoredSnap.snapshot.scoreState.scores).toEqual(
       fb0.snapshot.scoreState.scores
     );
+
+    // Explanations do not time out. Each authenticated student confirms only their own slot.
+    for (let i=0;i<80;i++) srv.roomManager.tickAllRooms(250);
+    c0.send({type:'CONTINUE_FEEDBACK',duelId:'stale-feedback'});
+    c0.send({type:'CONTINUE_FEEDBACK',duelId:preload0.duelId});
+    const waiting=await c0.waitFor('MATCH_SNAPSHOT', m=>m.snapshot.phase==='Feedback' && m.snapshot.feedbackState?.continueReady?.[0]===true);
+    expect(waiting.snapshot.feedbackState!.continueReady).toEqual([true,false]);
+    c1Reconnected.send({type:'CONTINUE_FEEDBACK',duelId:preload0.duelId});
+    await c1Reconnected.waitFor('MATCH_SNAPSHOT', m=>m.snapshot.phase==='Possession');
 
     c0.ws.close();
     c1Reconnected.ws.close();
@@ -418,6 +428,7 @@ describe('Authoritative online multiplayer server & room synchronization (Sectio
     expect(preloadA!.publicQuestion.answerWindowMs).toBe(preloadB!.publicQuestion.answerWindowMs);
     expect('correctOptionId' in preloadB!.publicQuestion).toBe(false);
     expect('explanation' in preloadB!.publicQuestion).toBe(false);
+    expect('optionFeedback' in preloadB!.publicQuestion).toBe(false);
     expect(
       'correctOptionId' in
         (preloadA!.publicQuestion as unknown as Record<string, unknown>)

@@ -23,6 +23,11 @@
       ],
       "correctOptionId": "trueplus",
       "explanation": "Every measurement is an estimate filtered through an imperfect process: Observed Score = True Score + Error.",
+      "optionFeedback": {
+        "exact": "Digital output still contains measurement error; more decimal places do not make a reading identical to the true score.",
+        "mult": "Sample size is not a multiplier in the measurement model. The observed score combines the true score and error.",
+        "zero": "A true physiological score is the underlying quantity being estimated in any setting, not only in a laboratory."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Core Measurement Model",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -45,6 +50,11 @@
       ],
       "correctOptionId": "relval",
       "explanation": "Using the archery bullseye analogy, arrows clustered tightly off-target are reliable (consistent) but not valid; however, you cannot consistently hit the bullseye (valid) without consistency (reliability).",
+      "optionFeedback": {
+        "valrel": "Wildly varying results do not provide the consistency needed to measure the intended target dependably.",
+        "same": "Consistent results can still be consistently off-target. Reliability alone does not establish validity for the intended purpose.",
+        "indep": "The two concepts are connected: consistency supports validity, while validity also requires measuring the intended target."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Reliability and Validity",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -67,6 +77,11 @@
       ],
       "correctOptionId": "face",
       "explanation": "Face validity refers to whether a test superficially appears to measure the intended target, which is a starting point rather than proof of accuracy.",
+      "optionFeedback": {
+        "crit": "Criterion validity requires comparison with a reference measure; simply looking appropriate is not that comparison.",
+        "const": "Construct validity concerns evidence about the intended construct, rather than appearance alone.",
+        "inter": "Inter-rater reliability concerns agreement between assessors, not whether a test looks appropriate."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Types of Validity",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -89,6 +104,11 @@
       ],
       "correctOptionId": "turn",
       "explanation": "Content validity asks whether a test covers all relevant dimensions of the task; for Parkinson's patients, the TUG captures rising, walking, sitting, and the critical turning component.",
+      "optionFeedback": {
+        "sprint": "A maximal hurdles sprint does not describe the TUG or the everyday mobility tasks relevant to this question.",
+        "camera": "Comparison with a reference system concerns criterion validity; this question asks which relevant mobility tasks the TUG includes.",
+        "blood": "The TUG assesses functional movement, not dopamine concentrations. Its relevant content includes standing, walking and turning."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Content Validity",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -111,6 +131,11 @@
       ],
       "correctOptionId": "gold",
       "explanation": "Criterion validity tests how closely a new measurement tool agrees with an established gold-standard (criterion) reference.",
+      "optionFeedback": {
+        "survey": "Opinions about the casing describe appearance, not agreement with a criterion measurement.",
+        "repeat": "Repeating the sensor can assess consistency, but without a reference it does not establish criterion validity.",
+        "price": "A higher commercial price is not measurement evidence. Criterion validity requires comparison with a reference."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Criterion Validity",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -133,6 +158,11 @@
       ],
       "correctOptionId": "bias",
       "explanation": "Correlation tracks whether scores rise and fall together; if Device B always reads 0.3 m/s faster than Device A, correlation is perfect (1.0) despite a systematic bias shown on a Bland-Altman plot.",
+      "optionFeedback": {
+        "zero": "A correlation near 1 indicates a strong positive linear relationship, rather than no relationship.",
+        "sample": "High correlation describes how recorded scores vary together; it is not a consequence of switching devices off.",
+        "random": "Correlation concerns relationships between scores, not battery life. A consistent offset can remain despite high correlation."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Beyond Correlation & Bland-Altman Plots",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -155,6 +185,11 @@
       ],
       "correctOptionId": "010",
       "explanation": "Absolute error on a trial is the magnitude of difference between the new tool and the criterion reference: |1.20 - 1.10| = 0.10 m/s.",
+      "optionFeedback": {
+        "115": "1.15 m/s is the average of the readings. Absolute error is the magnitude of their difference: 0.10 m/s.",
+        "230": "Adding the speeds gives 2.30 m/s, but error requires subtracting the criterion value and taking the absolute difference.",
+        "000": "Measuring the same task does not make the readings agree. The readings differ by 0.10 m/s."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Mean Absolute Error",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -177,6 +212,11 @@
       ],
       "correctOptionId": "short",
       "explanation": "Over a 0.5 m flying sprint, total transit time is tiny, so any small boundary noise creates a much larger percentage error (worse signal-to-noise ratio) than over a 3 m interval.",
+      "optionFeedback": {
+        "laser": "The explanation concerns error relative to the short transit time, not a minimum distance that laser light can travel.",
+        "slow": "Walking backwards is not the reason given in the study. Short, fast intervals magnify small timing errors.",
+        "cam": "Switching off the reference cameras is not the explanation. The shorter interval has a poorer signal-to-noise ratio."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2 & Part 4: Signal-to-Noise and Interval Length",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -199,6 +239,11 @@
       ],
       "correctOptionId": "over",
       "explanation": "Validity is population-specific; using a young-adult equation on an older cardiac patient can overestimate VO2max (e.g., by 8 mL/kg/min) and lead to unsafe exercise prescription.",
+      "optionFeedback": {
+        "under": "The concern is an inaccurate estimate of aerobic capacity, not conversion of heart rate into bone-density units.",
+        "none": "Validity depends on the population and conditions in which an equation is used; it is not automatically transferable.",
+        "ecg": "The risk comes from an unsuitable prediction and exercise prescription, not physical interference with pacemaker batteries."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Clinical Consequences of Invalid Tools",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -221,6 +266,11 @@
       ],
       "correctOptionId": "inter",
       "explanation": "Inter-rater reliability measures consistency between two or more different assessors scoring the same performance.",
+      "optionFeedback": {
+        "intra": "Intra-rater means repeated scoring by the same assessor. This example compares two different physiotherapists.",
+        "device": "The comparison is between assessors, not two measurement devices.",
+        "face": "Face validity concerns whether a test appears appropriate, rather than agreement between assessors."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Forms of Reliability",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -243,6 +293,11 @@
       ],
       "correctOptionId": "same",
       "explanation": "Intra-rater reliability evaluates consistency within a single assessor across repeated scorings, whereas inter-rater evaluates agreement across different assessors.",
+      "optionFeedback": {
+        "thirty": "The defining feature is repeated scoring by one assessor, not a requirement for many different clinicians.",
+        "brand": "Comparing different force-platform brands concerns devices, not consistency within one assessor.",
+        "gold": "Comparing a stopwatch with a reference system concerns criterion validity, not repeated scoring by one assessor."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Intra-Rater vs Inter-Rater",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -265,6 +320,11 @@
       ],
       "correctOptionId": "falsep",
       "explanation": "Granular subjective scales (like 0–100 or 0–4 with subtle boundaries) often create false precision and rater disagreement, whereas well-defined simpler categories improve reliability.",
+      "optionFeedback": {
+        "math": "The issue is ambiguity between subtle rating categories, not a computer limitation on storing numbers.",
+        "healthy": "Simplifying a classification can improve agreement; it does not mean participants recovered clinically.",
+        "camera": "Changing rating categories does not change the camera frame rate. Clearer categories reduce rater disagreement."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: False Precision and Category Collapsing",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -287,6 +347,11 @@
       ],
       "correctOptionId": "chance",
       "explanation": "Even random guessing produces some coincidental agreement; weighted kappa measures inter-rater agreement above and beyond chance.",
+      "optionFeedback": {
+        "mass": "Weighted kappa concerns agreement between raters, not the physical mass of shoes or clothing.",
+        "temp": "Thermal drift is an instrument-error issue; kappa evaluates rater agreement beyond chance.",
+        "hertz": "Kappa does not change sampling frequency. It quantifies agreement after accounting for chance."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Judging Consistency with Weighted Kappa",
       "difficulty": "advanced",
       "readingMs": 2200,
@@ -309,6 +374,11 @@
       ],
       "correctOptionId": "sys",
       "explanation": "Random error is unpredictable noise oscillating around the signal, whereas systematic error is a consistent directional bias or offset (e.g., always reading faster or heavier).",
+      "optionFeedback": {
+        "rand": "This reverses the definitions: a consistent directional offset is systematic; unpredictable fluctuations are random.",
+        "zero": "Random noise can occur in functioning measurements, and a systematic offset can be investigated against a reference.",
+        "same": "The terms identify different patterns of error: directional bias versus unpredictable variation."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Random vs Systematic Error",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -331,6 +401,11 @@
       ],
       "correctOptionId": "base",
       "explanation": "Hysteresis occurs when a sensor's output differs during loading versus unloading (or fails to return cleanly to zero baseline after a load is applied and removed).",
+      "optionFeedback": {
+        "angle": "Knee angle is a movement outcome. Hysteresis describes the sensor response during loading and unloading.",
+        "wifi": "Lost wireless packets describe communication failure, not the sensor returning differently after loading.",
+        "rater": "Assessor disagreement concerns reliability between raters; hysteresis concerns the instrument response to load history."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Hysteresis and Instrument Error",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -353,6 +428,11 @@
       ],
       "correctOptionId": "nonlin",
       "explanation": "Linearity requires equal increments of mechanical load to produce proportional increments in sensor output across the full operating range.",
+      "optionFeedback": {
+        "inter": "The example compares known loads with instrument output, not subjective scores from different raters.",
+        "circ": "Circadian variation concerns biological changes over time; this pattern is a non-proportional instrument response across loads.",
+        "face": "The evidence is numerical across the operating range, rather than the superficial appearance of the test."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Non-Linearity in Force Testing",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -375,6 +455,11 @@
       ],
       "correctOptionId": "hz",
       "explanation": "A 10 Hz sampling rate (10 samples/s) is sufficient for static or slow weight shifts, but fast dynamic tasks require higher sampling (e.g., 80 Hz) to capture rapid force changes accurately.",
+      "optionFeedback": {
+        "break": "The explanation is insufficient sampling of rapid force changes, not the battery shutting off.",
+        "heavy": "Rapid movement can change measured force, but it does not permanently double the person’s body mass.",
+        "gold": "The problem described is the modified scale’s sampling rate, not an inability of the reference force plate to record vertical force."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Sampling Rate and Movement Speed",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -397,6 +482,11 @@
       ],
       "correctOptionId": "snr",
       "explanation": "High-capacity lab impact plates had more baseline oscillation (noise), whereas the modified bathroom scales had a cleaner baseline (higher signal-to-noise ratio for small loads).",
+      "optionFeedback": {
+        "color": "The explanation concerns lower baseline noise on the modified scale trace, not an invisible reference trace.",
+        "fake": "Advance identification of the traces is not the stated explanation. The relevant difference is signal noise.",
+        "zero": "A disconnected reference would not explain the observed comparison of signal traces. Baseline noise affected small-change visibility."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Signal Noise in Force Traces",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -419,6 +509,11 @@
       ],
       "correctOptionId": "temp",
       "explanation": "Heat and electrical warm-up can cause load-cell calibration drift, inflating or distorting observed effect sizes if attributed to the athlete rather than the instrument.",
+      "optionFeedback": {
+        "gravity": "A large seasonal change in gravity is not the mechanism described; temperature-related sensor drift can alter readings.",
+        "valid": "Heat does not automatically validate an uncalibrated sensor. It can introduce calibration drift and bias the comparison.",
+        "none": "Electronic load cells can be temperature-sensitive; the effect is not limited to wooden rulers."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Flawed Research and Instrument Error",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -441,6 +536,11 @@
       ],
       "correctOptionId": "bio",
       "explanation": "Circadian rhythm, hydration, and residual fatigue are biological error sources that vary from day to day; standardizing test conditions improves test-retest reliability.",
+      "optionFeedback": {
+        "hyst": "Standardising participant conditions addresses biological variation, not electronic sensor hysteresis.",
+        "inter": "Controlling test conditions does not change a study into a comparison with a criterion reference.",
+        "digit": "Time of day, hydration and prior exercise affect the participant, rather than computer integer rounding."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Biological Factors in Measurement Error",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -463,6 +563,11 @@
       ],
       "correctOptionId": "load",
       "explanation": "A ±15% distance error (30 km uncertainty band on 100 km) can cause staff to push an already overloaded athlete into injury or hold back an athlete who needs stimulus.",
+      "optionFeedback": {
+        "sat": "GPS error changes the recorded distance, not the physical direction or distance the athlete actually ran.",
+        "hr": "Coaches use distance to manage load, so large distance error can mislead the training decision.",
+        "none": "A much wider uncertainty band can hide meaningful differences, making the units unequal for fine adjustments to training."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: GPS Tracking Error Example",
       "difficulty": "beginner",
       "readingMs": 2200,
@@ -485,6 +590,11 @@
       ],
       "correctOptionId": "rank",
       "explanation": "Traditional combine jump testing contains enough measurement error (including standing-reach manipulation and vane spacing) to scramble athlete rankings when small differences separate players.",
+      "optionFeedback": {
+        "perf": "Reach-and-slap measurements contain error; displaying a score does not establish micrometre-level accuracy.",
+        "wings": "Shoe colour is not the explanation for the ranking changes. The interactive highlights measurement error in reach and vane readings.",
+        "draft": "The interactive examines how recorded jump scores can mis-rank athletes, rather than claiming that scores are never recorded."
+      },
       "sourceRef": "[CANVAS-W05-P451] Week 5.2 Knowledge Interactive: NBA Draft Jump Error",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -507,6 +617,11 @@
       ],
       "correctOptionId": "fit",
       "explanation": "Because every tool contains some error, professional judgment rests on whether the tool is 'fit for purpose'—meaning its error is smaller than the change or threshold that matters.",
+      "optionFeedback": {
+        "zero": "Waiting for a zero-error instrument avoids the real decision: whether the available uncertainty is acceptable for this purpose.",
+        "brand": "Price does not establish that error is small enough for the decision. Fitness for purpose depends on measurement performance.",
+        "ignore": "Extra decimal places do not remove uncertainty. Error still has to be compared with the meaningful change or threshold."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Fit-for-Purpose Decisions",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -529,6 +644,11 @@
       ],
       "correctOptionId": "overflow",
       "explanation": "In patients with acquired brain injury, relatively high-effort tasks like walking can trigger motor overflow (an associated reaction) that stimulates involuntary upper-limb flexion.",
+      "optionFeedback": {
+        "weight": "The flexion described was involuntary motor overflow during walking, not a deliberately loaded dumbbell task.",
+        "cold": "Shivering in a freezing room is not the mechanism described in the gait study.",
+        "balance": "Restraining the arm in a sling is not the cause described; the associated reaction arose during the effort of walking."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Machine Learning and Clinical Gait Scoring",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -551,6 +671,11 @@
       ],
       "correctOptionId": "pocket",
       "explanation": "Because even expert clinicians show only moderate inter-rater agreement, an automated pose-tracking model acts like a consistent 'expert in your pocket' across hospitals and regional clinics.",
+      "optionFeedback": {
+        "surgery": "Consistent scoring is an assessment benefit; it is not evidence that a model cures brain injury or replaces rehabilitation.",
+        "replace": "The motivation was inconsistency between raters, rather than proof that clinicians already agree perfectly.",
+        "force": "This example concerns pose-based movement ratings, not direct ground-reaction-force measurement without a camera."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Machine Learning Case Study Findings",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -573,6 +698,11 @@
       ],
       "correctOptionId": "clear",
       "explanation": "Clear operational criteria, standardized rater training, and avoiding overly granular scales reduce subjective interpretation differences between raters.",
+      "optionFeedback": {
+        "scale100": "More unanchored categories can create additional ambiguity instead of improving agreement.",
+        "secret": "Private, changing criteria make assessors less comparable; shared operational definitions support agreement.",
+        "memory": "Delayed scoring from memory adds uncertainty rather than standardising how the movement is rated."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Reducing Variation in Reliability",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -595,6 +725,11 @@
       ],
       "correctOptionId": "lowbias",
       "explanation": "In a Bland-Altman plot, the central horizontal line represents the mean difference (bias) between devices; a mean near zero indicates little systematic offset between them.",
+      "optionFeedback": {
+        "zeroic": "The central line represents the average difference between devices, not their correlation.",
+        "broken": "A mean difference near zero means average readings agree; it does not mean all recorded speeds were zero.",
+        "inf": "Average bias and the spread of differences are different features. A near-zero mean alone does not imply infinite random error."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Bland-Altman Plots",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -617,6 +752,11 @@
       ],
       "correctOptionId": "react",
       "explanation": "Human visual judgment and thumb reaction time at both the start line and finish line introduce substantial error relative to a short 3–4 second test window.",
+      "optionFeedback": {
+        "quartz": "The stated problem is start/finish reaction and visual judgement, not minutes of clock drift within a short test.",
+        "light": "The relevant delay is human reaction and judgement, not light travelling across the room.",
+        "batt": "The timing error discussed does not depend on a GPS connection or outdoor use."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Stopwatch Error in Short Tests",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -639,6 +779,11 @@
       ],
       "correctOptionId": "interdev",
       "explanation": "Comparing multiple physical units and models under the same mechanical loads tests inter-device reliability (consistency across equipment units).",
+      "optionFeedback": {
+        "intrarat": "The comparison is between equipment units under matched loads, not repeated video ratings by one assessor.",
+        "faceval": "This is a comparison of force-measurement consistency, not the appearance of an endurance test.",
+        "circad": "Identical applied loads compare devices; human daily temperature rhythms are not the property being tested."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Inter-Device Consistency",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -661,6 +806,11 @@
       ],
       "correctOptionId": "theo",
       "explanation": "Construct validity assesses whether a test genuinely reflects the underlying theoretical construct (e.g., functional physical capacity or agility) it is intended to represent.",
+      "optionFeedback": {
+        "build": "Construct refers to the theoretical trait being assessed, not the material used to build the apparatus.",
+        "look": "An impressive appearance concerns face validity; construct validity needs evidence about the intended trait.",
+        "same": "Repeated agreement by the same assessor concerns intra-rater reliability, rather than whether the score reflects the intended construct."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Construct Validity",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -683,6 +833,11 @@
       ],
       "correctOptionId": "cancel",
       "explanation": "Because random error fluctuates up and down around the true score, averaging multiple trials reduces random noise (though it does not remove systematic bias).",
+      "optionFeedback": {
+        "sys": "A fixed +5 kg offset remains in the average. Repetition can reduce random noise but does not automatically correct bias.",
+        "fat": "Repeated trials do not replace calibration; systematic instrument errors can remain in every trial.",
+        "val": "Averaging improves precision for the existing measure; it does not make an unrelated task valid for basketball shooting."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3 & Week 9.3: Multiple Trials and Random Error",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -705,6 +860,11 @@
       ],
       "correctOptionId": "falsea",
       "explanation": "Testing the left limb and then the right limb with a noisy instrument can produce different numbers purely from measurement error, creating a false impression of asymmetry.",
+      "optionFeedback": {
+        "sym": "Random error can make the two recorded limb scores differ even without a real difference; identical values are not guaranteed.",
+        "dom": "The issue is noisy readings, not the device refusing to measure a particular limb.",
+        "cure": "Measurement error affects interpretation of strength, not the biological healing of a tendon."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Why Measurement Error Matters for Asymmetry",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -727,6 +887,11 @@
       ],
       "correctOptionId": "cut",
       "explanation": "During rapid acceleration and sharp cuts, if sampling frequency is too low relative to movement speed, brief peak velocities and path curvature between sample points are missed.",
+      "optionFeedback": {
+        "roof": "The sampling limitation concerns movement between recorded samples, not the agility cones blocking the signal.",
+        "slow": "Direction changes can include brief speed peaks; the question does not say athletes become nearly stationary.",
+        "weight": "Sampling frequency affects the recorded signal, not the physical mass of the vest."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1 & Part 4: Sampling Factors in Dynamic Movement",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -749,6 +914,11 @@
       ],
       "correctOptionId": "quant",
       "explanation": "Hardware digitization rounds continuous physical quantities into discrete steps or integers, introducing small hardware resolution error.",
+      "optionFeedback": {
+        "virus": "Quantisation means discrete rounding steps, not a guaranteed upward drift over time.",
+        "human": "Digitisation is an instrument-resolution issue, rather than the assessor’s subjective rating.",
+        "none": "Rounding removes resolution by grouping continuous values into steps; it cannot create infinite precision."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Hardware Limitations and Digitization",
       "difficulty": "advanced",
       "readingMs": 2200,
@@ -771,6 +941,11 @@
       ],
       "correctOptionId": "demot",
       "explanation": "If a tool has excessive error or poor sensitivity, a patient who worked hard for six weeks may appear unchanged or worse, causing frustration and drop-out.",
+      "optionFeedback": {
+        "over": "Error does not guarantee a fixed doubling of strength; it can obscure or misrepresent the true change.",
+        "pain": "The harm described is a misleading assessment and resulting discouragement, not direct inflammation caused by an error value.",
+        "none": "Patients can use test results to judge progress, so misleading results can affect motivation and adherence."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Rehabilitation Milestones and Error",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -793,6 +968,11 @@
       ],
       "correctOptionId": "scope",
       "explanation": "Validity is bounded by the conditions tested: validating a sensor over a 3 m laboratory capture volume in healthy adults does not automatically prove accuracy at 40 m or in clinical groups without dedicated testing.",
+      "optionFeedback": {
+        "sun": "The limitation is untested measurement conditions and capture range, not a change in laser speed after ten metres.",
+        "rules": "Velocity is not defined by a different equation outdoors; measurement validity still needs testing in the new setting.",
+        "cam": "Longer sprint tasks can involve acceleration and fast running; a short laboratory validation does not automatically cover them."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2: Study Limitations and Validation Scope",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -815,6 +995,11 @@
       ],
       "correctOptionId": "conf",
       "explanation": "When different assessors score pre- and post-intervention on a subjective scale with modest inter-rater reliability, an apparent improvement or decline may simply reflect assessor differences.",
+      "optionFeedback": {
+        "intra": "Changing assessors can add inter-rater differences; it does not eliminate measurement error.",
+        "time": "The problem is comparability of ratings, not a rule preventing repeated screens within a year.",
+        "gold": "The example gives no universal direction of assessor bias. An apparent change may reflect either assessor differences or patient change."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 3: Real-World Inter-Rater Challenges",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -837,6 +1022,11 @@
       ],
       "correctOptionId": "dyn",
       "explanation": "Consumer scales are built to measure steady static weight; clinical rehab tasks like weight-shifting and sit-to-stands involve time-varying forces, requiring dedicated dynamic validation.",
+      "optionFeedback": {
+        "stat": "Static loading tests the response to steady loads; dynamic tasks test changing forces, not only battery life.",
+        "none": "The question concerns validating scales for human rehabilitation tasks, rather than excluding people from scale use.",
+        "same": "Good steady-load accuracy does not establish performance during rapid force changes or at a different sampling rate."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4: Static vs Dynamic Validation",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -859,6 +1049,11 @@
       ],
       "correctOptionId": "vre",
       "explanation": "The three pillars of measurement quality are validity (measuring the right thing), reliability (reproducible under consistent conditions), and acceptable error for the intended decision.",
+      "optionFeedback": {
+        "cpb": "Wireless features, screens and endorsements do not establish validity, reliability or acceptable error.",
+        "lmn": "A laboratory origin, lasers and report export are features; the measurement properties still need evidence.",
+        "xyz": "The outputs and waterproofing do not establish that the tool measures them validly and reliably with acceptable error."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Three Core Checks",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -881,6 +1076,11 @@
       ],
       "correctOptionId": "proc",
       "explanation": "Procedural error arises from how the test is administered—such as inconsistent instructions, tester technique, footwear, or surface conditions—and is controlled through strict protocol adherence.",
+      "optionFeedback": {
+        "hyst": "A strain-gauge response to temperature and load history is an instrument issue, rather than how the tester administers the task.",
+        "quant": "Digitisation occurs within the device; inconsistent instructions and test conditions are procedural sources.",
+        "nonl": "A non-proportional transducer response across loads is a hardware characteristic, not a testing-procedure inconsistency."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 1: Procedural Sources of Error",
       "difficulty": "beginner",
       "readingMs": 2000,

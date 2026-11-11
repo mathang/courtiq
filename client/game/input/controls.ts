@@ -1,6 +1,5 @@
 import { DefenseAction } from '../../../shared/rules/defense';
-import { DunkStyle, DUNK_STYLES } from '../../../shared/rules/dunks';
-import { isStreetMove, StreetMove } from '../../../shared/rules/streetMoves';
+import { StreetMove } from '../../../shared/rules/streetMoves';
 import { QuestionOption } from '../../../shared/content/question-schema';
 import { MatchPhase, PlayerMoveInput } from '../../../shared/rules/matchStateMachine';
 
@@ -11,14 +10,7 @@ export interface KeyBindingsConfig {
   moveRight: string;
   sprint: string;
   shoot: string;
-  dunk: string;
-  dunkStyle: string;
-  swipe: string;
-  block: string;
-  crossover: string;
-  spin: string;
-  eurostep: string;
-  stepback: string;
+  trick: string;
   answer1: string;
   answer2: string;
   answer3: string;
@@ -32,14 +24,29 @@ export const DEFAULT_KEY_BINDINGS: KeyBindingsConfig = {
   moveLeft: 'KeyA',
   moveRight: 'KeyD',
   sprint: 'ShiftLeft',
-  shoot: 'Space', dunk: 'KeyR', dunkStyle: 'KeyV', swipe: 'KeyZ', block: 'KeyB',
-  crossover: 'KeyC', spin: 'KeyQ', eurostep: 'KeyE', stepback: 'KeyX',
+  shoot: 'Space',
+  trick: 'KeyC',
   answer1: 'Digit1',
   answer2: 'Digit2',
   answer3: 'Digit3',
   answer4: 'Digit4',
   pause: 'Escape',
 };
+
+export const TRICK_TAP_WINDOW_MS = 500;
+export const TRICKS_BY_TAP_COUNT: readonly StreetMove[] = ['crossover', 'spin', 'eurostep', 'stepback'];
+
+/** Preserve saved movement/shot keys; migrate the old crossover key to one trick key. */
+export function normaliseKeyBindings(saved: unknown): KeyBindingsConfig {
+  const bindings = { ...DEFAULT_KEY_BINDINGS };
+  if (!saved || typeof saved !== 'object') return bindings;
+  const old = saved as Record<string, unknown>;
+  for (const key of Object.keys(bindings) as Array<keyof KeyBindingsConfig>) {
+    if (typeof old[key] === 'string' && old[key]) bindings[key] = old[key] as string;
+  }
+  if (!old.trick && typeof old.crossover === 'string' && old.crossover) bindings.trick = old.crossover;
+  return bindings;
+}
 
 /**
  * Pure, testable input state machine enforcing Section 4 & Section 22 input rules:
@@ -58,9 +65,12 @@ export class InputGuardController {
   private shootTriggeredFresh = false;
   private pendingTrick: StreetMove | undefined;
   private pendingDefense: DefenseAction | undefined;
-  private pendingDunk = false;
+  private isAttacker = true;
+  private touchPrimaryHeld = false;
+  private trickTapCount = 0;
+  private trickWindowRemainingMs = 0;
   private phase: MatchPhase = 'Lobby';
-  public dunkStyle: DunkStyle = 'tomahawk';
+
 
   private activeDuelId: string | null = null;
   private answerButtonsUnlocked = false;
@@ -91,10 +101,18 @@ export class InputGuardController {
    */
   public syncDuelContext(params: {
     phase: MatchPhase;
+    isAttacker?: boolean;
     duelId: string | null;
     readingProtected: boolean;
     displayedOptions: readonly QuestionOption[];
   }): void {
+    const nextAttacker = params.isAttacker ?? this.isAttacker;
+    if (nextAttacker !== this.isAttacker || (params.phase !== this.phase && params.phase !== 'Possession')) {
+      this.clearTrickTaps();
+      this.pendingTrick = undefined;
+      this.pendingDefense = undefined;
+    }
+    this.isAttacker = nextAttacker;
     this.phase = params.phase;
     if (params.duelId !== this.activeDuelId) {
       this.activeDuelId = params.duelId;
@@ -142,30 +160,20 @@ export class InputGuardController {
       return;
     }
 
-    if (ev.code === this.bindings.swipe || ev.code === this.bindings.block) {
+    if (ev.code === this.bindings.trick) {
       ev.preventDefault?.();
-      if (this.phase === 'Possession' || (this.phase === 'QuestionReady' && ev.code === this.bindings.block)) {
-        this.pendingDefense = ev.code === this.bindings.swipe ? 'swipe' : 'jump';
-      }
+      this.triggerTouchTrick();
       return;
     }
-    if (ev.code === this.bindings.dunkStyle && this.phase === 'Possession') { ev.preventDefault?.(); this.cycleDunkStyle(); return; }
-    if (ev.code === this.bindings.dunk && this.phase === 'Possession') { ev.preventDefault?.(); this.pendingDunk = true; return; }
-    // Prevent Space from activating focused HTML buttons accidentally
+    // The primary button shoots/dunks on attack and jumps to block on defence.
+    // Space never activates a focused answer button during a question.
     if (ev.code === this.bindings.shoot || ev.code === 'Space') {
       ev.preventDefault?.();
-      if (this.phase === 'QuestionReady') this.pendingDefense = 'jump';
-      if (!this.answerButtonsUnlocked && this.activeDuelId === null) {
-        this.shootTriggeredFresh = true;
-      }
+      if (this.phase === 'Possession') this.shootTriggeredFresh = true;
+      if (this.phase === 'QuestionReady' && !this.isAttacker) this.pendingDefense = 'jump';
       return;
     }
 
-    for (const move of ['crossover', 'spin', 'eurostep', 'stepback'] as const) {
-      if (ev.code === this.bindings[move] && this.activeDuelId === null) {
-        ev.preventDefault?.(); this.pendingTrick = move; return;
-      }
-    }
     // Check answer keys 1..4
     const answerSlotIndex = this.getAnswerIndexForKeyCode(ev.code);
     if (answerSlotIndex !== -1) {
@@ -217,20 +225,49 @@ export class InputGuardController {
   }
 
   public reset(): void {
-    this.downKeys.clear(); this.touchVector = { x: 0, z: 0 }; this.touchSprint = false;
-    this.pendingTrick = undefined; this.pendingDefense = undefined; this.pendingDunk = false; this.shootTriggeredFresh = false; this.touchShootTriggered = false;
+    this.downKeys.clear();
+    this.touchVector = { x: 0, z: 0 };
+    this.touchSprint = false;
+    this.touchPrimaryHeld = false;
+    this.pendingTrick = undefined;
+    this.pendingDefense = undefined;
+    this.shootTriggeredFresh = this.touchShootTriggered = false;
+    this.clearTrickTaps();
   }
 
-  public cycleDunkStyle(): void {
-    this.dunkStyle = DUNK_STYLES[(DUNK_STYLES.indexOf(this.dunkStyle) + 1) % DUNK_STYLES.length];
-  }
-  public triggerTouchDunk(): void { if (this.phase === 'Possession') this.pendingDunk = true; }
-  public triggerTouchDefense(action: DefenseAction): void {
-    if (this.phase === 'Possession' || (action === 'jump' && this.phase === 'QuestionReady')) this.pendingDefense = action;
+  private clearTrickTaps(): void {
+    this.trickTapCount = 0;
+    this.trickWindowRemainingMs = 0;
   }
 
-  public triggerTouchTrick(move: StreetMove): void {
-    if (this.activeDuelId === null && isStreetMove(move)) this.pendingTrick = move;
+  private finishTrickTaps(): void {
+    if (this.trickTapCount) this.pendingTrick = TRICKS_BY_TAP_COUNT[this.trickTapCount - 1];
+    this.clearTrickTaps();
+  }
+
+  public getTrickSelection(): { count: number; move: StreetMove; remainingMs: number } | null {
+    return this.trickTapCount ? {
+      count: this.trickTapCount,
+      move: TRICKS_BY_TAP_COUNT[this.trickTapCount - 1],
+      remainingMs: this.trickWindowRemainingMs,
+    } : null;
+  }
+
+  /** A fixed 500ms window from the first fresh press; holding never adds taps. */
+  public triggerTouchTrick(): void {
+    if (this.phase !== 'Possession') return;
+    if (!this.isAttacker) {
+      this.pendingDefense = 'swipe';
+      return;
+    }
+    if (!this.trickTapCount) this.trickWindowRemainingMs = TRICK_TAP_WINDOW_MS;
+    this.trickTapCount = Math.min(TRICKS_BY_TAP_COUNT.length, this.trickTapCount + 1);
+  }
+
+  public setTouchPrimary(active: boolean): void {
+    if (active && !this.touchPrimaryHeld) this.triggerTouchShoot();
+    this.touchPrimaryHeld = active;
+    if (active && !this.isAttacker && this.phase === 'QuestionReady') this.pendingDefense = 'jump';
   }
 
   public setTouchMove(x: number, z: number): void {
@@ -253,10 +290,15 @@ export class InputGuardController {
    * During a question (or any phase other than Possession), movement and shooting inputs
    * return zero so they never affect gameplay.
    */
-  public consumeMoveInput(phase: MatchPhase): PlayerMoveInput {
+  public consumeMoveInput(phase: MatchPhase, realDeltaMs = 1000 / 60): PlayerMoveInput {
+    if (this.trickTapCount) {
+      this.trickWindowRemainingMs = Math.max(0, this.trickWindowRemainingMs - Math.max(0, realDeltaMs));
+      if (this.trickWindowRemainingMs < 0.000001) this.finishTrickTaps();
+    }
     if (phase !== 'Possession') {
-      const defense = phase === 'QuestionReady' && this.pendingDefense === 'jump' ? 'jump' as const : undefined;
-      this.pendingDefense = undefined; this.pendingDunk = false;
+      const primaryHeld = this.touchPrimaryHeld || this.downKeys.has(this.bindings.shoot);
+      const defense = phase === 'QuestionReady' && !this.isAttacker && (this.pendingDefense === 'jump' || primaryHeld) ? 'jump' as const : undefined;
+      this.pendingDefense = undefined; this.clearTrickTaps();
       this.shootTriggeredFresh = false;
       this.touchShootTriggered = false;
       this.pendingTrick = undefined;
@@ -300,13 +342,14 @@ export class InputGuardController {
     this.shootTriggeredFresh = false;
     this.touchShootTriggered = false;
 
+    // A shot commits the currently selected move early, then the shared engine
+    // buffers the finish into its gather; no pending tap leaks into a question.
+    if (shoot && this.isAttacker) this.finishTrickTaps();
     const trick = this.pendingTrick;
     this.pendingTrick = undefined;
-    const defense = this.pendingDefense, dunk = this.pendingDunk;
-    this.pendingDefense = undefined; this.pendingDunk = false;
-    const dunkStyle = this.dunkStyle;
-    if (shoot || dunk) this.cycleDunkStyle();
-    return { moveX, moveZ, sprint, shoot, ...(trick ? { trick } : {}), ...(defense ? { defense } : {}),
-      ...((shoot || dunk) ? { dunk, dunkStyle } : {}) };
+    const defense = this.pendingDefense ?? (!this.isAttacker && shoot ? 'jump' : undefined);
+    this.pendingDefense = undefined;
+    return { moveX, moveZ, sprint, shoot: this.isAttacker && shoot,
+      ...(trick ? { trick } : {}), ...(defense ? { defense } : {}) };
   }
 }

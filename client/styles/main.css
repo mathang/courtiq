@@ -1230,3 +1230,23 @@ body:has(> #nl-badge-frame) .question-overlay,
 body:has(> #nl-badge-frame) .feedback-overlay {
   bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
 }
+
+/* Two game actions, with learner-paced explanations after every question. */
+.touch-action-buttons { grid-template-columns:repeat(3,72px); }
+.fb-learning-verdict { margin:0 0 9px; font-size:1.25rem; line-height:1.25; }
+.fb-learning-verdict[data-status="correct"] { color:#6ee7b7; }
+.fb-learning-verdict[data-status="incorrect"], .fb-learning-verdict[data-status="unanswered"] { color:#fcd34d; }
+.fb-question-text { font-weight:700; line-height:1.4; margin:8px 0; }
+.fb-your-answer { margin:8px 0; color:#e2e8f0; }
+.fb-choice-reason { border-left:3px solid #fbbf24; padding:8px 10px; background:rgba(251,191,36,.08); line-height:1.45; }
+.fb-streak-text { color:#fcd34d; font-weight:700; line-height:1.4; margin:10px 0; }
+.feedback-card { max-height:80dvh; overflow-y:auto; overscroll-behavior:contain; }
+.fb-meta-row { flex-wrap:wrap; gap:12px; }
+#btn-next-possession { min-height:44px; white-space:normal; }
+@media(max-width:650px) {
+  .touch-action-buttons { grid-template-columns:repeat(3,58px); }
+  .touch-btn { width:58px; }
+  .feedback-overlay { top:155px; bottom:58px; align-items:flex-end; }
+  .feedback-card { max-height:calc(100dvh - 220px); font-size:.85rem; }
+  .fb-learning-verdict { font-size:1.06rem; }
+}

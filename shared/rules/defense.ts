@@ -9,9 +9,11 @@ export const DEFENSE_CONFIG = {
   swipeReachM: 1.45,
   overexposedExtraReachM: 0.20,
   jumpDurationSec: 0.88,
-  jumpCooldownSec: 1.15,
-  blockWindowStartSec: 0.10,
-  blockWindowEndSec: 0.72,
+  jumpCooldownSec: 0.95,
+  blockWindowStartSec: 0.02,
+  blockWindowEndSec: 0.84,
+  jumpActiveStartSec: 0.02,
+  jumpActiveEndSec: 0.86,
 } as const;
 
 export function isDefenseAction(v: unknown): v is DefenseAction {

@@ -1,0 +1,149 @@
+{
+  "date": "2026-11-12",
+  "baseline": "b6feb637322de47110f9c85bac84cb0b1e0b5e18",
+  "sourceFingerprint": "391921149f22b80ea853463376f863d70d87a8e91f8d6044278268812d969762",
+  "indexSha256": "a9d226d76d013c6e7c80ed7a103acc70911e97749f48d561e0523c53a8ba637b",
+  "unitTests": {
+    "passed": 124,
+    "files": 17
+  },
+  "build": "PASS: tsc --noEmit && vite build",
+  "content": {
+    "questions": 85,
+    "wrongChoiceReasons": 255,
+    "originalQuestionsUnchanged": true,
+    "originalPackMetadataUnchanged": true
+  },
+  "browserControlsAndFire": {
+    "base": "http://127.0.0.1:4173",
+    "controls": [
+      {
+        "count": 1,
+        "move": "crossover",
+        "pass": true
+      },
+      {
+        "count": 2,
+        "move": "spin",
+        "pass": true
+      },
+      {
+        "count": 3,
+        "move": "eurostep",
+        "pass": true
+      },
+      {
+        "count": 4,
+        "move": "stepback",
+        "pass": true
+      }
+    ],
+    "learning": [
+      {
+        "round": 1,
+        "question": "spx101-w09-033",
+        "selected": "behind",
+        "verdict": "✓ Your answer was correct",
+        "reason": "",
+        "streak": 1,
+        "onFire": false,
+        "audio": {
+          "step": 24,
+          "gather": 2,
+          "flight": 1,
+          "answer": 1,
+          "net": 2
+        }
+      },
+      {
+        "round": 2,
+        "question": "spx101-w09-032",
+        "selected": "step",
+        "verdict": "✓ Your answer was correct",
+        "reason": "",
+        "streak": 2,
+        "onFire": false,
+        "audio": {
+          "step": 35,
+          "gather": 3,
+          "flight": 2,
+          "answer": 2,
+          "net": 2,
+          "bounce": 3,
+          "rim": 1
+        }
+      },
+      {
+        "round": 3,
+        "question": "spx101-w09-023",
+        "selected": "box",
+        "verdict": "✓ Your answer was correct",
+        "reason": "",
+        "streak": 3,
+        "onFire": true,
+        "audio": {
+          "step": 41,
+          "gather": 4,
+          "flight": 3,
+          "answer": 3,
+          "net": 5,
+          "bounce": 3,
+          "rim": 1,
+          "fire": 1
+        }
+      },
+      {
+        "round": 4,
+        "question": "spx101-w09-024",
+        "selected": "cost",
+        "verdict": "✗ Your answer was incorrect",
+        "reason": "Why: The stated concerns were patient privacy, security and usability, not an inability of cameras to record indoor walking.",
+        "streak": 0,
+        "onFire": false,
+        "audio": {
+          "step": 55,
+          "gather": 5,
+          "flight": 4,
+          "answer": 4,
+          "net": 7,
+          "bounce": 6,
+          "rim": 1,
+          "fire": 1
+        }
+      }
+    ],
+    "errors": []
+  },
+  "browserOnlinePreview": {
+    "base": "https://6af4d492881571c764177a74--courtiq-spx101.netlify.app",
+    "errors": [],
+    "secrecyChecks": 33,
+    "primaryDunkAndBlock": true,
+    "sameQuestion": true,
+    "sameChoices": true,
+    "perStudentFeedback": true,
+    "missedSwipeFrozen": true,
+    "bothContinueRequired": true,
+    "question": "spx101-w09-039"
+  },
+  "preview": "https://6af4d492881571c764177a74--courtiq-spx101.netlify.app",
+  "production": "PENDING",
+  "limits": [
+    "New option-specific rationales await instructor review.",
+    "Physical mobile devices and campus Wi-Fi not tested.",
+    "Audio playback and mute measured in browser; human listening not assessed.",
+    "No claim of AAA comparability."
+  ],
+  "browserOnlineCompiledFinal": {
+    "base": "http://127.0.0.1:4173",
+    "errors": [],
+    "secrecyChecks": 259,
+    "primaryDunkAndBlock": true,
+    "sameQuestion": true,
+    "sameChoices": true,
+    "perStudentFeedback": true,
+    "missedSwipeFrozen": true,
+    "bothContinueRequired": true,
+    "question": "spx101-w09-035"
+  }
+}

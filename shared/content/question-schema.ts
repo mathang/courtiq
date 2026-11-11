@@ -22,6 +22,8 @@ export interface QuestionItem {
   ];
   readonly correctOptionId: string;
   readonly explanation: string;
+  /** Private option-specific misconceptions; never sent before resolution. */
+  readonly optionFeedback?: Readonly<Record<string, string>>;
   readonly sourceRef: string;
   readonly difficulty: QuestionDifficultyLabel;
   readonly readingMs: number;
@@ -205,6 +207,18 @@ export function validateQuestionPack(raw: unknown): PackValidationResult {
         errors.push(
           `${qRef}: correctOptionId "${String(q.correctOptionId)}" does not match any of the 4 option IDs.`
         );
+      }
+      if (q.optionFeedback !== undefined) {
+        if (!q.optionFeedback || typeof q.optionFeedback !== 'object' || Array.isArray(q.optionFeedback)) {
+          errors.push(`${qRef}: optionFeedback must be an object keyed by option ID.`);
+        } else {
+          for (const [optionId, reason] of Object.entries(q.optionFeedback)) {
+            if (!optIds.has(optionId)) errors.push(`${qRef}: optionFeedback has unknown option ID "${optionId}".`);
+            if (typeof reason !== 'string' || !reason.trim() || reason.length > 400) {
+              errors.push(`${qRef}: optionFeedback for "${optionId}" must contain 1–400 characters.`);
+            }
+          }
+        }
       }
     }
 

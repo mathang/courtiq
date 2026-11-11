@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { evaluateBlockEligibilityAtRelease } from '../../shared/rules/block';
 
 describe('Block eligibility rules at shot release (Section 8)', () => {
-  it('marks defender eligible when within 1.8m, facing shooter, in contesting cone, and in bounds', () => {
+  it('marks defender eligible within the forgiving 2.6m range, facing shooter, in contesting cone, and in bounds', () => {
     const res = evaluateBlockEligibilityAtRelease({
       shooterPos: { x: 0, z: 0 },
       defenderPos: { x: 0, z: -1.4 },
@@ -13,10 +13,10 @@ describe('Block eligibility rules at shot release (Section 8)', () => {
     expect(res.distanceM).toBeCloseTo(1.4, 4);
   });
 
-  it('rejects block when defender is out of range (> 1.8m)', () => {
+  it('rejects block when defender is out of range (> 2.6m)', () => {
     const res = evaluateBlockEligibilityAtRelease({
       shooterPos: { x: 0, z: 0 },
-      defenderPos: { x: 0, z: -2.2 },
+      defenderPos: { x: 0, z: -2.7 },
       defenderFacingAngle: 0,
     });
     expect(res.eligible).toBe(false);

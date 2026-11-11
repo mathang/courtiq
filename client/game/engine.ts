@@ -362,6 +362,11 @@ export class CourtIqRenderer {
     const toX = (wx: number) => ox + ((wx + 7.5) / 15) * courtSize;
     const toY = (wz: number) => oy + ((wz + 6.5) / 14) * (courtSize * 0.88);
 
+    const paint = COURT_GEOMETRY.paint;
+    ctx.fillStyle = '#174c72';
+    ctx.fillRect(toX(paint.minX), toY(paint.minZ), toX(paint.maxX) - toX(paint.minX), toY(paint.maxZ) - toY(paint.minZ));
+    ctx.strokeRect(toX(paint.minX), toY(paint.minZ), toX(paint.maxX) - toX(paint.minX), toY(paint.maxZ) - toY(paint.minZ));
+
     // 3PT arc
     ctx.beginPath();
     ctx.arc(

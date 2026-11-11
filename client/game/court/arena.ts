@@ -431,7 +431,7 @@ export class CourtIqArena3D {
     ctx.textAlign = 'center';
     ctx.fillText(
       params.onFire
-        ? '🔥 STREET FLOW ON FIRE • SPX101 DUEL 🔥'
+        ? '🔥 LEARNING STREAK • ON FIRE 🔥'
         : combo >= 2
           ? `⚡ ${combo}x TRICK CHAIN • COURTIQ ARENA ⚡`
           : 'COURTIQ STREETBALL • SPX101 DUEL',
@@ -1091,10 +1091,10 @@ export class CourtIqArena3D {
     ctx.fillText('STREETBALL • SPX101', toPxX(0), crestZ + 44);
 
     // Painted Key / Lane (4.9m wide, baseline z=-6.5 to free-throw line z=-0.65)
-    const keyLeft = toPxX(-2.45);
-    const keyRight = toPxX(2.45);
-    const keyTop = toPxZ(-6.5);
-    const keyBottom = toPxZ(-0.65);
+    const keyLeft = toPxX(COURT_GEOMETRY.paint.minX);
+    const keyRight = toPxX(COURT_GEOMETRY.paint.maxX);
+    const keyTop = toPxZ(COURT_GEOMETRY.paint.minZ);
+    const keyBottom = toPxZ(COURT_GEOMETRY.paint.maxZ);
     const keyGrad = ctx.createLinearGradient(0, keyTop, 0, keyBottom);
     keyGrad.addColorStop(0, 'rgba(0, 62, 118, 0.92)');
     keyGrad.addColorStop(1, 'rgba(0, 88, 158, 0.86)');

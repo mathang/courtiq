@@ -17,8 +17,8 @@ function step(e: AuthoritativeMatchEngine, ms: number, a=N, b=N) {
   for(let t=0;t<ms;t+=10) e.step(Math.min(10,ms-t),[a,b]);
 }
 function closeDunk(e: AuthoritativeMatchEngine) {
-  e.players[0].x=0;e.players[0].z=-2.4;e.players[1].x=0;e.players[1].z=-3.6;e.players[1].facingAngle=0;
-  e.initiateShotAttempt({...N,dunk:true});
+  e.players[0].x=0;e.players[0].z=-2.4;e.players[0].vz=-2;e.players[1].x=0;e.players[1].z=-3.6;e.players[1].facingAngle=0;
+  e.initiateShotAttempt({...N,shoot:true});
 }
 function answerAndResolve(e: AuthoritativeMatchEngine) {
   step(e,3100);const q=e.activeDuel!;
@@ -30,9 +30,10 @@ function answerAndResolve(e: AuthoritativeMatchEngine) {
 
 describe('Arcade dunks and risk/reward defense',()=>{
   it.each(DUNK_STYLES)('%s has a distinct high-flying rig and an actual gather without teleporting the ball',(style)=>{
-    const e=game();e.players[0].z=-2.3;e.players[1].x=5;
-    const before=e.getBallPosition3D();e.initiateShotAttempt({...N,dunk:true,dunkStyle:style});
-    expect(e.players[0].finishKind).toBe('dunk');expect(e.players[0].dunkStyle).toBe(style);
+    const e=game();e.players[0].z=-2.3;e.players[0].vz=-2;e.players[1].x=5;
+    const before=e.getBallPosition3D();e.initiateShotAttempt({...N,shoot:true});
+    expect(e.players[0].finishKind).toBe('dunk');expect(DUNK_STYLES).toContain(e.players[0].dunkStyle);
+    e.players[0].dunkStyle=style; // Exercise each rig after authoritative random selection.
     expect(e.getBallPosition3D()).toEqual(before);
     step(e,500);expect(getAirPose(e.players[0]).y).toBeGreaterThan(1.6);
     const rig=dunkRig(e.players[0]);
@@ -53,8 +54,16 @@ describe('Arcade dunks and risk/reward defense',()=>{
     expect(e.getLearningSummaries()[0].correctAnswers).toBe(1);
   });
   it('a late jump cannot retroactively block and attack inputs never jump on defense',()=>{
-    const e=game();closeDunk(e);step(e,750);e.step(10,[{...N,defense:'jump'}, {...N,defense:'jump'}]);
+    const e=game();closeDunk(e);step(e,860);e.step(10,[{...N,defense:'jump'}, {...N,defense:'jump'}]);
     step(e,50);expect(e.activeDuel!.physicalBlock).toBe(false);expect(e.players[0].defenseAction).toBe(null);
+  });
+  it.each([80, 450, 730])('allows a %sms reaction from 2.4m without requiring a separate facing input', delay => {
+    const e=game();e.players[0].x=0;e.players[0].z=-1.5;e.players[0].vz=-2;
+    e.players[1].x=0;e.players[1].z=-3.9;e.players[1].facingAngle=Math.PI;
+    e.initiateShotAttempt({...N,shoot:true});
+    expect(e.activeDuel!.releaseSnapshot.blockEligibility.eligible).toBe(false);
+    step(e,delay);e.step(10,[N,{...N,defense:'jump'}]);step(e,50);
+    expect(e.activeDuel!.physicalBlock).toBe(true);
   });
   it('out-of-range jumps cannot swat and swiping recovery disables frozen block eligibility',()=>{
     const f=game();f.players[0].z=-2.4;f.players[1].x=5;f.initiateShotAttempt({...N,dunk:true});
@@ -88,16 +97,17 @@ describe('Arcade dunks and risk/reward defense',()=>{
       expect(e.scoreState.currentAttacker).toBe(0);
     }
   });
-  it('dunk style and defense need fresh input and only jump is allowed during takeoff',()=>{
+  it('primary action needs fresh input and only defensive jump is allowed during takeoff',()=>{
     const c=new InputGuardController();c.syncDuelContext({phase:'Possession',duelId:null,readingProtected:false,displayedOptions:[]});
-    c.handleKeyDown({code:'KeyV'});c.handleKeyDown({code:'KeyR'});
-    const dunk=c.consumeMoveInput('Possession');expect(dunk.dunk).toBe(true);expect(dunk.dunkStyle).toBe('windmill');
-    c.handleKeyDown({code:'KeyR',repeat:true});expect(c.consumeMoveInput('Possession').dunk).toBeUndefined();
-    c.syncDuelContext({phase:'QuestionReady',duelId:'d1',readingProtected:true,displayedOptions:[]});
-    c.handleKeyDown({code:'KeyB'});expect(c.consumeMoveInput('QuestionReady').defense).toBe('jump');
-    c.handleKeyDown({code:'KeyZ'});expect(c.consumeMoveInput('QuestionReady').defense).toBeUndefined();
-    c.handleKeyUp({code:'KeyB'});c.syncDuelContext({phase:'Duel',duelId:'d1',readingProtected:false,displayedOptions:[]});
-    c.handleKeyDown({code:'KeyB'});expect(c.consumeMoveInput('Duel').defense).toBeUndefined();
+    c.handleKeyDown({code:'Space'});
+    const shot=c.consumeMoveInput('Possession');expect(shot.shoot).toBe(true);expect(shot.dunkStyle).toBeUndefined();
+    c.handleKeyDown({code:'Space',repeat:true});expect(c.consumeMoveInput('Possession').shoot).toBe(false);
+    c.handleKeyUp({code:'Space'});
+    c.syncDuelContext({phase:'QuestionReady',isAttacker:false,duelId:'d1',readingProtected:true,displayedOptions:[]});
+    c.handleKeyDown({code:'Space'});expect(c.consumeMoveInput('QuestionReady').defense).toBe('jump');
+    c.handleKeyUp({code:'Space'});c.handleKeyDown({code:'KeyC'});expect(c.consumeMoveInput('QuestionReady').defense).toBeUndefined();
+    c.syncDuelContext({phase:'Duel',duelId:'d1',readingProtected:false,displayedOptions:[]});
+    c.handleKeyDown({code:'Space'});expect(c.consumeMoveInput('Duel').defense).toBeUndefined();
   });
   it('HTTP rooms accept defensive actions and consume them once rather than re-swiping on every tick',()=>{
     const rooms=new RoomManager(new ServerPackService(),{defaultSeed:24});

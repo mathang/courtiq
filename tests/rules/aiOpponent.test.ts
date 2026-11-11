@@ -63,6 +63,8 @@ describe('Solo match simulation & AI pre-committed question plan (Sections 12 & 
             optionId: engine.activeDuel.question.correctOptionId,
           });
         }
+      } else if (engine.phase === 'Feedback' && engine.feedbackState) {
+        engine.acknowledgeFeedback(0, engine.feedbackState.duelId);
       } else {
         engine.step(100, [
           { moveX: 0, moveZ: 0, sprint: false, shoot: false },

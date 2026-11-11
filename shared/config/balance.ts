@@ -47,6 +47,7 @@ export const COURT_GEOMETRY = {
   hoopY: 3.05,
   hoopZ: -5.25,
   backboardZ: -5.62,
+  paint: { minX: -2.45, maxX: 2.45, minZ: -6.5, maxZ: -0.65 },
   rimRadiusM: 0.225,
   /** Distance thresholds from (hoopX, hoopZ) on XZ plane */
   closeRangeMaxM: 2.8,
@@ -87,14 +88,8 @@ export const STREET_FLOW_CONFIG = {
   baseMoveCooldownSec: 0.88,
   /** Vulnerability window if over-dribbling / repeating spam into a close defender */
   overexposedDurationSec: 0.55,
-  /** Street Flow [0..1] threshold for ON FIRE status */
-  onFireThreshold: 0.80,
-  /** Extended showtime dunk launch radius while ON FIRE */
-  onFireDunkRangeM: 3.95,
   /** Bounded shot setup quality bonus by combo count (0, 1x, 2x, 3x) — never bypasses learning */
   comboSetupBonus: [0, 0.02, 0.04, 0.05] as readonly number[],
-  /** Additional bounded base setup bonus when ON FIRE */
-  onFireSetupBonus: 0.03,
   /** Flow meter gains & penalties */
   flowCleanTrick: 0.07,
   flowComboStepBonus: 0.05,
@@ -107,6 +102,12 @@ export const STREET_FLOW_CONFIG = {
   flowTurnoverPenalty: 0.20,
   /** Post-cashout flow level after sinking an ON FIRE basket */
   onFireAfterMakeFlow: 0.42,
+} as const;
+
+export const LEARNING_STREAK_CONFIG = {
+  correctAnswersToIgnite: 3,
+  movementMultiplier: 1.20,
+  shootingBonus: 0.20,
 } as const;
 
 export const SHOT_BALANCE_CONFIG = {
@@ -124,12 +125,12 @@ export const SHOT_BALANCE_CONFIG = {
 } as const;
 
 export const BLOCK_BALANCE_CONFIG = {
-  maxBlockDistanceM: 1.8,
+  maxBlockDistanceM: 2.6,
   minBlockDistanceM: 0.2,
-  /** Cosine of max half-angle for defender forward-facing cone (~72 degrees half-angle) */
-  minFacingDotProduct: 0.30,
+  /** Cosine of max half-angle for defender forward-facing cone (~100 degrees half-angle) */
+  minFacingDotProduct: -0.17,
   /** Maximum lateral/behind-the-shooter tolerance relative to shooter-to-hoop vector */
-  minContestPositionCos: -0.35,
+  minContestPositionCos: -0.8,
 } as const;
 
 export const ROOM_PRESETS: Record<RoomPresetId, RoomPresetConfig> = {

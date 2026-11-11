@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:3a5c4850281d9c3350ce858d5758de4449383f81bc91073a99d861bc832b3257",
+  "revision_or_artifact_hash": "dist/index.html:sha256:a9d226d76d013c6e7c80ed7a103acc70911e97749f48d561e0523c53a8ba637b",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -449,6 +449,97 @@
       "observed": "",
       "evidence_path": null,
       "reason": "Automated DSP headroom/RMS/mute-cutoff checks do not replace human ears; emulated 390x844 Playwright mobile checks do not replace physical phone GPU/touch testing; Netlify HTTP rooms store active room state in warm serverless instance memory."
+    },
+    {
+      "id": "simple-controls-learning-rules",
+      "status": "PASS",
+      "required": true,
+      "kind": "unit",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8 / isolated Playwright Chromium",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "npm test",
+      "expected": "Requested controls and learning contracts pass with rendered evidence.",
+      "observed": "124/124 tests in 17 files passed: fixed 500ms fresh-tap selection; contextual finish by paint/velocity; random style/input-hint/RNG isolation; 3-correct Fire, +20% speed/+20pp shooting; block overrides, wrong/timeout reset; no resets for misses/steals; personal feedback and both-party Continue; no pre-resolution key/optionFeedback leakage.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "Measured software/browser validation; no real-device or AAA-comparability claim."
+    },
+    {
+      "id": "simple-controls-strict-build",
+      "status": "PASS",
+      "required": true,
+      "kind": "build",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8 / isolated Playwright Chromium",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "npm run build",
+      "expected": "Requested controls and learning contracts pass with rendered evidence.",
+      "observed": "PASS: TypeScript strict noEmit and Vite production build; existing Three.js chunk-size advisory only. Dist source fingerprint and hashes recorded in release report.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "Measured software/browser validation; no real-device or AAA-comparability claim."
+    },
+    {
+      "id": "simple-controls-rendered-match",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8 / isolated Playwright Chromium",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "Installed web_game_playwright_client.js plus ordinary-input compiled browser matches",
+      "expected": "Requested controls and learning contracts pass with rendered evidence.",
+      "observed": "PASS: screenshots opened and inspected. Desktop/portrait/landscape; all four tap counts; real paint drive to dunk and Space-key swat; C missed-swipe root; three-correct Fire and next-wrong reset; own feedback and both students Continue. Zero browser page errors. Corrected misleading physical-swat label and shortened mobile footer.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "Measured software/browser validation; no real-device or AAA-comparability claim."
+    },
+    {
+      "id": "simple-controls-preview-http",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8 / isolated Playwright Chromium",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "Two real browsers against preview 6af4d492881571c764177a74 /api/room",
+      "expected": "Requested controls and learning contracts pass with rendered evidence.",
+      "observed": "PASS: same question/choices, per-student verdict/rationale, both-party Continue, physical dunk/block and missed swipe. 33 pre-resolution secrecy checks. All 20 preview files matched local build before final UI-only label correction; final compiled UI rerun locally.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "Measured software/browser validation; no real-device or AAA-comparability claim."
+    },
+    {
+      "id": "simple-controls-content-audit",
+      "status": "PASS",
+      "required": true,
+      "kind": "content",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8 / isolated Playwright Chromium",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "Compare parsed bundled packs to b6feb63; validate feedback coverage",
+      "expected": "Requested controls and learning contracts pass with rendered evidence.",
+      "observed": "PASS: all original 85 question records and pack metadata unchanged; 255 specific distractor rationales added. New rationales are draft additions for instructor review.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "Measured software/browser validation; no real-device or AAA-comparability claim."
+    },
+    {
+      "id": "simple-controls-host-badge-layout",
+      "status": "PASS",
+      "required": true,
+      "kind": "browser",
+      "environment": "macOS Node v25.6.1 / Vitest 2.1.8 / isolated Playwright Chromium",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "390x844 rendered preview with labelled 64px bottom-right badge fixture",
+      "expected": "Requested controls and learning contracts pass with rendered evidence.",
+      "observed": "PASS: all four answer targets accessible above the badge fixture; feedback Continue accessible. Preview itself did not inject a real badge.",
+      "evidence_path": "docs/verification/2026-11-12-simple-controls",
+      "reason": "Measured software/browser validation; no real-device or AAA-comparability claim."
+    },
+    {
+      "id": "simple-controls-instructor-review",
+      "status": "NOT_TESTED",
+      "required": false,
+      "kind": "human-review",
+      "environment": "Course teaching team",
+      "timestamp_utc": "2026-11-11T20:57:01.594061+00:00",
+      "command_or_action": "Review new distractor-specific rationales against course teaching intent",
+      "expected": "Instructor confirms each new rationale.",
+      "observed": "Draft rationales derived from existing course question content; no instructor sign-off claimed.",
+      "evidence_path": "content/approved-packs",
+      "reason": "Original approved stems, choices, keys, explanations and sources are unchanged."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",

@@ -26,7 +26,7 @@ function createMatch(seed = 2026) {
 
 describe('NBA Street input buffering, trick chains, counter-steals & Street Flow synergy', () => {
   it.each([1000 / 60, 1000 / 30, 50, 100])(
-    'buffers an early distinct trick input and chains crossover -> spin -> dunk across %sms frame steps',
+    'buffers an early distinct trick, then chains crossover -> spin -> jumper outside the paint at a %sms step',
     (dtMs) => {
       const e = createMatch(11);
       e.players[0].x = 0;
@@ -57,14 +57,14 @@ describe('NBA Street input buffering, trick chains, counter-steals & Street Flow
       }
       expect(sawSpinChain).toBe(true);
 
-      // Now buffer a dunk mid-spin and confirm seamless gather transition
-      e.step(dtMs, [{ ...NEUTRAL, moveZ: -1, dunk: true, dunkStyle: '360' }, NEUTRAL]);
+      // Buffer the primary action mid-spin; this route ends outside the paint.
+      e.step(dtMs, [{ ...NEUTRAL, moveZ: -1, shoot: true }, NEUTRAL]);
       for (let t = 0; t < 400 && e.phase === 'Possession'; t += dtMs) {
         e.step(dtMs, [{ ...NEUTRAL, moveZ: -1 }, NEUTRAL]);
       }
       expect(e.phase).toBe('QuestionReady');
-      expect(e.players[0].finishKind).toBe('dunk');
-      expect(e.players[0].dunkStyle).toBe('360');
+      expect(e.players[0].finishKind).toBe('jump');
+      expect(Math.abs(e.activeDuel!.releaseSnapshot.shooterPos.x)).toBeGreaterThan(2.45);
       expect(e.activeDuel?.releaseSnapshot.comboCount).toBe(2);
       expect(e.activeDuel?.releaseSnapshot.setupBonus).toBe(0.04);
     },
@@ -116,23 +116,26 @@ describe('NBA Street input buffering, trick chains, counter-steals & Street Flow
     expect(e.players[1].streetFlow).toBeCloseTo(STREET_FLOW_CONFIG.flowCleanSteal, 3);
   });
 
-  it('builds Street Flow / ON FIRE via basketball + SPX101 knowledge without bypassing learning or overriding blocks', () => {
+  it('keeps Street Flow separate from the learning Fire streak, whose boost never overrides blocks', () => {
     const e = createMatch(31);
     e.players[0].streetFlow = 0.72;
     e.players[1].x = 0;
     e.players[1].z = 1.2;
 
-    // Clean crossover ankle-breaker pushes flow >= 0.80 -> ON FIRE!
+    // Clean tricks build style momentum; only a learning streak can ignite Fire.
     e.step(16, [{ ...NEUTRAL, trick: 'crossover' }, NEUTRAL]);
-    expect(e.players[0].onFire).toBe(true);
-    expect(e.players[0].calloutText).toContain('ON FIRE');
+    expect(e.players[0].streetFlow).toBeGreaterThanOrEqual(0.8);
+    expect(e.players[0].onFire).toBe(false);
 
-    // Extended ON FIRE dunk launch from 3.75m (above normal 3.4m limit, inside 3.95m On-Fire range)
+    // A drive anywhere in the paint uses the same primary action.
     e.players[0].x = 0;
     e.players[0].z = -1.5; // dist to hoop (0, -5.25) = 3.75m
     e.players[1].x = 4.5; // Uncontested
     e.players[0].streetMove = null;
-    e.initiateShotAttempt({ ...NEUTRAL, dunk: true, dunkStyle: 'windmill' });
+    e.players[0].vz = -2;
+    e.players[0].onFire = true;
+    e.players[0].correctAnswerStreak = 3;
+    e.initiateShotAttempt({ ...NEUTRAL, shoot: true });
     expect(e.players[0].finishKind).toBe('dunk');
     expect(e.activeDuel?.releaseSnapshot.onFire).toBe(true);
 
@@ -149,6 +152,7 @@ describe('NBA Street input buffering, trick chains, counter-steals & Street Flow
     const e2 = createMatch(32);
     e2.players[0].streetFlow = 0.95;
     e2.players[0].onFire = true;
+    e2.players[0].correctAnswerStreak = 3;
     e2.players[0].trickCombo = 3;
     e2.players[0].comboGraceSec = 0.3;
     e2.players[0].x = 0;

@@ -3,6 +3,7 @@ import type {
   PlayerSimState,
   MatchPhase,
 } from "../../../shared/rules/matchStateMachine";
+import { isDrivingInPaint } from "../../../shared/rules/finishing";
 /** An interruptible opening possession, using the same inputs as normal play. */
 export class ShowcasePossession {
   public active = true;
@@ -33,15 +34,13 @@ export class ShowcasePossession {
     this.elapsed += dt;
     const p = players[0],
       distance = Math.hypot(p.x, p.z + 5.25);
-    if (distance < 3.18 && (!p.streetMove || p.moveElapsedSec >= 0.32)) {
+    if (distance < 3.18 && !p.streetMove && isDrivingInPaint(p)) {
       this.active = false;
       return {
-        moveX: 0,
-        moveZ: 0,
+        moveX: -p.x / distance,
+        moveZ: (-5.25 - p.z) / distance,
         sprint: true,
-        shoot: false,
-        dunk: true,
-        dunkStyle: "windmill",
+        shoot: true,
       };
     }
     const targetX = distance > 4 ? 1.65 : 0.25;

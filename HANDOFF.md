@@ -98,16 +98,17 @@ courtiq/
 
 ### 3.1 Shooting Probability Formula (`shared/rules/shot.ts`)
 
-Base shooting probability $B$ is recorded at the instant of shot release:
+Court geometry and normal shooting probability are recorded at release. At question resolution, the current learning Fire streak adds or removes its bonus while that geometry stays frozen:
 
 | Shot Zone / Condition | Distance to Hoop ($r$) | Value |
 | :--- | :--- | :---: |
-| **Close & Open** | $r \le 2.6\text{ m}$ | $0.20$ ($20\%$) |
-| **Mid-Range & Open** | $2.6\text{ m} < r < 6.75\text{ m}$ | $0.12$ ($12\%$) |
+| **Close & Open** | $r \le 2.8\text{ m}$ | $0.20$ ($20\%$) |
+| **Mid-Range & Open** | $2.8\text{ m} < r < 6.75\text{ m}$ | $0.12$ ($12\%$) |
 | **Three-Pointer & Open** | $r \ge 6.75\text{ m}$ | $0.07$ ($7\%$) |
-| **Heavily Contested Penalty** | Defender $\le 1.8\text{ m}$ and contesting | $-0.05$ ($-5\text{ pp}$) |
+| **Heavily Contested Penalty** | Defender $\le 2.6\text{ m}$ and contesting | $-0.05$ ($-5\text{ pp}$) |
 | **Released While Sprinting Penalty** | Sprinting or settle timer $> 0\text{ ms}$ | $-0.05$ ($-5\text{ pp}$) |
-| **Street Flow / Trick Chain Setup Bonus** | Clean 2x/3x combo (`+0.02` / `+0.04`) + Street Flow (`up to +0.025`, `+0.015` when `ON FIRE`), capped at `+0.08` | $\le +0.08$ ($+8\text{ pp}$) |
+| **Trick Chain Setup Bonus** | 1x / 2x / 3x clean chain | `+0.02` / `+0.04` / `+0.05` |
+| **Learning Fire Bonus** | 3+ consecutive correct answers, until wrong or unanswered; applied after the current answer resolves | `+0.20` (+20 percentage points) |
 
 When the question duel resolves (and is not blocked), the final basket probability is:
 
@@ -123,10 +124,10 @@ where:
 ### 3.2 Frozen Block Eligibility (`shared/rules/block.ts`)
 
 At the exact frame the ball leaves the shooter's hands, `evaluateBlockEligibilityAtRelease` freezes four conditions:
-1. **Distance**: Euclidean distance on the court plane between shooter and defender $\le 1.8\text{ m}$.
-2. **Forward-Facing Cone**: Angle between defender's facing vector and the vector from defender to shooter $\le 65^\circ$.
-3. **Contesting Position**: Angle between shooter-to-hoop vector and shooter-to-defender vector $\le 100^\circ$.
-4. **In Bounds**: Defender is inside the playable half-court boundaries ($x \in [-7.5, 7.5]\text{ m}$, $z \in [-10.8, 0.2]\text{ m}$).
+1. **Distance**: Euclidean distance on the court plane between shooter and defender $\le 2.6\text{ m}$.
+2. **Forward-Facing Cone**: Angle between defender's facing vector and the vector from defender to shooter $\le 100^\circ$.
+3. **Contesting Position**: Angle between shooter-to-hoop vector and shooter-to-defender vector $\le 143^\circ$.
+4. **In Bounds**: Defender is inside the playable half-court boundaries ($x \in [-7.2, 7.2]\text{ m}$, $z \in [-6.2, 7.2]\text{ m}$).
 
 ### 3.3 Nine-Outcome Question-Duel Resolution Matrix (`shared/rules/timing.ts`)
 
@@ -312,7 +313,17 @@ CourtIQ supports two interchangeable authoritative transports:
 ## AAA Streetball Gameplay, Arena & Teaching Synergy — 11 November 2026
 
 - **Authoritative Input Buffering, Trick Chains & Counter-Steals (`shared/rules/streetMoves.ts`, `shared/rules/defense.ts`, `shared/rules/matchStateMachine.ts`)**: Added `280 ms` authoritative input buffering (`bufferedTrick`, `bufferedFinish`, `bufferedDefense`), 2–3 move distinct trick chains (`>= 65%` cancel window or `360 ms` combo grace, blocking single-move spam), fair first-move crossover/stepback separation ball protection vs `trickOverexposedSec = 0.55 s` anti-spam steal window, smooth jump-shot/fadeaway suspension in `Duel`, and clean `Feedback` standing/celebrate pose reset (`animState !== 'shoot'`). Full `1.0 s` missed-swipe root and `60/30/20/10 Hz` multi-tick parity verified.
-- **Street Flow / On-Fire Momentum & Bounded Teaching Synergy (`shared/config/balance.ts`, `shared/rules/shot.ts`)**: Authoritative `streetFlow` (`0..1`, `ON FIRE` at `>= 0.80`) builds from clean trick separation, ankle-breakers, timed blocks, steals, and fast accurate SPX101 answers. Adds a bounded setup bonus (`setupBonus <= +0.08`) to base shot quality $B$ inside `[0.03, 0.95]` while never overriding physical/question blocks or bypassing SPX101 accuracy.
+- **Learning Fire**: On Fire now comes only from three consecutive correct question answers. It boosts movement by 20% and shooting by 20 percentage points. Wrong or unanswered resets it; basketball outcomes do not. Style momentum remains separate. See the current controls and teaching rules in README.
 - **Athlete Pocket IK, Signature Dunks & Floodlit Campus Streetball Arena (`shared/rules/dribble.ts`, `client/game/characters/streetballRig.ts`, `client/game/court/arena.ts`, `client/game/animation/ballTrajectory.ts`, `client/game/engine.ts`)**: Two-hand triple-threat pocket cradle (`hand_l` and `hand_r` `< 0.24 m` from ball), gooseneck jump-shot/fadeaway release, distinct airborne leg silhouettes for `tomahawk`, `windmill`, `360`, and `reverse`, pulsing On-Fire floor aura + ball ribbon trail, pro baseline-clear overhang stanchion (`z = -7.38`), spring-damped breakaway rim flex + backboard shudder + LED perimeter strip + woven-diamond cord net, `2048x2048` multi-plank rock-maple floor, `PCFSoftShadowMap` directional shadows in High quality (disabled in Low), stadium floodlights, Jumbotron/SPX101 banners framed cleanly below `#hud-top`, and articulated 4-part instanced spectators.
 - **CourtBot 2-Move Chains, Audio Cutoff & Portrait Badge Clearance (`shared/rules/aiOpponent.ts`, `client/game/audio/soundEngine.ts`, `client/styles/main.css`)**: Intermediate and Advanced CourtBot execute legitimate 2-move chains and punish `1.0 s` missed-swipe freezes using delayed observations only. Added `"combo"` and `"fire"` cues (`peak <= 0.80`, DC `< 0.02`) and immediate active-voice disconnection (`voices === 0`) on mute/pause. Lifted `390x844` portrait `.question-overlay`, `.feedback-overlay`, and `.touch-controls` (`bottom: max(58px, calc(env(safe-area-inset-bottom) + 50px))`) so all 4 options and touch buttons clear the bottom-right Netlify badge at `scrollTop = 0`.
 - **Verification & Remaining Human/Hardware Boundaries**: `93/93` tests across `15` suites and strict `npm run build` pass (`PASS`); Apple M4 Pro Metal WebGL measured `16.36–16.59 ms` avg frame time (`~60 FPS`, `p95 19.0 ms`, `20.69 MB` JS heap) while CPU SwiftShader software WebGL measured `65.2 ms` (`PASS`). Physical phone/tablet hardware ergonomics (`NOT_TESTED`), human speaker/headphone listening pass (`NOT_TESTED`), multi-device campus Wi-Fi load & Netlify serverless warm-memory HTTP room persistence across cold starts (`NOT_TESTED` / architectural limit documented), and SPX101 human classroom learning-efficacy (`NOT_TESTED`) remain clearly separated.
+
+## Simplified controls and learning Fire — 12 November 2026
+
+Current controls and pedagogy supersede the historical R/V/B/Z and Street Flow ignition descriptions above. Space shoots or automatically dunks when driving towards the hoop in the visible blue paint, and blocks on defence. C selects crossover/spin/eurostep/stepback with 1/2/3/4+ fresh taps in a fixed 500ms window, and immediately swipes on defence. Random server-selected dunk styles use a separate seeded RNG and avoid immediate repeats. Manual blocks auto-face and reach 2.6m with a 0.02–0.84s takeoff window; missed swipes still root for 1s.
+
+Three consecutive correct questions ignite each student independently (+20% movement, +20pp shooting, final 95% cap). The third answer affects that shot; wrong/unanswered removes Fire before resolution. Geometry and block eligibility remain frozen. Correct learning credit survives basketball misses, blocks and steals. Style flow is separate.
+
+Feedback shows each student their own verdict, selection and a specific wrong-choice rationale, plus correct reasoning/source. It stays until Continue; both online students must confirm using authenticated CONTINUE_FEEDBACK messages. Reconnect restores readiness. Pre-resolution online questions omit keys and all explanations. New rationales cover 255 distractors across the unchanged 85-question packs and require instructor review.
+
+Validation: 124 tests in 17 files and strict production build pass. Actual keyboard/touch browser matches cover all tap counts, Fire ignition/extinction, paint dunk/manual block, steal recovery, shared online questions and per-student reading/Continue. Source/content and deployed-asset audits pass. Rendered evidence and limits are in docs/verification/2026-11-12-simple-controls. Physical-device/campus playtests and human audio listening remain unperformed.

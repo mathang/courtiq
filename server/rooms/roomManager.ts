@@ -381,6 +381,12 @@ export class RoomManager {
       return;
     }
 
+    if (msg.type === 'CONTINUE_FEEDBACK') {
+      room.simulation?.engine.acknowledgeFeedback(assoc.slot, msg.duelId);
+      room.simulation?.broadcastSnapshots(room.players);
+      return;
+    }
+
     if (msg.type === 'SUBMIT_ANSWER') {
       room.simulation?.handleAnswerSubmission(
         assoc.slot,

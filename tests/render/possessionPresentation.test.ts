@@ -50,7 +50,7 @@ describe("possession presentation", () => {
       }
       expect(crossed).toBe(true);
       expect(engine.players[0].finishKind).toBe("dunk");
-      expect(engine.players[0].dunkStyle).toBe("windmill");
+      expect(DUNK_STYLES).toContain(engine.players[0].dunkStyle);
       expect(engine.scoreState.scores).toEqual([0, 0]);
     }
   });

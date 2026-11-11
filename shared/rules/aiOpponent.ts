@@ -219,7 +219,7 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
     }
 
     const hoopDistance = computeDistance2D(aiPos, { x: COURT_GEOMETRY.hoopX, z: COURT_GEOMETRY.hoopZ });
-    const maxDunkRange = self?.onFire ? STREET_FLOW_CONFIG.onFireDunkRangeM : 3.4;
+    const maxDunkRange = 3.4;
     const behindRim = aiPos.z < COURT_GEOMETRY.hoopZ + 0.55;
     const frontOfRim = !behindRim;
     const clockUrgent = params.movementClockRemainingMs <= 2600;
@@ -239,20 +239,12 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
       (open || stepbackCreatedSpace || (nearTarget && brain.possessionElapsedSec > 1.5));
     const decisiveShot = frontOfRim && hoopDistance <= 7.4 && brain.possessionElapsedSec >= brain.shotDecisionDeadlineSec;
     if (!recovering && (rimFinish || plannedShot || decisiveShot || clockUrgent)) {
-      const doDunk = frontOfRim && hoopDistance <= maxDunkRange;
-      const dunkStyle: DunkStyle =
-        params.difficulty === 'beginner'
-          ? 'tomahawk'
-          : self?.onFire
-            ? '360'
-            : brain.preferredDunkStyle;
+      const driveToFinish = frontOfRim && hoopDistance <= maxDunkRange;
       return {
-        moveX: 0,
-        moveZ: 0,
-        sprint: false,
+        moveX: driveToFinish ? (COURT_GEOMETRY.hoopX - aiPos.x) / Math.max(0.01, hoopDistance) : 0,
+        moveZ: driveToFinish ? (COURT_GEOMETRY.hoopZ - aiPos.z) / Math.max(0.01, hoopDistance) : 0,
+        sprint: driveToFinish,
         shoot: true,
-        dunk: doDunk,
-        ...(doDunk ? { dunkStyle } : {}),
       };
     }
 

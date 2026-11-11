@@ -29,7 +29,7 @@
                 <span id="hud-p0-combo" class="combo-mini-pill hidden">🔥 ON FIRE</span>
               </div>
               <span id="hud-p0-name" class="player-name">Player 1</span>
-              <div class="flow-mini-track" title="Street Flow Momentum Meter">
+              <div class="flow-mini-track" title="Correct-answer streak — 3 in a row ignites Fire">
                 <div id="hud-p0-flow-fill" class="flow-mini-fill" style="width: 0%"></div>
               </div>
             </div>
@@ -50,7 +50,7 @@
                 <span id="hud-p1-role" class="role-pill">🛡️ DEF</span>
               </div>
               <span id="hud-p1-name" class="player-name">CourtBot</span>
-              <div class="flow-mini-track" title="Street Flow Momentum Meter">
+              <div class="flow-mini-track" title="Correct-answer streak — 3 in a row ignites Fire">
                 <div id="hud-p1-flow-fill" class="flow-mini-fill" style="width: 0%"></div>
               </div>
             </div>
@@ -59,7 +59,7 @@
 
         <div class="hud-actions">
           <div id="hud-block-indicator" class="block-indicator hidden" role="status">
-            🛡️ Block Available (&le;1.8m)
+            🛡️ Block Available (&le;2.6m)
           </div>
           <div class="stamina-wrap" title="Sprint Stamina Meter">
             <span class="stamina-label">SPRINT</span>
@@ -87,7 +87,7 @@
 
       <!-- On-Court Possession Prompt Pill -->
       <div id="possession-hint-pill" class="possession-hint-pill hidden" aria-live="polite">
-        <kbd>WASD</kbd> Move · <kbd>Shift</kbd> Turbo · <kbd>C</kbd> Cross · <kbd>Q</kbd> Spin · <kbd>E</kbd> Euro · <kbd>X</kbd> Step back · <kbd>R</kbd> Dunk · <kbd>V</kbd> Style · <kbd>Z</kbd> Steal · <kbd>B</kbd> Block · <kbd>Space</kbd> Shoot / Block
+        <kbd>WASD</kbd> Move · <kbd>Shift</kbd> Sprint · <kbd>Space</kbd> Shoot / Dunk / Block · <kbd>C</kbd> Trick / Steal · 1/2/3/4 taps in 0.5s: Cross / Spin / Euro / Step back
       </div>
 
       <div id="street-status" class="street-status hidden" role="status" aria-live="polite"></div>
@@ -101,18 +101,11 @@
           <span class="touch-caption">DRAG TO MOVE</span>
         </div>
         <div class="touch-action-buttons">
-          <button id="btn-touch-swipe" data-defense-control class="touch-btn trick-btn hidden" type="button">SWIPE</button>
-          <button id="btn-touch-block" data-defense-control class="touch-btn shoot-btn hidden" type="button">BLOCK</button>
-          <button id="btn-touch-dunk" data-attack-control class="touch-btn shoot-btn" type="button">DUNK</button>
-          <button id="btn-touch-style" data-attack-control class="touch-btn trick-btn" type="button">STYLE</button>
-          <button id="btn-touch-crossover" data-attack-control class="touch-btn trick-btn" type="button">CROSS</button>
-          <button id="btn-touch-spin" data-attack-control class="touch-btn trick-btn" type="button">SPIN</button>
-          <button id="btn-touch-eurostep" data-attack-control class="touch-btn trick-btn" type="button">EURO</button>
-          <button id="btn-touch-stepback" data-attack-control class="touch-btn trick-btn" type="button">STEP BACK</button>
+          <button id="btn-touch-trick" class="touch-btn trick-btn" type="button">TRICK</button>
           <button id="btn-touch-sprint" class="touch-btn sprint-btn" type="button">
             ⚡ SPRINT
           </button>
-          <button id="btn-touch-shoot" data-attack-control class="touch-btn shoot-btn" type="button">
+          <button id="btn-touch-shoot" class="touch-btn shoot-btn" type="button">
             SHOOT
           </button>
         </div>
@@ -332,15 +325,20 @@
           </div>
 
           <div class="fb-learning-box">
+            <h2 id="fb-learning-verdict" class="fb-learning-verdict"></h2>
+            <p id="fb-question-text" class="fb-question-text"></p>
+            <p id="fb-your-answer" class="fb-your-answer"></p>
+            <p id="fb-choice-reason" class="fb-choice-reason"></p>
             <div class="fb-correct-line">
               <strong>✓ Correct Answer:</strong>
               <span id="fb-correct-text"></span>
             </div>
             <p id="fb-explanation-text" class="fb-explanation-text"></p>
+            <p id="fb-streak-text" class="fb-streak-text"></p>
             <div class="fb-meta-row">
               <span id="fb-source-ref" class="fb-source-ref"></span>
               <button id="btn-next-possession" class="small-cta-btn" type="button">
-                Next Possession &rarr;
+                I’ve read this — continue &rarr;
               </button>
             </div>
           </div>
@@ -431,7 +429,7 @@
             </label>
             <label class="toggle-row">
               <input id="chk-touch-overlay" type="checkbox" />
-              <span><strong>Show On-Screen Touch Controls</strong> (Joystick, tricks, Sprint &amp; Shoot / Dunk)</span>
+              <span><strong>Show On-Screen Touch Controls</strong> (Joystick, Trick / Steal, Sprint &amp; Shoot / Dunk / Block)</span>
             </label>
             <div class="form-group" style="margin-top: 10px">
               <label for="select-quality-mode">Graphics &amp; Performance Mode</label>
@@ -465,26 +463,30 @@
             <ol class="tutorial-steps">
               <li>
                 <strong>1. Position on the Half-Court (15s Movement Clock):</strong>
-                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>. Hold <kbd>Shift</kbd> for Turbo. Use <kbd>C</kbd> to cross over, <kbd>Q</kbd> to spin, <kbd>E</kbd> to eurostep, and <kbd>X</kbd> to step back. Hold a direction to choose a side. Moves cost stamina and recharge briefly. Press <kbd>R</kbd> within 3.4m for an arcade dunk. Press <kbd>V</kbd> to choose tomahawk, windmill, 360 or reverse (styles also cycle after each shot). Defend with <kbd>Z</kbd> to swipe: a miss freezes you for 1 second. Press <kbd>B</kbd> or <kbd>Space</kbd> during the dunk take-off to jump and swat it. Stay close, face the attacker and time your leap; early or late jumps miss. Press <kbd>F</kbd> for fullscreen. Inside the arc scores <strong>2 points</strong> (Close base 20%, Mid-range base 12%); outside the 6.75m arc scores <strong>3 points</strong> (base 7%).
+                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>; hold <kbd>Shift</kbd> for Turbo. There are two action keys: <kbd>Space</kbd> shoots, or automatically attempts a dunk when you are moving towards the basket inside the blue paint. Dunk styles are random: tomahawk, windmill, 360 or reverse. Tap <kbd>C</kbd> within half a second: <strong>1 tap = crossover, 2 = spin, 3 = eurostep, 4+ = stepback</strong>. Moves cost stamina. On defence, <kbd>C</kbd> swipes for a steal; a missed swipe freezes you for 1 second. <kbd>Space</kbd> jumps to block; hold it during a dunk take-off for a forgiving swat attempt from within 2.6m. The jump faces the attacker automatically. Press <kbd>F</kbd> for fullscreen. Inside the arc scores 2 points; outside scores 3.
               </li>
               <li>
                 <strong>2. Release the Shot (<kbd>Space</kbd>) &amp; Slow-Motion Flight:</strong>
-                When the ball leaves the attacker's hands, court positions and block eligibility (&le;1.8m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc. On a dunk, you take off and hang in the air for the question before the finish resolves. A timed physical swat overrides the basket; both students still answer and receive learning credit. A clean steal changes possession immediately and is excluded from question accuracy.
+                When the ball leaves the attacker's hands, court positions and block eligibility (&le;2.6m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc. On a dunk, you take off and hang in the air for the question before the finish resolves. A timed physical swat overrides the basket; both students still answer and receive learning credit. A clean steal changes possession immediately and is excluded from question accuracy.
               </li>
               <li>
                 <strong>3. Protected Reading &amp; Single-Lock Answer Duel:</strong>
-                After a 2-second reading period, both players answer the same multiple-choice question (<kbd>1</kbd>–<kbd>4</kbd> or tap). Each player gets <strong>one locked submission</strong>. Option order is shuffled independently per device.
+                After the protected reading period (at least 2 seconds), both players answer the same multiple-choice question (<kbd>1</kbd>–<kbd>4</kbd> or tap). Each player gets <strong>one locked submission</strong>. Option order is shuffled independently per device.
               </li>
               <li>
                 <strong>4. Knowledge + Speed + Positioning = Outcome:</strong>
                 <ul>
                   <li><strong>Attacker correct first (or tied within 200ms):</strong> Earns up to +70% accuracy bonus based on speed: \(P = \text{clamp}(B + C(0.35 + 0.35S), 0.03, 0.95)\).</li>
-                  <li><strong>Eligible defender (&le;1.8m) correct first:</strong> Swats and <strong>BLOCKS</strong> the shot!</li>
+                  <li><strong>Eligible defender (&le;2.6m) correct first:</strong> Swats and <strong>BLOCKS</strong> the shot!</li>
                   <li><strong>Defender correct first but out of range:</strong> Credited in learning accuracy, but too far away to block.</li>
                 </ul>
               </li>
               <li>
-                <strong>5. Alternating Possessions &amp; Equal Opportunity:</strong>
+                <strong>5. Learn, Then Continue:</strong>
+                Your feedback says whether you were correct, shows your chosen answer, and explains the specific misconception if you were wrong. Read the correct reasoning and course source, then press Continue. In student-versus-student matches, both students must continue. Three correct questions in a row ignites <strong>“HE’S ON FIRE!”</strong>: move 20% faster and gain +20 percentage points to shooting, capped at 95%. Fire lasts until a wrong or unanswered question. Misses and blocks do not break your learning streak.
+              </li>
+              <li>
+                <strong>6. Alternating Possessions &amp; Equal Opportunity:</strong>
                 Possession switches after every attempt. First to 11 points (max 10 possessions each), always preserving equal possessions and paired overtime rounds.
               </li>
             </ol>

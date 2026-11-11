@@ -5,26 +5,26 @@
 
 **CourtIQ** is an original browser-based 3D half-court basketball learning game built for **SPX101 (Introduction to Sports and Exercise Science)**. Every shot attempt triggers a slow-motion multiple-choice question duel:
 
-1. **Positioning creates the opportunity**: Create space inside or outside the 3-point arc on offense, or stay within contesting range ($\le 1.8\text{ m}$, forward-facing cone) on defense.
+1. **Positioning creates the opportunity**: Create space inside or outside the 3-point arc on offense, or stay within contesting range ($\le 2.6\text{ m}$, forward-facing cone) on defense.
 2. **Knowledge determines the advantage**: As the ball rises in slow motion, both players receive the same curriculum question.
 3. **Speed and accuracy resolve the shot**:
    - A correct attacking answer significantly boosts basket probability, with a higher bonus for answering sooner after the reading period.
    - An in-range defender who answers correctly before the attacker (outside the $200\text{ ms}$ tie tolerance) **blocks the shot**.
    - An out-of-range defender who answers correctly still earns full credit in their learning record (`correct-out-of-range`) without producing a physical block.
-4. **Immediate explanatory feedback**: After the ball completes its flight, both students see the correct answer, concise explanation, and course source reference before possession alternates.
+4. **Personal learning feedback**: Each student sees whether they were correct, their chosen answer, an explanation of their specific wrong choice, the correct reasoning and the course source. Feedback waits for Continue; online, both students must continue.
 
 ---
 
-## AAA Streetball Flow, Trick Chains & Floodlit Arena — 11 November 2026
+## Streetball Flow, Trick Chains & Floodlit Arena
 
 - **280 ms Input Buffering & Legitimate 2–3 Move Trick Chains**: Queue crossovers, spins, eurosteps, stepbacks, dunks, jumpers, and blocks seamlessly through active move recovery (`>= 65%` cancel window or `360 ms` combo grace into a distinct move, e.g., `Crossover -> Spin -> Windmill` or `Crossover -> Stepback -> Fadeaway`). Clean first crossovers and stepbacks protect the ball during separation, while greedy repeat move spam near a defender exposes the ball (`0.55 s` counter-steal window).
-- **Authoritative Street Flow & On-Fire Momentum (`0–100%`)**: Clean trick chains, ankle-breakers, timed blocks, steals, and fast accurate SPX101 answers charge each player's HUD **Street Flow** bar (`🔥 ON FIRE` at `>= 80%`), triggering floor aura rings, flame ball ribbons, crowd/brass swells, and a bounded setup quality bonus (`up to +8%` on base shot probability $B$, strictly inside `[3%, 95%]` and never overriding blocks or bypassing course knowledge).
+- **Learning-powered On Fire**: Three consecutive correct answers ignite Fire for that student. Fire gives 20% faster movement and +20 percentage points to shooting, capped at 95%; physical and question-based blocks still override. A wrong or unanswered question ends Fire. Makes, misses and steals do not change the learning streak. Clean trick chains continue to earn small shot setup bonuses, separately from Fire.
 - **Floodlit Campus Streetball Arena & Pro Overhang Hoop**: Pro baseline-clear overhang stanchion (`z = -7.38`, zero dunk/drive stanchion clipping), spring-damped breakaway rim flex, backboard shudder, reactive LED backboard frame, woven-diamond cord net, `2048x2048` multi-plank maple court, `PCFSoftShadowMap` directional shadows in High quality (cleanly disabled in Low/Classroom), stadium floodlights, articulated 4-part courtside spectators, and two-hand triple-threat ball cradle.
 - **CourtBot Chains & Mobile Hosting-Badge Clearance**: Intermediate and Advanced CourtBot execute legitimate 2-move separation chains and punish `1.0 s` missed-swipe freezes while preserving delayed observations. On `390x844` portrait viewports, both the 4-option question duel card and touch controls clear bottom-right hosting badges without scrolling.
 
 ## Polished possession — 11 November 2026
 
-Choose **Preview a full possession** in the lobby to watch a drive, crossover and windmill take-off, answer the normal question, then see the finish and landing. Movement immediately takes control, and the match continues normally afterwards.
+Choose **Preview a full possession** in the lobby to watch a drive, crossover, spin and a randomly styled take-off, answer the normal question, then see the finish and landing. Movement immediately takes control, and the match continues normally afterwards.
 
 The player now carries 17 keyframed clips, with blended walk/jog/sprint, basketball accents, planted feet and hand/ball contact. A possession camera follows the approach, shifts for take-off and keeps the airborne action above the question card. Reduced Motion uses steady framing. Soft floor shadows and brighter arena lighting improve depth.
 
@@ -44,33 +44,31 @@ The 65-bone Quaternius CC0 humanoid has original CourtIQ clothing, trainers, hai
 
 `npm run build:player` regenerates and optimises the GLB with pinned glTF Transform tools. The checked-in asset is used by normal `npm run build`; rebuilding it is optional. Preserve the jersey UV attribute during optimisation because names and numbers are mapped at runtime.
 
-## Street gameplay update — 31 October 2026
-
-Players now accelerate, brake and turn smoothly with rounded bodies, articulated knees and elbows, and their chosen name above the back jersey number.
+## Simple controls and learning streaks — 12 November 2026
 
 | Action | Keyboard | Touch |
 | --- | --- | --- |
 | Move / Turbo | WASD or arrows / Shift | Joystick / SPRINT |
-| Crossover | C | CROSS |
-| Spin | Q | SPIN |
-| Eurostep | E | EURO |
-| Step back | X | STEP BACK |
-| Shoot / automatic dunk / defensive jump | Space | SHOOT / BLOCK |
-| Arcade dunk (within 3.4m) | R | DUNK |
-| Choose next dunk style | V | STYLE |
-| Steal swipe | Z | SWIPE |
-| Jump block | B (or Space on defense) | BLOCK |
+| Shoot / automatic dunk on offence; jump block on defence | Space | SHOOT / DUNK / BLOCK |
+| Trick on offence; immediate steal swipe on defence | C | TRICK / STEAL |
+| Answer | 1–4 | Tap an option |
 | Fullscreen | F (Esc exits) | Browser fullscreen controls |
 
-Hold a direction to choose the side of a move. Each trick costs stamina and has a short cooldown; nearby defenders can be wrong-footed briefly. CourtBot reacts with its difficulty preset's delay, so good changes of direction can create space. Press **R** within 3.4m for a high-flying arcade dunk. **V** cycles tomahawk, windmill, 360 and reverse; styles also rotate after each shot. Space still chooses an automatic dunk when sprinting, eurostepping or very close to the rim. Each style has its own hand/ball path and body rotation, a big jump, a suspended question moment and a landing. CourtBot now looks for rim attacks too.
+Tap the trick key in a fixed **500 ms window**: **1 crossover, 2 spin, 3 eurostep, 4+ stepback**. Holding does not add taps. A primary action during the window commits the selected trick and buffers the finish. Moves cost stamina and recharge; repeating a trick into a close defender can expose the ball.
 
-On defense, **B / Space** jumps to challenge a dunk. Stay within the 1.8m contest range, face the attacker and jump during take-off: a correctly timed swat overrides the basketball outcome even if the attacker answers correctly. Both students still answer the same question and receive their own learning credit. Existing question-based blocks still apply.
+The primary action attempts a dunk when the player is **inside the visible blue paint and actually moving towards the hoop**. Standing, moving away or shooting outside the paint gives a jumper. Tomahawk, windmill, 360 and reverse finishes are chosen by the authoritative simulation, without immediate repeats. No style selection is needed.
 
-**Z** swipes for a steal. A swipe connects only if the exposed ball is in front of the defender and within 1.45m; spin moves and eurosteps protect the ball. **A missed swipe freezes the defender in place for 1 full second**, giving the attacker a drive-by opportunity. Swipes have a cooldown and stamina cost. A clean steal switches possession at the live court location with a fresh movement clock; it counts as an empty attacking possession, never an incorrect or unanswered learning response.
+On defence, press or hold **Space** during the dunk take-off. The jump faces the attacker automatically, with a **2.6 m** reach and a wider reaction window. Distance, court position, recovery and timing still matter. Both physical swats and question-based blocks override shooting boosts, while correct answers still earn learning credit.
 
-In **student-versus-student rooms, both players receive the same question and answer choices for each duel**, with the same reading period and answer deadline. The order of answer choices may differ. The server chooses one question per duel and keeps its answer key hidden until resolution.
+**C** immediately swipes for a steal on defence. A missed swipe roots the defender for **1 full second**. Swipes retain their reach, stamina and cooldown requirements. A steal changes possession at the live location and does not count as an incorrect or unanswered question.
 
-Solo settings pause the match. New trick bindings can be remapped in Settings; saved older bindings inherit the new defaults.
+In **student-versus-student rooms**, both students receive the same question, choices, reading period and answer deadline. Choice order can differ. Public online payloads omit answer keys and explanations until resolution. Each student gets their own correct/incorrect/unanswered verdict and selected-option feedback. Neither can dismiss the other student's explanation: both confirm Continue before play resumes.
+
+Each student's HUD tracks **three consecutive correct answers** towards **“HE’S ON FIRE!”**. Fire gives **20% faster movement** and **+20 percentage points** to shooting, up to 95%. The third correct answer boosts that shot too. Wrong or unanswered questions reset the streak; a basketball miss or block does not. Learning results remain separate from basketball scores.
+
+All **255 wrong choices across 85 bundled questions** have a specific explanation, derived from the existing course questions and reasoning. These new rationales are **draft additions for instructor review**; original stems, choices, answer keys, explanations and source references are unchanged. Custom packs can supply `optionFeedback` keyed by stable option ID; packs without it retain their existing explanation.
+
+Solo settings pause the match. Controls can be remapped; old movement/shot bindings are preserved and an old crossover binding migrates to the single trick key. Mobile has two game actions plus Sprint and the joystick. Question and feedback controls clear the hosting badge.
 
 ## Quick Start
 

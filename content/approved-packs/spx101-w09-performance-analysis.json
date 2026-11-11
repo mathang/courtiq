@@ -23,6 +23,11 @@
       ],
       "correctOptionId": "error",
       "explanation": "A small observed change may lie within the test's measurement error (minimum detectable difference) rather than reflecting genuine physiological improvement.",
+      "optionFeedback": {
+        "brand": "Brand popularity does not tell you whether this athlete’s change is larger than measurement noise.",
+        "order": "Position on a testing sheet does not establish that a small change exceeds the test’s uncertainty.",
+        "pref": "Preference may affect engagement, but it does not establish that an observed difference exceeds measurement error."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Intro to Performance Analysis",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -45,6 +50,11 @@
       ],
       "correctOptionId": "omia",
       "explanation": "Performance analysis links four stages: observing movement/workload, measuring data, interpreting what the data mean in context, and applying findings to guide decisions.",
+      "optionFeedback": {
+        "miao": "This omits contextual interpretation and practical application; publication and replacement are not the four linked stages taught.",
+        "aiom": "Buying and storing data are activities, but the process also requires interpreting observations and applying findings.",
+        "ioam": "Intuition and raw reporting do not replace the linked observation, measurement, interpretation and application stages."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Four-Step Process",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -67,6 +77,11 @@
       ],
       "correctOptionId": "question",
       "explanation": "Testing should never be done merely because a tool is available; it must begin with a meaningful question whose answer will inform a practical decision.",
+      "optionFeedback": {
+        "expensive": "Equipment cost does not define the decision the test must inform. Begin with the practical question.",
+        "norm": "Other teams’ habits do not establish why this athlete or patient needs the test.",
+        "volume": "A large dataset is not itself a useful objective; the test should answer a meaningful practical question."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Purpose First",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -89,6 +104,11 @@
       ],
       "correctOptionId": "spec",
       "explanation": "While a cycling test gives a general indicator of aerobic fitness, it does not reflect the intermittent running, jumping, and directional demands of basketball.",
+      "optionFeedback": {
+        "hr": "The stated limitation is specificity to court demands, not an inability to record heart rate during cycling.",
+        "indoor": "The issue is the movement task represented by the test, not whether an ergometer can be used indoors.",
+        "rules": "A prohibition on ergometer use is not the reason. Cycling omits important basketball movement demands."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Specificity Matters",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -111,6 +131,11 @@
       ],
       "correctOptionId": "role",
       "explanation": "Specificity requires matching the test to the actual positional role demands: props rely on short-range acceleration and contact tolerance rather than 100-metre sprinting.",
+      "optionFeedback": {
+        "timing": "The question concerns relevance to a prop’s match demands, not a universal distance limit of timing gates.",
+        "fatigue": "The informative feature is short-range acceleration, rather than claiming this sprint best measures maximal aerobic capacity.",
+        "rules": "The rationale is the player’s positional demands, not a claim that the entire pitch is fifteen metres long."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Specificity Matters",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -133,6 +158,11 @@
       ],
       "correctOptionId": "context",
       "explanation": "Not every isolated test weakness needs fixing if the test lacks specificity to how the athlete actually succeeds in their sporting role.",
+      "optionFeedback": {
+        "avoid": "One non-specific test does not show that all upper-body strength testing is harmful. Its relevance depends on the sporting task.",
+        "combine": "Bench-press capacity alone does not determine basketball success; the example highlights the limits of a non-specific measure.",
+        "outlier": "Physical testing alone cannot guarantee future sporting success or identify every future star."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Specificity and Individual Profiles",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -155,6 +185,11 @@
       ],
       "correctOptionId": "claim",
       "explanation": "Validity asks whether a test genuinely measures what it claims to measure for the target population and context.",
+      "optionFeedback": {
+        "repeat": "Repeatability concerns reliability. Validity asks whether the intended quality is actually being measured.",
+        "cheap": "Subscription costs concern feasibility and sustainability, rather than whether the test measures the intended quality.",
+        "fast": "Squad testing time concerns feasibility; a quick test still needs evidence of validity."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Measurement Quality",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -177,6 +212,11 @@
       ],
       "correctOptionId": "noise",
       "explanation": "Because the 0.05 m/s change is smaller than the 0.10 m/s minimum detectable difference (measurement error), we cannot distinguish the change from noise.",
+      "optionFeedback": {
+        "certain": "The numerical gain is smaller than the stated detectable difference, so this result alone cannot establish real improvement.",
+        "broken": "A result within expected measurement uncertainty does not prove the equipment malfunctioned.",
+        "discharge": "A small change within error does not establish that rehabilitation goals have been met or justify immediate discharge."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Sensitivity and Measurement Error",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -199,6 +239,11 @@
       ],
       "correctOptionId": "access",
       "explanation": "Feasibility includes long-term sustainability: if a third-party cloud vendor shuts down or hospital IT blocks external database access, the tool and past data can be lost.",
+      "optionFeedback": {
+        "weight": "The concern is ongoing access to software and historical data, not a change in the sensor’s physical mass.",
+        "valid": "Uploading data does not automatically invalidate a comparison; cloud reliance raises access and sustainability questions.",
+        "calib": "A software subscription does not remove the need to calibrate measurement hardware."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Feasibility in Real-World Settings",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -221,6 +266,11 @@
       ],
       "correctOptionId": "trend",
       "explanation": "More accurate does not always mean more useful; regular weekly monitoring captures trends over time that practitioners can actually act upon during a season.",
+      "optionFeedback": {
+        "zero": "Feasible field tests still contain error. Their advantage here is frequent, useful monitoring rather than perfect measurement.",
+        "lab": "The example does not establish that laboratory carts are inaccurate; it compares how often useful data can inform decisions.",
+        "rules": "The issue is timely information for management, not a prohibition on twice-yearly testing."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Ease of Implementation vs Accuracy",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -243,6 +293,11 @@
       ],
       "correctOptionId": "inc",
       "explanation": "Jumping from 20 kg to 22.5 kg requires a 12.5% improvement; smaller but meaningful strength gains will be missed completely, which can demotivate the athlete or patient.",
+      "optionFeedback": {
+        "ecc": "The stated sensitivity limit is the large change needed to reach the next weight increment, not restriction to eccentric force.",
+        "bilat": "The question does not establish that single-leg testing is unsafe. It asks whether small gains can change the recorded score.",
+        "vel": "Coarse fixed weight increments do not automatically regulate movement velocity; the problem is the smallest detectable load change."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Sensitivity to Change in Training",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -265,6 +320,11 @@
       ],
       "correctOptionId": "imu",
       "explanation": "Adding fractional 500 g plates, inline load cells, or measuring peak angular velocity of the lever arm with a phone IMU detects power/strength gains at the same load.",
+      "optionFeedback": {
+        "guess": "An unrecorded visual guess does not solve the problem of consistently detecting smaller performance changes.",
+        "skip": "Waiting much longer misses timely information; the goal is to detect smaller meaningful changes sooner.",
+        "round": "Rounding to even larger increments discards more information and worsens sensitivity."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Sensitivity Solutions",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -287,6 +347,11 @@
       ],
       "correctOptionId": "real",
       "explanation": "Ecological validity describes how closely a test reflects what actually happens in the person's real-world sporting or daily environment.",
+      "optionFeedback": {
+        "green": "Ecological validity concerns correspondence with real-world tasks and settings, rather than environmental manufacturing credentials.",
+        "battery": "Battery duration is a practical feasibility issue, not the meaning of ecological validity.",
+        "temp": "Temperature standardisation can support consistent testing, but ecological validity asks how well the task represents real-world demands."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Field vs Laboratory Tests",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -309,6 +374,11 @@
       ],
       "correctOptionId": "risk",
       "explanation": "Testing identifies risk indicators rather than certainties; practitioners should communicate elevated risk and recovery options clearly so coaches can make informed decisions.",
+      "optionFeedback": {
+        "cert": "Elevated indicators suggest increased risk; they do not establish that a specific injury is certain to occur.",
+        "hide": "Withholding potentially useful indicators prevents an informed load discussion. The lesson is to communicate risk and uncertainty.",
+        "order": "The stated role is to explain the evidence and discuss options with the team, rather than unilaterally override coaching and medical decisions."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Injury Prevention and Management",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -331,6 +401,11 @@
       ],
       "correctOptionId": "bench",
       "explanation": "Modern return-to-sport uses objective functional thresholds, strength restoration, and symptom-free sport-specific progression rather than arbitrary calendar timelines alone.",
+      "optionFeedback": {
+        "calendar": "A fixed faster timetable regardless of pain repeats the problem; progression should reflect functional recovery and relevant benchmarks.",
+        "mri": "A universal personal-best sprint requirement is not the criterion-based approach described; benchmarks must suit the athlete and task.",
+        "rest": "Avoiding every movement until match day omits progressive restoration and sport-specific preparation."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Return to Sport Benchmarks",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -353,6 +428,11 @@
       ],
       "correctOptionId": "multi",
       "explanation": "As highlighted by Halson's monitoring framework, no single measure perfectly captures fatigue; combining internal load, external load, and performance context prevents misinterpretation.",
+      "optionFeedback": {
+        "replace": "GPS measures external movement/load; it does not directly replace ECG measurement of heart-rate variability.",
+        "bill": "Combining metrics adds context, but it does not eliminate the need to understand the athlete’s experience.",
+        "rule": "Internal load is not limited to complete dehydration. Multiple measures are used because fatigue is not captured by one signal."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Monitoring Fatigue and Adaptation",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -375,6 +455,11 @@
       ],
       "correctOptionId": "three",
       "explanation": "Complex algorithms are useless if they cannot guide action; a practitioner must clearly explain what is measured, what it means, and what practical action follows.",
+      "optionFeedback": {
+        "cost": "Those details may matter operationally, but they do not explain the measured quality, its meaning and the action that follows.",
+        "code": "Algorithm details alone do not establish the practical meaning of a result or what should be done about it.",
+        "rank": "Rankings and punishment omit interpretation and a useful evidence-based response to the findings."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Turning Data into Decisions",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -397,6 +482,11 @@
       ],
       "correctOptionId": "chest",
       "explanation": "In a traditional bench press, peak force occurs early right after the chest counter-movement and drops to ~50% near terminal extension, whereas fending/grappling requires high force and power toward extended elbow positions.",
+      "optionFeedback": {
+        "lock": "This reverses the course example’s force profile and the sport-specific extended-arm demand.",
+        "mid": "The course example describes force changing through the lift, rather than remaining identical throughout the range.",
+        "ecc": "The explanation concerns the early-lift force profile and extension demands, not force occurring only during a motionless pause."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Sports Performance Monitoring and Upper-Body Power",
       "difficulty": "advanced",
       "readingMs": 2500,
@@ -419,6 +509,11 @@
       ],
       "correctOptionId": "accel",
       "explanation": "In a standard bench press, the lifter must decelerate the bar to stop at full elbow extension; a bench throw propels the bar to emphasize velocity and power right through terminal extension.",
+      "optionFeedback": {
+        "heavy": "The rationale is continuous acceleration and terminal velocity, not the ability to lift a heavier maximal load.",
+        "spot": "Explosive release does not remove the need to manage the descending bar and other safety risks.",
+        "slow": "A ballistic throw emphasises acceleration and release velocity, not slow constant-speed or isometric performance."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Bench Throw Power",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -441,6 +536,11 @@
       ],
       "correctOptionId": "descent",
       "explanation": "Safety is paramount in explosive testing; an electromagnetic brake slows or stops the descending load so athletes are not injured trying to catch heavy falling loads.",
+      "optionFeedback": {
+        "push": "The brake’s stated role is managing the falling load, not assisting the upward movement to inflate the score.",
+        "measure": "The brake does not directly measure blood lactate through the grip; it controls the descending bar.",
+        "lock": "Locking the bar before the push would prevent the intended throw. The safety role concerns descent after release."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Safety and Braking Systems",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -463,6 +563,11 @@
       ],
       "correctOptionId": "comb",
       "explanation": "A force plate under the bench directly measured force while a linear position transducer (string potentiometer) sampled barbell displacement over time to derive velocity and power.",
+      "optionFeedback": {
+        "watch": "Elapsed time and body mass alone do not provide the force and barbell-velocity measurements used in this setup.",
+        "emg": "EMG voltage alone is not a direct watt measurement; the setup combined measured force with movement data.",
+        "hr": "Peak heart rate divided by barbell mass is not the mechanical power calculation described."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Force Plate and Linear Transducer",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -485,6 +590,11 @@
       ],
       "correctOptionId": "elastic",
       "explanation": "The dynamic counter-movement utilizes the stretch-shortening cycle, storing elastic energy in tendons and muscles to generate higher force and throw height than a static start.",
+      "optionFeedback": {
+        "rom": "A counter-movement throw includes vertical displacement; zero travel does not explain its greater throw height.",
+        "gravity": "Gravity is not removed by the transducer. The course explanation involves the stretch-shortening cycle.",
+        "mass": "The barbell’s mass is not reduced during the push; the difference concerns elastic storage and recoil."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Static vs Counter-Movement Throws",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -507,6 +617,11 @@
       ],
       "correctOptionId": "box",
       "explanation": "Jumping onto a bench reduces vertical drop distance and landing velocity, while a single-leg press with a two-leg catch distributes landing force across both limbs to reduce knee impact.",
+      "optionFeedback": {
+        "depth": "A loaded drop onto concrete does not match the goal of reducing landing drop distance and impact.",
+        "lock": "Rigidly locking the joints is not the impact-reduction strategy described in the course.",
+        "blind": "Removing visual preparation is not the proposed way to reduce landing impact; the examples alter landing height or distribute load."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Practical Alternatives and Impact Reduction",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -529,6 +644,11 @@
       ],
       "correctOptionId": "priv",
       "explanation": "Patient privacy, cybersecurity concerns, and multilingual usability ruled out in-home cloud video cameras and complex text prompts; Bluetooth sensors and wall-mounted LiDAR provided passive, private daily monitoring.",
+      "optionFeedback": {
+        "cost": "The stated concerns were patient privacy, security and usability, not an inability of cameras to record indoor walking.",
+        "wifi": "The decision was not based on a lack of wireless routers. It addressed privacy and practical home monitoring.",
+        "xray": "The described LiDAR system monitored gait; it was not a daily implant X-ray system."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Clinical Performance Monitoring",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -551,6 +671,11 @@
       ],
       "correctOptionId": "asym",
       "explanation": "After total knee replacement, patients naturally offload the operated leg; dual wireless bathroom scales acting as force plates tracked left-right weight asymmetry and guided progressive symmetrical loading.",
+      "optionFeedback": {
+        "vo2": "The scales measured left-right loading during sit-to-stand tasks, not maximal oxygen uptake.",
+        "grip": "This was lower-limb loading after knee replacement, rather than hand-grip testing after shoulder surgery.",
+        "bone": "The system tracked weight-bearing forces, not bone density through X-ray attenuation."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Modified Bathroom Scales in Home Rehab",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -573,6 +698,11 @@
       ],
       "correctOptionId": "codesign",
       "explanation": "Co-designing with clinicians and patients led to easy-grip handles for older hands, visual/video guidance across languages, and a blue-yellow palette optimal for colour-blind accessibility.",
+      "optionFeedback": {
+        "fashion": "The design choices addressed user needs, not a manufacturer’s compulsory colour trademark.",
+        "battery": "The stated reason for the palette was visual accessibility, not zero energy use by blue pixels.",
+        "speed": "Handle softness supports grip and usability; it does not establish a tenfold increase in angle-sampling rate."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Co-Design with End Users",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -595,6 +725,11 @@
       ],
       "correctOptionId": "equal",
       "explanation": "A non-inferiority design tests whether a more scalable, lower-cost home intervention achieves outcomes that are at least comparable (not clinically inferior) to standard hospital care.",
+      "optionFeedback": {
+        "worse": "The finding compared monitored home care with hospital care and supported non-inferiority, rather than poorer outcomes than no rehabilitation.",
+        "hosp": "A non-inferiority result does not justify banning hospital care for every patient; it evaluates an alternative approach.",
+        "placebo": "Comparable rehabilitation outcomes do not establish that surgery is unnecessary or that bathroom scales replace the operation."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Non-Inferiority Outcomes",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -617,6 +752,11 @@
       ],
       "correctOptionId": "sarc",
       "explanation": "Sarcopenia is the age-related loss of skeletal muscle mass combined with low muscle strength (e.g., grip strength) and/or poor physical performance (e.g., gait speed).",
+      "optionFeedback": {
+        "bone": "The course definition concerns skeletal muscle, strength and physical performance, rather than bone calcium or sprint cycling alone.",
+        "cart": "An acute ligament rupture in a young athlete is not the age-related muscle-loss condition described.",
+        "lung": "This describes a different physiological system; the screening measures here concern muscle mass, strength and performance."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Diagnosing Sarcopenia in the Real World",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -639,6 +779,11 @@
       ],
       "correctOptionId": "senspec",
       "explanation": "In diagnostic testing, high sensitivity (e.g., 0.95) means few true cases are missed, whereas high specificity means healthy individuals are rarely misdiagnosed as having the condition.",
+      "optionFeedback": {
+        "swap": "These diagnostic terms concern identifying people with and without the condition, not instrument sampling or battery properties.",
+        "same": "Diagnostic classification performance is different from how repeatable scores are across days.",
+        "coin": "A sensitivity of 0.50 means half of true cases are identified; it does not mean 95% overall accuracy."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Optimizing Sarcopenia Screening",
       "difficulty": "advanced",
       "readingMs": 2400,
@@ -661,6 +806,11 @@
       ],
       "correctOptionId": "auto",
       "explanation": "Integrating automated LiDAR gait speed, grip dynamometry, and bioimpedance removes manual tape-measure/stopwatch errors and reduces screening time and error by roughly tenfold.",
+      "optionFeedback": {
+        "mri": "Automation can reduce setup and timing error, but the participant still performs the walking and grip tasks.",
+        "blood": "The described screening combines movement, grip and bioimpedance measurements; it does not take a muscle biopsy.",
+        "zero": "The purpose is efficient assessment, not automatically assigning every person a severe diagnosis."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Automated Sarcopenia Screening",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -683,6 +833,11 @@
       ],
       "correctOptionId": "zones",
       "explanation": "The track uses lines at 0 m, 2 m, 6 m, and 8 m: a 2 m acceleration zone, a middle 4 m timed section (between 2 m and 6 m), and a 2 m deceleration zone.",
+      "optionFeedback": {
+        "first4": "This times the standing-start acceleration section. The demonstrated timed zone starts at 2 m and ends at 6 m.",
+        "full8": "The full track includes acceleration and deceleration. Timing all eight metres and halving time does not recreate the central timed section.",
+        "mid": "This describes a two-metre timed zone; the specified protocol times four metres between the 2 m and 6 m lines."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -705,6 +860,11 @@
       ],
       "correctOptionId": "step",
       "explanation": "Drawing attention to the middle timing lines encourages participants to look down or take an unnatural stride to cross the line, distorting their natural walking speed.",
+      "optionFeedback": {
+        "blind": "The protocol does not ask participants to close their eyes; it seeks their natural walking pattern.",
+        "fast": "Line awareness can change gait, but it does not change the stopwatch’s running speed.",
+        "trip": "The concern is altered step placement and speed, not a claim that looking at a line always causes loss of balance."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -727,6 +887,11 @@
       ],
       "correctOptionId": "behind",
       "explanation": "Walking slightly behind and to the side keeps the tester close enough to assist safely without causing the participant to unconsciously match the tester's stride or cadence.",
+      "optionFeedback": {
+        "front": "Walking directly in front can invite the participant to match the tester’s pace; the protocol uses a position behind and to the side.",
+        "shoulder": "A brisk side-by-side pace can lead the participant instead of capturing their natural speed.",
+        "far": "Moving to another room removes the close support described in the protocol; the aim is nearby assistance without pacing the participant."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -749,6 +914,11 @@
       ],
       "correctOptionId": "foot",
       "explanation": "The timer starts when either foot (usually the toes) first crosses the 2-metre line and stops when either foot first crosses the 6-metre line.",
+      "optionFeedback": {
+        "chest": "Waiting until both heels fully clear a line uses a later event than the specified first foot crossing.",
+        "head": "Head position is not the timing trigger in this protocol; either foot first crossing the line is used.",
+        "voice": "Verbal start and stop calls are not the specified trigger; the assessor observes the first foot crossing each timing line."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -771,6 +941,11 @@
       ],
       "correctOptionId": "cycle",
       "explanation": "If a foot lands just short of the timing line, the participant needs nearly an extra step/gait cycle before a foot crosses the line, creating trial-to-trial variability and motivating multiple trials.",
+      "optionFeedback": {
+        "gravity": "The explanation is foot placement relative to the line, not a guaranteed doubling of floor friction.",
+        "clock": "The timer does not reset because of foot placement. The crossing event can occur later in the gait cycle.",
+        "fatigue": "The example concerns timing variability from step placement, rather than severe acidosis caused by a four-metre walk."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -793,6 +968,11 @@
       ],
       "correctOptionId": "125",
       "explanation": "Speed equals timed distance divided by time: 4.0 m / 3.20 s = 1.25 m/s (using the 4 m timed zone, not the 8 m total track length).",
+      "optionFeedback": {
+        "080": "Dividing time by distance gives seconds per metre. Speed here is 4.0 ÷ 3.20 = 1.25 metres per second.",
+        "250": "Eight metres includes acceleration and deceleration. Only the central four-metre section was timed.",
+        "128": "Multiplying distance by time is not speed. Use timed distance divided by elapsed time."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -815,6 +995,11 @@
       ],
       "correctOptionId": "flip",
       "explanation": "When measurement error (±0.10 m/s) is large relative to a clinical decision threshold (0.80 m/s), the same person can be classified as healthy one day and at-risk the next purely due to noise.",
+      "optionFeedback": {
+        "fast": "The concern is classification near the cut-point, not that this walking speed is invisible to an assessor.",
+        "unit": "A stopwatch records elapsed time; gait speed is then calculated. The stated speed error can affect the threshold decision.",
+        "none": "Measurement error can move a recorded value across a clinical threshold even when the person has not meaningfully changed."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 4 & Week 9 Part 3: Clinical Cut-Points",
       "difficulty": "intermediate",
       "readingMs": 2200,
@@ -837,6 +1022,11 @@
       ],
       "correctOptionId": "context",
       "explanation": "Observation and measurement require contextual interpretation: late-match sprint decline could reflect aerobic conditioning, between-effort recovery, tactical demands, muscle fatigue, or pacing.",
+      "optionFeedback": {
+        "single": "The observation does not establish bench-press weakness as the cause; several conditioning, recovery and match-context explanations need consideration.",
+        "ignore": "The finding should be interpreted in context, rather than dismissed with an unsupported claim that it is purely psychological.",
+        "drop": "Removing a player before checking context skips interpretation and an evidence-informed response."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Observation to Interpretation",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -859,6 +1049,11 @@
       ],
       "correctOptionId": "action",
       "explanation": "The final test-selection filter is practical utility: 'Will it change practice?' Collecting data that no one acts upon wastes athlete and staff time.",
+      "optionFeedback": {
+        "cheap": "Low price does not make an otherwise useful test unsuitable; the missing element in this question is practical actionability.",
+        "easy": "Preferring poor repeatability is not the rationale. A sound measure can still be unnecessary if it will not change a decision.",
+        "short": "Short duration does not make a test scientifically invalid. Practical utility depends on what the result informs."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 1: Practical Framework for Selecting a Test",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -881,6 +1076,11 @@
       ],
       "correctOptionId": "pushup",
       "explanation": "Push-up jumps assess and train explosive upper-body extension without the risk of catching a falling loaded barbell when braking equipment is unavailable.",
+      "optionFeedback": {
+        "plank": "An isometric trunk hold does not match the explosive upper-body extension task highlighted in the course.",
+        "curl": "A slow wrist-curl task differs from the explosive pushing action the alternative is intended to assess.",
+        "shrug": "A held shoulder shrug does not reproduce the explosive upper-body pushing alternative described."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Practical Alternatives",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -903,6 +1103,11 @@
       ],
       "correctOptionId": "mocap",
       "explanation": "Criterion validity was established by comparing LiDAR velocity profiles directly against a laboratory 3D motion-capture camera system.",
+      "optionFeedback": {
+        "stop": "The criterion reference used in this study was a 3D optical motion-analysis system, not a novice stopwatch assessor.",
+        "pedo": "A step counter was not the laboratory criterion used to compare the LiDAR velocity profiles.",
+        "rpe": "Perceived walking speed is subjective and was not the reference measurement used in the laboratory validation."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2 & Week 9 Part 3: LiDAR Validation",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -925,6 +1130,11 @@
       ],
       "correctOptionId": "cont",
       "explanation": "Timing gates only provide discrete split times at gate locations, whereas high-frequency LiDAR samples distance continuously to reveal the full acceleration and velocity curve.",
+      "optionFeedback": {
+        "wind": "Tracking technology records movement; it does not remove the sprinter’s air resistance.",
+        "shoe": "The sensor does not change footwear traction. Its advantage here is a more continuous movement record.",
+        "vo2": "The stated advantage concerns distance and velocity tracking, not direct measurement of arterial oxygen saturation."
+      },
       "sourceRef": "[CANVAS-W05-P450] Week 5 Part 2 & Week 9 Part 3: LiDAR Field Assessments",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -947,6 +1157,11 @@
       ],
       "correctOptionId": "dizzy",
       "explanation": "Participants are instructed to walk at their natural shopping-corridor pace and to stop straight away and notify the tester if they feel worried, might slip, or feel dizzy.",
+      "optionFeedback": {
+        "sprint": "The demonstrated protocol asks for normal walking speed, not a maximal sprint or a dive at the finish.",
+        "finish": "Continuing despite dizziness conflicts with the explicit instruction to stop and tell the tester.",
+        "back": "Backward walking is not the demonstrated normal-speed walk-test instruction."
+      },
       "sourceRef": "[CANVAS-W09-P474] Week 9.3 Mastery Assessment Workshop 2 - Gait Speed",
       "difficulty": "beginner",
       "readingMs": 2000,
@@ -969,6 +1184,11 @@
       ],
       "correctOptionId": "beep",
       "explanation": "The linear position transducer was programmed to each athlete's individual half-range of motion and emitted a real-time audio beep cueing them to reverse and throw.",
+      "optionFeedback": {
+        "board": "The depth cue came from the programmed transducer, not a block used to bounce the bar from the chest.",
+        "guess": "Guessing would not provide the individualised half-range cue described in the setup.",
+        "timer": "A fixed time interval does not identify the athlete’s individual bar position; the cue was triggered by displacement."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 2: Real-Time Feedback in Bench Throws",
       "difficulty": "intermediate",
       "readingMs": 2000,
@@ -991,6 +1211,11 @@
       ],
       "correctOptionId": "edge",
       "explanation": "On-device (local edge) processing extracts skeletal joint angles locally without storing or sending raw video footage anywhere, preserving patient privacy.",
+      "optionFeedback": {
+        "public": "Removing identifiers alone does not prevent raw home footage leaving the device; the described approach keeps processing and video local.",
+        "blur": "Switching off the lens removes the visual input needed for camera-based pose tracking.",
+        "night": "Changing the recording time does not establish privacy protection. The approach described avoids transmitting or storing raw video."
+      },
       "sourceRef": "[CANVAS-W09-P470] Week 9 Part 3: Future Improvements in Home Monitoring",
       "difficulty": "intermediate",
       "readingMs": 2000,
