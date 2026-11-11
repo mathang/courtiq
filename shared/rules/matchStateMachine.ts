@@ -1,7 +1,13 @@
 import { buildStudentQuestionFeedback, StudentQuestionFeedback } from './learningFeedback';
 import { normaliseAppearancePreset } from '../config/appearance';
 import { isDrivingInPaint } from './finishing';
-import { dribbleBallPosition } from './dribble';
+import {
+  computeBasketballFacingAngle,
+  dribbleBallPosition,
+  jumpShotGatherBallPosition,
+  stepAngleTowards,
+  stepDribbleState,
+} from './dribble';
 import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction, isStealRecovery } from './defense';
 import { stepPlayerMotion, MotionTarget } from './contact';
 import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
@@ -142,6 +148,15 @@ export interface PlayerSimState {
   /** Synced arcade callout banner for HUD/3D presentation */
   calloutText: string | null;
   calloutSec: number;
+  /** Movement-only carry/plant continuity state (never alters score, RNG or question rules) */
+  dribbleHand?: -1 | 1;
+  dribbleSide?: number;
+  moveStartSide?: number;
+  dribbleBlend?: number;
+  handSwitchCooldownSec?: number;
+  plantSec?: number;
+  plantDirX?: number;
+  plantDirZ?: number;
 }
 
 export interface PlayerMoveInput {
@@ -401,6 +416,8 @@ export class AuthoritativeMatchEngine {
       p.bufferedTrick = null; p.bufferedTrickSec = 0;
       p.bufferedFinish = null; p.bufferedFinishStyle = null; p.bufferedFinishSec = 0;
       p.bufferedDefense = null; p.bufferedDefenseSec = 0;
+      p.dribbleHand = 1; p.dribbleSide = undefined; p.moveStartSide = undefined; p.dribbleBlend = undefined;
+      p.handSwitchCooldownSec = 0; p.plantSec = 0; p.plantDirX = 0; p.plantDirZ = 0;
     }
     this.movementClockRemainingMs = this.rules.movementClockMs;
     this.ballFlight = null;
@@ -570,6 +587,13 @@ export class AuthoritativeMatchEngine {
       { x: 0, z: 0, response: MOVEMENT_CONFIG.braking },
       { x: 0, z: 0, response: MOVEMENT_CONFIG.braking },
     ];
+    const normInputs: [
+      { normX: number; normZ: number; isMoving: boolean },
+      { normX: number; normZ: number; isMoving: boolean },
+    ] = [
+      { normX: 0, normZ: 0, isMoving: false },
+      { normX: 0, normZ: 0, isMoving: false },
+    ];
     // Update both players' movement intentions before resolving shared body contact.
     for (const slot of [0, 1] as const) {
       const p = this.players[slot];
@@ -579,6 +603,7 @@ export class AuthoritativeMatchEngine {
 
       p.moveCooldownSec = Math.max(0, p.moveCooldownSec - deltaSec);
       p.wrongFootSec = Math.max(0, p.wrongFootSec - deltaSec);
+      p.plantSec = Math.max(0, (p.plantSec ?? 0) - deltaSec);
       p.comboGraceSec = Math.max(0, p.comboGraceSec - deltaSec);
       p.trickOverexposedSec = Math.max(0, p.trickOverexposedSec - deltaSec);
       p.bufferedTrickSec = Math.max(0, p.bufferedTrickSec - deltaSec);
@@ -631,6 +656,11 @@ export class AuthoritativeMatchEngine {
         if (check.allowed) {
           p.bufferedTrick = null;
           p.bufferedTrickSec = 0;
+          p.moveStartSide = p.dribbleSide ?? p.dribbleHand ?? 1;
+          if (nextTrick === 'crossover' || nextTrick === 'eurostep') {
+            p.dribbleHand = (p.dribbleHand ?? 1) === 1 ? -1 : 1;
+            p.handSwitchCooldownSec = STREET_MOVES[nextTrick].duration + 0.35;
+          }
           p.streetMove = nextTrick;
           p.lastTrick = nextTrick;
           p.moveElapsedSec = 0;
@@ -647,7 +677,11 @@ export class AuthoritativeMatchEngine {
           p.moveForwardX = dx / d;
           p.moveForwardZ = dz / d;
           const lateral = inp.moveX * -p.moveForwardZ + inp.moveZ * p.moveForwardX;
-          p.moveSide = Math.abs(lateral) > 0.15 ? Math.sign(lateral) : -p.moveSide;
+          const fallbackSide: -1 | 1 =
+            (nextTrick === 'crossover' || nextTrick === 'eurostep') && p.dribbleHand
+              ? (-p.dribbleHand as -1 | 1)
+              : (-p.moveSide as -1 | 1);
+          p.moveSide = Math.abs(lateral) > 0.15 ? (Math.sign(lateral) as -1 | 1) : fallbackSide;
 
           const distToDef = computeDistance2D(p, opponent);
           // Greedy 3rd-chain right into an unshaken chest-to-chest defender exposes the ball!
@@ -689,6 +723,7 @@ export class AuthoritativeMatchEngine {
       const normX = mag > 1 ? safeX / mag : safeX;
       const normZ = mag > 1 ? safeZ / mag : safeZ;
       const isMoving = mag > 0.06;
+      normInputs[slot] = { normX, normZ, isMoving };
 
       const canSprint =
         !isStealRecovery(p) &&
@@ -741,34 +776,73 @@ export class AuthoritativeMatchEngine {
         targetX *= DEFENSE_CONFIG.jumpSteeringMultiplier;
         targetZ *= DEFENSE_CONFIG.jumpSteeringMultiplier;
       }
+      const currentSpeed = Math.hypot(p.vx, p.vz);
+      const isHardCut =
+        !isStealRecovery(p) &&
+        !p.streetMove &&
+        p.defenseAction !== 'jump' &&
+        isMoving &&
+        currentSpeed > 1.8 &&
+        (p.vx * normX + p.vz * normZ) / currentSpeed < 0.2;
+      if (isHardCut) {
+        p.plantSec = Math.max(p.plantSec ?? 0, 0.16);
+        p.plantDirX = normX;
+        p.plantDirZ = normZ;
+      } else if (!isStealRecovery(p) && !p.streetMove && p.defenseAction !== 'jump' && !isMoving && currentSpeed > 1.6) {
+        p.plantSec = Math.max(p.plantSec ?? 0, 0.16);
+        p.plantDirX = -p.vx / currentSpeed;
+        p.plantDirZ = -p.vz / currentSpeed;
+      }
+
       motionTargets[slot] = {
         x: targetX, z: targetZ,
-        response: isMoving || p.streetMove ? MOVEMENT_CONFIG.acceleration : MOVEMENT_CONFIG.braking,
+        response:
+          isMoving || p.streetMove
+            ? isHardCut
+              ? MOVEMENT_CONFIG.braking
+              : MOVEMENT_CONFIG.acceleration
+            : MOVEMENT_CONFIG.braking,
       };
-
-      if (p.defenseRecoverySec > 0) {
-        p.animState = p.defenseAction === 'jump' ? 'block' : 'idle';
-      } else if (isMoving || p.streetMove) {
-        const facing = p.streetMove ? Math.atan2(p.moveForwardX, p.moveForwardZ) : Math.atan2(normX, normZ);
-        const turn = Math.atan2(Math.sin(facing - p.facingAngle), Math.cos(facing - p.facingAngle));
-        p.facingAngle += turn * (1 - Math.exp(-20 * deltaSec));
-        p.animState = isAttacker ? 'dribble' : 'run';
-      } else {
-        // Defender naturally faces attacker when stationary; attacker faces hoop
-        if (!isAttacker) {
-          const other = this.players[att];
-          p.facingAngle = Math.atan2(other.x - p.x, other.z - p.z);
-        } else {
-          p.facingAngle = Math.atan2(
-            COURT_GEOMETRY.hoopX - p.x,
-            COURT_GEOMETRY.hoopZ - p.z
-          );
-        }
-        p.animState = 'idle';
-      }
     }
 
     stepPlayerMotion(this.players, motionTargets, deltaSec);
+
+    for (const slot of [0, 1] as const) {
+      const p = this.players[slot];
+      const opponent = this.players[slot === 0 ? 1 : 0];
+      const isAttacker = slot === att;
+      const { normX, normZ, isMoving } = normInputs[slot];
+      const actualSpeed = Math.hypot(p.vx, p.vz);
+
+      if (p.defenseRecoverySec > 0) {
+        p.animState = p.defenseAction === 'jump' ? 'block' : 'idle';
+        if (p.defenseAction === 'jump') {
+          const toAtt = Math.atan2(opponent.x - p.x, opponent.z - p.z);
+          p.facingAngle = stepAngleTowards(p.facingAngle, toAtt, 14, deltaSec);
+        }
+      } else {
+        const desiredFacing = computeBasketballFacingAngle({
+          self: p,
+          opponent,
+          isAttacker,
+          normX,
+          normZ,
+          isMoving,
+        });
+        const turnRate = p.streetMove ? 22 : isMoving ? 18 : 14;
+        p.facingAngle = stepAngleTowards(
+          p.facingAngle,
+          desiredFacing,
+          turnRate,
+          deltaSec,
+          p.streetMove ? 24 : 18,
+        );
+        const movingWorld = isMoving || Boolean(p.streetMove) || actualSpeed > 0.48;
+        p.animState = movingWorld ? (isAttacker ? 'dribble' : 'run') : 'idle';
+      }
+    }
+
+    stepDribbleState(this.players[att], this.players[def], normInputs[att].isMoving, deltaSec);
 
     const defender = this.players[def];
     if (defender.defenseAction === 'swipe' && defender.defenseResult === null &&
@@ -961,8 +1035,19 @@ export class AuthoritativeMatchEngine {
   }
 
   private stepQuestionReadyPhase(realDeltaMs: number, realDeltaSec: number): void {
+    const finisher = this.players[this.scoreState.currentAttacker];
     if (this.ballFlight) {
-      this.ballFlight = stepBallPreResolution(this.ballFlight, realDeltaSec);
+      if (finisher.finishKind === 'jump') {
+        // Hold ballFlight at release point while the shooter gathers from live dribble to set point (0..0.18s)
+        const prevElapsed = Math.max(0, finisher.finishElapsedSec - realDeltaSec);
+        const postGatherSec =
+          Math.max(0, finisher.finishElapsedSec - 0.18) - Math.max(0, prevElapsed - 0.18);
+        if (postGatherSec > 0) {
+          this.ballFlight = stepBallPreResolution(this.ballFlight, postGatherSec);
+        }
+      } else {
+        this.ballFlight = stepBallPreResolution(this.ballFlight, realDeltaSec);
+      }
     }
     this.questionReadyTimerMs += realDeltaMs;
 
@@ -1315,7 +1400,11 @@ export class AuthoritativeMatchEngine {
     this.players[def].defenseRecoverySec = 0.22;
     this.adjustStreetFlow(def, STREET_FLOW_CONFIG.flowCleanSteal, '🖐️ COOKIE SNATCH!');
     this.adjustStreetFlow(oldAtt, -STREET_FLOW_CONFIG.flowTurnoverPenalty);
-    for (const p of this.players) { p.finishKind = null; p.vx = 0; p.vz = 0; }
+    for (const p of this.players) {
+      p.finishKind = null; p.vx = 0; p.vz = 0;
+      p.dribbleHand = 1; p.dribbleSide = undefined; p.moveStartSide = undefined; p.dribbleBlend = undefined;
+      p.handSwitchCooldownSec = 0; p.plantSec = 0;
+    }
     this.phase = this.scoreState.isMatchOver ? 'MatchEnd' : 'Possession';
   }
 
@@ -1442,7 +1531,11 @@ export class AuthoritativeMatchEngine {
       return dunkReboundPosition(finisher, pose, outcome);
     }
     if (this.ballFlight) {
-      return evaluateBallPosition(this.ballFlight);
+      const flightPos = evaluateBallPosition(this.ballFlight);
+      if (finisher.finishKind === 'jump' && this.phase === 'QuestionReady') {
+        return jumpShotGatherBallPosition(finisher, flightPos);
+      }
+      return flightPos;
     }
     const att = this.scoreState.currentAttacker;
     const p = this.players[att];
