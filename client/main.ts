@@ -1,4 +1,5 @@
 import { isDrivingInPaint } from '../shared/rules/finishing';
+import { appearanceFor, characterForAppearance, opponentAppearance, type CharacterId } from '../shared/config/appearance';
 import { DUNK_LABELS } from '../shared/rules/dunks';
 import { STREET_MOVES } from '../shared/rules/streetMoves';
 import { BUNDLED_QUESTION_PACKS } from '../content/packRegistry';
@@ -54,6 +55,7 @@ class CourtIqApp {
 
   private packs: QuestionPack[] = [...BUNDLED_QUESTION_PACKS];
   private soloPackSelection: string | null = null;
+  private selectedCharacter: CharacterId = 0;
   private soloEngine: AuthoritativeMatchEngine | null = null;
 
   // Online client state
@@ -127,6 +129,7 @@ class CourtIqApp {
         attacker: online?.scoreState.currentAttacker ?? eng?.scoreState.currentAttacker,
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
         players, ball: online?.ballPosition ?? eng?.getBallPosition3D(),
+        characters: players?.map(p => characterForAppearance(p.appearancePreset).label),
         playerModels: this.renderer.getPlayerAssetStates(),
         presentation: this.renderer.getPresentationState(),
         audio: this.sound.diagnostics(),
@@ -161,16 +164,13 @@ class CourtIqApp {
         pseudonym:
           (document.getElementById('input-pseudonym') as HTMLInputElement)
             ?.value || 'Student A',
-        appearancePreset: Number(
-          (document.getElementById('select-appearance') as HTMLSelectElement)
-            ?.value || 0
-        ),
+        appearancePreset: this.getSelectedAppearance(),
       },
       player1: {
         id: 'bot',
         pseudonym: 'CourtBot',
         isAi: true,
-        appearancePreset: 1,
+        appearancePreset: opponentAppearance(this.getSelectedAppearance()),
       },
     });
   }
@@ -257,15 +257,19 @@ class CourtIqApp {
     });
     document.getElementById('btn-leave-room')?.addEventListener('click', () => this.sendWsMessage({ type: 'LEAVE_ROOM' }));
 
-    // Appearance selector live preview
+    for (const button of document.querySelectorAll<HTMLButtonElement>('#lobby-character-picker [data-character]')) {
+      button.addEventListener('click', () => {
+        this.selectedCharacter = Number(button.dataset.character) as CharacterId;
+        for (const choice of document.querySelectorAll('#lobby-character-picker [data-character]')) {
+          choice.setAttribute('aria-pressed', String(choice === button));
+        }
+        this.updateLobbyAppearance();
+      });
+    }
+    // Character and colour palette are independent choices.
     document
       .getElementById('select-appearance')
-      ?.addEventListener('change', (e) => {
-        const preset = Number((e.target as HTMLSelectElement).value || 0);
-        if (this.soloEngine && this.soloEngine.phase === 'Lobby') {
-          this.soloEngine.players[0].appearancePreset = preset;
-        }
-      });
+      ?.addEventListener('change', () => this.updateLobbyAppearance());
 
     // Start Solo Match
     document
@@ -490,15 +494,23 @@ class CourtIqApp {
     }
   }
 
+  private getSelectedAppearance(): number {
+    return appearanceFor(this.selectedCharacter, Number((document.getElementById('select-appearance') as HTMLSelectElement)?.value || 0));
+  }
+
+  private updateLobbyAppearance(): void {
+    if (this.soloEngine?.phase === 'Lobby') {
+      this.soloEngine.players[0].appearancePreset = this.getSelectedAppearance();
+      this.soloEngine.players[1].appearancePreset = opponentAppearance(this.getSelectedAppearance());
+    }
+  }
+
   private getSelectedConfig() {
     const pseudonym =
       (
         document.getElementById('input-pseudonym') as HTMLInputElement
       )?.value.trim() || 'Student A';
-    const appearancePreset = Number(
-      (document.getElementById('select-appearance') as HTMLSelectElement)
-        ?.value || 0
-    );
+    const appearancePreset = this.getSelectedAppearance();
     const packId =
       (document.getElementById('select-pack') as HTMLSelectElement)?.value ||
       this.packs[0].packId;
@@ -552,7 +564,7 @@ class CourtIqApp {
         id: 'ai-opponent',
         pseudonym: previewPossession ? 'CourtBot' : `CourtBot (${cfg.aiDifficulty.slice(0, 3).toUpperCase()})`,
         isAi: true,
-        appearancePreset: (cfg.appearancePreset + 1) % 4,
+        appearancePreset: opponentAppearance(cfg.appearancePreset),
       },
     });
 
@@ -590,6 +602,7 @@ class CourtIqApp {
     document.getElementById('online-waiting-room')?.classList.add('hidden');
     document.getElementById('online-room-entry')?.classList.remove('hidden');
     document.getElementById('lobby-config-grid')?.classList.remove('hidden');
+    document.getElementById('lobby-character-picker')?.classList.remove('hidden');
     document.getElementById('lobby-options')?.classList.remove('hidden');
     this.sound.stopSlowMoAtmosphere();
     this.initLobbyPreviewEngine();
@@ -1848,6 +1861,7 @@ class CourtIqApp {
     }
     document.getElementById('online-room-entry')?.classList.add('hidden');
     document.getElementById('lobby-config-grid')?.classList.add('hidden');
+    document.getElementById('lobby-character-picker')?.classList.add('hidden');
     document.getElementById('lobby-options')?.classList.add('hidden');
     const topic = document.getElementById('online-room-topic');
     if (topic) topic.textContent = lobby.packTitle.replace(/^SPX101\s+/, '').replace(/\s*\(.*/, '');

@@ -14,8 +14,9 @@ import {
 import { dribbleBallPosition } from "../../shared/rules/dribble";
 import { getAirPose } from "../../shared/rules/streetMoves";
 
+for (const assetFile of ['streetball-player.glb', 'athlete-sky.glb']) {
 const bytes = readFileSync(
-  new URL("../../public/assets/player/streetball-player.glb", import.meta.url),
+  new URL("../../public/assets/player/" + assetFile, import.meta.url),
 );
 const asset = await new GLTFLoader().parseAsync(
   bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
@@ -47,7 +48,7 @@ function player() {
     player1: { id: "b", pseudonym: "BOT", isAi: true },
   }).players[0];
 }
-describe("shipped streetball player", () => {
+describe("shipped streetball player: " + assetFile, () => {
   it("ships editable skeletal clips and uses independent blended playback with contact IK", () => {
     expect(asset.animations).toHaveLength(17);
     for (const name of [
@@ -497,3 +498,5 @@ describe("shipped streetball player", () => {
       }
   });
 });
+
+}

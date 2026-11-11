@@ -1,4 +1,5 @@
 import { buildStudentQuestionFeedback, StudentQuestionFeedback } from './learningFeedback';
+import { normaliseAppearancePreset } from '../config/appearance';
 import { isDrivingInPaint } from './finishing';
 import { dribbleBallPosition } from './dribble';
 import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction, isStealRecovery } from './defense';
@@ -291,7 +292,7 @@ export class AuthoritativeMatchEngine {
         isSprinting: false,
         sprintSettleRemainingMs: 0,
         animState: 'idle',
-        appearancePreset: options.player0.appearancePreset ?? 0,
+        appearancePreset: normaliseAppearancePreset(options.player0.appearancePreset),
         streetMove: null, moveElapsedSec: 0, moveCooldownSec: 0, moveSide: 1,
         moveForwardX: 0, moveForwardZ: -1, wrongFootSec: 0,
         finishKind: null, finishElapsedSec: 0, finishResolutionSec: -1,
@@ -319,7 +320,7 @@ export class AuthoritativeMatchEngine {
         isSprinting: false,
         sprintSettleRemainingMs: 0,
         animState: 'idle',
-        appearancePreset: options.player1.appearancePreset ?? 1,
+        appearancePreset: normaliseAppearancePreset(options.player1.appearancePreset, 1),
         streetMove: null, moveElapsedSec: 0, moveCooldownSec: 0, moveSide: 1,
         moveForwardX: 0, moveForwardZ: -1, wrongFootSec: 0,
         finishKind: null, finishElapsedSec: 0, finishResolutionSec: -1,

@@ -10,12 +10,22 @@ import {
 } from "./legacyPlayerCharacter";
 import { StreetballRig } from "./streetballRig";
 import { smoothMotion } from "../../../shared/rules/motionCurves";
+import { characterForAppearance, normaliseAppearancePreset, paletteForAppearance } from "../../../shared/config/appearance";
 export { APPEARANCE_PRESETS } from "./legacyPlayerCharacter";
 export type { AppearancePresetOption } from "./legacyPlayerCharacter";
 
-const ASSET_URL = "/assets/player/streetball-player.glb";
-let sharedAsset: Promise<GLTF> | undefined;
-const loadAsset = () => (sharedAsset ??= new GLTFLoader().loadAsync(ASSET_URL));
+const sharedAssets = new Map<string, Promise<GLTF>>();
+function loadAsset(url: string): Promise<GLTF> {
+  let asset = sharedAssets.get(url);
+  if (!asset) {
+    asset = new GLTFLoader().loadAsync(url).catch(error => {
+      sharedAssets.delete(url);
+      throw error;
+    });
+    sharedAssets.set(url, asset);
+  }
+  return asset;
+}
 export interface PlayerRenderParams {
   sim: PlayerSimState;
   isAttacker: boolean;
@@ -26,7 +36,7 @@ export interface PlayerRenderParams {
   inPlace?: boolean;
 }
 
-/** The procedural player stays usable while the single shared GLB loads, or if it fails. */
+/** Each athlete is loaded once; skeletons, materials and jersey artwork stay independent. */
 export class PlayerCharacter3D {
   public readonly root = new THREE.Group();
   public readonly ready: Promise<void>;
@@ -57,21 +67,22 @@ export class PlayerCharacter3D {
     private slot: PlayerSlot,
     private presetId = 0,
   ) {
+    this.presetId = normaliseAppearancePreset(presetId);
     this.canvas.width = 1024;
     this.canvas.height = 1024;
     this.texture = new THREE.CanvasTexture(this.canvas);
     this.texture.colorSpace = THREE.SRGBColorSpace;
     this.texture.flipY = false;
     this.texture.anisotropy = 4;
-    this.fallback = new LegacyPlayerCharacter3D(slot, presetId);
+    this.fallback = new LegacyPlayerCharacter3D(slot, this.presetId);
     this.root.add(this.fallback.root);
-    this.ready = loadAsset()
+    this.ready = loadAsset(characterForAppearance(this.presetId).assetUrl)
       .then((gltf) => {
         if (this.disposed) return;
         const avatar = clone(gltf.scene);
         avatar.scale.setScalar(1.05);
         const preset =
-          APPEARANCE_PRESETS[presetId % 4] ?? APPEARANCE_PRESETS[0];
+          APPEARANCE_PRESETS[paletteForAppearance(this.presetId)];
         avatar.traverse((o) => {
           if (!(o instanceof THREE.Mesh)) return;
           o.castShadow = true;

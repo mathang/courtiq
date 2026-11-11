@@ -12,6 +12,7 @@ import {
 } from "../shared/rules/dunks";
 import { smoothMotion } from "../shared/rules/motionCurves";
 import { getAirPose } from "../shared/rules/streetMoves";
+import { appearanceFor, CHARACTERS, type CharacterId } from "../shared/config/appearance";
 
 const host = document.getElementById("player-stage")!;
 const status = document.getElementById("asset-status")!;
@@ -28,13 +29,14 @@ const engine = new AuthoritativeMatchEngine({
 const sim = engine.players[0];
 let team: 0 | 1 = 0,
   look = 0,
+  athlete: CharacterId = 0,
   mode = "dribble",
   time = 0,
   manual = false,
   paused = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let queuedMode: string | null = null;
 let displayedMotion = "dribble";
-let character = new PlayerCharacter3D(team, look);
+let character = new PlayerCharacter3D(team, appearanceFor(athlete, look));
 const scene = new THREE.Scene();
 const stage = new THREE.Group();
 stage.position.set(
@@ -173,7 +175,8 @@ async function loadCharacter() {
 }
 function rebuild() {
   const old = character;
-  character = new PlayerCharacter3D(team, look);
+  character = new PlayerCharacter3D(team, appearanceFor(athlete, look));
+  sim.appearancePreset = appearanceFor(athlete, look);
   stage.add(character.root);
   stage.remove(old.root);
   old.dispose();
@@ -245,6 +248,10 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-team]"))
   });
 document.getElementById("player-look")!.addEventListener("change", (e) => {
   look = Number((e.target as HTMLSelectElement).value);
+  rebuild();
+});
+document.getElementById('player-character')!.addEventListener('change', (event) => {
+  athlete = Number((event.target as HTMLSelectElement).value) as CharacterId;
   rebuild();
 });
 document
@@ -424,6 +431,7 @@ hooks.render_game_to_text = () =>
     name: sim.pseudonym,
     team,
     look,
+    character: CHARACTERS[athlete].label,
     paused,
     time,
     ball: ball.getWorldPosition(new THREE.Vector3()).toArray(),

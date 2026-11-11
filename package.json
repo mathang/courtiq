@@ -11,7 +11,7 @@
     "preview": "vite preview --port 4173",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "build:player": "node scripts/build-player.mjs --optimise",
+    "build:player": "node scripts/build-characters.mjs",
     "build:audio": "node scripts/build-court-audio.mjs"
   },
   "dependencies": {

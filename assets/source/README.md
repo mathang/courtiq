@@ -55,3 +55,25 @@ Three CC0 BigSoundBank recordings are retained here as MP3 source files. Author 
 64bda68cd42608f3723489604773c2be8cecef662cb87c1287d1b9b567338f98  basketball-shoes-0938.mp3
 95a4f366d867b9b8f71d731c2f53abf692b49340de9459c40b3e255ea887bd71  crowd-cheer-0237.mp3
 ```
+
+
+## River and Sky character roster — 12 November 2026
+
+The player-facing choices are **River** and **Sky**, each with all four existing colour palettes. Appearance IDs 0–3 retain the original looks; 4–7 select Sky. Both use the same 65-bone rest rig, limb lengths, basketball controls, physical reach, stamina and shot rules. Names/jersey artwork remain the student's choice. There are no gender labels in the chooser.
+
+Sky uses Quaternius's authored **Superhero Female** base from the free **Universal Base Characters [Standard]** pack, rather than a hair/colour change to River. The original source `.gltf` and `.bin` are retained untouched. Licence declaration is `BASE-CHARACTERS-LICENSE.txt` (CC0 1.0), corroborated by the publisher at https://quaternius.com/packs/universalbasecharacters.html. Files were obtained from this pinned public pack mirror on 12 November 2026:
+
+https://github.com/NafisRayan/Animate-Rigged-Humanoid-No-Blender/tree/5821923af517ac5fdc82505faa92a0d575fc1b1a/Universal%20Base%20Characters%5BStandard%5D/Universal%20Base%20Characters%5BStandard%5D/Base%20Characters/Godot%20-%20UE
+
+`scripts/character-source.mjs` embeds the source buffer for reproducible loading without its original texture dependencies, and rebinds body/eyes/brows onto River's rest joints by bone name and weighted bind transforms. `build-player.mjs` adds the original continuous CourtIQ kit, fitted trainers and tied-back hair. Cloth front shaping bridges the jersey surface. Both assets use the same 17 animation contracts. Iris surfaces are now fitted to each source eye instead of using protruding black spheres.
+
+`npm run build:player` rebuilds both via `build-characters.mjs`. The original asset URL remains River; Sky ships as `public/assets/player/athlete-sky.glb`. Normal production builds use the checked-in GLBs. No paid assets, purchases or AI generation services were used.
+
+Source SHA-256:
+
+```text
+adedf28000a0716f689b009a70314506fc62f827498f77ba852acb5610f3f3f4  Superhero_Female_FullBody.gltf
+3a8220a485b33d05d879115a50697728b45a151781106033afb8b8c243fca208  Superhero_Female_FullBody.bin
+```
+
+The two small `portrait-*.png` chooser images are local renders of the shipping GLBs, captured from Player Lab and cropped to the face. They add no rendering loop or external image/generation dependency to the lobby.

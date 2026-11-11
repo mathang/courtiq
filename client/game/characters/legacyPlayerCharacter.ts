@@ -3,6 +3,7 @@ import { dunkRig } from '../../../shared/rules/dunks';
 import { getAirPose, STREET_MOVES } from '../../../shared/rules/streetMoves';
 import { PlayerSimState } from '../../../shared/rules/matchStateMachine';
 import { PlayerSlot } from '../../../shared/rules/possession';
+import { characterForAppearance } from '../../../shared/config/appearance';
 
 export interface AppearancePresetOption {
   readonly id: number;
@@ -73,20 +74,21 @@ export class LegacyPlayerCharacter3D {
     this.nameTexture.colorSpace = THREE.SRGBColorSpace;
     this.nameColour = slot === 0 ? '#082a48' : '#ffffff';
     const preset = APPEARANCE_PRESETS[appearancePreset % 4] ?? APPEARANCE_PRESETS[0];
+    const isSky = characterForAppearance(appearancePreset).key === 'sky';
     const skin = new THREE.MeshStandardMaterial({ color: preset.skinHex, roughness: 0.65 });
     const jersey = new THREE.MeshStandardMaterial({ color: slot === 0 ? 0xfdb913 : 0x00a8e8, roughness: 0.75 });
     const shorts = new THREE.MeshStandardMaterial({ color: slot === 0 ? 0x082a48 : 0x082f49, roughness: 0.8 });
     const shoes = new THREE.MeshStandardMaterial({ color: slot === 0 ? 0xf8fafc : 0x183147, roughness: 0.5 });
     const band = new THREE.MeshStandardMaterial({ color: preset.headbandHex });
     const hair = new THREE.MeshStandardMaterial({ color: preset.hairHex, roughness: 1 });
-    const torso = this.mesh(new THREE.CylinderGeometry(0.285, 0.21, 0.50, 20), jersey, this.body, 0, 1.23, 0);
+    const torso = this.mesh(new THREE.CylinderGeometry(isSky ? 0.26 : 0.285, 0.21, 0.50, 20), jersey, this.body, 0, 1.23, 0);
     torso.scale.z = 0.64;
     this.ellipsoid(this.body, shorts, 0, 0.91, 0, 0.245, 0.18, 0.15);
     this.mesh(new THREE.CylinderGeometry(0.075, 0.08, 0.13, 12), skin, this.body, 0, 1.54, 0);
     this.ellipsoid(this.body, skin, 0, 1.73, 0, 0.16, 0.20, 0.155);
     const cap = this.ellipsoid(this.body, hair, 0, 1.86, -0.015, preset.hairStyle === 'afro' ? 0.205 : 0.16,
       preset.hairStyle === 'afro' ? 0.18 : 0.09, preset.hairStyle === 'afro' ? 0.19 : 0.15);
-    if (preset.hairStyle === 'ponytail') this.ellipsoid(this.body, hair, 0, 1.79, -0.20, 0.08, 0.17, 0.08);
+    if (isSky || preset.hairStyle === 'ponytail') this.ellipsoid(this.body, hair, 0, 1.79, -0.20, 0.065, 0.14, 0.065);
     const headband = this.mesh(new THREE.CylinderGeometry(0.163, 0.163, 0.045, 20), band, this.body, 0, 1.82, 0);
     headband.scale.z = 0.96;
     // Small facial details keep the face readable without external assets.

@@ -14,6 +14,12 @@ import { execFileSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 import { createBasketballAnimations } from './player-animations.mjs';
+import { loadSkySource, geometryOnSharedRig } from './character-source.mjs';
+
+const character = process.argv.includes('--character=sky') ? 'sky' : 'river';
+const assetPath = character === 'sky'
+  ? 'public/assets/player/athlete-sky.glb'
+  : 'public/assets/player/streetball-player.glb';
 
 globalThis.FileReader = class {
   async readAsArrayBuffer(blob) {
@@ -29,6 +35,16 @@ const { scene } = await new GLTFLoader().parseAsync(
 scene.updateMatrixWorld(true);
 const original = scene.getObjectByName("SuperHero_Male"),
   skeleton = original.skeleton;
+let sourceFingerprint = createHash('sha256').update(bytes).digest('hex');
+if (character === 'sky') {
+  const sky = await loadSkySource();
+  for (const [target, sourceName] of [[original, 'Superhero_Female'], [scene.getObjectByName('Eyes'), 'Eyes'], [scene.getObjectByName('Eyebrows'), 'Eyebrows']]) {
+    target.geometry = geometryOnSharedRig(sky.scene.getObjectByName(sourceName), target);
+  }
+  sourceFingerprint = createHash('sha256')
+    .update(await fs.readFile('assets/source/Superhero_Female_FullBody.gltf'))
+    .update(await fs.readFile('assets/source/Superhero_Female_FullBody.bin')).digest('hex');
+}
 const source = original.geometry.clone();
 const parts = new Map(),
   materials = new Map();
@@ -69,7 +85,7 @@ for (let i = 0; i < positions.count; i++) {
       nz = THREE.MathUtils.lerp(
         z,
         front,
-        fabric * 0.45 * smooth(0.015, 0.07, z),
+        fabric * (character === 'sky' ? 0.82 : 0.45) * smooth(0.015, 0.07, z),
       );
   }
   if (y > 0.625 && y < 1.025) {
@@ -273,12 +289,23 @@ function add(g, name, material, bone) {
 for (const [material, data] of bodyParts)
   add(geometry(data), "Body_" + material, material);
 original.removeFromParent();
+const eyeSurfaces = [];
 for (const [name, material] of [
   ["Eyebrows", "Hair"],
   ["Eyes", "Eyes"],
 ]) {
   const o = scene.getObjectByName(name);
-  add(o.geometry.clone(), "Detail_" + material, material);
+  const detail = o.geometry.clone();
+  if (name === 'Eyes') {
+    const p = detail.attributes.position;
+    for (const side of [-1, 1]) {
+      const bounds = new THREE.Box3();
+      for (let i = 0; i < p.count; i++) if (Math.sign(p.getX(i)) === side) bounds.expandByPoint(new THREE.Vector3().fromBufferAttribute(p, i));
+      const center = bounds.getCenter(new THREE.Vector3()), size = bounds.getSize(new THREE.Vector3());
+      eyeSurfaces.push({ x: center.x, y: center.y, z: bounds.max.z, rx: Math.min(0.009, size.x * 0.24), ry: Math.min(0.009, size.y * 0.27) });
+    }
+  }
+  add(detail, "Detail_" + material, material);
   o.removeFromParent();
 }
 function sphere(x, y, z, rx, ry, rz, name, material, bone, segments = 16) {
@@ -475,10 +502,25 @@ const cap = new THREE.SphereGeometry(
   0,
   Math.PI * 0.53,
 );
-cap.scale(0.116, 0.095, 0.107);
-cap.translate(0, 1.759, -0.009);
+cap.scale(character === 'sky' ? 0.109 : 0.116, character === 'sky' ? 0.087 : 0.095, character === 'sky' ? 0.102 : 0.107);
+cap.translate(0, character === 'sky' ? 1.767 : 1.759, -0.009);
 add(cap, "Detail_Hair", "Hair", "Head");
-for (let r = 0; r < 4; r++)
+if (character === 'sky') {
+  // A compact tied-back silhouette stays clear of the shoulders and jersey.
+  sphere(0, 1.78, -0.126, 0.051, 0.048, 0.048, 'Detail_Hair', 'Hair', 'Head', 24);
+  for (let i = 0; i < 7; i++) {
+    const t = i / 6;
+    sphere((i % 2 ? -1 : 1) * 0.008, 1.759 - t * 0.115, -0.155 - t * 0.033,
+      0.026 - t * 0.008, 0.026, 0.025 - t * 0.007, 'Detail_Hair', 'Hair', 'Head', 12);
+  }
+  for (const side of [-1, 1]) for (let strand = 0; strand < 4; strand++) {
+    tube([
+      [side * (0.018 + strand * 0.019), 1.839 - strand * 0.006, 0.015],
+      [side * (0.027 + strand * 0.018), 1.827 - strand * 0.008, -0.045],
+      [side * (0.02 + strand * 0.015), 1.797 - strand * 0.008, -0.098],
+    ], 0.003, 'Detail_Hair', 'Hair', 'Head');
+  }
+} else for (let r = 0; r < 4; r++)
   for (let k = 0; k < 12; k++) {
     const theta = (k / 12) * Math.PI * 2 + (r % 2) * 0.2,
       a = ((r + 0.5) / 4) * 1.42;
@@ -495,26 +537,26 @@ for (let r = 0; r < 4; r++)
       8,
     );
   }
-for (const side of [-1, 1]) {
+for (const eye of eyeSurfaces) {
   sphere(
-    side * 0.034,
-    1.699,
-    0.08,
-    0.013,
-    0.014,
-    0.008,
+    eye.x,
+    eye.y,
+    eye.z - 0.002,
+    eye.rx,
+    eye.ry,
+    0.0025,
     "Detail_Pupils",
     "Pupils",
     "Head",
     12,
   );
   sphere(
-    side * 0.03,
-    1.704,
-    0.087,
-    0.003,
-    0.003,
-    0.002,
+    eye.x - 0.002,
+    eye.y + 0.002,
+    eye.z + 0.0007,
+    0.0013,
+    0.0013,
+    0.0006,
     "Shoe_Ivory",
     "Ivory",
     "Head",
@@ -543,22 +585,20 @@ for (const [name, { material, geometries }] of parts) {
       if (w.array[i * 4 + k] === 0) j.array[i * 4 + k] = 0;
 }
 const exported = new THREE.Scene();
-exported.name = "CourtIQ_Continuous_Streetball_Player";
+exported.name = character === 'sky' ? 'CourtIQ_Sky' : 'CourtIQ_River';
 exported.userData = {
   author: "CourtIQ integrated kit; Quaternius CC0 humanoid",
   units: "metres",
   forward: "+Z",
   up: "+Y",
   kitTopology: "single-source-surface",
-  sourceSha256: createHash("sha256").update(bytes).digest("hex"),
+  character,
+  sourceSha256: sourceFingerprint,
 };
 for (const child of [...scene.children]) exported.add(child);
 const animations = await createBasketballAnimations(exported);
 const glb = await new GLTFExporter().parseAsync(exported, { binary: true, animations });
-await fs.writeFile(
-  "public/assets/player/streetball-player.glb",
-  Buffer.from(glb),
-);
+await fs.writeFile(assetPath, Buffer.from(glb));
 if (process.argv.includes("--optimise")) {
   const temp = await fs.mkdtemp(path.join(os.tmpdir(), "courtiq-player-"));
   try {
@@ -569,7 +609,7 @@ if (process.argv.includes("--optimise")) {
         "--yes",
         "@gltf-transform/cli@4.5.1",
         "dedup",
-        "public/assets/player/streetball-player.glb",
+        assetPath,
         dedup,
       ],
       { stdio: "inherit" },
@@ -581,7 +621,7 @@ if (process.argv.includes("--optimise")) {
         "@gltf-transform/cli@4.5.1",
         "prune",
         dedup,
-        "public/assets/player/streetball-player.glb",
+        assetPath,
         "--keep-attributes",
         "true",
       ],
@@ -594,7 +634,8 @@ if (process.argv.includes("--optimise")) {
 console.log(
   JSON.stringify(
     {
-      bytes: (await fs.stat("public/assets/player/streetball-player.glb")).size,
+      character,
+      bytes: (await fs.stat(assetPath)).size,
       bones: skeleton.bones.length,
       triangles,
       meshes: parts.size,

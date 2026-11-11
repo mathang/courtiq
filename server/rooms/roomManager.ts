@@ -1,4 +1,5 @@
 import { isDefenseAction } from '../../shared/rules/defense';
+import { normaliseAppearancePreset } from '../../shared/config/appearance';
 import { isDunkStyle } from '../../shared/rules/dunks';
 import { isStreetMove } from '../../shared/rules/streetMoves';
 import { RoomPresetId, SessionLengthId } from '../../shared/config/balance';
@@ -159,7 +160,7 @@ export class RoomManager {
         id: `p0-${roomCode}`,
         pseudonym: (msg.pseudonym || 'Player 1').slice(0, 20),
         reconnectToken,
-        appearancePreset: msg.appearancePreset ?? 0,
+        appearancePreset: normaliseAppearancePreset(msg.appearancePreset),
         ready: false,
         connected: true,
         measuredRttMs: 30,
@@ -213,7 +214,7 @@ export class RoomManager {
         id: `p${slot}-${code}`,
         pseudonym: (msg.pseudonym || `Player ${slot + 1}`).slice(0, 20),
         reconnectToken,
-        appearancePreset: msg.appearancePreset ?? slot,
+        appearancePreset: normaliseAppearancePreset(msg.appearancePreset, slot),
         ready: false,
         connected: true,
         measuredRttMs: 30,
