@@ -349,6 +349,15 @@
       "timestamp_utc": "2026-11-10T23:57:01.098989+00:00",
       "observed": "Corrected preview6af3aeb97c25938fe51b58d8: all10 application files verified,20 motion frames and4 styles checked, paused rig drift0, no errors or mobile overflow. Deployed HTTP check passes same question/choices/reveal, hidden keys and missed-swipe recovery. A stale earlier scratch preview was rejected before release and replaced after fixing a test-fixture type error and completing a fresh build.",
       "evidence_path": "output/player-v2/preview-assets.json; output/player-v2/preview-live/motion-report.json; output/player-v2/remote-release.json"
+    },
+    {
+      "id": "integrated-kit-production-release",
+      "status": "PASS",
+      "required": true,
+      "kind": "deployed-integration",
+      "timestamp_utc": "2026-11-11T00:00:37.263313+00:00",
+      "observed": "Source317c5e5 on GitHub main; Netlify production6af3af78b608bbe4ee5d8486. Ten application/asset files match the tested dist (only observed Netlify HTML transforms normalised). Production motion review:20 frames,all4 styles,paused drift0,no errors/overflow; live screenshots inspected. Normal solo AI creates a dunk1750ms after possession. Two deployed synthetic students pass identical question/choices/reveal,hidden keys and swipe recovery.",
+      "evidence_path": "output/player-v2/production-assets.json; output/player-v2/production-live/motion-report.json; output/player-v2/production-app-report.json; output/player-v2/production-remote.json"
     }
   ],
   "release_decision": "PASS_FOR_LOCAL_PILOT_PENDING_HUMAN_CLASSROOM_REVIEW",
