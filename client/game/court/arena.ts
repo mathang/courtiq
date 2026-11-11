@@ -311,23 +311,23 @@ export class CourtIqArena3D {
     this.scoreboardTexture = new THREE.CanvasTexture(this.scoreboardCanvas);
     this.scoreboardTexture.colorSpace = THREE.SRGBColorSpace;
 
-    // Positioned at y = 4.35 so it stays 100% visible below #hud-top!
+    // Positioned at y = 3.72 so the full Jumbotron stays 100% visible below #hud-top!
     const jumbotronFrame = new THREE.Mesh(
-      new THREE.BoxGeometry(5.3, 1.96, 0.24),
+      new THREE.BoxGeometry(4.8, 1.44, 0.24),
       new THREE.MeshStandardMaterial({
         color: 0x091322,
         roughness: 0.38,
         metalness: 0.68,
       })
     );
-    jumbotronFrame.position.set(0, 4.35, -8.12);
+    jumbotronFrame.position.set(0, 3.72, -8.12);
     this.group.add(jumbotronFrame);
 
     const jumbotronScreen = new THREE.Mesh(
-      new THREE.PlaneGeometry(5.02, 1.72),
+      new THREE.PlaneGeometry(4.56, 1.26),
       new THREE.MeshBasicMaterial({ map: this.scoreboardTexture })
     );
-    jumbotronScreen.position.set(0, 4.35, -7.99);
+    jumbotronScreen.position.set(0, 3.72, -7.99);
     this.group.add(jumbotronScreen);
 
     this.updateScoreboard({
@@ -785,10 +785,10 @@ export class CourtIqArena3D {
       const bannerTex = new THREE.CanvasTexture(c);
       bannerTex.colorSpace = THREE.SRGBColorSpace;
       const bannerMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.56, 1.95),
+        new THREE.PlaneGeometry(1.42, 1.62),
         new THREE.MeshBasicMaterial({ map: bannerTex })
       );
-      bannerMesh.position.set(b.x, 3.58, -8.14);
+      bannerMesh.position.set(b.x, 3.22, -8.14);
       this.group.add(bannerMesh);
     }
 
@@ -1156,11 +1156,12 @@ export class CourtIqArena3D {
 
     ctx.restore();
 
-    // Baseline & sideline branding text
+    // Baseline branding text split cleanly left & right of the center overhang stanchion
     ctx.fillStyle = '#fdb913';
-    ctx.font = '900 52px system-ui, sans-serif';
+    ctx.font = '900 44px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('COURTIQ • SPX101 STREET ARENA', S * 0.5, courtTop - 38);
+    ctx.fillText('COURTIQ STREETBALL', S * 0.275, courtTop - 38);
+    ctx.fillText('SPX101 DUEL ARENA', S * 0.725, courtTop - 38);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;

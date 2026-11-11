@@ -1171,11 +1171,26 @@ textarea {
   .feedback-overlay {
     bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
   }
+  .touch-controls {
+    bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
+  }
 }
 
 @media (max-width:760px) {
   .flow-mini-track { width:56px; height:4px; }
   .combo-mini-pill { font-size:.48rem; padding:1px 4px; }
+  .touch-controls {
+    left:10px;
+    right:10px;
+    bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
+  }
+  .touch-btn {
+    font-size:.5rem;
+    line-height:1.08;
+    padding:2px 3px;
+    overflow-wrap:anywhere;
+    text-align:center;
+  }
   .question-overlay,
   .feedback-overlay {
     left:10px;

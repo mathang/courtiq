@@ -15,6 +15,13 @@
 
 ---
 
+## AAA Streetball Flow, Trick Chains & Floodlit Arena — 11 November 2026
+
+- **280 ms Input Buffering & Legitimate 2–3 Move Trick Chains**: Queue crossovers, spins, eurosteps, stepbacks, dunks, jumpers, and blocks seamlessly through active move recovery (`>= 65%` cancel window or `360 ms` combo grace into a distinct move, e.g., `Crossover -> Spin -> Windmill` or `Crossover -> Stepback -> Fadeaway`). Clean first crossovers and stepbacks protect the ball during separation, while greedy repeat move spam near a defender exposes the ball (`0.55 s` counter-steal window).
+- **Authoritative Street Flow & On-Fire Momentum (`0–100%`)**: Clean trick chains, ankle-breakers, timed blocks, steals, and fast accurate SPX101 answers charge each player's HUD **Street Flow** bar (`🔥 ON FIRE` at `>= 80%`), triggering floor aura rings, flame ball ribbons, crowd/brass swells, and a bounded setup quality bonus (`up to +8%` on base shot probability $B$, strictly inside `[3%, 95%]` and never overriding blocks or bypassing course knowledge).
+- **Floodlit Campus Streetball Arena & Pro Overhang Hoop**: Pro baseline-clear overhang stanchion (`z = -7.38`, zero dunk/drive stanchion clipping), spring-damped breakaway rim flex, backboard shudder, reactive LED backboard frame, woven-diamond cord net, `2048x2048` multi-plank maple court, `PCFSoftShadowMap` directional shadows in High quality (cleanly disabled in Low/Classroom), stadium floodlights, articulated 4-part courtside spectators, and two-hand triple-threat ball cradle.
+- **CourtBot Chains & Mobile Hosting-Badge Clearance**: Intermediate and Advanced CourtBot execute legitimate 2-move separation chains and punish `1.0 s` missed-swipe freezes while preserving delayed observations. On `390x844` portrait viewports, both the 4-option question duel card and touch controls clear bottom-right hosting badges without scrolling.
+
 ## Polished possession — 11 November 2026
 
 Choose **Preview a full possession** in the lobby to watch a drive, crossover and windmill take-off, answer the normal question, then see the finish and landing. Movement immediately takes control, and the match continues normally afterwards.
@@ -76,7 +83,7 @@ Solo settings pause the match. New trick bindings can be remapped in Settings; s
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated test suite (82 tests across 14 suites)
+# 2. Run the automated test suite (93 tests across 15 suites)
 npm test
 
 # 3. Start the Vite development server (Solo mode vs. AI & Content Validator)

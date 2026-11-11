@@ -160,13 +160,14 @@ export class SoundEngine {
     }
   }
   private silenceActiveVoices(): void {
-    if (!this.ctx) return;
-    const stopAt = this.ctx.currentTime + 0.015;
     for (const v of this.voices) {
       try {
-        v.stop(stopAt);
+        v.onended = null;
+        v.stop();
+        v.disconnect();
       } catch {}
     }
+    this.voices.clear();
   }
   private buffer(name: DesignedSound): AudioBuffer {
     const key = "designed:" + name;
@@ -186,6 +187,7 @@ export class SoundEngine {
     delay = 0,
     rateOverride?: number,
   ): void {
+    if (this.muted || this.paused) return;
     const ctx = this.ensureContext();
     if (!ctx || !this.bus || this.voices.size >= 28) return;
     const source = ctx.createBufferSource();

@@ -33,7 +33,7 @@ export class ShowcasePossession {
     this.elapsed += dt;
     const p = players[0],
       distance = Math.hypot(p.x, p.z + 5.25);
-    if (distance < 3.15) {
+    if (distance < 3.18 && (!p.streetMove || p.moveElapsedSec >= 0.32)) {
       this.active = false;
       return {
         moveX: 0,
