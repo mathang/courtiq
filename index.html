@@ -208,6 +208,11 @@
                   </select>
                 </div>
               </div>
+              <label class="adaptive-timing-option" for="chk-adaptive-timing">
+                <input id="chk-adaptive-timing" type="checkbox" checked />
+                Adapt question time as I play
+              </label>
+              <p class="small-muted adaptive-timing-hint">More time when you need it; a quicker pace after three quick correct answers. Timed modes only.</p>
               <div class="lobby-extra-actions">
                 <button id="btn-lobby-settings" class="small-btn" type="button">Sound &amp; controls</button>
                 <button id="btn-quick-demo-shot" class="small-btn" type="button">Watch a possession</button>
@@ -241,6 +246,7 @@
             <div class="question-badges">
               <span id="q-course-badge" class="q-badge primary">SPX101 • Week 9</span>
               <span id="q-topic-badge" class="q-badge">Measurement Error</span>
+              <span id="q-pace-badge" class="q-badge hidden" title="Answer time adapts between questions. Protected reading time stays the same.">Adaptive time</span>
               <span id="q-contest-badge" class="q-badge contest">🛡️ Block Available</span>
             </div>
 

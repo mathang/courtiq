@@ -30,6 +30,8 @@ export function createAiQuestionPlanAtDuelStart(params: {
   question: QuestionItem;
   effectiveReadingMs: number;
   effectiveAnswerWindowMs: number;
+  /** Keeps the precommitted answering pace proportional to an adapted solo budget. */
+  answerTimeScale?: number;
   rng?: () => number;
 }): AiCommittedQuestionPlan {
   const rng = params.rng ?? Math.random;
@@ -51,7 +53,7 @@ export function createAiQuestionPlanAtDuelStart(params: {
     rng() * (preset.maxAnswerTimeMs - preset.minAnswerTimeMs);
   const plannedAnswerTimeMs = Math.round(
     clamp(
-      rawTime,
+      params.effectiveReadingMs + Math.max(250, rawTime - params.effectiveReadingMs) * (params.answerTimeScale ?? 1),
       params.effectiveReadingMs + 250,
       params.effectiveAnswerWindowMs - 250
     )

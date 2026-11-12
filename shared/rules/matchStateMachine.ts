@@ -1,4 +1,5 @@
 import { buildQuestionAnswerReview, buildStudentQuestionFeedback, QuestionAnswerReview, StudentQuestionFeedback } from './learningFeedback';
+import { adaptiveQuestionWindowMs, createAdaptiveQuestionTimingState, updateAdaptiveQuestionTiming, type TimingAdjustment } from './adaptiveQuestionTiming';
 import { normaliseAppearancePreset } from '../config/appearance';
 import { isDrivingInPaint } from './finishing';
 import {
@@ -204,6 +205,7 @@ export interface FeedbackBannerState {
   questionStem?: string;
   learningBySlot?: [StudentQuestionFeedback, StudentQuestionFeedback];
   continueReady?: [boolean, boolean];
+  timingAdjustment?: TimingAdjustment;
 }
 
 export interface MatchEngineOptions {
@@ -214,6 +216,7 @@ export interface MatchEngineOptions {
   sessionLengthId: SessionLengthId;
   aiDifficulty?: AiDifficultyId;
   customMaxPossessions?: number;
+  adaptiveQuestionTiming?: boolean;
   player0: { id: string; pseudonym: string; appearancePreset?: number };
   player1: {
     id: string;
@@ -233,6 +236,7 @@ export class AuthoritativeMatchEngine {
   public readonly sessionLengthId: SessionLengthId;
   public readonly aiDifficulty: AiDifficultyId;
   public readonly rules: MatchRulesConfig;
+  public readonly adaptiveQuestionTiming: boolean;
 
   public phase: MatchPhase = 'Lobby';
   public scoreState: PossessionScoreState;
@@ -252,6 +256,11 @@ export class AuthoritativeMatchEngine {
   private lastDunkStyle: DunkStyle | null = null;
   private aiBrain: AiBasketballBrainState;
   private questionReadyTimerMs = 0;
+  private adaptiveTimingState = createAdaptiveQuestionTimingState();
+
+  public getQuestionTimingState() {
+    return Object.freeze({ enabled: this.adaptiveQuestionTiming, ...this.adaptiveTimingState });
+  }
 
   constructor(options: MatchEngineOptions) {
     this.matchId = options.matchId;
@@ -263,6 +272,8 @@ export class AuthoritativeMatchEngine {
     this.aiDifficulty = options.aiDifficulty ?? 'intermediate';
 
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
+    this.adaptiveQuestionTiming = options.adaptiveQuestionTiming === true && options.mode === 'solo' &&
+      options.player1.isAi && !roomPreset.untimed;
     const sessionPreset = SESSION_LENGTH_PRESETS[this.sessionLengthId];
 
     this.rules = Object.freeze({
@@ -956,9 +967,12 @@ export class AuthoritativeMatchEngine {
     const question = this.selectNextQuestion();
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
     const effectiveReadingMs = Math.max(roomPreset.readingMs, question.readingMs);
-    const effectiveAnswerWindowMs = roomPreset.untimed
+    const baseAnswerWindowMs = roomPreset.untimed
       ? roomPreset.answerWindowMs
       : Math.max(roomPreset.answerWindowMs, question.answerWindowMs);
+    const effectiveAnswerWindowMs = this.adaptiveQuestionTiming
+      ? adaptiveQuestionWindowMs(baseAnswerWindowMs, effectiveReadingMs, this.adaptiveTimingState)
+      : baseAnswerWindowMs;
 
     const optionsSlot0 = shuffleQuestionOptionsForPlayer(question, this.rng);
     const optionsSlot1 = shuffleQuestionOptionsForPlayer(question, this.rng);
@@ -982,6 +996,8 @@ export class AuthoritativeMatchEngine {
           question,
           effectiveReadingMs,
           effectiveAnswerWindowMs,
+          answerTimeScale: this.adaptiveQuestionTiming
+            ? (effectiveAnswerWindowMs - effectiveReadingMs) / Math.max(1, baseAnswerWindowMs - effectiveReadingMs) : 1,
           rng: this.rng,
         })
       : null;
@@ -1167,6 +1183,10 @@ export class AuthoritativeMatchEngine {
     );
 
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
+    if (this.adaptiveQuestionTiming) {
+      this.adaptiveTimingState = updateAdaptiveQuestionTiming(this.adaptiveTimingState,
+        this.activeDuel.answersBySlot[0], this.activeDuel.config.readingMs, this.activeDuel.config.answerWindowMs);
+    }
     this.updateLearningStreaks();
     const frozenRelease = this.activeDuel.releaseSnapshot;
     const resolvedOutcome = resolveAuthoritativeShot({
@@ -1310,6 +1330,8 @@ export class AuthoritativeMatchEngine {
       basketballOutcome: outcome.outcome,
       pointsAwarded: outcome.pointsAwarded,
       finalShotProbability: outcome.finalProbability,
+      questionTiming: { readingMs: this.activeDuel.config.readingMs,
+        answerWindowMs: this.activeDuel.config.answerWindowMs, adaptive: this.adaptiveQuestionTiming },
     });
 
     this.attemptEvents.push(event);
@@ -1350,6 +1372,7 @@ export class AuthoritativeMatchEngine {
       questionStem: q.stem,
       learningBySlot: [learningForSlot(0), learningForSlot(1)],
       continueReady: [this.players[0].isAi, this.players[1].isAi],
+      timingAdjustment: this.adaptiveQuestionTiming ? this.adaptiveTimingState.lastAdjustment : null,
     };
 
     this.players[att].animState = outcome.outcome === 'basket' ? 'celebrate' : 'idle';

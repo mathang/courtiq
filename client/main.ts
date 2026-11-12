@@ -131,6 +131,7 @@ class CourtIqApp {
         coordinates: 'metres; x right, z towards camera, y up; hoop (0,3.05,-5.25)',
         phase: online?.phase ?? eng?.phase,
         features: { multiplayer: MULTIPLAYER_ENABLED },
+        questionTiming: eng?.getQuestionTimingState(),
         score: online?.scoreState.scores ?? eng?.scoreState.scores,
         attacker: online?.scoreState.currentAttacker ?? eng?.scoreState.currentAttacker,
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
@@ -149,7 +150,8 @@ class CourtIqApp {
         },
         duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected, physicalBlock: online.activeDuel.physicalBlock } : eng?.activeDuel ? {
           id: eng.activeDuel.duelId, elapsedMs: eng.activeDuel.elapsedRealMs,
-          readingMs: eng.activeDuel.config.readingMs, physicalBlock: eng.activeDuel.physicalBlock, submitted: eng.activeDuel.answersBySlot.map(Boolean),
+          readingMs: eng.activeDuel.config.readingMs, answerWindowMs: eng.activeDuel.config.answerWindowMs,
+          physicalBlock: eng.activeDuel.physicalBlock, submitted: eng.activeDuel.answersBySlot.map(Boolean),
         } : null,
       });
     };
@@ -566,6 +568,7 @@ class CourtIqApp {
       roomPresetId,
       sessionLengthId,
       aiDifficulty,
+      adaptiveQuestionTiming: (document.getElementById('chk-adaptive-timing') as HTMLInputElement)?.checked ?? true,
     };
   }
 
@@ -588,6 +591,7 @@ class CourtIqApp {
       roomPresetId: cfg.roomPresetId,
       sessionLengthId: cfg.sessionLengthId,
       aiDifficulty: previewPossession ? 'beginner' : cfg.aiDifficulty,
+      adaptiveQuestionTiming: !previewPossession && cfg.adaptiveQuestionTiming,
       player0: {
         id: 'student-local',
         pseudonym: cfg.pseudonym,
@@ -924,6 +928,7 @@ class CourtIqApp {
           activeDuel.releaseSnapshot.blockEligibility.eligible,
         physicalBlock: activeDuel.physicalBlock,
         youAreAttacker: att === 0,
+        adaptiveTiming: eng.adaptiveQuestionTiming,
       });
     }
 
@@ -1250,6 +1255,7 @@ class CourtIqApp {
     blockEligibleAtRelease: boolean;
     physicalBlock: boolean;
     youAreAttacker: boolean;
+    adaptiveTiming?: boolean;
   }): void {
     const q = params.publicQuestion;
     const setTxt = (id: string, val: string) => {
@@ -1259,6 +1265,7 @@ class CourtIqApp {
 
     setTxt('q-course-badge', `${q.course} • Week ${q.week}`);
     setTxt('q-topic-badge', q.topic);
+    document.getElementById('q-pace-badge')?.classList.toggle('hidden', !params.adaptiveTiming);
     setTxt(
       'q-contest-badge',
       params.physicalBlock
@@ -1394,7 +1401,9 @@ class CourtIqApp {
     document.getElementById('fb-explanation-text')?.classList.toggle('hidden', !review || review.explanation === review.answer.reason);
     setTxt('fb-source-ref', review ? `Source: ${review.sourceRef}` : '');
     setTxt('fb-streak-text', !learning ? '' : learning.onFire ? `🔥 On Fire · ${learning.correctAnswerStreak} in a row` : learning.correctAnswerStreak ? `${learning.correctAnswerStreak}/3 to On Fire` : '');
-    setTxt('fb-wait-status', pendingMessage || (fb?.continueReady?.[slot] ? 'Waiting for the other student…' : ''));
+    setTxt('fb-wait-status', pendingMessage || (fb?.continueReady?.[slot] ? 'Waiting for the other student…' :
+      fb?.timingAdjustment === 'more-time' ? 'Next question: more time' :
+      fb?.timingAdjustment === 'less-time' ? 'Next question: quicker pace' : ''));
     const next = document.getElementById('btn-next-possession') as HTMLButtonElement | null;
     if (next) {
       const waiting = !fb || Boolean(fb.continueReady?.[slot]);
@@ -1583,6 +1592,9 @@ class CourtIqApp {
       'blockEligible',
       'basketballOutcome',
       'pointsAwarded',
+      'readingMs',
+      'answerWindowMs',
+      'adaptiveQuestionTiming',
     ];
     const rows: string[] = [headers.join(',')];
     for (const ev of events) {
@@ -1605,6 +1617,9 @@ class CourtIqApp {
             ev.blockEligible,
             ev.basketballOutcome,
             ev.pointsAwarded,
+            ev.questionTiming?.readingMs ?? '',
+            ev.questionTiming?.answerWindowMs ?? '',
+            ev.questionTiming?.adaptive ?? '',
           ].join(',')
         );
       }

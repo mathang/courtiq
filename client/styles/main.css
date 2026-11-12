@@ -1248,6 +1248,24 @@ body:has(> #nl-badge-frame) .feedback-overlay {
 .feedback-card { max-height:80dvh; overflow-y:auto; overscroll-behavior:contain; }
 .fb-meta-row { flex-wrap:wrap; gap:12px; }
 .fb-topic { color:var(--text-muted); font-size:.76rem; margin:0 0 6px; }
+.adaptive-timing-option { display:flex; align-items:center; gap:10px; min-height:44px; margin-top:12px; cursor:pointer; font-size:.85rem; }
+.lobby-card .adaptive-timing-option input { width:18px; min-width:18px; min-height:18px; padding:0; accent-color:var(--gold); }
+.adaptive-timing-hint { font-size:.76rem; line-height:1.4; margin:0 0 8px; }
+#q-pace-badge { border-color:#67e8f9; color:#a5f3fc; }
+@media(max-height:560px) and (min-width:761px) {
+  .question-panel { max-height:calc(100dvh - 158px); overflow-y:auto; overscroll-behavior:contain; padding:10px 14px; }
+  .question-top-bar { margin-bottom:5px; }
+  .question-badges { gap:4px; }
+  .question-stem { font-size:.9rem; line-height:1.22; margin-bottom:6px; }
+  .reading-pill { font-size:.64rem; white-space:nowrap; padding:2px 6px; }
+  .q-timer-text { font-size:1rem; }
+  .timer-progress-track { height:4px; margin-bottom:6px; }
+  .q-badge { font-size:.64rem; padding:2px 6px; }
+  .options-grid { gap:6px; margin-bottom:6px; }
+  .option-btn { min-height:44px; padding:6px 9px; }
+  .opt-text { font-size:.82rem; line-height:1.25; }
+  .question-footer-status { font-size:.64rem; }
+}
 .fb-learning-verdict:focus { outline:none; }
 .fb-learning-box:has([data-status="correct"]) .fb-choice-reason { border-color:#6ee7b7; background:rgba(110,231,183,.06); }
 .fb-choice-reason { margin:8px 0; font-size:.94rem; }

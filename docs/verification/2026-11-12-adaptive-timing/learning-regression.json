@@ -1,0 +1,202 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "flows": [
+    {
+      "viewport": "desktop",
+      "round": 1,
+      "question": "spx101-w09-045",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 27
+    },
+    {
+      "viewport": "desktop",
+      "round": 2,
+      "question": "spx101-w09-011",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 45
+    },
+    {
+      "viewport": "desktop",
+      "round": 3,
+      "question": "spx101-w09-008",
+      "wrong": false,
+      "late": true,
+      "immediatePhase": "Resolution",
+      "botPending": false,
+      "visibleReviewWords": 32
+    },
+    {
+      "viewport": "desktop",
+      "round": 5,
+      "question": "spx101-w09-026",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 34
+    },
+    {
+      "viewport": "desktop",
+      "round": 6,
+      "question": "spx101-w09-009",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 34
+    },
+    {
+      "viewport": "desktop",
+      "round": 7,
+      "question": "spx101-w09-025",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 35
+    },
+    {
+      "viewport": "desktop",
+      "round": 8,
+      "question": "spx101-w09-033",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 49
+    },
+    {
+      "viewport": "desktop",
+      "round": 9,
+      "question": "spx101-w09-023",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 36
+    },
+    {
+      "viewport": "desktop",
+      "round": 10,
+      "question": "spx101-w09-006",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 30
+    },
+    {
+      "viewport": "desktop",
+      "round": 11,
+      "question": "spx101-w09-038",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 28
+    },
+    {
+      "viewport": "desktop",
+      "round": 12,
+      "question": "spx101-w09-013",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 25
+    },
+    {
+      "viewport": "desktop",
+      "round": 13,
+      "question": "spx101-w09-028",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 32
+    },
+    {
+      "viewport": "desktop",
+      "round": 14,
+      "question": "spx101-w09-041",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 25
+    },
+    {
+      "viewport": "desktop",
+      "round": 15,
+      "question": "spx101-w09-019",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 41
+    },
+    {
+      "viewport": "desktop",
+      "round": 16,
+      "question": "spx101-w09-030",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 29
+    },
+    {
+      "viewport": "phone",
+      "round": 1,
+      "question": "spx101-w09-040",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 36
+    },
+    {
+      "viewport": "phone",
+      "round": 2,
+      "question": "spx101-w09-043",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 38
+    },
+    {
+      "viewport": "landscape",
+      "round": 1,
+      "question": "spx101-w09-043",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 47
+    },
+    {
+      "viewport": "landscape",
+      "round": 2,
+      "question": "spx101-w09-040",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 29
+    }
+  ],
+  "errors": [],
+  "roomRequests": 0,
+  "results": {
+    "rounds": 16,
+    "retryButton": "↻ Retry 3 missed questions",
+    "retryQuestion": "spx101-w09-033"
+  }
+}

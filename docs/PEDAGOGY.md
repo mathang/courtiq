@@ -11,7 +11,23 @@
 - **Time to read.** The card remains until the learner continues. While CourtBot is deciding or the shot is resolving, Continue is disabled. Keyboard focus moves to the feedback heading once per question, not once per frame.
 - **Retrieval before rereading.** End-of-match explanations are folded away, missed/unanswered items appear first, and the retry button states how many missed questions it will practise. The existing retry mode uses that learner's missed/unanswered items.
 
-Original approved questions, options, answer keys, explanations, sources and timing are unchanged. No runtime AI or external service generates teaching feedback. The previously added option-specific rationales are draft instructional copy requiring instructor review.
+Original approved questions, options, answer keys, explanations, sources and authored timing are unchanged. Adaptive solo play now chooses an effective answer window as described below. No runtime AI or external service generates teaching feedback. The previously added option-specific rationales are draft instructional copy requiring instructor review.
+
+## Adaptive question time
+
+Timed solo games enable adaptation by default; Options contains “Adapt question time as I play” to keep fixed timing instead. The practice timing preset and future multiplayer retain their existing timing. Every new match starts fresh; no student profile or cross-session identity is stored.
+
+Only future questions change. The current question's deadline and protected reading period stay frozen. Correctness and response time are taken from the accepted human answer, regardless of who scored, blocked or won the possession. Response speed is measured against the usable answer time after protected reading.
+
+- A wrong answer, including a quick wrong guess, adds 20% of the base answer budget.
+- A timeout adds 30% of the base budget.
+- A correct answer using at least 75% of the available answer time also adds 20%.
+- Three consecutive correct answers using no more than 40% of the available answer time reduce the budget by 10% of its base. An ordinary correct answer holds the pace and clears the quick-answer run.
+- The budget stays between 60% and 250% of its base, with at least six seconds to answer. For a standard question with two seconds of reading, this means six to 25 answer seconds, starting at ten. Authored longer reading periods are preserved.
+
+CourtBot's answer time scales with the effective answer budget at question creation, retaining its committed option and difficulty-dependent accuracy. It never reacts to the learner's submitted answer. Basketball movement/animation speed is unchanged. Question speed scoring uses the actual adapted budget, and JSON/CSV exports include each question's actual reading and answer-window durations. Feedback gives a short notice when the next question will have more time or a quicker pace.
+
+These thresholds are conservative design defaults, not a validated assessment model. They adapt time, not content difficulty or a claim of mastery. Their educational benefit and accessibility still need evaluation with students; fixed timing remains available.
 
 ## Evidence and limits
 

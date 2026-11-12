@@ -60,6 +60,11 @@ export interface MatchAttemptEvent {
   readonly basketballOutcome: ShotOutcomeKind | 'shot-clock-turnover' | 'steal-turnover';
   readonly pointsAwarded: 0 | 2 | 3;
   readonly finalShotProbability: number;
+  readonly questionTiming?: {
+    readonly readingMs: number;
+    readonly answerWindowMs: number;
+    readonly adaptive: boolean;
+  };
 }
 
 export interface TopicAccuracySummary {
