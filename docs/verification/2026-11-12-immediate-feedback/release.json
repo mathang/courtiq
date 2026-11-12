@@ -1,0 +1,47 @@
+{
+  "ready": true,
+  "verifiedAtUtc": "2026-11-12T02:53:30.606704+00:00",
+  "sourceCommit": "fda6fed97e60f31f252c8912ca5cd79e58ec5d62",
+  "previewDeploy": "6af5290c60bf652895967d41",
+  "productionDeploy": "6af529bf2c37b15182a99a80",
+  "url": "https://courtiq-spx101.netlify.app/",
+  "currentAndReady": true,
+  "tests": 189,
+  "suites": 26,
+  "strictProductionBuild": "PASS",
+  "sourceAndBuildFingerprintsUnchanged": true,
+  "approvedQuestionPacksByteIdentical": true,
+  "deliveredFiles": 29,
+  "functionDigestsMatchPreview": true,
+  "actualProductionMatch": {
+    "possessions": 14,
+    "testedAnswerFlows": 17,
+    "viewports": [
+      "1440x900",
+      "390x844",
+      "844x390"
+    ],
+    "earlyCorrectAndIncorrectWhileBotPending": true,
+    "lateAfterBotAnswer": true,
+    "unanswered": true,
+    "readingProtection": true,
+    "detailsPersistAcrossResolution": true,
+    "learnerPacedContinue": true,
+    "threeCorrectFireAndNextWrongReset": true,
+    "resultsAndMissedQuestionRetry": true,
+    "pageErrors": 0,
+    "roomRequests": 0,
+    "realHostingBadgeContinueClear": true
+  },
+  "bothCharactersCompiledFullDunkPossessions": "PASS",
+  "physicalDeviceTested": false,
+  "classroomLearningOutcomesTested": false,
+  "instructorReviewOfDraftDistractorRationalesStillRequired": true,
+  "currentModes": [
+    "solo"
+  ],
+  "multiplayerRetainedForFuture": true,
+  "newPaidServicesOrCreditPurchases": false,
+  "databaseCreated": false,
+  "billingOrPlanChanges": false
+}

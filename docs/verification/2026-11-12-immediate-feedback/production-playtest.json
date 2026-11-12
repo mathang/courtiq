@@ -1,0 +1,182 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "flows": [
+    {
+      "viewport": "desktop",
+      "round": 1,
+      "question": "spx101-w09-033",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 36
+    },
+    {
+      "viewport": "desktop",
+      "round": 2,
+      "question": "spx101-w09-001",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 34
+    },
+    {
+      "viewport": "desktop",
+      "round": 3,
+      "question": "spx101-w09-039",
+      "wrong": false,
+      "late": true,
+      "immediatePhase": "Resolution",
+      "botPending": false,
+      "visibleReviewWords": 30
+    },
+    {
+      "viewport": "desktop",
+      "round": 5,
+      "question": "spx101-w09-011",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 37
+    },
+    {
+      "viewport": "desktop",
+      "round": 6,
+      "question": "spx101-w09-042",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 33
+    },
+    {
+      "viewport": "desktop",
+      "round": 7,
+      "question": "spx101-w09-031",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 45
+    },
+    {
+      "viewport": "desktop",
+      "round": 8,
+      "question": "spx101-w09-014",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 37
+    },
+    {
+      "viewport": "desktop",
+      "round": 9,
+      "question": "spx101-w09-013",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 25
+    },
+    {
+      "viewport": "desktop",
+      "round": 10,
+      "question": "spx101-w09-024",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 34
+    },
+    {
+      "viewport": "desktop",
+      "round": 11,
+      "question": "spx101-w09-020",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 35
+    },
+    {
+      "viewport": "desktop",
+      "round": 12,
+      "question": "spx101-w09-028",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 32
+    },
+    {
+      "viewport": "desktop",
+      "round": 13,
+      "question": "spx101-w09-009",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 34
+    },
+    {
+      "viewport": "desktop",
+      "round": 14,
+      "question": "spx101-w09-035",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 39
+    },
+    {
+      "viewport": "phone",
+      "round": 1,
+      "question": "spx101-w09-020",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 41
+    },
+    {
+      "viewport": "phone",
+      "round": 2,
+      "question": "spx101-w09-045",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 27
+    },
+    {
+      "viewport": "landscape",
+      "round": 1,
+      "question": "spx101-w09-035",
+      "wrong": true,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 41
+    },
+    {
+      "viewport": "landscape",
+      "round": 2,
+      "question": "spx101-w09-012",
+      "wrong": false,
+      "late": false,
+      "immediatePhase": "Duel",
+      "botPending": true,
+      "visibleReviewWords": 35
+    }
+  ],
+  "errors": [],
+  "roomRequests": 0,
+  "results": {
+    "rounds": 14,
+    "retryButton": "↻ Retry 3 missed questions",
+    "retryQuestion": "spx101-w09-017"
+  }
+}
