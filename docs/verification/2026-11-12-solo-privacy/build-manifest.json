@@ -477,5 +477,8 @@
   ],
   "tests": 180,
   "suites": 25,
-  "buildCommand": "npm run build"
+  "buildCommand": "npm run build",
+  "sourceCommit": "b96847878abd6383d142eca46444a9af08eb6a1b",
+  "previewDeploy": "6af510c40d07815faf1377ac",
+  "productionDeploy": "6af511ff7af8910472e2fe28"
 }

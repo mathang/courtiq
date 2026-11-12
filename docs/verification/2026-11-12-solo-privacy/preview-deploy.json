@@ -1,0 +1,15 @@
+{
+  "id": "6af510c40d07815faf1377ac",
+  "state": "ready",
+  "error": null,
+  "available_functions": [
+    {
+      "n": "health",
+      "d": "80fdc2b7b1319085f1a31f56f667373cc2dca16870adac7b581088fc87ba876a"
+    },
+    {
+      "n": "room",
+      "d": "e1c87d2ab3f3252844b35e27a5f3e08b6a5865727365a8c243aeddabee4646f3"
+    }
+  ]
+}

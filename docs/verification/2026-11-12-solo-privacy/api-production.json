@@ -1,0 +1,9 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "healthStatus": 200,
+  "multiplayer": false,
+  "packs": 2,
+  "roomStatus": 503,
+  "roomCode": "MULTIPLAYER_DISABLED",
+  "pass": true
+}

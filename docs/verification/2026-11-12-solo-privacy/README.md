@@ -23,3 +23,9 @@ The user cancelled the networking/database phase and requested that multiplayer 
 No networking improvement or durable backend is claimed; that work is deferred. Physical phone/campus-network testing, human-ear listening and instructor review of prior draft distractor rationales remain separate. Nicknames can appear in reports the student explicitly exports. No new identity or analytics collection was added.
 
 Hosted preview `6af510c40d07815faf1377ac` passes all29built-file hashes, four viewport/lab/privacy/keyboard/import checks with0 room/WebSocket/identity calls and0page errors, plus health200/multiplayerfalse and room503/MULTIPLAYER_DISABLED even with a client override. The backend exclusion is intentional for this solo-only release. Source push/production promotion follow.
+
+## Verified live release
+
+Source `b96847878abd6383d142eca46444a9af08eb6a1b` is on GitHub main. Production **`6af511ff7af8910472e2fe28`** is current/ready at https://courtiq-spx101.netlify.app/. All29live files match the180-test strict build, and both serverless function digests match verified preview `6af510c40d07815faf1377ac`.
+
+Final production checks pass all four lobby sizes, nickname/Lab guidance, keyboard Start, teacher import, character/palette retention and no room connections/identity uploads. Room503 and health200/multiplayerfalse are verified directly. Both characters complete real solo trick→drive→dunk→question→landing and next CourtBot attack,22captures each/0page errors; every answer clears the genuine hosting badge. Live portrait lobby and question captures were opened and inspected. See `release.json`, `production-assets.json`, `production-deploy.json`, `lobby-production.json`, `api-production.json` and `matches-production.json`.

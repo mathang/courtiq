@@ -1,0 +1,28 @@
+{
+  "id": "6af511ff7af8910472e2fe28",
+  "state": "ready",
+  "error": null,
+  "available_functions": [
+    {
+      "n": "health",
+      "d": "80fdc2b7b1319085f1a31f56f667373cc2dca16870adac7b581088fc87ba876a"
+    },
+    {
+      "n": "room",
+      "d": "e1c87d2ab3f3252844b35e27a5f3e08b6a5865727365a8c243aeddabee4646f3"
+    }
+  ],
+  "published_at": "2026-11-12T01:10:24.836Z",
+  "site": {
+    "siteId": "0163a0e9-643d-4a4e-b835-b789dcee1204",
+    "currentDeploy": {
+      "state": "current",
+      "currentDeploy": {
+        "id": "6af511ff7af8910472e2fe28",
+        "state": "ready"
+      }
+    }
+  },
+  "sourceCommit": "b96847878abd6383d142eca46444a9af08eb6a1b",
+  "matchesPreviewFunctions": true
+}

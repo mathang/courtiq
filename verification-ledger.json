@@ -696,6 +696,19 @@
       "observed": "180tests/25suites and strict build pass. Four sizes/keyboard/import/return/character/nickname/Lab pass,0room/WebSocket/identity calls. Both compiled solo possessions and next CourtBot attack pass. Preview29files match,health200 with multiplayerfalse,room503 with disabled code.",
       "evidence_path": "docs/verification/2026-11-12-solo-privacy/",
       "reason": "User cancelled multiplayer for now; existing multiplayer contracts explicitly opt into isolated fixtures. No database or paid/plan changes."
+    },
+    {
+      "id": "2026-11-12-solo-release-privacy-production",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "Netlify current production6af511ff7af8910472e2fe28 / Apple Metal Chromium desktop/tablet/portrait/landscape",
+      "timestamp_utc": "2026-11-12T01:14:38.607869+00:00",
+      "command_or_action": "29file delivered hash comparison; current-ready/function digest checks; four-size solo/privacy/keyboard/teacher/Lab UI checks; actual both-character solo possessions with real hosting badge; disabled API probe.",
+      "expected": "Current public game offers only solo and clear nickname privacy; retain future multiplayer source/tests without public room access.",
+      "observed": "180tests/25suites and strict build;29files/functions match; all4sizes and both character full matches pass;0page errors/room connections/identity posts; room503 disabled and health200/multiplayerfalse; badge clear of all answers.",
+      "evidence_path": "docs/verification/2026-11-12-solo-privacy/release.json",
+      "reason": "Fulfils user scope change. Multiplayer latency/durability remains deferred; no database/project, paid service or account-plan change."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",
