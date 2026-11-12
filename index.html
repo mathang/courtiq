@@ -292,34 +292,34 @@
         </div>
       </section>
 
-      <!-- Post-Shot Learning Feedback Banner -->
-      <section id="feedback-overlay" class="feedback-overlay hidden" aria-live="assertive">
+      <!-- One learner-paced review, from locked solo answer through shot resolution. -->
+      <section id="feedback-overlay" class="feedback-overlay hidden" aria-label="Answer feedback">
         <div class="feedback-card">
-          <div class="feedback-header">
-            <div>
-              <span id="fb-outcome-pill" class="fb-outcome-pill">SWISH! +2 POINTS</span>
-              <h2 id="fb-subheadline" class="fb-subheadline">Attacker answered correctly first!</h2>
-            </div>
-            <div id="fb-prob-badge" class="fb-prob-badge">Shot Prob: 79%</div>
-          </div>
-
           <div class="fb-learning-box">
-            <h2 id="fb-learning-verdict" class="fb-learning-verdict"></h2>
-            <p id="fb-question-text" class="fb-question-text"></p>
-            <p id="fb-your-answer" class="fb-your-answer"></p>
-            <p id="fb-choice-reason" class="fb-choice-reason"></p>
-            <div class="fb-correct-line">
-              <strong>✓ Correct Answer:</strong>
+            <p id="fb-topic" class="fb-topic"></p>
+            <h2 id="fb-learning-verdict" class="fb-learning-verdict" tabindex="-1" aria-describedby="fb-choice-reason"></h2>
+            <div id="fb-correct-line" class="fb-correct-line">
+              <strong>Correct answer:</strong>
               <span id="fb-correct-text"></span>
             </div>
-            <p id="fb-explanation-text" class="fb-explanation-text"></p>
-            <p id="fb-streak-text" class="fb-streak-text"></p>
-            <div class="fb-meta-row">
-              <span id="fb-source-ref" class="fb-source-ref"></span>
-              <button id="btn-next-possession" class="small-cta-btn" type="button">
-                I’ve read this — continue &rarr;
-              </button>
-            </div>
+            <p id="fb-choice-reason" class="fb-choice-reason"></p>
+            <details id="fb-detail" class="fb-detail">
+              <summary>More detail</summary>
+              <p id="fb-question-text" class="fb-question-text"></p>
+              <p id="fb-your-answer" class="fb-your-answer"></p>
+              <p id="fb-explanation-text" class="fb-explanation-text"></p>
+              <p id="fb-source-ref" class="fb-source-ref"></p>
+            </details>
+          </div>
+          <div class="fb-game-result">
+            <span id="fb-outcome-pill" class="fb-outcome-pill hidden"></span>
+            <span id="fb-streak-text" class="fb-streak-text"></span>
+          </div>
+          <div class="fb-meta-row">
+            <span id="fb-wait-status" class="small-muted" role="status"></span>
+            <button id="btn-next-possession" class="small-cta-btn" type="button">
+              Next possession &rarr;
+            </button>
           </div>
         </div>
       </section>
@@ -462,7 +462,7 @@
               </li>
               <li>
                 <strong>5. Learn, Then Continue:</strong>
-                Your feedback says whether you were correct, shows your chosen answer, and explains the specific misconception if you were wrong. Read the correct reasoning and course source, then press Continue. In student-versus-student matches, both students must continue. Three correct questions in a row ignites <strong>“ON FIRE!”</strong>: move 20% faster and gain +20 percentage points to shooting, capped at 95%. Fire lasts until a wrong or unanswered question. Misses and blocks do not break your learning streak.
+                Lock an answer to see the result and a short explanation while CourtBot thinks. Use <strong>More detail</strong> for the question and course source, then continue when ready. Three correct answers in a row ignites <strong>“ON FIRE!”</strong>: 20% faster movement and +20 percentage points to shooting (maximum 95%). A wrong or unanswered question ends Fire; misses and blocks do not.
               </li>
               <li>
                 <strong>6. Alternating Possessions &amp; Equal Opportunity:</strong>

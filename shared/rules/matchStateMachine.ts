@@ -1,4 +1,4 @@
-import { buildStudentQuestionFeedback, StudentQuestionFeedback } from './learningFeedback';
+import { buildQuestionAnswerReview, buildStudentQuestionFeedback, QuestionAnswerReview, StudentQuestionFeedback } from './learningFeedback';
 import { normaliseAppearancePreset } from '../config/appearance';
 import { isDrivingInPaint } from './finishing';
 import {
@@ -1140,6 +1140,14 @@ export class AuthoritativeMatchEngine {
     }
 
     return validation;
+  }
+
+  /** Solo-only reveal after the human's answer is locked. Never part of an online snapshot. */
+  public getSoloAnswerReview(): QuestionAnswerReview | null {
+    if (this.mode !== 'solo' || !this.players[1].isAi || !this.activeDuel ||
+        !['Duel', 'Resolution', 'Feedback'].includes(this.phase)) return null;
+    const answer = this.activeDuel.answersBySlot[0];
+    return answer ? buildQuestionAnswerReview(this.activeDuel.question, answer) : null;
   }
 
   private resolveCurrentDuel(): void {

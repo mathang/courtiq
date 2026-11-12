@@ -23,6 +23,7 @@ import {
   ServerToClientMessage,
 } from '../shared/protocol/messages';
 import { computeDistance2D } from '../shared/rules/block';
+import type { QuestionAnswerReview } from '../shared/rules/learningFeedback';
 import {
   AuthoritativeMatchEngine,
   FeedbackBannerState,
@@ -141,6 +142,11 @@ class CourtIqApp {
         showcase: Boolean(this.showcase?.active),
         trickSelection: this.input.getTrickSelection(),
         paused: !document.getElementById('settings-modal')?.classList.contains('hidden'),
+        learningReview: document.getElementById('feedback-overlay')?.classList.contains('hidden') ? null : {
+          status: document.getElementById('fb-learning-verdict')?.dataset.status,
+          waiting: (document.getElementById('btn-next-possession') as HTMLButtonElement)?.disabled,
+          detailOpen: (document.getElementById('fb-detail') as HTMLDetailsElement)?.open,
+        },
         duel: online?.activeDuel ? { id: online.activeDuel.duelId, reading: online.activeDuel.readingProtected, physicalBlock: online.activeDuel.physicalBlock } : eng?.activeDuel ? {
           id: eng.activeDuel.duelId, elapsedMs: eng.activeDuel.elapsedRealMs,
           readingMs: eng.activeDuel.config.readingMs, physicalBlock: eng.activeDuel.physicalBlock, submitted: eng.activeDuel.answersBySlot.map(Boolean),
@@ -652,11 +658,13 @@ class CourtIqApp {
     }
 
     if (this.soloEngine) {
-      this.soloEngine.submitAnswer({
+      const result = this.soloEngine.submitAnswer({
         slot: 0,
         duelId,
         optionId,
       });
+      if (result.accepted) this.updateDomOverlaysForSolo(this.soloEngine,
+        this.soloEngine.activeDuel?.releaseSnapshot.blockEligibility.eligible ?? false);
     }
   }
 
@@ -897,9 +905,10 @@ class CourtIqApp {
       ?.classList.toggle('hidden', !showTouch);
 
     // Question panel
+    const immediateReview = eng.phase !== 'Feedback' ? eng.getSoloAnswerReview() : null;
     const inQuestion =
       eng.phase === 'Duel' &&
-      activeDuel !== null;
+      activeDuel !== null && !immediateReview;
     document
       .getElementById('question-overlay')
       ?.classList.toggle('hidden', !inQuestion);
@@ -921,9 +930,12 @@ class CourtIqApp {
     // Feedback overlay
     document
       .getElementById('feedback-overlay')
-      ?.classList.toggle('hidden', eng.phase !== 'Feedback');
+      ?.classList.toggle('hidden', eng.phase !== 'Feedback' && !immediateReview);
     if (eng.phase === 'Feedback' && eng.feedbackState) {
       this.renderFeedbackPanel(eng.feedbackState);
+    } else if (immediateReview && activeDuel) {
+      this.renderAnswerReview(activeDuel.duelId, immediateReview, null,
+        eng.phase === 'Duel' ? 'CourtBot is thinking. Your answer is locked.' : 'Shot resolving…');
     }
 
     // Results overlay
@@ -1343,44 +1355,63 @@ class CourtIqApp {
     }
   }
 
+  private lastReviewDuelId: string | null = null;
+
   private renderFeedbackPanel(fb: FeedbackBannerState): void {
+    const slot = this.onlineSnapshot?.yourSlot ?? 0;
+    const answer = fb.learningBySlot?.[slot];
+    this.renderAnswerReview(fb.duelId, answer ? {
+      questionStem: fb.questionStem ?? '', correctOptionText: fb.correctOptionText,
+      explanation: fb.explanation, sourceRef: fb.sourceRef, topic: fb.topic, answer,
+    } : null, fb);
+  }
+
+  private renderAnswerReview(duelId: string, review: QuestionAnswerReview | null,
+    fb: FeedbackBannerState | null, pendingMessage = ''): void {
     const setTxt = (id: string, val: string) => {
       const el = document.getElementById(id);
       if (el && el.textContent !== val) el.textContent = val;
     };
 
-    setTxt('fb-outcome-pill', fb.headline);
-    setTxt('fb-subheadline', fb.subheadline);
-    setTxt(
-      'fb-prob-badge',
-      fb.outcome === 'block'
-        ? 'Blocked Override'
-        : fb.outcome === 'shot-clock-turnover'
-          ? 'Turnover'
-          : `Shot Probability: ${Math.round(fb.finalProbability * 100)}%`
-    );
+    const status = review?.answer.status;
+    setTxt('fb-topic', review?.topic ?? '');
+    setTxt('fb-outcome-pill', fb ? `Court result: ${fb.headline}` : '');
+    document.getElementById('fb-outcome-pill')?.classList.toggle('hidden', !fb);
     const slot = this.onlineSnapshot?.yourSlot ?? 0;
-    const learning = fb.learningBySlot?.[slot];
+    const learning = fb?.learningBySlot?.[slot];
     const verdict = document.getElementById('fb-learning-verdict');
     if (verdict) {
-      setTxt('fb-learning-verdict', !learning ? 'No question on this possession' : learning.status === 'correct' ? '✓ Your answer was correct' : learning.status === 'incorrect' ? '✗ Your answer was incorrect' : '— You did not answer');
-      verdict.dataset.status = learning?.status ?? 'none';
+      setTxt('fb-learning-verdict', !review ? 'Possession complete' : status === 'correct' ? '✓ Correct' : status === 'incorrect' ? '✗ Incorrect' : '— No answer submitted');
+      verdict.dataset.status = status ?? 'none';
     }
-    setTxt('fb-question-text', fb.questionStem ?? '');
-    setTxt('fb-your-answer', learning ? `Your answer: ${learning.selectedOptionText ?? 'No answer submitted'}` : '');
-    const showReason = learning && learning.status !== 'correct' && learning.reason !== fb.explanation;
-    setTxt('fb-choice-reason', showReason ? `Why: ${learning.reason}` : '');
-    document.getElementById('fb-choice-reason')?.classList.toggle('hidden', !showReason);
-    setTxt('fb-streak-text', !learning ? '' : learning.onFire ? `🔥 ON FIRE! ${learning.correctAnswerStreak} correct in a row • 20% faster • +20 percentage points to shooting` : learning.correctAnswerStreak ? `✓ ${learning.correctAnswerStreak} correct in a row — ${3 - learning.correctAnswerStreak} more for On Fire` : 'Your learning streak is reset. Use the explanation to build it again.');
+    setTxt('fb-correct-text', review?.correctOptionText ?? '');
+    document.getElementById('fb-correct-line')?.classList.toggle('hidden', !review || status === 'correct');
+    setTxt('fb-choice-reason', review?.answer.reason ?? '');
+    document.getElementById('fb-choice-reason')?.classList.toggle('hidden', !review);
+    setTxt('fb-question-text', review?.questionStem ?? '');
+    setTxt('fb-your-answer', review?.answer.selectedOptionText ? `Your answer: ${review.answer.selectedOptionText}` : '');
+    setTxt('fb-explanation-text', review?.explanation ?? '');
+    document.getElementById('fb-explanation-text')?.classList.toggle('hidden', !review || review.explanation === review.answer.reason);
+    setTxt('fb-source-ref', review ? `Source: ${review.sourceRef}` : '');
+    setTxt('fb-streak-text', !learning ? '' : learning.onFire ? `🔥 On Fire · ${learning.correctAnswerStreak} in a row` : learning.correctAnswerStreak ? `${learning.correctAnswerStreak}/3 to On Fire` : '');
+    setTxt('fb-wait-status', pendingMessage || (fb?.continueReady?.[slot] ? 'Waiting for the other student…' : ''));
     const next = document.getElementById('btn-next-possession') as HTMLButtonElement | null;
     if (next) {
-      const waiting = Boolean(fb.continueReady?.[slot]);
+      const waiting = !fb || Boolean(fb.continueReady?.[slot]);
       next.disabled = waiting;
-      next.textContent = waiting ? 'Waiting for the other student…' : 'I’ve read this — continue →';
+      setTxt('btn-next-possession', waiting ? 'Waiting…' : 'Next possession →');
     }
-    setTxt('fb-correct-text', fb.correctOptionText);
-    setTxt('fb-explanation-text', fb.explanation);
-    setTxt('fb-source-ref', `Source: ${fb.sourceRef}`);
+    const detail = document.getElementById('fb-detail') as HTMLDetailsElement | null;
+    detail?.classList.toggle('hidden', !review);
+    // Keep the same review open while CourtBot answers and the shot plays out.
+    // Focus/announce only once, rather than once per animation frame or timer tick.
+    if (duelId !== this.lastReviewDuelId) {
+      this.lastReviewDuelId = duelId;
+      if (detail) detail.open = false;
+      const card = document.querySelector('.feedback-card');
+      if (card) card.scrollTop = 0;
+      verdict?.focus({ preventScroll: true });
+    }
   }
 
   private lastRenderedMatchId: string | null = null;
@@ -1453,22 +1484,29 @@ class CourtIqApp {
     const reviewList = document.getElementById('res-review-list');
     if (reviewList) {
       reviewList.innerHTML = '';
-      for (const ev of events) {
+      // Retrieval first: keep answers folded away and put missed questions first.
+      const questions = events.filter(e => e.questionId).sort((a, b) =>
+        Number(a.playerRecords[yourSlot].status === 'correct') - Number(b.playerRecords[yourSlot].status === 'correct'));
+      for (const ev of questions) {
         if (!ev.questionId) continue;
         const rec = ev.playerRecords[yourSlot];
-        const div = document.createElement('div');
+        const div = document.createElement('details');
         div.className = `review-item ${rec.status === 'correct' ? 'correct' : ''}`;
         div.innerHTML = `
-          <div><strong>[${rec.status.toUpperCase()}] W${ev.week} • ${this.escapeHtml(ev.topic)}:</strong> ${this.escapeHtml(ev.stem)}</div>
-          <div style="margin-top:4px; color:#93c5fd;">Your Answer: ${this.escapeHtml(rec.selectedOptionText ?? 'Unanswered')} | <strong>Correct: ${this.escapeHtml(ev.correctOptionText)}</strong></div>
-          <div style="margin-top:4px; color:#cbd5e1;">${this.escapeHtml(ev.explanation)} <span style="color:#94a3b8;">(${this.escapeHtml(ev.sourceRef)})</span></div>
+          <summary><strong>${rec.status === 'correct' ? '✓ Correct' : rec.status === 'incorrect' ? '↻ Revisit' : '— Unanswered'} · W${ev.week} · ${this.escapeHtml(ev.topic)}</strong></summary>
+          <div>${this.escapeHtml(ev.stem)}</div>
+          <div style="color:#93c5fd;">${rec.status === 'correct' ? 'Your answer' : 'Correct answer'}: ${this.escapeHtml(ev.correctOptionText)}</div>
+          ${rec.status === 'incorrect' ? `<div>Your answer: ${this.escapeHtml(rec.selectedOptionText ?? '')}</div>` : ''}
+          <div style="color:#cbd5e1;">${this.escapeHtml(ev.explanation)} <span style="color:#94a3b8;">(${this.escapeHtml(ev.sourceRef)})</span></div>
         `;
         reviewList.appendChild(div);
       }
     }
 
     const practiceBtn = document.getElementById('btn-practice-missed');
-    practiceBtn?.classList.toggle('hidden', you.missedQuestions.length === 0);
+    const missedCount = new Set(you.missedQuestions.map(q => q.questionId)).size;
+    practiceBtn?.classList.toggle('hidden', missedCount === 0);
+    if (practiceBtn) practiceBtn.textContent = `↻ Retry ${missedCount} missed question${missedCount === 1 ? '' : 's'}`;
   }
 
   private startMissedQuestionsPractice(): void {

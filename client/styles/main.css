@@ -1247,6 +1247,23 @@ body:has(> #nl-badge-frame) .feedback-overlay {
 .fb-streak-text { color:#fcd34d; font-weight:700; line-height:1.4; margin:10px 0; }
 .feedback-card { max-height:80dvh; overflow-y:auto; overscroll-behavior:contain; }
 .fb-meta-row { flex-wrap:wrap; gap:12px; }
+.fb-topic { color:var(--text-muted); font-size:.76rem; margin:0 0 6px; }
+.fb-learning-verdict:focus { outline:none; }
+.fb-learning-box:has([data-status="correct"]) .fb-choice-reason { border-color:#6ee7b7; background:rgba(110,231,183,.06); }
+.fb-choice-reason { margin:8px 0; font-size:.94rem; }
+.fb-correct-line { line-height:1.4; color:var(--text-main); }
+.fb-detail { border-top:1px solid var(--panel-border); margin-top:10px; }
+.fb-detail summary { cursor:pointer; min-height:44px; align-content:center; color:#93c5fd; font-size:.85rem; font-weight:700; }
+.fb-detail summary:focus-visible { outline:2px solid var(--cyan); outline-offset:2px; }
+.fb-detail p { font-size:.86rem; line-height:1.45; }
+.fb-detail .fb-source-ref { font-size:.76rem; overflow-wrap:anywhere; }
+.fb-game-result { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin:10px 0; }
+.fb-game-result .fb-outcome-pill { background:rgba(255,255,255,.09); color:var(--text-muted); font-size:.7rem; margin:0; }
+.fb-game-result .fb-streak-text { font-size:.78rem; margin:0; }
+.fb-meta-row .small-muted { font-size:.78rem; flex:1; }
+#btn-next-possession:disabled { opacity:.55; cursor:wait; }
+.review-item > summary { cursor:pointer; min-height:44px; align-content:center; }
+.review-item > div { margin-top:8px; }
 #btn-next-possession { min-height:44px; white-space:normal; }
 @media(max-width:650px) {
   .touch-action-buttons { grid-template-columns:repeat(3,58px); }
