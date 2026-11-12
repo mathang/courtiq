@@ -36,6 +36,7 @@ import {
 import { classifyShotZone, computeBaseShotProbability } from '../shared/rules/shot';
 import { SoundEngine } from './game/audio/soundEngine';
 import { PossessionCueTracker } from './game/presentation/possessionCues';
+import { HttpControlRetry, isTransientRoomMiss } from './game/network/httpControlRetry';
 import { ShowcasePossession } from './game/presentation/showcasePossession';
 import type { Vector3D } from '../shared/rules/shot';
 import { CourtIqRenderer, RenderQualityMode } from './game/engine';
@@ -63,6 +64,7 @@ class CourtIqApp {
   private httpTransportActive = false;
   private httpClientId = `cid-${Math.random().toString(36).slice(2)}-${Date.now().toString(36)}`;
   private httpOutgoingQueue: ClientToServerMessage[] = [];
+  private httpControlRetry = new HttpControlRetry();
   private httpSyncInFlight = false;
   private httpPollTimer: number | null = null;
   private onlineSlot: PlayerSlot = 0;
@@ -1681,14 +1683,24 @@ class CourtIqApp {
       0,
       this.httpOutgoingQueue.length
     );
+    const roomCode = this.onlineRoomCode;
+    const reconnectToken = this.onlineReconnectToken;
+    const recoverConfirmations = (): boolean => {
+      // A late response must never restore actions after Leave or into a different room.
+      if (!this.httpTransportActive || !roomCode || !reconnectToken ||
+          roomCode !== this.onlineRoomCode || reconnectToken !== this.onlineReconnectToken) return false;
+      const recovered = this.httpControlRetry.recover(batch, this.httpOutgoingQueue);
+      this.httpOutgoingQueue = recovered.queue;
+      return recovered.requeued > 0;
+    };
     try {
       const res = await fetch('/api/room', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           clientId: this.httpClientId,
-          roomCode: this.onlineRoomCode,
-          reconnectToken: this.onlineReconnectToken,
+          roomCode,
+          reconnectToken,
           messages: batch,
         }),
       });
@@ -1700,13 +1712,23 @@ class CourtIqApp {
         messages: ServerToClientMessage[];
       };
       if (Array.isArray(data.messages)) {
+        const missingRoom = data.messages.some(isTransientRoomMiss) &&
+          !data.messages.some(m => m.type === 'MATCH_SNAPSHOT' || m.type === 'ROOM_JOINED');
+        const retryScheduled = missingRoom && recoverConfirmations();
+        if (!data.messages.some(m => m.type === 'ERROR') &&
+            batch.some(m => m.type === 'CONTINUE_FEEDBACK' || m.type === 'SET_READY')) {
+          this.showConnectionBanner(null);
+        }
         for (const msg of data.messages) {
+          if (retryScheduled && isTransientRoomMiss(msg)) continue;
           this.handleServerMessage(msg);
         }
       }
     } catch {
+      const retryScheduled = recoverConfirmations();
       this.showConnectionBanner(
-        'Could not reach multiplayer room service. Start `npm run server` or play Solo mode.'
+        retryScheduled ? 'Connection interrupted. Retrying your confirmation…' :
+          'Could not reach multiplayer. Try again or play the computer.'
       );
     } finally {
       this.httpSyncInFlight = false;
@@ -1764,6 +1786,7 @@ class CourtIqApp {
     this.onlineReady = false;
     this.httpTransportActive = false;
     this.httpOutgoingQueue = [];
+    this.httpControlRetry.reset();
     if (this.httpPollTimer) {
       clearInterval(this.httpPollTimer);
       this.httpPollTimer = null;

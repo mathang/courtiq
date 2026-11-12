@@ -1,35 +1,42 @@
 {
-  "base": "https://6af5000ea998a4a133285a6a--courtiq-spx101.netlify.app",
+  "base": "https://6af5061d57ae3cbfb80f5dcb--courtiq-spx101.netlify.app",
   "errors": [],
-  "secrecyChecks": 28,
+  "secrecyChecks": 31,
   "recoverySnapshots": [
     {
       "x": 0,
       "z": 0.6,
       "vx": 0,
       "vz": 0,
-      "recovery": 0.75
+      "recovery": 0.787
     },
     {
       "x": 0,
       "z": 0.6,
       "vx": 0,
       "vz": 0,
-      "recovery": 0.5
+      "recovery": 0.537
     },
     {
       "x": 0,
       "z": 0.6,
       "vx": 0,
       "vz": 0,
-      "recovery": 0.25
+      "recovery": 0.28700000000000003
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.03700000000000003
     }
   ],
   "lobbyEvents": [
     {
       "page": 0,
       "lobby": {
-        "roomCode": "ELDEY2",
+        "roomCode": "YTDUCV",
         "packId": "spx101-w09-performance-analysis",
         "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
         "roomPresetId": "standard",
@@ -55,7 +62,7 @@
     {
       "page": 1,
       "lobby": {
-        "roomCode": "ELDEY2",
+        "roomCode": "YTDUCV",
         "packId": "spx101-w09-performance-analysis",
         "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
         "roomPresetId": "standard",
@@ -81,7 +88,7 @@
     {
       "page": 0,
       "lobby": {
-        "roomCode": "ELDEY2",
+        "roomCode": "YTDUCV",
         "packId": "spx101-w09-performance-analysis",
         "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
         "roomPresetId": "standard",
@@ -107,7 +114,7 @@
     {
       "page": 1,
       "lobby": {
-        "roomCode": "ELDEY2",
+        "roomCode": "YTDUCV",
         "packId": "spx101-w09-performance-analysis",
         "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
         "roomPresetId": "standard",
@@ -131,6 +138,14 @@
       }
     }
   ],
+  "transportErrors": [
+    {
+      "page": 1,
+      "message": "Not currently in a room.",
+      "injected": true
+    }
+  ],
+  "injectedContinueFaults": 1,
   "characterChoices": [
     "Sky",
     "River"
@@ -143,19 +158,19 @@
   "recoveryObservation": "Authoritative WebSocket/HTTP snapshots while directional input is held; full one-second duration separately regression-tested",
   "firstApproach": {
     "x": 0,
-    "z": -3.2873089482365527,
+    "z": -3.477678153971571,
     "vx": 0,
-    "vz": -2.463262942642961e-7
+    "vz": -0.001210636795605777
   },
   "skyDunk": true,
   "blockSetup": [
     {
       "x": 0,
-      "z": -3.7785759818046505
+      "z": -3.778576096344161
     },
     {
       "x": 0,
-      "z": -2.9585763080508727
+      "z": -2.9585761936298978
     }
   ],
   "primaryDunkAndBlock": true,
@@ -165,5 +180,6 @@
   "perStudentFeedback": true,
   "missedSwipeFrozen": true,
   "bothContinueRequired": true,
-  "question": "spx101-w09-040"
+  "question": "spx101-w09-038",
+  "transientRoomErrorsRecovered": true
 }

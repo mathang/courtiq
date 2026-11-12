@@ -20,7 +20,7 @@ This phase integrates Carbon High's focused basketball motor/footwork/contact im
 
 | Gate | Evidence | Result |
 | --- | --- | --- |
-| Unit/rules/multiplayer/asset/render | `tests.txt`; original 14 asset and 4 new motion checks run on each GLB |174/174 tests, 23 suites PASS |
+| Unit/rules/multiplayer/asset/render | `tests.txt`; original 14 asset and 4 new motion checks run on each GLB |178/178 tests, 24 suites PASS |
 | Strict TypeScript and Vite | `build.txt` |PASS; existing559.8kB Three.js chunk warning retained |
 | Same rig/cosmetic balance | `characterRigCompatibility.test.ts`, `characterChoice.test.ts` |Same rest joints/clips and seeded gameplay across appearance choices; room/ready/reconnect normalisation PASS |
 | Sky asset validation | `sky-glb-validation.txt` |0 errors / 0 warnings; expected unused UV informational notes |
@@ -31,14 +31,14 @@ This phase integrates Carbon High's focused basketball motor/footwork/contact im
 | Lobby/portraits/fallback | `lobby-compiled.json`, `portrait-ui.json`, `fallback.json` |1440×900,768×1024,390×844,844×390;keyboard Start,import safety,palette portraits,playable asset failure and successful retry PASS |
 | Installed game-skill loop | `skill-integrated.png` |Installed finite input client run after integration; actual screenshot opened |
 | Controls and learning Fire | `controls-fire-preview.json` | All four tap counts, three correct → Fire, next wrong → reset, personal rationale, portrait/landscape touch actions PASS |
-| Hosted two-student game | `teaching-preview.json` | Both character choices,current backend,28 pre-resolution secrecy checks,same question/choices,personal feedback,both Continue,rooted missed swipe,both dunks and manual swat PASS |
-| Hosted preview | `preview-assets.json`, `sequence-preview.json` |All29 delivered files match built application; full River/Sky sequences and CourtBot next offence pass on accessible hosted build |
+| Hosted two-student game | `teaching-preview.json` | Both character choices,current backend,31 pre-resolution secrecy checks,1 injected missing-room response recovered,same question/choices,personal feedback,both Continue,rooted missed swipe,both dunks and manual swat PASS |
+| Hosted preview | `preview-assets.json`, `initial-preview-assets.json`, `sequence-preview.json` |All29 delivered files match built application; full River/Sky sequences and CourtBot next offence pass on accessible hosted build |
 
 Palm measurements are world-space presentation markers to ball centre in a sampled ordinary jumper, not skinned-surface contact validation. Deterministic rig tests bound foot slip, sole clearance and limb transitions in defined scenarios; they do not establish perfect contact at every frame. Screenshot crops in the contact sheets derive from normalised camera subject coordinates; full captures are retained locally in `output/athlete-roster/`.
 
 ## Release verification
 
-Preview: https://6af5000ea998a4a133285a6a--courtiq-spx101.netlify.app (`6af5000ea998a4a133285a6a`). Preview and production verification records are added as their checks complete. `build-manifest.json` ties the runtime source hashes and all 29 built files to this release. No application source is changed between the strict build, hosted preview and production promotion.
+Corrected preview: https://6af5061d57ae3cbfb80f5dcb--courtiq-spx101.netlify.app (`6af5061d57ae3cbfb80f5dcb`). Initial preview `6af5000ea998a4a133285a6a` is retained separately. Final production verification is recorded below. `build-manifest.json` ties the runtime source hashes and all 29 built files to this release. No application source is changed between the strict build, hosted preview and production promotion.
 
 ## Boundaries
 
@@ -56,4 +56,14 @@ Preliminary hosted runs exposed HTTP polling delay: continuous held input contin
 
 The final online scenario uses ordinary keys to approach and stop in the paint, then a deliberate forward power step plus primary input, holding direction through the acknowledgement. It tests the authoritative dunk/block and teaching contracts without pausing/repositioning the server or relying on a screenshot during a live timed approach. Continuous running/trick-to-dunk transitions are independently verified in the compiled and hosted solo matches and the local WebSocket match. No product rule or test tolerance was weakened. HTTP latency and warm-instance room persistence remain material limits; classroom performance is not validated.
 
-Final preview `6af5000ea998a4a133285a6a` is ready. Both serverless functions are available; `preview-deploy.json` records their exact digests and the verified existing Free team. All29 delivered files match the tested dist after only the observed hosting HTML transforms. Actual hosted frames were opened and reviewed. The completed two-student run passes28 secrecy checks and both character/dunk/swat/feedback flows with0 page errors. This is a functional warm-room check, not a latency or classroom-concurrency pass.
+Initial preview `6af5000ea998a4a133285a6a` passed its checks. Both serverless functions were available; `initial-preview-deploy.json` records their exact digests and the verified existing Free team. All29 delivered files match the tested dist after only the observed hosting HTML transforms. Actual hosted frames were opened and reviewed. The completed two-student run passes28 secrecy checks and both character/dunk/swat/feedback flows with0 page errors. This is a functional warm-room check, not a latency or classroom-concurrency pass.
+
+## Live acknowledgement failure and correction
+
+The initial production `6af503ee33b2d51b11d81783` served all29 correct assets and passed full solo/badge checks, but its two-student match received `Not currently in a room.` during Continue and remained in Feedback (`initial-production-room-failure.json`). This is an observed failure, not a pass. The server stores rooms only in process memory; a request handled by a worker without that room is a plausible explanation, but worker routing was not directly observed.
+
+The client previously removed a confirmation from its queue before the request and lost it on that response. The correction retains only idempotent Ready/Continue confirmations, retries at most3 times, preserves a newer queued ready choice, scopes recovery to the original room/reconnect context, and resets retries on leaving. It never retries movement, shots, trick/steal/jump actions, answers, create/join or learning outcomes. This fixes lost confirmations on recoverable requests; it does not create durable rooms or eliminate polling latency.
+
+The actual compiled two-browser HTTP test injects one missing-room response on Student B's Continue, then confirms the match resumes without another click and completes the next dunk/manual swat (`http-ack-recovery-local.json`:47secrecy checks,1 injected/recovered fault,0 page errors). Four new regressions cover exact-duel retention, non-replayed actions/answers, retry limits and newer ready choices. **178 tests/24 suites and strict build PASS.** A corrected hosted preview and production are verified separately below.
+
+Corrected preview `6af5061d57ae3cbfb80f5dcb` is ready, with29/29 built files matched. The hosted two-student test injects the exact lost-Continue response and recovers automatically, then completes the next dunk and manual swat:31 pre-resolution secrecy observations,1 injected/recovered transient error,0 page errors (`teaching-preview.json`). Both function digests remain identical because the correction is client-side. The installed game-skill loop was rerun on the corrected compiled game and its screenshot opened (`skill-final.png`). Final production promotion follows.

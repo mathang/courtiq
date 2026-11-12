@@ -1,5 +1,5 @@
 {
-  "base": "https://6af5000ea998a4a133285a6a--courtiq-spx101.netlify.app",
+  "base": "https://6af5061d57ae3cbfb80f5dcb--courtiq-spx101.netlify.app",
   "files": [
     {
       "file": "assets/audio/CC0-LICENSE.txt",
@@ -65,10 +65,10 @@
       "platformHtmlTransform": false
     },
     {
-      "file": "assets/game-C9eRDcFc.js",
-      "bytes": 101101,
-      "sourceSha256": "fdf6b1b54ba1802fd6f5483f7ce0a06d0f9595d89b1e6fc2261d0d1442dd330e",
-      "deliveredSha256": "fdf6b1b54ba1802fd6f5483f7ce0a06d0f9595d89b1e6fc2261d0d1442dd330e",
+      "file": "assets/game-C05SfhNM.js",
+      "bytes": 102279,
+      "sourceSha256": "38b16aea8363945b75c743cf81610b4b66fcbdaf84ac6f7f3cd7e31b13b08be9",
+      "deliveredSha256": "38b16aea8363945b75c743cf81610b4b66fcbdaf84ac6f7f3cd7e31b13b08be9",
       "platformHtmlTransform": false
     },
     {
@@ -193,8 +193,8 @@
     {
       "file": "index.html",
       "bytes": 26435,
-      "sourceSha256": "e581a0de0116066a1f79f2c3d07e1c61f2774fb93eabed62bf30194c1ce27dad",
-      "deliveredSha256": "420e2c1cae006d358616450097ed22ecbc32d9b81c6155ae4959cdaaea9e1056",
+      "sourceSha256": "ba581ae809efe790a79354440e368dd002b7033a2b9c8a234c981661d1417e0d",
+      "deliveredSha256": "4f6dcf936ee6a959a02204fc6d166e5fcabb1f3e1126159b9f695c13e251b11d",
       "platformHtmlTransform": true
     },
     {

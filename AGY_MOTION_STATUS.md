@@ -84,4 +84,4 @@
 
 ## Independent integrated review
 
-Codex integrated the committed implementation with River/Sky in the canonical checkout. The original Carbon capture paths above are Carbon's evidence claims; Codex did not inspect private assistant stores. Independent public review artefacts are in `docs/verification/2026-11-12-motion-roster/`, with actual match captures for both characters, before/after renderer measurements,174 integrated tests/23 suites, strict build and hosted release checks. These supersede the earlier single-athlete151-test count for the combined release.
+Codex integrated the committed implementation with River/Sky in the canonical checkout. The original Carbon capture paths above are Carbon's evidence claims; Codex did not inspect private assistant stores. Independent public review artefacts are in `docs/verification/2026-11-12-motion-roster/`, with actual match captures for both characters, before/after renderer measurements,178 integrated tests/24 suites, strict build and hosted release checks. These supersede the earlier single-athlete151-test count for the combined release.

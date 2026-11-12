@@ -21,7 +21,7 @@ Choose **River** or **Sky** in the lobby, then choose a colour palette under Opt
 
 Movement now keeps defenders facing the ball-handler through lateral slides and retreats. Cuts and hard stops use a short compression and push-off, planted support feet hold their court position, and action clips blend out without rewinding. Dribbling retains the carrying hand after crossovers, protects the ball away from a shading defender and keeps the hand above the bounce. A continuous shooting gather and smoother spin-to-finish turn reduce ball/hand gaps and abrupt elbow flips.
 
-The combined release passes **174 tests / 23 suites** and the strict production build. Real browser matches cover both athletes, cuts and stops, crossover/spin into a primary-action random dunk, take-off, question hold, landing, CourtBot's next drive, physical blocks, missed-steal recovery and two-student teaching contracts. [Verification evidence](docs/verification/2026-11-12-motion-roster/README.md) separates deterministic measurements, actual rendered match checks and remaining human/device validation.
+The combined release passes **178 tests / 24 suites** and the strict production build. Real browser matches cover both athletes, cuts and stops, crossover/spin into a primary-action random dunk, take-off, question hold, landing, CourtBot's next drive, physical blocks, missed-steal recovery and two-student teaching contracts. [Verification evidence](docs/verification/2026-11-12-motion-roster/README.md) separates deterministic measurements, actual rendered match checks and remaining human/device validation.
 
 ## Streetball Flow, Trick Chains & Floodlit Arena
 

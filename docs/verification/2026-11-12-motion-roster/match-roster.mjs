@@ -4,15 +4,23 @@ const base=process.env.COURTIQ_URL||'http://127.0.0.1:5173',out=process.env.REVI
 const bank=(await Promise.all((await fs.readdir('content/approved-packs')).filter(f=>f.endsWith('.json')).map(async f=>JSON.parse(await fs.readFile('content/approved-packs/'+f,'utf8')).questions))).flat();
 const browser=await chromium.launch({headless:true,args:['--use-angle=metal']});const report={base,errors:[],secrecyChecks:0,recoverySnapshots:[]};
 const assert=(v,m)=>{if(!v)throw Error(m);};
-let pages=[];report.lobbyEvents=[];
+let pages=[];report.lobbyEvents=[];report.transportErrors=[];report.injectedContinueFaults=0;
 try{
  pages=await Promise.all([browser.newPage({viewport:{width:1440,height:900}}),browser.newPage({viewport:{width:390,height:844},hasTouch:true})]);
  for(const [i,p] of pages.entries()){
   p.on('pageerror',e=>report.errors.push(e.message));
-  const inspect=msg=>{if(msg.type==='ERROR')report.errors.push(msg.message||msg.code);if(msg.type==='LOBBY_UPDATE'){report.lobbyEvents.push({page:i,lobby:msg.lobby});if(report.lobbyEvents.length>10)report.lobbyEvents.shift();}if(msg.type==='MATCH_SNAPSHOT'){const p=msg.snapshot.players[1];if(p.defenseAction==='swipe'&&p.defenseResult==='miss'&&p.defenseRecoverySec>0)report.recoverySnapshots.push({x:p.x,z:p.z,vx:p.vx,vz:p.vz,recovery:p.defenseRecoverySec});}if(msg.type==='DUEL_PRELOAD' || (msg.type==='MATCH_SNAPSHOT'&&['QuestionReady','Duel'].includes(msg.snapshot.phase))){const text=JSON.stringify(msg);assert(!text.includes('correctOptionId')&&!text.includes('optionFeedback')&&!text.includes('"explanation"'),'Answer explanation leaked online');report.secrecyChecks++;}};
+  const inspect=msg=>{if(msg.type==='ERROR'){if(['Not currently in a room.','Room no longer exists.'].includes(msg.message))report.transportErrors.push({page:i,message:msg.message,injected:msg._qaInjected===true});else report.errors.push(msg.message||msg.code);}if(msg.type==='LOBBY_UPDATE'){report.lobbyEvents.push({page:i,lobby:msg.lobby});if(report.lobbyEvents.length>10)report.lobbyEvents.shift();}if(msg.type==='MATCH_SNAPSHOT'){const p=msg.snapshot.players[1];if(p.defenseAction==='swipe'&&p.defenseResult==='miss'&&p.defenseRecoverySec>0)report.recoverySnapshots.push({x:p.x,z:p.z,vx:p.vx,vz:p.vz,recovery:p.defenseRecoverySec});}if(msg.type==='DUEL_PRELOAD' || (msg.type==='MATCH_SNAPSHOT'&&['QuestionReady','Duel'].includes(msg.snapshot.phase))){const text=JSON.stringify(msg);assert(!text.includes('correctOptionId')&&!text.includes('optionFeedback')&&!text.includes('"explanation"'),'Answer explanation leaked online');report.secrecyChecks++;}};
   p.on('websocket',ws=>ws.on('framereceived',frame=>{try{inspect(JSON.parse(frame.payload.toString()));}catch(e){report.errors.push(e.message);}}));
   p.on('response',async r=>{if(r.url().includes('/api/room')){try{for(const m of (await r.json()).messages??[])inspect(m);}catch(e){report.errors.push(e.message);}}});
-  if(base.includes('127.0.0.1'))await p.addInitScript(()=>{const Native=window.WebSocket;window.WebSocket=class extends Native{constructor(url,protocols){super(String(url).endsWith('/ws')?'ws://127.0.0.1:8788/ws':url,protocols);}};});
+  const forceHttp=process.env.FORCE_HTTP==='1';
+  if(base.includes('127.0.0.1'))await p.addInitScript(({forceHttp})=>{const Native=window.WebSocket;window.WebSocket=class extends Native{constructor(url,protocols){super(String(url).endsWith('/ws')?`ws://127.0.0.1:${forceHttp?1:8788}/ws`:url,protocols);}};},{forceHttp});
+  if(forceHttp||process.env.FAULT_CONTINUE_ONCE==='1')await p.route('**/api/room',async route=>{
+    const payload=route.request().postDataJSON();
+    if(i===1&&process.env.FAULT_CONTINUE_ONCE==='1'&&report.injectedContinueFaults===0&&payload.messages?.some(m=>m.type==='CONTINUE_FEEDBACK')){
+      report.injectedContinueFaults++;await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({serverTimeMs:Date.now(),messages:[{type:'ERROR',message:'Not currently in a room.',_qaInjected:true}]})});return;
+    }
+    if(forceHttp){const response=await route.fetch({url:'http://127.0.0.1:8788/api/room'});await route.fulfill({response});}else await route.continue();
+  });
   await p.goto(base);await p.waitForFunction(()=>window.render_game_to_text && JSON.parse(window.render_game_to_text()).playerModels.every(x=>x==='ready'));
   await p.fill('#input-pseudonym',i?'Student Two':'Student One');await p.click('#lobby-character-picker [data-character="'+(i?'0':'1')+'"]');await p.locator('#lobby-options > summary').click();await p.selectOption('#select-appearance',i?'3':'2');await p.locator('#lobby-options > summary').click();await p.click('#tab-online');
  }
@@ -69,5 +77,7 @@ try{
  await a.screenshot({path:out+'/desktop-primary-block.png'});await b.screenshot({path:out+'/portrait-primary-dunk.png'});
  report.primaryDunkAndBlock=true;report.riverDunk=true;
  report.sameQuestion=true;report.sameChoices=true;report.perStudentFeedback=true;report.missedSwipeFrozen=true;report.bothContinueRequired=true;report.question=q.id;
+ if(process.env.FAULT_CONTINUE_ONCE==='1')assert(report.injectedContinueFaults===1&&report.bothContinueRequired,'Injected acknowledgement failure was not recovered');
+ report.transientRoomErrorsRecovered=report.transportErrors.length>0;
  assert(!report.errors.length,report.errors.join('; '));await fs.writeFile(out+'/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }catch(e){const states=await Promise.all(pages.map(async(p,i)=>{await p.screenshot({path:out+'/failure-'+i+'.png'});return p.evaluate(()=>({state:JSON.parse(window.render_game_to_text()),lobby:document.getElementById('online-waiting-room')?.innerText,connection:document.getElementById('connection-banner')?.innerText}));}));await fs.writeFile(out+'/failure-report.json',JSON.stringify({...report,states,error:e.message},null,2));throw e;}finally{await browser.close();}

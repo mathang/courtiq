@@ -1,0 +1,173 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "errors": [],
+  "secrecyChecks": 47,
+  "recoverySnapshots": [
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.819
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.6319999999999999
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.5239999999999998
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.3939999999999998
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.22899999999999981
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.10099999999999983
+    }
+  ],
+  "lobbyEvents": [
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "NSDN2Y",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "NSDN2Y",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 1,
+      "lobby": {
+        "roomCode": "NSDN2Y",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    }
+  ],
+  "transportErrors": [
+    {
+      "page": 1,
+      "message": "Not currently in a room.",
+      "injected": true
+    }
+  ],
+  "injectedContinueFaults": 1,
+  "characterChoices": [
+    "Sky",
+    "River"
+  ],
+  "appearancePresets": [
+    6,
+    3
+  ],
+  "currentMovementBackend": true,
+  "recoveryObservation": "Authoritative WebSocket/HTTP snapshots while directional input is held; full one-second duration separately regression-tested",
+  "firstApproach": {
+    "x": 0,
+    "z": -2.604878062750239,
+    "vx": 0,
+    "vz": -0.0014846016666013118
+  },
+  "skyDunk": true,
+  "blockSetup": [
+    {
+      "x": 0,
+      "z": -2.167908807185109
+    },
+    {
+      "x": 0,
+      "z": -1.348980055758912
+    }
+  ],
+  "primaryDunkAndBlock": true,
+  "riverDunk": true,
+  "sameQuestion": true,
+  "sameChoices": true,
+  "perStudentFeedback": true,
+  "missedSwipeFrozen": true,
+  "bothContinueRequired": true,
+  "question": "spx101-w09-028",
+  "transientRoomErrorsRecovered": true
+}

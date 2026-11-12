@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:c243a90a887014f54a7eb097ea4e67b712d40a6b60db4f39218b5f10f695becc",
+  "revision_or_artifact_hash": "dist/index.html:sha256:ba581ae809efe790a79354440e368dd002b7033a2b9c8a234c981661d1417e0d",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -657,6 +657,19 @@
       "observed": "Preview6af5000ea998a4a133285a6a ready;29files match; both functions available;28secrecy checks,both character/dunk/block flows,4tricks and Fire cycle pass;0page errors.",
       "evidence_path": "docs/verification/2026-11-12-motion-roster/",
       "reason": "Final observed scenario holds actual inputs through acknowledgement; preliminary harness routing/timing failures recorded separately. No real-device/latency/durable-classroom claim."
+    },
+    {
+      "id": "2026-11-12-http-confirmation-recovery",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "Compiled Metal Chromium HTTP room and corrected Netlify preview6af5061d57ae3cbfb80f5dcb",
+      "timestamp_utc": "2026-11-12T00:21:52.374720+00:00",
+      "command_or_action": "npm test; npm run build; real two-browser CONTINUE_FEEDBACK missing-room fault injection on local HTTP and hosted preview; exact29file check.",
+      "expected": "Recover a lost idempotent confirmation without a second student click; never replay gameplay/answers; keep both-Continue and same-question/security/feedback contracts.",
+      "observed": "178tests/24files and strict build pass. Local47/hosted31 secrecy checks,1 deliberately injected error recovered in each,complete subsequent dunk/manual swat,0page errors. Corrected preview29files match and unchanged function digests.",
+      "evidence_path": "docs/verification/2026-11-12-motion-roster/",
+      "reason": "Corrects the actual initial production lost-Continue failure documented in initial-production-room-failure.json; bounded client retry does not claim durable serverless rooms."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",

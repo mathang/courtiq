@@ -1,8 +1,9 @@
 {
   "baselineCommit": "22a46b0f3ab6cae809ce307f1d61e84d9498f440",
-  "integrationCommit": "2c14864fa1237404db918df24cd198f9d6ad3a00",
+  "motionImplementationCommit": "f4599d33500fa156438343a1c9dcabacc65057c1",
+  "initialReleaseSourceCommit": "307ed348b6028bdbf7a808d3103a0e601d1f059d",
   "branch": "feat/athlete-motion-roster",
-  "sourceFingerprint": "794bdbd32b9bd3519dcf8ee57dc638ea2b309d8b02d775cb11af9a9ffeaa7cfa",
+  "sourceFingerprint": "d6dc51f88cc2135539e4fd9d09d954683c9ffcf1b04b05dd9c39bb292a1c07a6",
   "sourceFiles": [
     {
       "file": "client/game/animation/ballTrajectory.ts",
@@ -49,6 +50,10 @@
       "sha256": "1894e8adc1a1cd5bd735e214543961b97a3286a957ebc381646095e2b099ad51"
     },
     {
+      "file": "client/game/network/httpControlRetry.ts",
+      "sha256": "6621aa38bd7fdc3585a9e4064435c98db93b37cc07fda9fc9c7d79eda598a023"
+    },
+    {
       "file": "client/game/presentation/possessionCues.ts",
       "sha256": "81ebdcb7c2c32605102d0af0fcc0a5c3b8178a0504f3733f977683ce8333ec81"
     },
@@ -58,7 +63,7 @@
     },
     {
       "file": "client/main.ts",
-      "sha256": "6e2950f2a0ba4c8716c82ce112e545d95b16182e9e1ed3b1b7f7c87b10962522"
+      "sha256": "2b391d474d37815ff661fdb636454ead82d217a4b9b7dcfd8f7327b85c0be495"
     },
     {
       "file": "client/playerLab.ts",
@@ -368,9 +373,9 @@
       "sha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334"
     },
     {
-      "file": "assets/game-C9eRDcFc.js",
-      "bytes": 101101,
-      "sha256": "fdf6b1b54ba1802fd6f5483f7ce0a06d0f9595d89b1e6fc2261d0d1442dd330e"
+      "file": "assets/game-C05SfhNM.js",
+      "bytes": 102279,
+      "sha256": "38b16aea8363945b75c743cf81610b4b66fcbdaf84ac6f7f3cd7e31b13b08be9"
     },
     {
       "file": "assets/game-CG_PSdcC.css",
@@ -460,7 +465,7 @@
     {
       "file": "index.html",
       "bytes": 26435,
-      "sha256": "e581a0de0116066a1f79f2c3d07e1c61f2774fb93eabed62bf30194c1ce27dad"
+      "sha256": "ba581ae809efe790a79354440e368dd002b7033a2b9c8a234c981661d1417e0d"
     },
     {
       "file": "player-lab.html",
@@ -470,7 +475,8 @@
   ],
   "buildCommand": "npm run build",
   "buildLog": "build.txt",
-  "tests": 174,
-  "suites": 23,
-  "builtAtUtc": "2026-11-11T23:53:46.258743+00:00"
+  "tests": 178,
+  "suites": 24,
+  "builtAtUtc": "2026-11-12T00:19:36.370946+00:00",
+  "correction": "Bounded idempotent Ready/Continue HTTP retries after an observed missing-room acknowledgement; gameplay/answer intents never replayed."
 }

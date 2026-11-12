@@ -1,5 +1,5 @@
 {
-  "id": "6af5000ea998a4a133285a6a",
+  "id": "6af5061d57ae3cbfb80f5dcb",
   "state": "ready",
   "error": null,
   "available_functions": [
@@ -12,11 +12,6 @@
       "d": "7d8a540549eca49481267a5e5a748e0309081c079f43ca78187c88421d2f2e47"
     }
   ],
-  "published_at": null,
-  "plan": {
-    "teamId": "590267a4cf321c7359e9b1b9",
-    "plan": "Free",
-    "siteId": "0163a0e9-643d-4a4e-b835-b789dcee1204",
-    "previousProduction": "6af4e9057e899e565a159b39"
-  }
+  "verifiedIncludedPlan": "Existing Netlify Free team; no billing/overage/service changes.",
+  "correctsInitialProduction": "6af503ee33b2d51b11d81783"
 }

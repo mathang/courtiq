@@ -1,0 +1,744 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "errors": [
+    "Not currently in a room."
+  ],
+  "secrecyChecks": 27,
+  "recoverySnapshots": [
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.782
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.644
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.501
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.298
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.04799999999999999
+    }
+  ],
+  "lobbyEvents": [
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "5VMT38",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "5VMT38",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 1,
+      "lobby": {
+        "roomCode": "5VMT38",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "5VMT38",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    }
+  ],
+  "characterChoices": [
+    "Sky",
+    "River"
+  ],
+  "appearancePresets": [
+    6,
+    3
+  ],
+  "currentMovementBackend": true,
+  "recoveryObservation": "Authoritative WebSocket/HTTP snapshots while directional input is held; full one-second duration separately regression-tested",
+  "firstApproach": {
+    "x": 0,
+    "z": -3.9890409179815753,
+    "vx": 0,
+    "vz": -0.0004219563098525035
+  },
+  "skyDunk": true,
+  "states": [
+    {
+      "state": {
+        "coordinates": "metres; x right, z towards camera, y up; hoop (0,3.05,-5.25)",
+        "phase": "Feedback",
+        "score": [
+          0,
+          0
+        ],
+        "attacker": 1,
+        "clockMs": 10215,
+        "players": [
+          {
+            "slot": 0,
+            "id": "p0-5VMT38",
+            "pseudonym": "Student One",
+            "isAi": false,
+            "x": 0,
+            "z": -4.013372854796402,
+            "vx": 0,
+            "vz": 0,
+            "facingAngle": 3.141592653589793,
+            "sprintStamina": 1,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 0,
+            "animState": "idle",
+            "appearancePreset": 6,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": "dunk",
+            "finishElapsedSec": 36.80000000000002,
+            "finishResolutionSec": 32.90800000000001,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": {
+              "x": -0.23504022810758565,
+              "y": 1.0202537563235403,
+              "z": -4.315864234487634
+            },
+            "finishOutcome": "miss",
+            "defenseAction": null,
+            "defenseElapsedSec": 41.58500000000005,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 1,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.2502873436256119,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 1
+          },
+          {
+            "slot": 1,
+            "id": "p1-5VMT38",
+            "pseudonym": "Student Two",
+            "isAi": false,
+            "x": -6.815833091224428,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "facingAngle": 2.1638639648797158,
+            "sprintStamina": 1,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 0,
+            "animState": "idle",
+            "appearancePreset": 3,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 40.90300000000005,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": "miss",
+            "defenseTargetX": 0,
+            "defenseTargetZ": 2.6,
+            "streetFlow": 0.2489,
+            "onFire": false,
+            "correctAnswerStreak": 1,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          }
+        ],
+        "ball": {
+          "x": 1.5155294117647058,
+          "y": 1.133406447994894,
+          "z": -3.8710588235294114
+        },
+        "characters": [
+          "Sky",
+          "River"
+        ],
+        "playerModels": [
+          "ready",
+          "ready"
+        ],
+        "presentation": {
+          "camera": {
+            "mode": "recovery",
+            "position": [
+              0.9049917126673602,
+              7.599999999999994,
+              9.199999999999989
+            ],
+            "fov": 43,
+            "safeRect": {
+              "top": 0.12111111111111111,
+              "bottom": 0.9
+            },
+            "subjects": [
+              {
+                "x": 0.142,
+                "y": 0.705
+              },
+              {
+                "x": 0.112,
+                "y": 0.518
+              },
+              {
+                "x": 0.627,
+                "y": 0.519
+              },
+              {
+                "x": 0.635,
+                "y": 0.363
+              },
+              {
+                "x": 0.627,
+                "y": 0.243
+              }
+            ]
+          },
+          "animations": [
+            {
+              "active": "court_defend",
+              "clips": 17,
+              "weights": [
+                {
+                  "clip": "court_defend",
+                  "weight": 1
+                }
+              ]
+            },
+            {
+              "active": "court_idle",
+              "clips": 17,
+              "weights": [
+                {
+                  "clip": "court_idle",
+                  "weight": 1
+                }
+              ]
+            }
+          ],
+          "palms": [
+            [
+              -0.19189695712469523,
+              1.127012066261441,
+              -5.184750026238018
+            ],
+            [
+              -6.37594996180272,
+              1.4431749831820213,
+              0.12308945970401466
+            ]
+          ],
+          "avatarRoots": [
+            [
+              0.2799999999999999,
+              0,
+              -4.930389149470691
+            ],
+            [
+              -6.815833091224427,
+              0,
+              0.6
+            ]
+          ]
+        },
+        "audio": {
+          "samples": "ready",
+          "muted": false,
+          "paused": false,
+          "context": "running",
+          "voices": 0,
+          "peak": 0,
+          "counts": {
+            "swat": 1,
+            "step": 26,
+            "gather": 1,
+            "flight": 1,
+            "answer": 1,
+            "rim": 1
+          },
+          "recent": [
+            {
+              "sound": "squeak-3",
+              "time": 9.605
+            },
+            {
+              "sound": "gather",
+              "time": 9.605
+            },
+            {
+              "sound": "flight",
+              "time": 9.872
+            },
+            {
+              "sound": "answer",
+              "time": 13.077
+            },
+            {
+              "sound": "rim",
+              "time": 14.139
+            },
+            {
+              "sound": "step",
+              "time": 14.688
+            },
+            {
+              "sound": "step",
+              "time": 14.688
+            },
+            {
+              "sound": "squeak-1",
+              "time": 14.688
+            }
+          ]
+        },
+        "showcase": false,
+        "trickSelection": null,
+        "paused": false,
+        "duel": null
+      },
+      "lobby": "\n              \n                SHARE THIS CODE\n                5VMT38\n                Copy\n              \n              Week 9: Performance Analysis & Applied Testing\n              Student One (✅ Ready)Student Two (✅ Ready)\n              \n                ✓ Ready\n                Leave room\n              \n              Waiting for both players.\n            ",
+      "connection": ""
+    },
+    {
+      "state": {
+        "coordinates": "metres; x right, z towards camera, y up; hoop (0,3.05,-5.25)",
+        "phase": "Feedback",
+        "score": [
+          0,
+          0
+        ],
+        "attacker": 1,
+        "clockMs": 10215,
+        "players": [
+          {
+            "slot": 0,
+            "id": "p0-5VMT38",
+            "pseudonym": "Student One",
+            "isAi": false,
+            "x": 0,
+            "z": -4.013372854796402,
+            "vx": 0,
+            "vz": 0,
+            "facingAngle": 3.141592653589793,
+            "sprintStamina": 1,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 0,
+            "animState": "idle",
+            "appearancePreset": 6,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": "dunk",
+            "finishElapsedSec": 36.87300000000002,
+            "finishResolutionSec": 32.98100000000001,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": {
+              "x": -0.23504022810758565,
+              "y": 1.0202537563235403,
+              "z": -4.315864234487634
+            },
+            "finishOutcome": "miss",
+            "defenseAction": null,
+            "defenseElapsedSec": 41.65800000000005,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 1,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.2502873436256119,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 1
+          },
+          {
+            "slot": 1,
+            "id": "p1-5VMT38",
+            "pseudonym": "Student Two",
+            "isAi": false,
+            "x": -6.815833091224428,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "facingAngle": 2.1638639648797158,
+            "sprintStamina": 1,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 0,
+            "animState": "idle",
+            "appearancePreset": 3,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 40.97600000000005,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": "miss",
+            "defenseTargetX": 0,
+            "defenseTargetZ": 2.6,
+            "streetFlow": 0.2489,
+            "onFire": false,
+            "correctAnswerStreak": 1,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          }
+        ],
+        "ball": {
+          "x": 1.5155294117647058,
+          "y": 1.133406447994894,
+          "z": -3.8710588235294114
+        },
+        "characters": [
+          "Sky",
+          "River"
+        ],
+        "playerModels": [
+          "ready",
+          "ready"
+        ],
+        "presentation": {
+          "camera": {
+            "mode": "recovery",
+            "position": [
+              4.0834204832532865,
+              15.090506705499996,
+              23.141920215812117
+            ],
+            "fov": 54,
+            "safeRect": {
+              "top": 0.1538862559241706,
+              "bottom": 0.9
+            },
+            "subjects": [
+              {
+                "x": 0.083,
+                "y": 0.569
+              },
+              {
+                "x": 0.068,
+                "y": 0.506
+              },
+              {
+                "x": 0.668,
+                "y": 0.507
+              },
+              {
+                "x": 0.673,
+                "y": 0.449
+              },
+              {
+                "x": 0.661,
+                "y": 0.406
+              }
+            ]
+          },
+          "animations": [
+            {
+              "active": "court_defend",
+              "clips": 17,
+              "weights": [
+                {
+                  "clip": "court_defend",
+                  "weight": 1
+                }
+              ]
+            },
+            {
+              "active": "court_idle",
+              "clips": 17,
+              "weights": [
+                {
+                  "clip": "court_idle",
+                  "weight": 1
+                }
+              ]
+            }
+          ],
+          "palms": [
+            [
+              -0.19189695712469523,
+              1.127012066261441,
+              -5.184750026238018
+            ],
+            [
+              -6.375374069324735,
+              1.447064946166968,
+              0.12290216102420574
+            ]
+          ],
+          "avatarRoots": [
+            [
+              0.2799999999999999,
+              0,
+              -4.930389149470691
+            ],
+            [
+              -6.815833091224427,
+              0,
+              0.6
+            ]
+          ]
+        },
+        "audio": {
+          "samples": "ready",
+          "muted": false,
+          "paused": false,
+          "context": "running",
+          "voices": 0,
+          "peak": 0,
+          "counts": {
+            "swat": 1,
+            "step": 26,
+            "gather": 1,
+            "flight": 1,
+            "answer": 1,
+            "rim": 1
+          },
+          "recent": [
+            {
+              "sound": "squeak-3",
+              "time": 9.179
+            },
+            {
+              "sound": "gather",
+              "time": 9.179
+            },
+            {
+              "sound": "flight",
+              "time": 9.184
+            },
+            {
+              "sound": "answer",
+              "time": 12.571
+            },
+            {
+              "sound": "rim",
+              "time": 13.797
+            },
+            {
+              "sound": "step",
+              "time": 14.08
+            },
+            {
+              "sound": "step",
+              "time": 14.08
+            },
+            {
+              "sound": "squeak-1",
+              "time": 14.08
+            }
+          ]
+        },
+        "showcase": false,
+        "trickSelection": null,
+        "paused": false,
+        "duel": null
+      },
+      "lobby": "\n              \n                SHARE THIS CODE\n                5VMT38\n                Copy\n              \n              Week 9: Performance Analysis & Applied Testing\n              Student One (✅ Ready)Student Two (✅ Ready)\n              \n                ✓ Ready\n                Leave room\n              \n              Waiting for both players.\n            ",
+      "connection": "Not currently in a room."
+    }
+  ],
+  "error": "page.waitForFunction: Timeout 30000ms exceeded."
+}
