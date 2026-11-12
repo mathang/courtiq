@@ -1,0 +1,54 @@
+{
+  "base": "https://6af510c40d07815faf1377ac--courtiq-spx101.netlify.app",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    }
+  ],
+  "roomRequests": 0,
+  "websockets": 0,
+  "identityRequests": [],
+  "errors": [],
+  "labNicknamePrivacy": true
+}

@@ -15,6 +15,14 @@
 
 ---
 
+## Current release: play CourtBot
+
+The live game currently offers **computer matches only**. Classmate play has been removed from the lobby and the public room service is disabled. Its implementation and regression tests remain for [a later multiplayer version](docs/roadmap/MULTIPLAYER.md).
+
+Use a **nickname**. **Don't use your full name, email, student number or other personal details.** This reminder appears beside the lobby input and in the Player Lab; harmless defaults replace personal-name examples. Your nickname appears on the jersey and in any learning report you choose to export. The warning is guidance, not an automatic personal-information detector.
+
+**180 tests / 25 suites and the strict build pass**, including the retained multiplayer contracts explicitly enabled in isolated tests and new checks that the shipped room entry points reject access. Current release evidence is [here](docs/verification/2026-11-12-solo-privacy/README.md).
+
 ## Basketball movement and selectable athletes — 12 November 2026
 
 Choose **River** or **Sky** in the lobby, then choose a colour palette under Options. Sky uses a distinct adult athlete model with fitted kit and tied-back hair. Both characters have the same height, reach, movement and basketball rules. Jersey names, online choices, reconnects and the Player Lab work with both.
@@ -142,7 +150,7 @@ npm run server
 ### Modes
 1. **Solo vs. CourtBot AI**: Play offline or online against an AI opponent (`Beginner / Rookie`, `Intermediate / Varsity`, or `Advanced / Pro`) whose answer correctness and response time are committed at duel start using seeded probability distributions.
 2. **Full Possession Preview**: Drives through a crossover, spin and random dunk into the normal question duel in one click. Movement immediately takes over; the match continues after the finish.
-3. **2-Player Online Private Room**: Create a 6-character room code and join from a second device. Supports both persistent WebSockets (`/ws` via `npm run server`) and serverless HTTP room synchronization (`/api/room` via Netlify Functions).
+3. **Classmate multiplayer — reserved for a later version**: Current UI and public room endpoints are disabled. The retained WebSocket/HTTP implementation and tests are documented in [the multiplayer roadmap](docs/roadmap/MULTIPLAYER.md).
 4. **Teacher Question-Pack Validator**: Paste or load custom JSON question packs in the browser to validate schema compliance, option uniqueness, reading windows, and explanations, then playtest immediately.
 
 ### Timing Presets

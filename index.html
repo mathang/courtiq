@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <!-- Student-first lobby: two modes and one primary action. -->
+      <!-- Solo release. Multiplayer controls remain inert for a future version. -->
       <section id="lobby-overlay" class="lobby-overlay" aria-label="CourtIQ lobby">
         <div class="lobby-card">
           <header class="lobby-header">
@@ -119,7 +119,7 @@
             <p class="lobby-lead">Play basketball. Build your knowledge.</p>
           </header>
 
-          <div id="lobby-mode-tabs" class="mode-tabs" role="tablist" aria-label="Who do you want to play?">
+          <div id="lobby-mode-tabs" class="mode-tabs hidden" hidden inert role="tablist" aria-label="Who do you want to play?">
             <button id="tab-solo" class="mode-tab active" role="tab" aria-selected="true" aria-controls="panel-solo-actions" tabindex="0" type="button">Play computer</button>
             <button id="tab-online" class="mode-tab" role="tab" aria-selected="false" aria-controls="panel-online-actions" tabindex="-1" type="button">Play a classmate</button>
           </div>
@@ -134,8 +134,9 @@
 
           <div id="lobby-config-grid" class="lobby-grid lobby-essentials">
             <div class="form-group">
-              <label for="input-pseudonym">Your name</label>
-              <input id="input-pseudonym" type="text" maxlength="18" value="Student A" autocomplete="off" />
+              <label for="input-pseudonym">Nickname</label>
+              <input id="input-pseudonym" type="text" maxlength="18" value="Hoopster" placeholder="e.g. SkyFox" autocomplete="off" aria-describedby="nickname-privacy" />
+              <p id="nickname-privacy" class="small-muted nickname-privacy">Use a nickname. Don't use your full name, email, student number or other personal details.</p>
             </div>
             <div class="form-group">
               <label for="select-pack">Question topic</label>
@@ -143,11 +144,11 @@
             </div>
           </div>
 
-          <div id="panel-solo-actions" class="lobby-actions-row" role="tabpanel" aria-labelledby="tab-solo">
+          <div id="panel-solo-actions" class="lobby-actions-row" role="group" aria-label="Play computer">
             <button id="btn-start-solo" class="primary-cta-btn" type="button">Start game</button>
           </div>
 
-          <div id="panel-online-actions" class="online-room-panel hidden" role="tabpanel" aria-labelledby="tab-online">
+          <div id="panel-online-actions" class="online-room-panel hidden" hidden inert role="tabpanel" aria-labelledby="tab-online">
             <div id="online-room-entry">
               <button id="btn-create-room" class="primary-cta-btn" type="button">Create room</button>
               <div class="join-code-row">

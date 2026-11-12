@@ -1,4 +1,5 @@
 import { isDrivingInPaint } from '../shared/rules/finishing';
+import { MULTIPLAYER_ENABLED } from '../shared/config/features';
 import { appearanceFor, characterForAppearance, opponentAppearance, paletteForAppearance, type CharacterId } from '../shared/config/appearance';
 import { DUNK_LABELS } from '../shared/rules/dunks';
 import { STREET_MOVES } from '../shared/rules/streetMoves';
@@ -98,6 +99,7 @@ class CourtIqApp {
     });
 
     this.loadPreferences();
+    this.configureMultiplayerAvailability();
     window.addEventListener('pointerdown', () => this.sound.unlock(), { once: true, capture: true });
     window.addEventListener('keydown', () => this.sound.unlock(), { once: true, capture: true });
     this.populatePackDropdown();
@@ -127,6 +129,7 @@ class CourtIqApp {
       return JSON.stringify({
         coordinates: 'metres; x right, z towards camera, y up; hoop (0,3.05,-5.25)',
         phase: online?.phase ?? eng?.phase,
+        features: { multiplayer: MULTIPLAYER_ENABLED },
         score: online?.scoreState.scores ?? eng?.scoreState.scores,
         attacker: online?.scoreState.currentAttacker ?? eng?.scoreState.currentAttacker,
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
@@ -165,7 +168,7 @@ class CourtIqApp {
         id: 'p0',
         pseudonym:
           (document.getElementById('input-pseudonym') as HTMLInputElement)
-            ?.value || 'Student A',
+            ?.value || 'Hoopster',
         appearancePreset: this.getSelectedAppearance(),
       },
       player1: {
@@ -175,6 +178,22 @@ class CourtIqApp {
         appearancePreset: opponentAppearance(this.getSelectedAppearance()),
       },
     });
+  }
+
+  private configureMultiplayerAvailability(): void {
+    const tabs = document.getElementById('lobby-mode-tabs');
+    const onlinePanel = document.getElementById('panel-online-actions');
+    tabs?.classList.toggle('hidden', !MULTIPLAYER_ENABLED);
+    tabs?.toggleAttribute('hidden', !MULTIPLAYER_ENABLED);
+    if (tabs) tabs.inert = !MULTIPLAYER_ENABLED;
+    onlinePanel?.toggleAttribute('hidden', !MULTIPLAYER_ENABLED);
+    if (onlinePanel) onlinePanel.inert = !MULTIPLAYER_ENABLED;
+    if (MULTIPLAYER_ENABLED) {
+      const soloPanel = document.getElementById('panel-solo-actions');
+      soloPanel?.setAttribute('role', 'tabpanel');
+      soloPanel?.setAttribute('aria-labelledby', 'tab-solo');
+      soloPanel?.removeAttribute('aria-label');
+    }
   }
 
   private populatePackDropdown(): void {
@@ -240,7 +259,7 @@ class CourtIqApp {
       e.preventDefault();
       this.input.triggerTouchTrick();
     });
-    const modes = ['solo', 'online'] as const;
+    const modes: readonly ('solo' | 'online')[] = MULTIPLAYER_ENABLED ? ['solo', 'online'] : [];
     for (const mode of modes) {
       const tab = document.getElementById(`tab-${mode}`);
       tab?.addEventListener('click', () => this.selectLobbyMode(mode));
@@ -517,7 +536,7 @@ class CourtIqApp {
     const pseudonym =
       (
         document.getElementById('input-pseudonym') as HTMLInputElement
-      )?.value.trim() || 'Student A';
+      )?.value.trim() || 'Hoopster';
     const appearancePreset = this.getSelectedAppearance();
     const packId =
       (document.getElementById('select-pack') as HTMLSelectElement)?.value ||
@@ -580,6 +599,7 @@ class CourtIqApp {
   }
 
   private selectLobbyMode(mode: 'solo' | 'online'): void {
+    if (mode === 'online' && !MULTIPLAYER_ENABLED) return;
     if (this.onlineLobby) return;
     const select = document.getElementById('select-pack') as HTMLSelectElement;
     const wasOnline = document.getElementById('tab-online')?.getAttribute('aria-selected') === 'true';
@@ -606,7 +626,7 @@ class CourtIqApp {
     this.closeOnlineConnection();
     this.onlineSnapshot = null;
     this.onlineLobby = null;
-    document.getElementById('lobby-mode-tabs')?.classList.remove('hidden');
+    document.getElementById('lobby-mode-tabs')?.classList.toggle('hidden', !MULTIPLAYER_ENABLED);
     document.getElementById('online-waiting-room')?.classList.add('hidden');
     document.getElementById('online-room-entry')?.classList.remove('hidden');
     document.getElementById('lobby-config-grid')?.classList.remove('hidden');
@@ -1803,6 +1823,7 @@ class CourtIqApp {
   }
 
   private createOnlineRoom(): void {
+    if (!MULTIPLAYER_ENABLED) return;
     const cfg = this.getSelectedConfig();
     this.ensureWebSocketConnected(() => {
       this.sendWsMessage({
@@ -1817,6 +1838,7 @@ class CourtIqApp {
   }
 
   private joinOnlineRoom(): void {
+    if (!MULTIPLAYER_ENABLED) return;
     const codeInput = document.getElementById(
       'input-join-code'
     ) as HTMLInputElement | null;

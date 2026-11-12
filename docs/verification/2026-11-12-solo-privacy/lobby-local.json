@@ -1,0 +1,54 @@
+{
+  "base": "http://127.0.0.1:5173",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "privacyVisible": true,
+      "startVisible": true,
+      "nativeKeyboardStart": true,
+      "teacherImport": true,
+      "characterAndNickname": true,
+      "multiplayerInertAfterReturn": true,
+      "overflow": false
+    }
+  ],
+  "roomRequests": 0,
+  "websockets": 0,
+  "identityRequests": [],
+  "errors": [],
+  "labNicknamePrivacy": true
+}

@@ -23,7 +23,7 @@ const engine = new AuthoritativeMatchEngine({
   pack: BUNDLED_QUESTION_PACKS[0],
   roomPresetId: "standard",
   sessionLengthId: "quick",
-  player0: { id: "preview", pseudonym: "CLARK" },
+  player0: { id: "preview", pseudonym: "HOOPSTER" },
   player1: { id: "bot", pseudonym: "CourtBot", isAi: true },
 });
 const sim = engine.players[0];

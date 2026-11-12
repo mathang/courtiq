@@ -6,6 +6,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { ClientToServerMessage, ServerToClientMessage } from '../shared/protocol/messages';
 import { ServerPackService } from './question-service/packService';
 import { RoomManager } from './rooms/roomManager';
+import { MULTIPLAYER_ENABLED, MULTIPLAYER_DISABLED_MESSAGE } from '../shared/config/features';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.resolve(__dirname, '../dist');
@@ -32,7 +33,10 @@ export async function startCourtIqServer(options?: {
   port?: number;
   tickIntervalMs?: number;
   defaultSeed?: number;
+  /** Development/tests may explicitly opt into the retained future feature. */
+  multiplayerEnabled?: boolean;
 }): Promise<CourtIqServerInstance> {
+  const multiplayerEnabled = options?.multiplayerEnabled ?? MULTIPLAYER_ENABLED;
   const packService = new ServerPackService();
   const roomManager = new RoomManager(packService, {
     defaultSeed: options?.defaultSeed,
@@ -55,6 +59,7 @@ export async function startCourtIqServer(options?: {
         JSON.stringify({
           status: 'ok',
           service: 'courtiq-authoritative-server',
+          features: { multiplayer: multiplayerEnabled },
           packs: packService.listPacks(),
         })
       );
@@ -68,6 +73,11 @@ export async function startCourtIqServer(options?: {
     }
 
     if (req.url === '/api/room' && req.method === 'POST') {
+      if (!multiplayerEnabled) {
+        res.writeHead(503, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify({ code: 'MULTIPLAYER_DISABLED', error: MULTIPLAYER_DISABLED_MESSAGE }));
+        return;
+      }
       let body = '';
       req.on('data', (chunk) => {
         body += String(chunk);
@@ -109,7 +119,13 @@ export async function startCourtIqServer(options?: {
     res.end(JSON.stringify({ error: 'Not found' }));
   });
 
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  const wss = new WebSocketServer({
+    server: httpServer, path: '/ws',
+    verifyClient: (_info, done) => {
+      if (multiplayerEnabled) done(true);
+      else done(false, 503, MULTIPLAYER_DISABLED_MESSAGE);
+    },
+  });
 
   wss.on('connection', (ws: WebSocket) => {
     const send = (msg: ServerToClientMessage) => {

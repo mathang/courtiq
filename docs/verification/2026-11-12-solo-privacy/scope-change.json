@@ -1,0 +1,13 @@
+{
+  "userDecision": "Remove multiplayer for now; keep it for later versions. Retain nickname privacy warning.",
+  "agyModel": "gemini-4-carbon-high",
+  "effort": "high",
+  "useG1Credits": false,
+  "freshBaselineCommit": "47ec617728d7aec780fd03c7c0de8a82feeaf51c",
+  "stoppedOnlyAuthorisedTask": true,
+  "stoppedAtUtc": "2026-11-12T00:55:17.046802+00:00",
+  "localAgentCodeChanges": false,
+  "databaseOrCloudProjectCreated": false,
+  "billingOrPlanChanges": false,
+  "networkingImplementationClaimed": false
+}

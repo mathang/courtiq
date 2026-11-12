@@ -553,6 +553,11 @@ textarea {
   color: var(--text-muted);
 }
 
+.nickname-privacy {
+  margin: 0;
+  line-height: 1.45;
+}
+
 .content-validator-panel textarea {
   width: 100%;
   margin: 8px 0;

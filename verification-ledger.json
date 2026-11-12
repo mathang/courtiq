@@ -1,7 +1,7 @@
 {
   "template": false,
   "project": "CourtIQ \u2014 3D Basketball & Slow-Motion Question Duel Learning Game",
-  "revision_or_artifact_hash": "dist/index.html:sha256:ba581ae809efe790a79354440e368dd002b7033a2b9c8a234c981661d1417e0d",
+  "revision_or_artifact_hash": "dist/index.html:sha256:819168c305ead3bad6989497690a4c10a86514023f51ad0521be796491d669e3",
   "checks": [
     {
       "id": "stage1-pure-shot-and-trajectory-rules",
@@ -683,6 +683,19 @@
       "observed": "Source8375df4 on GitHub main;29files match178-test strict build; function hashes match corrected preview;30 secrecy checks,1 injected response recovered, both dunks/manual swat/shared questions/personal feedback/both Continue pass;0page errors.",
       "evidence_path": "docs/verification/2026-11-12-motion-roster/release.json",
       "reason": "Supersedes initial production room-acknowledgement failure. No durable-room, real-device/classroom/perceptual-audio/AAA-parity claim."
+    },
+    {
+      "id": "2026-11-12-solo-release-privacy-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "Node25/Vitest2.1.8; Apple Metal Chromium1440x900/768x1024/390x844/844x390; Netlify preview6af510c40d07815faf1377ac",
+      "timestamp_utc": "2026-11-12T01:09:16.813895+00:00",
+      "command_or_action": "npm test; npm run build; installed game-skill; four-size lobby/privacy/browser checks; both-character compiled solo match;29file hosted comparison and API exclusion probe.",
+      "expected": "Offer only solo, retain future multiplayer tests, show explicit nickname privacy guidance; no room networking; healthy solo and rejected room API; full CourtBot gameplay preserved.",
+      "observed": "180tests/25suites and strict build pass. Four sizes/keyboard/import/return/character/nickname/Lab pass,0room/WebSocket/identity calls. Both compiled solo possessions and next CourtBot attack pass. Preview29files match,health200 with multiplayerfalse,room503 with disabled code.",
+      "evidence_path": "docs/verification/2026-11-12-solo-privacy/",
+      "reason": "User cancelled multiplayer for now; existing multiplayer contracts explicitly opt into isolated fixtures. No database or paid/plan changes."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",

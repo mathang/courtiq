@@ -8,6 +8,16 @@
 
 ---
 
+## Current release: solo and nickname privacy — 12 November 2026
+
+Ross superseded the networking implementation request with: remove multiplayer for now and retain it for future versions. The fresh Carbon High task was stopped before it changed game code. No database/project, plan change or paid service was created. Its178-test baseline was independently verified; it did not deliver a networking implementation.
+
+`shared/config/features.ts` disables classmate play by default in client and server. Lobby mode/room controls are hidden and inert, frontend create/join/mode entry methods are guarded, and the shipped Netlify room handler plus default standalone HTTP/WebSocket entry points reject room access. Health remains ready for solo. Existing multiplayer code/tests are retained: `createRoomHandler({multiplayerEnabled:true})` and `startCourtIqServer({multiplayerEnabled:true})` opt into isolated future-feature tests, not request-controlled production flags.
+
+The lobby asks for Nickname and explicitly warns against full names, email, student number or personal details. The Player Lab repeats the reminder and uses HOOPSTER instead of a personal surname. Nickname handling remains local in the tested solo flows and appears in user-selected learning exports. Guidance is not automatic PII detection.
+
+180tests/25suites and strict build pass; four-size browser checks verify privacy visibility, native keyboard Start, teacher import, character/palette/nickname retention, no room/WebSocket/identity requests and no reappearance of multiplayer after returning to the lobby. Compiled actual match sequences pass both athletes through trick→paint drive→dunk→question→landing and the next CourtBot attack. Current evidence: `docs/verification/2026-11-12-solo-privacy/`; future gates: `docs/roadmap/MULTIPLAYER.md`. Earlier multiplayer/live release records below are historical.
+
 ## Current movement and roster release — 12 November 2026
 
 The canonical branch `feat/athlete-motion-roster` combines the verified GitHub baseline `22a46b0` with Carbon High implementation `f4599d3` and River/Sky character work. Carbon started a fresh conversation from that exact fetched main revision, with `--model gemini-4-carbon-high --effort high` and explicit `useG1Credits:false`; completion exited 0.

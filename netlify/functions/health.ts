@@ -1,5 +1,6 @@
 import { ServerPackService } from '../../server/question-service/packService';
-import { NetlifyLambdaEvent, NetlifyLambdaResponse } from './room';
+import type { NetlifyLambdaEvent, NetlifyLambdaResponse } from './room';
+import { MULTIPLAYER_ENABLED } from '../../shared/config/features';
 
 const packService = new ServerPackService();
 
@@ -27,6 +28,7 @@ export const handler = async (
     body: JSON.stringify({
       status: 'ok',
       service: 'courtiq-netlify-functions',
+      features: { multiplayer: MULTIPLAYER_ENABLED },
       packs: packService.listPacks(),
     }),
   };

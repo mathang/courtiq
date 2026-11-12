@@ -1,12 +1,15 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { WebSocket } from 'ws';
 import { handler as netlifyHealthHandler } from '../../netlify/functions/health';
-import { handler as netlifyRoomHandler } from '../../netlify/functions/room';
+import { createRoomHandler } from '../../netlify/functions/room';
 import { startCourtIqServer, CourtIqServerInstance } from '../../server/index';
 import {
   ClientToServerMessage,
   ServerToClientMessage,
 } from '../../shared/protocol/messages';
+
+// Retain the future multiplayer contract while the public release is solo-only.
+const netlifyRoomHandler = createRoomHandler({ multiplayerEnabled: true });
 
 function connectTestClient(port: number): Promise<{
   ws: WebSocket;
@@ -81,6 +84,7 @@ describe('Authoritative online multiplayer server & room synchronization (Sectio
   it('coordinates a two-player private room, hides answer keys pre-resolution, rejects stale/duplicate answers, and restores state on reconnect', async () => {
     srv = await startCourtIqServer({
       port: 0,
+      multiplayerEnabled: true,
       tickIntervalMs: 10000, // Manual deterministic ticking via srv.roomManager.tickAllRooms
       defaultSeed: 99,
     });

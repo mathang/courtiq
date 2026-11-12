@@ -1,0 +1,481 @@
+{
+  "baselineCommit": "47ec617728d7aec780fd03c7c0de8a82feeaf51c",
+  "branch": "feat/solo-release-privacy",
+  "sourceFingerprint": "5404886af5ce6a665bd38e4cf6830ca1973fa0c149da2885f3f70d41fa29631a",
+  "sourceFiles": [
+    {
+      "file": "client/game/animation/ballTrajectory.ts",
+      "sha256": "d96b4cb8012b3b94359a39c0be3376eb7f37c01d64ce70312161c6a04b73855c"
+    },
+    {
+      "file": "client/game/audio/courtSoundBank.ts",
+      "sha256": "2eaabfaadb84bb2713f80abf61948cc3233fba6087b65976ae4cd209ce4393af"
+    },
+    {
+      "file": "client/game/audio/soundEngine.ts",
+      "sha256": "a90555f35560a0b4f05f0a7707fa6673ef940ee1d912fad45cbb9211c77fb0d4"
+    },
+    {
+      "file": "client/game/camera/courtCamera.ts",
+      "sha256": "0c2037af33a2e0fb20ee59cbf5b8bc0f4d0f1343d24ebff843c2d6183b285292"
+    },
+    {
+      "file": "client/game/characters/basketballAnimator.ts",
+      "sha256": "9a512b31f9105fbd2824b739a93c75fca706c856419a0746615287335b9c51e3"
+    },
+    {
+      "file": "client/game/characters/legacyPlayerCharacter.ts",
+      "sha256": "f29b56a7a47d5ad4781d46aaef958554d4f093b2f2eb42782c781d3e8f943c64"
+    },
+    {
+      "file": "client/game/characters/playerCharacter.ts",
+      "sha256": "fc3355591290ee99c9ba11477b24d588198adc0d1ebee431bbb84b5a73811159"
+    },
+    {
+      "file": "client/game/characters/streetballRig.ts",
+      "sha256": "5a66a5f556f9bf76ce31b23bf892268d1f1c92091dfe1ef54d700bf812b648b9"
+    },
+    {
+      "file": "client/game/court/arena.ts",
+      "sha256": "2c744895233188a53f64d9a35210b09bfee4905ecab45098e7ec0f685a531963"
+    },
+    {
+      "file": "client/game/engine.ts",
+      "sha256": "39089e9b84b24651d498cc3679c4b65e100650d75ae19206eece3b7ae2d0e573"
+    },
+    {
+      "file": "client/game/input/controls.ts",
+      "sha256": "1894e8adc1a1cd5bd735e214543961b97a3286a957ebc381646095e2b099ad51"
+    },
+    {
+      "file": "client/game/network/httpControlRetry.ts",
+      "sha256": "6621aa38bd7fdc3585a9e4064435c98db93b37cc07fda9fc9c7d79eda598a023"
+    },
+    {
+      "file": "client/game/presentation/possessionCues.ts",
+      "sha256": "81ebdcb7c2c32605102d0af0fcc0a5c3b8178a0504f3733f977683ce8333ec81"
+    },
+    {
+      "file": "client/game/presentation/showcasePossession.ts",
+      "sha256": "64bc91bbe722eb45f18bbbbc4480a08c439ae8d61248930468660e86d8f500b6"
+    },
+    {
+      "file": "client/main.ts",
+      "sha256": "4fa1b05447f735e1ad6bae6556635ca5f0a6db48f55bf7bd301fa815ef270f52"
+    },
+    {
+      "file": "client/playerLab.ts",
+      "sha256": "7315dd6a04b9e66c16f83f5133fd534e997bbb4e60034b93790622c5fcc408e3"
+    },
+    {
+      "file": "client/styles/main.css",
+      "sha256": "ee4320df849f4afb6578dbd06e9daac702624dc7f627a00dd8b1f53708c23f2a"
+    },
+    {
+      "file": "client/styles/playerLab.css",
+      "sha256": "bf1cb9cc7ae5604781a94e0b1b17d5328d118967116082ab7ad909a70a0c8ffc"
+    },
+    {
+      "file": "content/approved-packs/spx101-w05-measurement-quality.json",
+      "sha256": "c002e7c887a24c182705cbe4e27a58a3894402d5d07e6e0aa063e0879168d7d2"
+    },
+    {
+      "file": "content/approved-packs/spx101-w09-performance-analysis.json",
+      "sha256": "1b9f2c76bb05fa3f59426a49febb4d6afd3a3d6b209e70b313cbde4bdf43a2e0"
+    },
+    {
+      "file": "content/packRegistry.ts",
+      "sha256": "27ed2733074550d8401658e87ff7d40ba48b471b9646b306e5243ef85dd0f8c8"
+    },
+    {
+      "file": "index.html",
+      "sha256": "e4e2375ec296ca2099ef020f3f9f3e861ca147f40099e7b5024abc03587f7f22"
+    },
+    {
+      "file": "netlify/functions/health.ts",
+      "sha256": "af88c919166589a0630b94ee7c5593521c3804c3f9942ce1d3795746acaf48c9"
+    },
+    {
+      "file": "netlify/functions/room.ts",
+      "sha256": "b85d3cbb75fbb542117830dcab6873c8932b0739a825767d77846d8a0a2dd884"
+    },
+    {
+      "file": "netlify.toml",
+      "sha256": "570fe1e77b620db86a64306f34767f706ab676c9b370275d2b4a5a17ffe453f6"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "7ab9141b287e6ac4d6ea5e4a6a2c0c4fadf4085e98d7f498a6de9aa388c8748e"
+    },
+    {
+      "file": "package.json",
+      "sha256": "950d54744ee475db87bb1b476894eb69c2255636118478160a527bf7ee03763d"
+    },
+    {
+      "file": "player-lab.html",
+      "sha256": "29769f62d4f8a4f43c651455ca6468acf6eb9454bdab404abbf5f733ab5d312a"
+    },
+    {
+      "file": "public/assets/audio/CC0-LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "public/assets/audio/README.md",
+      "sha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545"
+    },
+    {
+      "file": "public/assets/audio/bounce-1.wav",
+      "sha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8"
+    },
+    {
+      "file": "public/assets/audio/bounce-2.wav",
+      "sha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886"
+    },
+    {
+      "file": "public/assets/audio/bounce-3.wav",
+      "sha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174"
+    },
+    {
+      "file": "public/assets/audio/cheer.wav",
+      "sha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2"
+    },
+    {
+      "file": "public/assets/audio/squeak-1.wav",
+      "sha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9"
+    },
+    {
+      "file": "public/assets/audio/squeak-2.wav",
+      "sha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7"
+    },
+    {
+      "file": "public/assets/audio/squeak-3.wav",
+      "sha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334"
+    },
+    {
+      "file": "public/assets/player/ANIMATION-LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "public/assets/player/QUATERNIUS-LICENSE.txt",
+      "sha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e"
+    },
+    {
+      "file": "public/assets/player/athlete-sky.glb",
+      "sha256": "74e195211cfabeebc71752f9540c836e3a29fb8ca47f795d75c5d5110055378e"
+    },
+    {
+      "file": "public/assets/player/portrait-river-1.png",
+      "sha256": "09410cb4ef246066363b4fd7f14be34bc3f102ceec32c4313fbeae1733d89548"
+    },
+    {
+      "file": "public/assets/player/portrait-river-2.png",
+      "sha256": "2581b60814e7d3dd2eb08d6f35772402131135097df1cc50ba0fbe501b9201b7"
+    },
+    {
+      "file": "public/assets/player/portrait-river-3.png",
+      "sha256": "7159b1b08cbd500c09f9f394a87cb0ac5f5f5c4f2db0f0148672b2e1b7e3dce8"
+    },
+    {
+      "file": "public/assets/player/portrait-river.png",
+      "sha256": "3a5aa05f54baa944bdcc62731d32f059150b79a0427cfaab9429e5666e335787"
+    },
+    {
+      "file": "public/assets/player/portrait-sky-1.png",
+      "sha256": "32eaf045ec97273475951437a3db40ba14f91756750bd05c1214fbb30e6c5e52"
+    },
+    {
+      "file": "public/assets/player/portrait-sky-2.png",
+      "sha256": "7e653fbccf6a05f51f879e116fa36cdadb6eae490ecebd0e934fc9981711145d"
+    },
+    {
+      "file": "public/assets/player/portrait-sky-3.png",
+      "sha256": "7ffacca2cb0eeaabc8d35a35766d63b2774ca24b9752b57edc6bd39a3933144a"
+    },
+    {
+      "file": "public/assets/player/portrait-sky.png",
+      "sha256": "0f64aed6d4124713dccc8d8b39a0049a06a6e5bc4c3933fa4d33cec1da57d05f"
+    },
+    {
+      "file": "public/assets/player/streetball-player.glb",
+      "sha256": "50a3c20397f679c31db968075dc5ead31f76622a095399b0c1bda8647d83982b"
+    },
+    {
+      "file": "scripts/build-characters.mjs",
+      "sha256": "07ebb07d8952f4cb10ebed6ba2b0881596284cf7a96af83338f52031f8a5c943"
+    },
+    {
+      "file": "scripts/build-court-audio.mjs",
+      "sha256": "49f6f4eff6d2b9b9181d29fd000691d9656d47ee6308796fae0b72b99265c258"
+    },
+    {
+      "file": "scripts/build-player.mjs",
+      "sha256": "66b21bae06a581ed6b0047ab06dcea506e903b8d2da85dc52ef9a4ffa4723dd8"
+    },
+    {
+      "file": "scripts/character-source.mjs",
+      "sha256": "43070eff20654558758eee7289abfba660d22f38314da693cf1e8fc9cbee491e"
+    },
+    {
+      "file": "scripts/player-animations.mjs",
+      "sha256": "c48baaeb8d6d3871d142365f1013a3a9ade986ba9d094ddde80f19cb528dc50f"
+    },
+    {
+      "file": "server/answer-validation/duelValidator.ts",
+      "sha256": "de0fdce3296f209cc256cf62d5f6c14dfb36251d2dfff6cbbf4ae28a17905d33"
+    },
+    {
+      "file": "server/index.ts",
+      "sha256": "8ca958de6ba16b3cf72b634e48d3aef89457d801a3da9cc7d9a837d11a759b3c"
+    },
+    {
+      "file": "server/match-events/eventLogger.ts",
+      "sha256": "9956f9ff18784d162e84fbc1ac3fa4500a115fb1352a80cd323e21fb6ba8ca68"
+    },
+    {
+      "file": "server/question-service/packService.ts",
+      "sha256": "796518ed6d52fddbc06c3b7dcbe01b8490b57196e036269f54ff3d2be7c6d35f"
+    },
+    {
+      "file": "server/rooms/roomManager.ts",
+      "sha256": "3084047ed03e5dd73769af50ccfa1103417520fbf67a6dcd2706685c60c4c687"
+    },
+    {
+      "file": "server/simulation/authoritativeMatch.ts",
+      "sha256": "90fdfb51c6095a1b1988de6328191448f47a1099275f51af337b316eff7521fe"
+    },
+    {
+      "file": "shared/config/appearance.ts",
+      "sha256": "a6001d7597757c5f1ddff2586b03a9b64c61a60a9a933bc657c0859392b2f3da"
+    },
+    {
+      "file": "shared/config/balance.ts",
+      "sha256": "cffcb293e1a84afe818056f1b3e63e9ebd8aca1cde35c6b5344254be55c5bdf5"
+    },
+    {
+      "file": "shared/config/features.ts",
+      "sha256": "8d296b44939d6945f90c8e1907e6569de0629d6dc07aee4086b8fb14ae994b08"
+    },
+    {
+      "file": "shared/content/question-schema.ts",
+      "sha256": "f91ad6ab369bd18fc4c55d8b8cbf4117eb20884bc964cb48ffa193a30e27bf22"
+    },
+    {
+      "file": "shared/protocol/messages.ts",
+      "sha256": "05522e754ed555e8aacf0f287d18e53f9ab404d5757d867ce3ad7752ef80edfd"
+    },
+    {
+      "file": "shared/rules/aiOpponent.ts",
+      "sha256": "46e72566d60b8d9d15fd2e25a62b6d6c90bf45ac79a4ef8e05f4c8f695e225c1"
+    },
+    {
+      "file": "shared/rules/block.ts",
+      "sha256": "559d210932202b94523d0dfa23afa118d2a602d12f0363b0d7b5d5c5f850153e"
+    },
+    {
+      "file": "shared/rules/contact.ts",
+      "sha256": "132d644d1736a58aa5e2d1fe12391f7a762e0fd37add47cc648dac9c0c285575"
+    },
+    {
+      "file": "shared/rules/defense.ts",
+      "sha256": "4b9c6476addc405dd553a1cdc1338cf9aba4eb3d28a9988c900515ce1a31301a"
+    },
+    {
+      "file": "shared/rules/dribble.ts",
+      "sha256": "210c4e0c2e0f8016cc3bf90fa89498beaaf857628469c99fef3253dc621968b7"
+    },
+    {
+      "file": "shared/rules/dunks.ts",
+      "sha256": "b380d19f75aa84506d64f1d276eca443604a8079571807383525c63d48b3ac13"
+    },
+    {
+      "file": "shared/rules/finishing.ts",
+      "sha256": "012a63a42f0fe9f11f724e03289c5046205e2667110833b99012e76ffb3294ce"
+    },
+    {
+      "file": "shared/rules/learningFeedback.ts",
+      "sha256": "66f03bc1b58765c945581e1f3d150f470615a89c7f6aba99c0417ea2b30fe847"
+    },
+    {
+      "file": "shared/rules/matchStateMachine.ts",
+      "sha256": "08281afdd1b175a0784f4c424b65850f5ada29753ef46209ae54dcf89de3b7a5"
+    },
+    {
+      "file": "shared/rules/motionCurves.ts",
+      "sha256": "4d136ca8c1c15e866c47b20f91808a7b5707dcb58f34d879ffa9a182b4eaae64"
+    },
+    {
+      "file": "shared/rules/possession.ts",
+      "sha256": "a8e331ac3d4384d981cc7666f07530f4f85a4f359cc15967713391c3207c387a"
+    },
+    {
+      "file": "shared/rules/shot.ts",
+      "sha256": "06a948bc2652cb3ad12bb3ae9d2334ce8173a3ab19b00d142371f86eea1c1bb1"
+    },
+    {
+      "file": "shared/rules/streetMoves.ts",
+      "sha256": "93d2bf1b65965d74c5e49e8748584a6e84957203234ef2ba65f4d9918dfd1d46"
+    },
+    {
+      "file": "shared/rules/timing.ts",
+      "sha256": "a46693211e71f6920be7e1f60618de4df23eacee74b935ec092e7d5282d97d58"
+    },
+    {
+      "file": "tsconfig.json",
+      "sha256": "1a7e515b74f36d4667cb763ee878a98f9c8e56e40009608ecd9804dc21bef90d"
+    },
+    {
+      "file": "vite.config.ts",
+      "sha256": "260a5b9b299103ce66c7ad2a2b307b1a9e5bee08d68f48aa69aa21d8aba20cdf"
+    }
+  ],
+  "builtFiles": [
+    {
+      "file": "assets/audio/CC0-LICENSE.txt",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "assets/audio/README.md",
+      "bytes": 847,
+      "sha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545"
+    },
+    {
+      "file": "assets/audio/bounce-1.wav",
+      "bytes": 28450,
+      "sha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8"
+    },
+    {
+      "file": "assets/audio/bounce-2.wav",
+      "bytes": 28450,
+      "sha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886"
+    },
+    {
+      "file": "assets/audio/bounce-3.wav",
+      "bytes": 28450,
+      "sha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174"
+    },
+    {
+      "file": "assets/audio/cheer.wav",
+      "bytes": 110514,
+      "sha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2"
+    },
+    {
+      "file": "assets/audio/squeak-1.wav",
+      "bytes": 23132,
+      "sha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9"
+    },
+    {
+      "file": "assets/audio/squeak-2.wav",
+      "bytes": 23132,
+      "sha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7"
+    },
+    {
+      "file": "assets/audio/squeak-3.wav",
+      "bytes": 23132,
+      "sha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334"
+    },
+    {
+      "file": "assets/game-B5fbdxQS.js",
+      "bytes": 102042,
+      "sha256": "e555d402c4e5805c92386846aa5d32511ec8d334b13ec7f1bb9a9438cbda2f83"
+    },
+    {
+      "file": "assets/game-BKkhXHRd.css",
+      "bytes": 25609,
+      "sha256": "b59efbc43423408aa65a01a1ae23e7545d8423c471d1988fc36cae1866da8e06"
+    },
+    {
+      "file": "assets/player/ANIMATION-LICENSE.txt",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "assets/player/QUATERNIUS-LICENSE.txt",
+      "bytes": 806,
+      "sha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e"
+    },
+    {
+      "file": "assets/player/athlete-sky.glb",
+      "bytes": 1219968,
+      "sha256": "74e195211cfabeebc71752f9540c836e3a29fb8ca47f795d75c5d5110055378e"
+    },
+    {
+      "file": "assets/player/portrait-river-1.png",
+      "bytes": 18155,
+      "sha256": "09410cb4ef246066363b4fd7f14be34bc3f102ceec32c4313fbeae1733d89548"
+    },
+    {
+      "file": "assets/player/portrait-river-2.png",
+      "bytes": 17219,
+      "sha256": "2581b60814e7d3dd2eb08d6f35772402131135097df1cc50ba0fbe501b9201b7"
+    },
+    {
+      "file": "assets/player/portrait-river-3.png",
+      "bytes": 18447,
+      "sha256": "7159b1b08cbd500c09f9f394a87cb0ac5f5f5c4f2db0f0148672b2e1b7e3dce8"
+    },
+    {
+      "file": "assets/player/portrait-river.png",
+      "bytes": 17575,
+      "sha256": "3a5aa05f54baa944bdcc62731d32f059150b79a0427cfaab9429e5666e335787"
+    },
+    {
+      "file": "assets/player/portrait-sky-1.png",
+      "bytes": 15311,
+      "sha256": "32eaf045ec97273475951437a3db40ba14f91756750bd05c1214fbb30e6c5e52"
+    },
+    {
+      "file": "assets/player/portrait-sky-2.png",
+      "bytes": 14408,
+      "sha256": "7e653fbccf6a05f51f879e116fa36cdadb6eae490ecebd0e934fc9981711145d"
+    },
+    {
+      "file": "assets/player/portrait-sky-3.png",
+      "bytes": 15506,
+      "sha256": "7ffacca2cb0eeaabc8d35a35766d63b2774ca24b9752b57edc6bd39a3933144a"
+    },
+    {
+      "file": "assets/player/portrait-sky.png",
+      "bytes": 14706,
+      "sha256": "0f64aed6d4124713dccc8d8b39a0049a06a6e5bc4c3933fa4d33cec1da57d05f"
+    },
+    {
+      "file": "assets/player/streetball-player.glb",
+      "bytes": 1286024,
+      "sha256": "50a3c20397f679c31db968075dc5ead31f76622a095399b0c1bda8647d83982b"
+    },
+    {
+      "file": "assets/playerCharacter-Jh5UkP6N.js",
+      "bytes": 275823,
+      "sha256": "dd1b4008fc922d40301f99bbdb4cb0a818eecd99b9c00462c4f81d9a72f9423a"
+    },
+    {
+      "file": "assets/playerLab-CpIJaJLo.css",
+      "bytes": 6063,
+      "sha256": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f"
+    },
+    {
+      "file": "assets/playerLab-DNbE5Syl.js",
+      "bytes": 27169,
+      "sha256": "a8e1f88009cdb9c7ab686713a2d14b9e1dde8f7abbb056c48932079ebabeac7d"
+    },
+    {
+      "file": "assets/three-C3aAHTDY.js",
+      "bytes": 559766,
+      "sha256": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03"
+    },
+    {
+      "file": "index.html",
+      "bytes": 26711,
+      "sha256": "819168c305ead3bad6989497690a4c10a86514023f51ad0521be796491d669e3"
+    },
+    {
+      "file": "player-lab.html",
+      "bytes": 5696,
+      "sha256": "31fe1bce77cef52e997be3949930bc8d897de8c6bd4b3e3681905547e38c2dc1"
+    }
+  ],
+  "tests": 180,
+  "suites": 25,
+  "buildCommand": "npm run build"
+}
