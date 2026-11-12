@@ -1,0 +1,169 @@
+{
+  "base": "https://6af5000ea998a4a133285a6a--courtiq-spx101.netlify.app",
+  "errors": [],
+  "secrecyChecks": 28,
+  "recoverySnapshots": [
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.75
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.5
+    },
+    {
+      "x": 0,
+      "z": 0.6,
+      "vx": 0,
+      "vz": 0,
+      "recovery": 0.25
+    }
+  ],
+  "lobbyEvents": [
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "ELDEY2",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 1,
+      "lobby": {
+        "roomCode": "ELDEY2",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": false,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 0,
+      "lobby": {
+        "roomCode": "ELDEY2",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    },
+    {
+      "page": 1,
+      "lobby": {
+        "roomCode": "ELDEY2",
+        "packId": "spx101-w09-performance-analysis",
+        "packTitle": "SPX101 Week 9: Performance Analysis & Applied Testing",
+        "roomPresetId": "standard",
+        "sessionLengthId": "standard",
+        "players": [
+          {
+            "slot": 0,
+            "pseudonym": "Student One",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 6
+          },
+          {
+            "slot": 1,
+            "pseudonym": "Student Two",
+            "ready": true,
+            "connected": true,
+            "appearancePreset": 3
+          }
+        ]
+      }
+    }
+  ],
+  "characterChoices": [
+    "Sky",
+    "River"
+  ],
+  "appearancePresets": [
+    6,
+    3
+  ],
+  "currentMovementBackend": true,
+  "recoveryObservation": "Authoritative WebSocket/HTTP snapshots while directional input is held; full one-second duration separately regression-tested",
+  "firstApproach": {
+    "x": 0,
+    "z": -3.2873089482365527,
+    "vx": 0,
+    "vz": -2.463262942642961e-7
+  },
+  "skyDunk": true,
+  "blockSetup": [
+    {
+      "x": 0,
+      "z": -3.7785759818046505
+    },
+    {
+      "x": 0,
+      "z": -2.9585763080508727
+    }
+  ],
+  "primaryDunkAndBlock": true,
+  "riverDunk": true,
+  "sameQuestion": true,
+  "sameChoices": true,
+  "perStudentFeedback": true,
+  "missedSwipeFrozen": true,
+  "bothContinueRequired": true,
+  "question": "spx101-w09-040"
+}

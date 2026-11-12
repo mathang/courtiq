@@ -8,16 +8,19 @@ import { AuthoritativeMatchEngine, PlayerMoveInput } from '../../shared/rules/ma
 import { BUNDLED_QUESTION_PACKS } from '../../content/packRegistry';
 import { getAirPose } from '../../shared/rules/streetMoves';
 
-const bytes = readFileSync(
-  new URL('../../public/assets/player/streetball-player.glb', import.meta.url),
-);
-const asset = await new GLTFLoader().parseAsync(
-  bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
-  '',
+const assets = await Promise.all(
+  ['streetball-player.glb', 'athlete-sky.glb'].map(async (name) => {
+    const bytes = readFileSync(new URL(`../../public/assets/player/${name}`, import.meta.url));
+    const asset = await new GLTFLoader().parseAsync(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), '',
+    );
+    return { name, asset };
+  }),
 );
 
 const NEUTRAL: PlayerMoveInput = { moveX: 0, moveZ: 0, sprint: false, shoot: false };
 
+for (const { name, asset } of assets) {
 function createActor() {
   const root = new THREE.Group();
   const body = new THREE.Group();
@@ -48,7 +51,7 @@ function createMatch(seed = 7) {
   return engine;
 }
 
-describe('Rig footwork, sole clearance & ball-hand continuity across real transitions', () => {
+describe(`${name}: footwork, sole clearance & ball-hand continuity across real transitions`, () => {
   it('transitions feet through sprint, reversal cut, crossover and hard stop without snapping, skating or sole penetration', () => {
     const e = createMatch(11);
     const a = createActor();
@@ -308,3 +311,4 @@ describe('Rig footwork, sole clearance & ball-hand continuity across real transi
     expect(maxFootStep).toBeLessThan(0.28);
   });
 });
+}

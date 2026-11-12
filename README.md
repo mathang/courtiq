@@ -15,6 +15,14 @@
 
 ---
 
+## Basketball movement and selectable athletes — 12 November 2026
+
+Choose **River** or **Sky** in the lobby, then choose a colour palette under Options. Sky uses a distinct adult athlete model with fitted kit and tied-back hair. Both characters have the same height, reach, movement and basketball rules. Jersey names, online choices, reconnects and the Player Lab work with both.
+
+Movement now keeps defenders facing the ball-handler through lateral slides and retreats. Cuts and hard stops use a short compression and push-off, planted support feet hold their court position, and action clips blend out without rewinding. Dribbling retains the carrying hand after crossovers, protects the ball away from a shading defender and keeps the hand above the bounce. A continuous shooting gather and smoother spin-to-finish turn reduce ball/hand gaps and abrupt elbow flips.
+
+The combined release passes **174 tests / 23 suites** and the strict production build. Real browser matches cover both athletes, cuts and stops, crossover/spin into a primary-action random dunk, take-off, question hold, landing, CourtBot's next drive, physical blocks, missed-steal recovery and two-student teaching contracts. [Verification evidence](docs/verification/2026-11-12-motion-roster/README.md) separates deterministic measurements, actual rendered match checks and remaining human/device validation.
+
 ## Streetball Flow, Trick Chains & Floodlit Arena
 
 - **280 ms Input Buffering & Legitimate 2–3 Move Trick Chains**: Queue crossovers, spins, eurosteps, stepbacks, dunks, jumpers, and blocks seamlessly through active move recovery (`>= 65%` cancel window or `360 ms` combo grace into a distinct move, e.g., `Crossover -> Spin -> Windmill` or `Crossover -> Stepback -> Fadeaway`). Clean first crossovers and stepbacks protect the ball during separation, while greedy repeat move spam near a defender exposes the ball (`0.55 s` counter-steal window).
@@ -38,11 +46,11 @@ Movement now blends between stances and moves, with a calmer shared dribble, han
 
 ## Rigged player and Player Lab — 11 November 2026
 
-[Open the Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) for an orbitable close-up with a live jersey name, two team colours, four skin/hair colour variants, and dribble/run/defend/dunk/block/swipe demos. The rigged player also appears in normal solo and student-versus-student matches. Both players keep their own skeleton, appearance, number and jersey name.
+[Open the Player Lab](https://courtiq-spx101.netlify.app/player-lab.html) for an orbitable close-up with a live jersey name, two character choices, two team colours, four colour palettes, and dribble/run/defend/dunk/block/swipe demos. The rigged player also appears in normal solo and student-versus-student matches. Both players keep their own skeleton, appearance, number and jersey name.
 
 The 65-bone Quaternius CC0 humanoid has original CourtIQ clothing, trainers, hair and jersey artwork. Keyframed locomotion from Quaternius's CC0 animation library is retargeted onto the player, with basketball accents and two-bone IK for planted stances and dunk hand contact. The original procedural rig remains playable during loading or a failed asset download. See [asset provenance and rebuilding](assets/source/README.md).
 
-`npm run build:player` regenerates and optimises the GLB with pinned glTF Transform tools. The checked-in asset is used by normal `npm run build`; rebuilding it is optional. Preserve the jersey UV attribute during optimisation because names and numbers are mapped at runtime.
+`npm run build:player` regenerates and optimises both character GLBs with pinned glTF Transform tools. The checked-in asset is used by normal `npm run build`; rebuilding it is optional. Preserve the jersey UV attribute during optimisation because names and numbers are mapped at runtime.
 
 ## Simple controls and learning streaks — 12 November 2026
 
@@ -133,7 +141,7 @@ npm run server
 
 ### Modes
 1. **Solo vs. CourtBot AI**: Play offline or online against an AI opponent (`Beginner / Rookie`, `Intermediate / Varsity`, or `Advanced / Pro`) whose answer correctness and response time are committed at duel start using seeded probability distributions.
-2. **Full Possession Preview**: Drives through a crossover and windmill into the normal question duel in one click. Movement immediately takes over; the match continues after the finish.
+2. **Full Possession Preview**: Drives through a crossover, spin and random dunk into the normal question duel in one click. Movement immediately takes over; the match continues after the finish.
 3. **2-Player Online Private Room**: Create a 6-character room code and join from a second device. Supports both persistent WebSockets (`/ws` via `npm run server`) and serverless HTTP room synchronization (`/api/room` via Netlify Functions).
 4. **Teacher Question-Pack Validator**: Paste or load custom JSON question packs in the browser to validate schema compliance, option uniqueness, reading windows, and explanations, then playtest immediately.
 

@@ -1,0 +1,16 @@
+{
+  "baseCommit": "22a46b0f3ab6cae809ce307f1d61e84d9498f440",
+  "model": "gemini-4-carbon-high",
+  "effort": "high",
+  "useG1Credits": false,
+  "freshConversation": true,
+  "startedAt": "2026-11-11T22:32:29.542373+00:00",
+  "endedAt": "2026-11-11T23:49:22.051871+00:00",
+  "exitCode": 0,
+  "conversationId": "f3a34191-a782-47c3-a352-7e55a078f959",
+  "implementationCommit": "f4599d33500fa156438343a1c9dcabacc65057c1",
+  "statusCommit": "3cbb5be672d80cddd90f7fe3f7fc4a38cca2994d",
+  "finalQuota": "Gemini Models\tWeekly Limit Remaining\t97%\t2026-11-17T19:22:50Z\nGemini Models\tFive Hour Limit Remaining\t95%\t2026-11-12T01:39:24Z\nClaude and GPT models\tWeekly Limit Remaining\t100%\t2026-11-17T19:23:10Z\nClaude and GPT models\tFive Hour Limit Remaining\t100%\t2026-11-12T04:50:32Z\n",
+  "costControls": "Explicit session useG1Credits:false in launch and final record. No billing/account changes, paid APIs, asset purchases, or extra-credit fallback.",
+  "recovery": "Stopped only two verified task-owned foreground development servers that were holding tool waits; Carbon resumed, completed match verification, committed and exited 0. Same model/high/cost settings retained."
+}

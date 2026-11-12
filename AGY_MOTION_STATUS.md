@@ -81,3 +81,7 @@
 - **Baseline (`origin/main`)**: `22a46b0f3ab6cae809ce307f1d61e84d9498f440`
 - **Implementation & Regression Tests**: `f4599d33500fa156438343a1c9dcabacc65057c1`
 - **Remaining Work**: None in this worktree; ready for Codex sibling integration across both 65-bone athletes and final combined verification/release.
+
+## Independent integrated review
+
+Codex integrated the committed implementation with River/Sky in the canonical checkout. The original Carbon capture paths above are Carbon's evidence claims; Codex did not inspect private assistant stores. Independent public review artefacts are in `docs/verification/2026-11-12-motion-roster/`, with actual match captures for both characters, before/after renderer measurements,174 integrated tests/23 suites, strict build and hosted release checks. These supersede the earlier single-athlete151-test count for the combined release.

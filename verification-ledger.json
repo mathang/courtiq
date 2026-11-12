@@ -631,6 +631,32 @@
       "observed": "Source 228d865e71e066e1119410fe78f24ba60d21af11 is on GitHub main. Production 6af4e9057e899e565a159b39 current/ready, all20 files match final dist and both function digests match the tested preview. Live bump/slide, jump/off-balance steering, Leave/rejoin, all four lobby sizes, custom-pack safety, shared questions/choices,37 pre-resolution secrecy checks, personal feedback, both-party Continue, swipe root and primary dunk/manual swat pass; zero page errors. Genuine badge clear in inspected captures.",
       "evidence_path": "docs/verification/2026-11-12-fluid-lobby",
       "reason": "Physical device/classroom/human listening and instructor review remain separate; future gameplay/animation/networking work is proposed in the sourced report."
+    },
+    {
+      "id": "2026-11-12-motion-roster-integrated",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "macOS Apple M4 Pro Metal Chromium / Node25.6.1 / Vitest2.1.8",
+      "timestamp_utc": "2026-11-11T23:55:13.063383+00:00",
+      "command_or_action": "npm test; npm run build; finite actual-input browser matches and independent before/after capture",
+      "expected": "Both characters preserve authoritative teaching and balance contracts; motion/asset tests, strict build, real dunk/landing/defence/AI sequences and lobby/fallback pass.",
+      "observed": "174/174 tests across23files; strict build; real gather0.084m palm-marker gap for both; actual desktop/390x844 match sequences and local two-student checks pass.",
+      "evidence_path": "docs/verification/2026-11-12-motion-roster/",
+      "reason": "Independent integration checks after Carbon commit, both original GLB and new Sky asset tested without relaxed gates."
+    },
+    {
+      "id": "2026-11-12-motion-roster-hosted-preview",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "Netlify Free preview / Metal Chromium desktop and390x844 HTTP two-browser room",
+      "timestamp_utc": "2026-11-12T00:09:31.337523+00:00",
+      "command_or_action": "Verify all dist hashes; finite ordinary-input hosted solo and two-student browser matches; control/learning Fire regression.",
+      "expected": "Current runtime/assets/functions accessible; character selection, teaching secrecy/feedback/Continue, both dunks and manual swat preserve their contracts.",
+      "observed": "Preview6af5000ea998a4a133285a6a ready;29files match; both functions available;28secrecy checks,both character/dunk/block flows,4tricks and Fire cycle pass;0page errors.",
+      "evidence_path": "docs/verification/2026-11-12-motion-roster/",
+      "reason": "Final observed scenario holds actual inputs through acknowledgement; preliminary harness routing/timing failures recorded separately. No real-device/latency/durable-classroom claim."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",

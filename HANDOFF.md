@@ -8,6 +8,18 @@
 
 ---
 
+## Current movement and roster release — 12 November 2026
+
+The canonical branch `feat/athlete-motion-roster` combines the verified GitHub baseline `22a46b0` with Carbon High implementation `f4599d3` and River/Sky character work. Carbon started a fresh conversation from that exact fetched main revision, with `--model gemini-4-carbon-high --effort high` and explicit `useG1Credits:false`; completion exited 0.
+
+- Basketball-facing defence, responsive cut plants, world-space support-foot holds, continuous action blend-outs, carrying-hand protection, a 180 ms jump-shot gather and smooth spin-cancel yaw/overhead elbow transitions. Shared rules remain authoritative; question reading/reveal/deadline and physical/learning outcomes retain their contracts.
+- Neutral River/Sky roster: original appearance IDs 0–3 remain River; 4–7 are Sky. `shared/config/appearance.ts` owns the closed catalogue and normalisation. `appearancePreset` carries body plus palette through existing room/ready/match/reconnect messages. Both assets share the same 65-bone rest rig/17 clip contracts and gameplay dimensions. Independent cloned skeletons/materials/jersey textures and retryable asset caching preserve names and fallback play.
+- Build both licensed, authored assets with `npm run build:player`. Raw CC0 source, licence, pinned source hashes and rebind/build instructions are in `assets/source/README.md`. Eight small local portrait PNGs represent the four palettes for each character; no generation API or paid asset was used.
+- **174 tests / 23 suites and strict build PASS**; both GLBs run the original 14 asset tests plus four movement-transition tests each without relaxed tolerances. Actual rendered shooting-gather palm-marker gap falls from 1.796 m (River) /1.836 m (Sky) to 0.084 m for both in the sampled ordinary jumper. This is palm-marker-to-ball-centre distance, not anatomical contact validation.
+- Actual compiled match sequences cover both characters, real trick keys, paint drive, random finish, question hold, resolution/landing and CourtBot's next attack. Local two-browser tests confirm current server movement fields, both character choices, hidden pre-resolution keys/reasons, personal feedback, both-party Continue and same-key dunk/block. Four-size lobby, keyboard/teacher-import safety, asset failure/retry and installed game-skill playtest pass.
+
+Current evidence: `docs/verification/2026-11-12-motion-roster/`. Hosted preview/production IDs and exact asset/function correspondence are recorded there when verified. No claim of NBA 2K/Street parity, physical-phone performance, classroom concurrent/cold-start reliability or human-ear listening. The 255 draft distractor rationales still require instructor review; Netlify rooms remain warm-process memory.
+
 ## 1. Executive Summary
 
 **CourtIQ** combines a responsive 3D half-court 1v1 arcade basketball game with an authoritative multiple-choice question duel triggered on every shot release.

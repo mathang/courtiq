@@ -1,0 +1,38 @@
+
+> courtiq@1.0.0 test
+> vitest run
+
+
+ RUN  v2.1.8 /Users/ross_mac/Documents/Codex/2026-10-31/courtiq
+
+ ✓ tests/rules/timing.test.ts (2 tests) 2ms
+ ✓ tests/rules/shot.test.ts (5 tests) 6ms
+ ✓ tests/rules/basketballMotorAndDribble.test.ts (6 tests) 6ms
+ ✓ tests/rules/streetFlowAndCombos.test.ts (9 tests) 8ms
+ ✓ tests/rules/learningStreakAndFinishing.test.ts (20 tests) 17ms
+ ✓ tests/rules/streetMoves.test.ts (10 tests) 12ms
+ ✓ tests/rules/arcadeDefense.test.ts (16 tests) 18ms
+ ✓ tests/multiplayer/roomAuthoritative.test.ts (2 tests) 105ms
+ ✓ tests/rules/motionCurves.test.ts (6 tests) 4ms
+ ✓ tests/rules/aiPositioning.test.ts (12 tests) 25ms
+ ✓ tests/accessibility/simpleControls.test.ts (8 tests) 2ms
+ ✓ tests/rules/fluidDefense.test.ts (14 tests) 12ms
+ ✓ tests/render/motionContinuity.test.ts (8 tests) 229ms
+ ✓ tests/rules/content.test.ts (3 tests) 4ms
+ ✓ tests/render/possessionPresentation.test.ts (8 tests) 282ms
+ ✓ tests/multiplayer/characterChoice.test.ts (3 tests) 42ms
+ ✓ tests/rules/aiOpponent.test.ts (1 test) 14ms
+ ✓ tests/rules/possession.test.ts (2 tests) 2ms
+ ✓ tests/accessibility/uiAndInput.test.ts (1 test) 8ms
+ ✓ tests/rules/block.test.ts (5 tests) 1ms
+ ✓ tests/multiplayer/lobbyLeave.test.ts (3 tests) 3ms
+ ✓ tests/render/characterRigCompatibility.test.ts (2 tests) 9ms
+ ✓ tests/render/playerAsset.test.ts (28 tests) 2773ms
+   ✓ shipped streetball player: streetball-player.glb > keeps misses and swats clear of the descending head from either lane 1252ms
+   ✓ shipped streetball player: athlete-sky.glb > keeps misses and swats clear of the descending head from either lane 1065ms
+
+ Test Files  23 passed (23)
+      Tests  174 passed (174)
+   Start at  09:48:17
+   Duration  3.13s (transform 588ms, setup 0ms, collect 1.88s, tests 3.58s, environment 2ms, prepare 929ms)
+

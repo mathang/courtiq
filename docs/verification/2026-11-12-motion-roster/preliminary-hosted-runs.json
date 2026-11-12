@@ -1,0 +1,255 @@
+[
+  {
+    "run": "matches-preview",
+    "error": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "pageErrors": [],
+    "firstApproach": null,
+    "secrecyChecks": 80
+  },
+  {
+    "run": "matches-preview-final",
+    "error": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "pageErrors": [],
+    "firstApproach": null,
+    "secrecyChecks": 0
+  },
+  {
+    "run": "matches-preview-observed",
+    "error": "Test driver missed the blue paint",
+    "pageErrors": [],
+    "firstApproach": {
+      "x": 3.107594916610691,
+      "z": -3.2240644340216864,
+      "vx": 2.7293686817800128e-08,
+      "vz": -8.924999959059402
+    },
+    "secrecyChecks": 0,
+    "finalState": [
+      {
+        "phase": "Possession",
+        "attacker": 0,
+        "players": [
+          {
+            "x": 3.107594916610691,
+            "z": -3.2240644340216864,
+            "vx": 2.7293686817800128e-08,
+            "vz": -8.924999959059402,
+            "finishKind": null
+          },
+          {
+            "x": 0,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      },
+      {
+        "phase": "Possession",
+        "attacker": 0,
+        "players": [
+          {
+            "x": 3.1075949169210855,
+            "z": -3.357939433556094,
+            "vx": 1.8758658328552516e-08,
+            "vz": -8.924999971861967,
+            "finishKind": null
+          },
+          {
+            "x": 0,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "run": "matches-preview-verified",
+    "error": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "pageErrors": [],
+    "firstApproach": {
+      "x": 0,
+      "z": -2.1592578258082074,
+      "vx": 0,
+      "vz": -5.9499999950138855
+    },
+    "secrecyChecks": 84,
+    "finalState": [
+      {
+        "phase": "Feedback",
+        "attacker": 1,
+        "players": [
+          {
+            "x": 0,
+            "z": -5.650350171617394,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": "jump"
+          },
+          {
+            "x": -6.080374751404706,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      },
+      {
+        "phase": "Feedback",
+        "attacker": 1,
+        "players": [
+          {
+            "x": 0,
+            "z": -5.650350171617394,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": "jump"
+          },
+          {
+            "x": -6.080374751404706,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "run": "matches-preview-release",
+    "error": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "pageErrors": [],
+    "firstApproach": {
+      "x": 0,
+      "z": -2.2133857033171247,
+      "vx": 0,
+      "vz": -5.949999996018506
+    },
+    "secrecyChecks": 40,
+    "finalState": [
+      {
+        "phase": "Duel",
+        "attacker": 0,
+        "players": [
+          {
+            "x": 0,
+            "z": -5.418878049161967,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": "jump"
+          },
+          {
+            "x": -6.172950995892346,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      },
+      {
+        "phase": "Duel",
+        "attacker": 0,
+        "players": [
+          {
+            "x": 0,
+            "z": -5.418878049161967,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": "jump"
+          },
+          {
+            "x": -6.172950995892346,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "run": "matches-preview-final-pass",
+    "error": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "pageErrors": [],
+    "firstApproach": {
+      "x": 0,
+      "z": -3.158814611742796,
+      "vx": 0,
+      "vz": -0.00043654950287500905
+    },
+    "secrecyChecks": 59,
+    "finalState": [
+      {
+        "phase": "Duel",
+        "attacker": 0,
+        "players": [
+          {
+            "x": 0,
+            "z": -3.1588257838867713,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": "jump"
+          },
+          {
+            "x": -5.550957015717834,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      },
+      {
+        "phase": "Duel",
+        "attacker": 0,
+        "players": [
+          {
+            "x": 0,
+            "z": -3.1588257838867713,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": "jump"
+          },
+          {
+            "x": -5.550957015717834,
+            "z": 0.6,
+            "vx": 0,
+            "vz": 0,
+            "finishKind": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "run": "matches-preview-paint-step",
+    "error": "Test driver failed paint/block setup",
+    "pageErrors": [],
+    "firstApproach": {
+      "x": 0,
+      "z": -3.6729520612618414,
+      "vx": 0,
+      "vz": -0.0012106367956100216
+    },
+    "skyDunk": true,
+    "blockSetup": [
+      {
+        "x": 0,
+        "z": -6.2
+      },
+      {
+        "x": 0,
+        "z": -1.8003643279774442
+      }
+    ],
+    "note": "First full dunk/duel/personal-feedback/Continue flow passed. The scripted defender ran beyond block range; final scenario keeps the defender neutral during the second drive."
+  }
+]

@@ -1,0 +1,5849 @@
+{
+  "base": "http://127.0.0.1:5173",
+  "description": "Ordinary solo match; held sprint and direction reversal then stop, advanced at 60 simulation frames per second.",
+  "runs": [
+    {
+      "character": "River",
+      "rows": [
+        {
+          "frame": 0,
+          "file": "River-0.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.03933121238388853,
+            "z": 2.6,
+            "vx": 3.0412773754610405,
+            "vz": 0,
+            "facingAngle": 2.8415926535897933,
+            "sprintStamina": 0.995,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.016666666666666666,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": 0.6511640332733122,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.2591817793182821,
+            "handSwitchCooldownSec": 0.44,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.223659643804779,
+                7.646402068278882,
+                11.041155069930497
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.452,
+                  "y": 0.813
+                },
+                {
+                  "x": 0.448,
+                  "y": 0.614
+                },
+                {
+                  "x": 0.477,
+                  "y": 0.683
+                },
+                {
+                  "x": 0.476,
+                  "y": 0.502
+                },
+                {
+                  "x": 0.531,
+                  "y": 0.207
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.792
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.067
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.141
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.088
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.912
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.195642302580166,
+                1.0983547843149954,
+                2.308272165999101
+              ],
+              [
+                0.47602891501148276,
+                1.1105619131182376,
+                0.9229117830299187
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.016257705330134178,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.6045184580472155
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.018343959225567197,
+            "y": 0.8758828456684553,
+            "z": 2.26580495051966
+          }
+        },
+        {
+          "frame": 4,
+          "file": "River-4.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.46262914581370573,
+            "z": 2.6,
+            "vx": 7.8137083423612035,
+            "vz": 0,
+            "facingAngle": 1.9654926590573212,
+            "sprintStamina": 0.975,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.08333333333333333,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.2329368542473787,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.7768698398515702,
+            "handSwitchCooldownSec": 0.37333333333333335,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.230769397116207,
+                7.63601770776495,
+                10.95150112292412
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.48,
+                  "y": 0.822
+                },
+                {
+                  "x": 0.478,
+                  "y": 0.621
+                },
+                {
+                  "x": 0.475,
+                  "y": 0.691
+                },
+                {
+                  "x": 0.472,
+                  "y": 0.508
+                },
+                {
+                  "x": 0.531,
+                  "y": 0.205
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.311
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.026
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.107
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.555
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.607
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.369
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                0.31968898209632607,
+                1.02661425180424,
+                2.279829660108564
+              ],
+              [
+                0.5097487290638042,
+                1.1076839663929603,
+                0.9735560475424396
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.3148467028352985,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.6875044533762418
+              ]
+            ]
+          },
+          "ball": {
+            "x": 0.7549361376421302,
+            "y": 0.7206519089956381,
+            "z": 2.556150356229898
+          }
+        },
+        {
+          "frame": 8,
+          "file": "River-8.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.0251988144818074,
+            "z": 2.6,
+            "vx": 8.71510411823512,
+            "vz": 0,
+            "facingAngle": 1.6896765775353142,
+            "sprintStamina": 0.955,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.15,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.6436538964542032,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9327944872602502,
+            "handSwitchCooldownSec": 0.3066666666666667,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.2588130195733878,
+                7.627957272612171,
+                10.898224137277168
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.517,
+                  "y": 0.831
+                },
+                {
+                  "x": 0.518,
+                  "y": 0.628
+                },
+                {
+                  "x": 0.47,
+                  "y": 0.7
+                },
+                {
+                  "x": 0.467,
+                  "y": 0.516
+                },
+                {
+                  "x": 0.528,
+                  "y": 0.204
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.122
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.042
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.825
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.754
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.101
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.145
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.01127811128586,
+                1.0266180153096018,
+                2.3398502222341904
+              ],
+              [
+                0.5564761559337683,
+                1.1202369866336697,
+                0.9888833155641189
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.829343075450204,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.8285764131652942
+              ]
+            ]
+          },
+          "ball": {
+            "x": 1.3304610787063555,
+            "y": 0.842840230149965,
+            "z": 2.777837259138533
+          }
+        },
+        {
+          "frame": 12,
+          "file": "River-12.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.6140735161012736,
+            "z": 2.6,
+            "vx": 8.885355788798538,
+            "vz": 0,
+            "facingAngle": 1.6066023702285817,
+            "sprintStamina": 0.9349999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.21666666666666665,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.8344562032273367,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9797580885541957,
+            "handSwitchCooldownSec": 0.24000000000000005,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.3053562424995686,
+                7.621700689477854,
+                10.87300163152279
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.555,
+                  "y": 0.839
+                },
+                {
+                  "x": 0.56,
+                  "y": 0.635
+                },
+                {
+                  "x": 0.464,
+                  "y": 0.708
+                },
+                {
+                  "x": 0.461,
+                  "y": 0.522
+                },
+                {
+                  "x": 0.525,
+                  "y": 0.202
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.048
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.931
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.883
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.06
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.057
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.5730156984650585,
+                1.0152214032027436,
+                2.3975423021384574
+              ],
+              [
+                0.5662940230544721,
+                1.1329123495593545,
+                0.9498222534840121
+              ]
+            ],
+            "avatarRoots": [
+              [
+                1.4062338503399672,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.9698437041833832
+              ]
+            ]
+          },
+          "ball": {
+            "x": 1.9045728043253036,
+            "y": 0.8927082389197163,
+            "z": 2.8711247452864295
+          }
+        },
+        {
+          "frame": 16,
+          "file": "River-16.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.2079165966770904,
+            "z": 2.6,
+            "vx": 8.917512175710304,
+            "vz": 0,
+            "facingAngle": 1.5815808998285994,
+            "sprintStamina": 0.9149999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.2833333333333333,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9230951359444657,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9939032534344844,
+            "handSwitchCooldownSec": 0.1733333333333334,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.366684095928978,
+                7.61684427269952,
+                10.866595080432205
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.592,
+                  "y": 0.846
+                },
+                {
+                  "x": 0.601,
+                  "y": 0.641
+                },
+                {
+                  "x": 0.457,
+                  "y": 0.713
+                },
+                {
+                  "x": 0.453,
+                  "y": 0.526
+                },
+                {
+                  "x": 0.52,
+                  "y": 0.201
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.973
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.932
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.045
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.0802264697502975,
+                1.0270651749299067,
+                2.4147401761130225
+              ],
+              [
+                0.522953590169787,
+                1.1336575163381168,
+                0.9046261780805137
+              ]
+            ],
+            "avatarRoots": [
+              [
+                1.9974694980680967,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                1.0869161404961087
+              ]
+            ]
+          },
+          "ball": {
+            "x": 2.491459406520921,
+            "y": 0.7943984432635904,
+            "z": 2.910024643407277
+          }
+        },
+        {
+          "frame": 20,
+          "file": "River-20.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.802698082823414,
+            "z": 2.6,
+            "vx": 8.923585732673343,
+            "vz": 0,
+            "facingAngle": 1.5740445777705923,
+            "sprintStamina": 0.8949999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.35,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9642731516933719,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9981636952229711,
+            "handSwitchCooldownSec": 0.10666666666666674,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.439568199903202,
+                7.6130746777914755,
+                10.871751543661619
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.63,
+                  "y": 0.851
+                },
+                {
+                  "x": 0.642,
+                  "y": 0.646
+                },
+                {
+                  "x": 0.449,
+                  "y": 0.717
+                },
+                {
+                  "x": 0.445,
+                  "y": 0.529
+                },
+                {
+                  "x": 0.514,
+                  "y": 0.2
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.989
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.813
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.177
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.675711988316092,
+                1.024926110052283,
+                2.416913766642369
+              ],
+              [
+                0.4578452099595479,
+                1.1322774508543123,
+                0.8801827856991574
+              ]
+            ],
+            "avatarRoots": [
+              [
+                2.591717764338755,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                1.1776243970040314
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.083815835822598,
+            "y": 0.5619827847290697,
+            "z": 2.926693557743088
+          }
+        },
+        {
+          "frame": 23,
+          "file": "River-23.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 3.248911778492845,
+            "z": 2.6,
+            "vx": 8.924594805626871,
+            "vz": 0,
+            "facingAngle": 1.5721169670888373,
+            "sprintStamina": 0.8799999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.39999999999999997,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9798963285107328,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9992534141916233,
+            "handSwitchCooldownSec": 0.056666666666666754,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.500246130143748,
+                7.610812224223027,
+                10.880084547425636
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.657,
+                  "y": 0.856
+                },
+                {
+                  "x": 0.673,
+                  "y": 0.649
+                },
+                {
+                  "x": 0.444,
+                  "y": 0.718
+                },
+                {
+                  "x": 0.439,
+                  "y": 0.53
+                },
+                {
+                  "x": 0.51,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.995
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.657
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.338
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                3.199172058459325,
+                1.0149882981689133,
+                2.4149238026679116
+              ],
+              [
+                0.4106780159114813,
+                1.135530793212561,
+                0.8736635425439881
+              ]
+            ],
+            "avatarRoots": [
+              [
+                3.037838833813769,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                1.2308864764138088
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.529373787281687,
+            "y": 0.33227918863299444,
+            "z": 2.932692231757318
+          }
+        },
+        {
+          "frame": 24,
+          "file": "River-24.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 3.296608814931972,
+            "z": 2.6,
+            "vx": 1.2031040752006836,
+            "vz": 0,
+            "facingAngle": 1.8721169670888373,
+            "sprintStamina": 0.8749999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.41666666666666663,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9834027703500899,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9994469156298521,
+            "handSwitchCooldownSec": 0.04000000000000009,
+            "plantSec": 0.16,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5202654077833433,
+                7.610148683911759,
+                10.883395240674018
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.659,
+                  "y": 0.855
+                },
+                {
+                  "x": 0.675,
+                  "y": 0.649
+                },
+                {
+                  "x": 0.442,
+                  "y": 0.719
+                },
+                {
+                  "x": 0.437,
+                  "y": 0.531
+                },
+                {
+                  "x": 0.508,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.053
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.158
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.788
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.602
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.394
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                3.3015744223824326,
+                1.015612100051958,
+                2.3672027007964025
+              ],
+              [
+                0.3973077173367985,
+                1.1372073694347007,
+                0.8738684106902057
+              ]
+            ],
+            "avatarRoots": [
+              [
+                3.144802383786296,
+                0,
+                2.6
+              ],
+              [
+                0.00021668838343883047,
+                0,
+                1.2462535081054418
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.6632177571169584,
+            "y": 0.2512378251108016,
+            "z": 2.8361161275366653
+          }
+        },
+        {
+          "frame": 28,
+          "file": "River-28.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.9971727820192395,
+            "z": 2.6,
+            "vx": -7.0120482371949056,
+            "vz": 0,
+            "facingAngle": 3.072116967088837,
+            "sprintStamina": 0.8549999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.4833333333333333,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": -0.3554609396408285,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9998334141890123,
+            "handSwitchCooldownSec": 0.42333333333333334,
+            "plantSec": 0.09333333333333335,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.582653203879967,
+                7.607877500828965,
+                10.898163953003355
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.63,
+                  "y": 0.849
+                },
+                {
+                  "x": 0.643,
+                  "y": 0.643
+                },
+                {
+                  "x": 0.438,
+                  "y": 0.72
+                },
+                {
+                  "x": 0.432,
+                  "y": 0.532
+                },
+                {
+                  "x": 0.504,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.152
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.125
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.702
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.513
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.486
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.9942572963354044,
+                0.9592783376278711,
+                2.24134849584853
+              ],
+              [
+                0.4067238882818976,
+                1.1397196136626058,
+                0.9164399212747145
+              ]
+            ],
+            "avatarRoots": [
+              [
+                3.0946243705437064,
+                0,
+                2.6
+              ],
+              [
+                0.01659263676385131,
+                0,
+                1.2977895269746336
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.137167562092387,
+            "y": 0.5422071496696069,
+            "z": 2.3290597794522405
+          }
+        },
+        {
+          "frame": 32,
+          "file": "River-32.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.4579976044799086,
+            "z": 2.6,
+            "vx": -8.563690082601012,
+            "vz": 0,
+            "facingAngle": 4.141475594784966,
+            "sprintStamina": 0.8349999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.55,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.3703083937429762,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999498253179439,
+            "handSwitchCooldownSec": 0.3566666666666667,
+            "plantSec": 0.026666666666666696,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.613673987474056,
+                7.606114587847045,
+                10.91395621707406
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.587,
+                  "y": 0.84
+                },
+                {
+                  "x": 0.596,
+                  "y": 0.635
+                },
+                {
+                  "x": 0.441,
+                  "y": 0.722
+                },
+                {
+                  "x": 0.436,
+                  "y": 0.534
+                },
+                {
+                  "x": 0.501,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.06
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.049
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.883
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.774
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.215
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.188643741473836,
+                0.9839243193195844,
+                2.584907828616008
+              ],
+              [
+                0.5414679754902318,
+                1.1355750899701884,
+                1.0144699603687592
+              ]
+            ],
+            "avatarRoots": [
+              [
+                2.642297993777522,
+                0,
+                2.6
+              ],
+              [
+                0.09251154114937216,
+                0,
+                1.3367441770511956
+              ]
+            ]
+          },
+          "ball": {
+            "x": 2.154364494496079,
+            "y": 0.7810683322446248,
+            "z": 2.554622090365725
+          }
+        },
+        {
+          "frame": 36,
+          "file": "River-36.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.8735415514754676,
+            "z": 2.6,
+            "vx": -8.856757371540077,
+            "vz": 0,
+            "facingAngle": 4.540433173138854,
+            "sprintStamina": 0.8149999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.6166666666666669,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.7074710842677483,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999848876761802,
+            "handSwitchCooldownSec": 0.29000000000000004,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.619217619638909,
+                7.6047461987438645,
+                10.92933854521623
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.544,
+                  "y": 0.831
+                },
+                {
+                  "x": 0.548,
+                  "y": 0.627
+                },
+                {
+                  "x": 0.45,
+                  "y": 0.725
+                },
+                {
+                  "x": 0.446,
+                  "y": 0.536
+                },
+                {
+                  "x": 0.501,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.954
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.804
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.111
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.085
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.6038849953179442,
+                1.0125469565000524,
+                2.853433812353193
+              ],
+              [
+                0.7479270746744324,
+                1.1218578259237484,
+                1.1199491029857507
+              ]
+            ],
+            "avatarRoots": [
+              [
+                2.078955996894695,
+                0,
+                2.6
+              ],
+              [
+                0.22783810257852555,
+                0,
+                1.3646314249119436
+              ]
+            ]
+          },
+          "ball": {
+            "x": 1.556512061377249,
+            "y": 0.8875223658189749,
+            "z": 2.7890804298286707
+          }
+        },
+        {
+          "frame": 40,
+          "file": "River-40.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.280533045820541,
+            "z": 2.6,
+            "vx": -8.912110632410412,
+            "vz": 0,
+            "facingAngle": 4.6605968865375536,
+            "sprintStamina": 0.7949999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.6833333333333338,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.8641030534801856,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.999995448255537,
+            "handSwitchCooldownSec": 0.22333333333333338,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.605171926116601,
+                7.6036840426664485,
+                10.943335129017887
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.503,
+                  "y": 0.822
+                },
+                {
+                  "x": 0.503,
+                  "y": 0.62
+                },
+                {
+                  "x": 0.461,
+                  "y": 0.727
+                },
+                {
+                  "x": 0.458,
+                  "y": 0.538
+                },
+                {
+                  "x": 0.502,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.982
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.772
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.195
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.033
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.0360456353317546,
+                1.017467076206581,
+                2.927417247550279
+              ],
+              [
+                0.9769697124381185,
+                1.1007406260117714,
+                1.2652898309230678
+              ]
+            ],
+            "avatarRoots": [
+              [
+                1.4904933340349504,
+                0,
+                2.6
+              ],
+              [
+                0.38543191283480316,
+                0,
+                1.383290008667243
+              ]
+            ]
+          },
+          "ball": {
+            "x": 0.9856989345910911,
+            "y": 0.8354510662787769,
+            "z": 2.878905224463301
+          }
+        },
+        {
+          "frame": 44,
+          "file": "River-44.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.6859091905155146,
+            "z": 2.6,
+            "vx": -8.92256551292632,
+            "vz": 0,
+            "facingAngle": 4.696789501495118,
+            "sprintStamina": 0.7749999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.7500000000000007,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9368678476547159,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999986290409136,
+            "handSwitchCooldownSec": 0.15666666666666673,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.57597054140349,
+                7.602859587451065,
+                10.955693413051032
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.463,
+                  "y": 0.814
+                },
+                {
+                  "x": 0.46,
+                  "y": 0.613
+                },
+                {
+                  "x": 0.474,
+                  "y": 0.729
+                },
+                {
+                  "x": 0.472,
+                  "y": 0.539
+                },
+                {
+                  "x": 0.504,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.993
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.75
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.237
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                0.4389317742315483,
+                0.9813214193251135,
+                2.943682363524571
+              ],
+              [
+                1.1786323220788821,
+                1.0891796502334494,
+                1.5103060628568123
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.8967941577308846,
+                0,
+                2.6
+              ],
+              [
+                0.5487741576975596,
+                0,
+                1.396893045137726
+              ]
+            ]
+          },
+          "ball": {
+            "x": 0.40097444008360333,
+            "y": 0.6375940553112778,
+            "z": 2.914128454851223
+          }
+        },
+        {
+          "frame": 47,
+          "file": "River-47.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.23972168395068283,
+            "z": 2.6,
+            "vx": -8.924302507775497,
+            "vz": 0,
+            "facingAngle": 4.706046705560427,
+            "sprintStamina": 0.7599999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.8000000000000008,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9644752304970461,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999994426096307,
+            "handSwitchCooldownSec": 0.10666666666666674,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5462026398636053,
+                7.602364761961969,
+                10.963956851823315
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.435,
+                  "y": 0.809
+                },
+                {
+                  "x": 0.429,
+                  "y": 0.608
+                },
+                {
+                  "x": 0.485,
+                  "y": 0.731
+                },
+                {
+                  "x": 0.483,
+                  "y": 0.541
+                },
+                {
+                  "x": 0.506,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.996
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.741
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.253
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.018871879403733145,
+                0.9042798045624556,
+                2.951900862819559
+              ],
+              [
+                1.2404068537521225,
+                1.0882869059848366,
+                1.7511949885014066
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.4507668256259737,
+                0,
+                2.6
+              ],
+              [
+                0.6722347028594877,
+                0,
+                1.4055125414540075
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.04235245571716855,
+            "y": 0.4216204352301647,
+            "z": 2.926139082746044
+          }
+        },
+        {
+          "frame": 48,
+          "file": "River-48.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.14150361239053144,
+            "z": 2.6,
+            "vx": -5.063771227391196,
+            "vz": 0,
+            "facingAngle": 4.406046705560427,
+            "sprintStamina": 0.7658333333333331,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 333.3333333333333,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.8166666666666675,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.970671389153199,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999995870750584,
+            "handSwitchCooldownSec": 0.09000000000000008,
+            "plantSec": 0.16,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5356073479850347,
+                7.602219637808423,
+                10.966539233868755
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.429,
+                  "y": 0.807
+                },
+                {
+                  "x": 0.423,
+                  "y": 0.607
+                },
+                {
+                  "x": 0.488,
+                  "y": 0.732
+                },
+                {
+                  "x": 0.487,
+                  "y": 0.542
+                },
+                {
+                  "x": 0.507,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.103
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.895
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.739
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.256
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.18150590007305697,
+                0.8848676630141789,
+                2.891686565087913
+              ],
+              [
+                1.238423944150491,
+                1.0885503831863326,
+                1.8256072800983614
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.32293170726862847,
+                0,
+                2.6
+              ],
+              [
+                0.7134498077408723,
+                0,
+                1.4082240213857282
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.22498811914386035,
+            "y": 0.342392480602852,
+            "z": 2.8302225904227063
+          }
+        },
+        {
+          "frame": 52,
+          "file": "River-52.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.026027388797190194,
+            "z": 2.6,
+            "vx": -0.5248959853770434,
+            "vz": 0,
+            "facingAngle": 3.5392730541251147,
+            "sprintStamina": 0.7891666666666666,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 266.6666666666666,
+            "animState": "dribble",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.8833333333333344,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9863751292764636,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999998756293976,
+            "handSwitchCooldownSec": 0.023333333333333425,
+            "plantSec": 0.14333333333333334,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.4999321411166973,
+                7.601722903070772,
+                10.976121990143113
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.425,
+                  "y": 0.806
+                },
+                {
+                  "x": 0.418,
+                  "y": 0.606
+                },
+                {
+                  "x": 0.502,
+                  "y": 0.734
+                },
+                {
+                  "x": 0.502,
+                  "y": 0.544
+                },
+                {
+                  "x": 0.51,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.261
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.289
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.098
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.352
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.735
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.263
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.3916941497011865,
+                0.9152700858600278,
+                2.480425578266257
+              ],
+              [
+                1.1996230853721943,
+                1.0857748121219855,
+                2.014552637148883
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.07264899379570357,
+                0,
+                2.6
+              ],
+              [
+                0.8784241450625803,
+                0,
+                1.4186968259174721
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.3916072897272732,
+            "y": 0.45787835507285524,
+            "z": 2.4717320952019133
+          }
+        },
+        {
+          "frame": 56,
+          "file": "River-56.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.014057455036601671,
+            "z": 2.6,
+            "vx": -0.05440921066390282,
+            "vz": 0,
+            "facingAngle": 3.299215490311915,
+            "sprintStamina": 0.8125,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 199.99999999999994,
+            "animState": "idle",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.9500000000000013,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9936704434041299,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.4645589625834263,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0.07666666666666669,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.4778737663225137,
+                7.601337333045962,
+                10.984723586216663
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.426,
+                  "y": 0.806
+                },
+                {
+                  "x": 0.419,
+                  "y": 0.605
+                },
+                {
+                  "x": 0.515,
+                  "y": 0.736
+                },
+                {
+                  "x": 0.516,
+                  "y": 0.546
+                },
+                {
+                  "x": 0.512,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_idle",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.707
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.116
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.039
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.138
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.733
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.267
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.33560120403629806,
+                0.925762082206011,
+                2.3744828699448863
+              ],
+              [
+                1.2154690515663304,
+                1.0753652293762452,
+                2.07520788039913
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.02218461052080689,
+                0,
+                2.6
+              ],
+              [
+                1.0434485681671433,
+                0,
+                1.4291439205657501
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.2925117295152715,
+            "y": 0.9096363536276104,
+            "z": 2.3489469782228753
+          }
+        },
+        {
+          "frame": 59,
+          "file": "River-59.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.012926078920481816,
+            "z": 2.6,
+            "vx": -0.009939666345009398,
+            "vz": 0,
+            "facingAngle": 3.22070767809674,
+            "sprintStamina": 0.8300000000000001,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 149.99999999999997,
+            "animState": "idle",
+            "appearancePreset": 0,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 1.0000000000000013,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9964383276861147,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.2614095900936023,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0.026666666666666696,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.469196189731582,
+                7.601105919777482,
+                10.990717211945682
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.427,
+                  "y": 0.805
+                },
+                {
+                  "x": 0.42,
+                  "y": 0.605
+                },
+                {
+                  "x": 0.523,
+                  "y": 0.738
+                },
+                {
+                  "x": 0.525,
+                  "y": 0.547
+                },
+                {
+                  "x": 0.512,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_idle",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.854
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.058
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.069
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.755
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.244
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.3177185958143625,
+                1.0237243385754635,
+                2.3641776844278
+              ],
+              [
+                1.268247128783236,
+                1.0721824175474706,
+                2.0912790104765495
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.01491785612966267,
+                0,
+                2.6
+              ],
+              [
+                1.16623099768415,
+                0,
+                1.4374780947857813
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.24597143473488944,
+            "y": 1.0124114633560144,
+            "z": 2.3174197097672766
+          }
+        }
+      ]
+    },
+    {
+      "character": "Sky",
+      "rows": [
+        {
+          "frame": 0,
+          "file": "Sky-0.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.03933121238388853,
+            "z": 2.6,
+            "vx": 3.0412773754610405,
+            "vz": 0,
+            "facingAngle": 2.8415926535897933,
+            "sprintStamina": 0.995,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.016666666666666666,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": 0.6511640332733122,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.2591817793182821,
+            "handSwitchCooldownSec": 0.44,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.2343980188717634,
+                7.667878818412852,
+                11.245184196203201
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.454,
+                  "y": 0.806
+                },
+                {
+                  "x": 0.449,
+                  "y": 0.609
+                },
+                {
+                  "x": 0.478,
+                  "y": 0.679
+                },
+                {
+                  "x": 0.476,
+                  "y": 0.5
+                },
+                {
+                  "x": 0.531,
+                  "y": 0.211
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.792
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.067
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.141
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.088
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.912
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.19777086098432806,
+                1.0872296728650868,
+                2.310375284174193
+              ],
+              [
+                0.46602387304466625,
+                1.0920629570284364,
+                0.9210532334027056
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.016257705330134178,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.6045184580472155
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.018343959225567197,
+            "y": 0.8758828456684553,
+            "z": 2.26580495051966
+          }
+        },
+        {
+          "frame": 4,
+          "file": "Sky-4.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.46262914581370573,
+            "z": 2.6,
+            "vx": 7.8137083423612035,
+            "vz": 0,
+            "facingAngle": 1.9654926590573212,
+            "sprintStamina": 0.975,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.08333333333333333,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.2329368542473787,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.7768698398515702,
+            "handSwitchCooldownSec": 0.37333333333333335,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.239104621587421,
+                7.652688156707377,
+                11.109870387877182
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.481,
+                  "y": 0.816
+                },
+                {
+                  "x": 0.479,
+                  "y": 0.617
+                },
+                {
+                  "x": 0.475,
+                  "y": 0.688
+                },
+                {
+                  "x": 0.473,
+                  "y": 0.506
+                },
+                {
+                  "x": 0.53,
+                  "y": 0.208
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.311
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.026
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.107
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.555
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.607
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.369
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                0.31881910868377056,
+                1.024077818914961,
+                2.279828937404582
+              ],
+              [
+                0.5072030467299958,
+                1.1034050425675295,
+                0.9732803184219894
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.3148467028352985,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.6875044533762418
+              ]
+            ]
+          },
+          "ball": {
+            "x": 0.7549361376421302,
+            "y": 0.7206519089956381,
+            "z": 2.556150356229898
+          }
+        },
+        {
+          "frame": 8,
+          "file": "Sky-8.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.0251988144818074,
+            "z": 2.6,
+            "vx": 8.71510411823512,
+            "vz": 0,
+            "facingAngle": 1.6896765775353142,
+            "sprintStamina": 0.955,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.15,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.6436538964542032,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9327944872602502,
+            "handSwitchCooldownSec": 0.3066666666666667,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.2652828966778973,
+                7.640897026821191,
+                11.021151802262853
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.517,
+                  "y": 0.826
+                },
+                {
+                  "x": 0.519,
+                  "y": 0.625
+                },
+                {
+                  "x": 0.47,
+                  "y": 0.698
+                },
+                {
+                  "x": 0.468,
+                  "y": 0.514
+                },
+                {
+                  "x": 0.528,
+                  "y": 0.206
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.122
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.042
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.825
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.754
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.101
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.145
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.011092766410184,
+                1.02604007296432,
+                2.3397320720257535
+              ],
+              [
+                0.5558974745384668,
+                1.1192483087393015,
+                0.9889512220077344
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.829343075450204,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.8285764131652942
+              ]
+            ]
+          },
+          "ball": {
+            "x": 1.3304610787063555,
+            "y": 0.842840230149965,
+            "z": 2.777837259138533
+          }
+        },
+        {
+          "frame": 12,
+          "file": "Sky-12.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.6140735161012736,
+            "z": 2.6,
+            "vx": 8.885355788798538,
+            "vz": 0,
+            "facingAngle": 1.6066023702285817,
+            "sprintStamina": 0.9349999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.21666666666666665,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.8344562032273367,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9797580885541957,
+            "handSwitchCooldownSec": 0.24000000000000005,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.310378219999038,
+                7.631744644476793,
+                10.9684192040127
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.555,
+                  "y": 0.835
+                },
+                {
+                  "x": 0.56,
+                  "y": 0.632
+                },
+                {
+                  "x": 0.464,
+                  "y": 0.706
+                },
+                {
+                  "x": 0.461,
+                  "y": 0.521
+                },
+                {
+                  "x": 0.525,
+                  "y": 0.204
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.048
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.931
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.883
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.06
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.057
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.572979201249468,
+                1.0150916361621989,
+                2.397506740258021
+              ],
+              [
+                0.5661750835843089,
+                1.1326830667453902,
+                0.9498763265572104
+              ]
+            ],
+            "avatarRoots": [
+              [
+                1.4062338503399672,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                0.9698437041833832
+              ]
+            ]
+          },
+          "ball": {
+            "x": 1.9045728043253036,
+            "y": 0.8927082389197163,
+            "z": 2.8711247452864295
+          }
+        },
+        {
+          "frame": 16,
+          "file": "Sky-16.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.2079165966770904,
+            "z": 2.6,
+            "vx": 8.917512175710304,
+            "vz": 0,
+            "facingAngle": 1.5815808998285994,
+            "sprintStamina": 0.9149999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.2833333333333333,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9230951359444657,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9939032534344844,
+            "handSwitchCooldownSec": 0.1733333333333334,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.370582200575756,
+                7.624640481993078,
+                10.94065906872099
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.592,
+                  "y": 0.842
+                },
+                {
+                  "x": 0.601,
+                  "y": 0.638
+                },
+                {
+                  "x": 0.457,
+                  "y": 0.712
+                },
+                {
+                  "x": 0.454,
+                  "y": 0.525
+                },
+                {
+                  "x": 0.52,
+                  "y": 0.203
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.973
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.932
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.045
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.0802181829639608,
+                1.0270359220056577,
+                2.414732243707492
+              ],
+              [
+                0.5229317465885839,
+                1.1336042662061414,
+                0.9046455441140401
+              ]
+            ],
+            "avatarRoots": [
+              [
+                1.9974694980680967,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                1.0869161404961087
+              ]
+            ]
+          },
+          "ball": {
+            "x": 2.491459406520921,
+            "y": 0.7943984432635904,
+            "z": 2.910024643407277
+          }
+        },
+        {
+          "frame": 20,
+          "file": "Sky-20.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.802698082823414,
+            "z": 2.6,
+            "vx": 8.923585732673343,
+            "vz": 0,
+            "facingAngle": 1.5740445777705923,
+            "sprintStamina": 0.8949999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.35,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9642731516933719,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9981636952229711,
+            "handSwitchCooldownSec": 0.10666666666666674,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.4425939442118616,
+                7.619126166408795,
+                10.929240685526144
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.629,
+                  "y": 0.849
+                },
+                {
+                  "x": 0.642,
+                  "y": 0.644
+                },
+                {
+                  "x": 0.45,
+                  "y": 0.715
+                },
+                {
+                  "x": 0.446,
+                  "y": 0.528
+                },
+                {
+                  "x": 0.514,
+                  "y": 0.201
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.989
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.813
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.177
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.6757100904403117,
+                1.0249193746425607,
+                2.416911977397579
+              ],
+              [
+                0.45784148484777276,
+                1.1322650993117038,
+                0.8801881940922816
+              ]
+            ],
+            "avatarRoots": [
+              [
+                2.591717764338755,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                1.1776243970040314
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.083815835822598,
+            "y": 0.5619827847290697,
+            "z": 2.926693557743088
+          }
+        },
+        {
+          "frame": 23,
+          "file": "Sky-23.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 3.248911778492845,
+            "z": 2.6,
+            "vx": 8.924594805626871,
+            "vz": 0,
+            "facingAngle": 1.5721169670888373,
+            "sprintStamina": 0.8799999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.39999999999999997,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9798963285107328,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9992534141916233,
+            "handSwitchCooldownSec": 0.056666666666666754,
+            "plantSec": 0,
+            "plantDirX": 0,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5027482970367716,
+                7.615816558009073,
+                10.92762571839307
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.657,
+                  "y": 0.853
+                },
+                {
+                  "x": 0.672,
+                  "y": 0.647
+                },
+                {
+                  "x": 0.444,
+                  "y": 0.717
+                },
+                {
+                  "x": 0.439,
+                  "y": 0.53
+                },
+                {
+                  "x": 0.51,
+                  "y": 0.2
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.995
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.657
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.338
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                3.199171416870532,
+                1.0149860419162078,
+                2.414923184400085
+              ],
+              [
+                0.4106770510220052,
+                1.1355266747644412,
+                0.8736654759681919
+              ]
+            ],
+            "avatarRoots": [
+              [
+                3.037838833813769,
+                0,
+                2.6
+              ],
+              [
+                0,
+                0,
+                1.2308864764138088
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.529373787281687,
+            "y": 0.33227918863299444,
+            "z": 2.932692231757318
+          }
+        },
+        {
+          "frame": 24,
+          "file": "Sky-24.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 3.296608814931972,
+            "z": 2.6,
+            "vx": 1.2031040752006836,
+            "vz": 0,
+            "facingAngle": 1.8721169670888373,
+            "sprintStamina": 0.8749999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.41666666666666663,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": -1,
+            "dribbleSide": -0.9834027703500899,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9994469156298521,
+            "handSwitchCooldownSec": 0.04000000000000009,
+            "plantSec": 0.16,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5226140180570447,
+                7.614845904459161,
+                10.928018835874331
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.659,
+                  "y": 0.853
+                },
+                {
+                  "x": 0.674,
+                  "y": 0.647
+                },
+                {
+                  "x": 0.442,
+                  "y": 0.718
+                },
+                {
+                  "x": 0.437,
+                  "y": 0.53
+                },
+                {
+                  "x": 0.508,
+                  "y": 0.2
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.053
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.158
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.788
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.602
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.394
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                3.3015739241989115,
+                1.0156105094723749,
+                2.3672023437165532
+              ],
+              [
+                0.3973071009321206,
+                1.1372045148272076,
+                0.8738697713755466
+              ]
+            ],
+            "avatarRoots": [
+              [
+                3.144802383786296,
+                0,
+                2.6
+              ],
+              [
+                0.00021668838343883047,
+                0,
+                1.2462535081054418
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.6632177571169584,
+            "y": 0.2512378251108016,
+            "z": 2.8361161275366653
+          }
+        },
+        {
+          "frame": 28,
+          "file": "Sky-28.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.9971727820192395,
+            "z": 2.6,
+            "vx": -7.0120482371949056,
+            "vz": 0,
+            "facingAngle": 3.072116967088837,
+            "sprintStamina": 0.8549999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.4833333333333333,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": -0.3554609396408285,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9998334141890123,
+            "handSwitchCooldownSec": 0.42333333333333334,
+            "plantSec": 0.09333333333333335,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5844762165522375,
+                7.611523526173503,
+                10.932801193776474
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.63,
+                  "y": 0.847
+                },
+                {
+                  "x": 0.643,
+                  "y": 0.642
+                },
+                {
+                  "x": 0.438,
+                  "y": 0.72
+                },
+                {
+                  "x": 0.433,
+                  "y": 0.532
+                },
+                {
+                  "x": 0.504,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.152
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.125
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.702
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.513
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.486
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.9942571997877647,
+                0.9592779515157926,
+                2.2413485552968795
+              ],
+              [
+                0.4067237534025724,
+                1.1397189562169283,
+                0.9164402440557801
+              ]
+            ],
+            "avatarRoots": [
+              [
+                3.0946243705437064,
+                0,
+                2.6
+              ],
+              [
+                0.01659263676385131,
+                0,
+                1.2977895269746336
+              ]
+            ]
+          },
+          "ball": {
+            "x": 3.137167562092387,
+            "y": 0.5422071496696069,
+            "z": 2.3290597794522405
+          }
+        },
+        {
+          "frame": 32,
+          "file": "Sky-32.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 2.4579976044799086,
+            "z": 2.6,
+            "vx": -8.563690082601012,
+            "vz": 0,
+            "facingAngle": 4.141475594784966,
+            "sprintStamina": 0.8349999999999999,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.55,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.3703083937429762,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999498253179439,
+            "handSwitchCooldownSec": 0.3566666666666667,
+            "plantSec": 0.026666666666666696,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.615089026503933,
+                7.608944665906797,
+                10.940841958641709
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.587,
+                  "y": 0.838
+                },
+                {
+                  "x": 0.596,
+                  "y": 0.634
+                },
+                {
+                  "x": 0.441,
+                  "y": 0.722
+                },
+                {
+                  "x": 0.436,
+                  "y": 0.533
+                },
+                {
+                  "x": 0.501,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.06
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.049
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.883
+                  }
+                ]
+              },
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.774
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.215
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                2.1886437463168624,
+                0.9839242282650433,
+                2.5849078474467104
+              ],
+              [
+                0.5414679317205752,
+                1.1355749393451986,
+                1.014470033258388
+              ]
+            ],
+            "avatarRoots": [
+              [
+                2.642297993777522,
+                0,
+                2.6
+              ],
+              [
+                0.09251154114937216,
+                0,
+                1.3367441770511956
+              ]
+            ]
+          },
+          "ball": {
+            "x": 2.154364494496079,
+            "y": 0.7810683322446248,
+            "z": 2.554622090365725
+          }
+        },
+        {
+          "frame": 36,
+          "file": "Sky-36.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.8735415514754676,
+            "z": 2.6,
+            "vx": -8.856757371540077,
+            "vz": 0,
+            "facingAngle": 4.540433173138854,
+            "sprintStamina": 0.8149999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.6166666666666669,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.7074710842677483,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999848876761802,
+            "handSwitchCooldownSec": 0.29000000000000004,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.62031598581405,
+                7.606942931094145,
+                10.950207502543899
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.12111111111111111,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.544,
+                  "y": 0.83
+                },
+                {
+                  "x": 0.548,
+                  "y": 0.627
+                },
+                {
+                  "x": 0.45,
+                  "y": 0.724
+                },
+                {
+                  "x": 0.446,
+                  "y": 0.535
+                },
+                {
+                  "x": 0.501,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.954
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.804
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.111
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.085
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.6038849986455983,
+                1.0125469353191352,
+                2.8534338145813143
+              ],
+              [
+                0.747927060962047,
+                1.1218577915776997,
+                1.119949117839116
+              ]
+            ],
+            "avatarRoots": [
+              [
+                2.078955996894695,
+                0,
+                2.6
+              ],
+              [
+                0.22783810257852555,
+                0,
+                1.3646314249119436
+              ]
+            ]
+          },
+          "ball": {
+            "x": 1.556512061377249,
+            "y": 0.8875223658189749,
+            "z": 2.7890804298286707
+          }
+        },
+        {
+          "frame": 40,
+          "file": "Sky-40.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 1.280533045820541,
+            "z": 2.6,
+            "vx": -8.912110632410412,
+            "vz": 0,
+            "facingAngle": 4.6605968865375536,
+            "sprintStamina": 0.7949999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.6833333333333338,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.8641030534801856,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.999995448255537,
+            "handSwitchCooldownSec": 0.22333333333333338,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.606024487939435,
+                7.605389166312118,
+                10.959533803651736
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.503,
+                  "y": 0.822
+                },
+                {
+                  "x": 0.503,
+                  "y": 0.619
+                },
+                {
+                  "x": 0.461,
+                  "y": 0.726
+                },
+                {
+                  "x": 0.458,
+                  "y": 0.537
+                },
+                {
+                  "x": 0.502,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.982
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.772
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.195
+                  },
+                  {
+                    "clip": "court_defend",
+                    "weight": 0.033
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                1.0360456363323551,
+                1.0174670714506837,
+                2.9274172478863223
+              ],
+              [
+                0.9769697083714615,
+                1.100740618191823,
+                1.2652898334523435
+              ]
+            ],
+            "avatarRoots": [
+              [
+                1.4904933340349504,
+                0,
+                2.6
+              ],
+              [
+                0.38543191283480316,
+                0,
+                1.383290008667243
+              ]
+            ]
+          },
+          "ball": {
+            "x": 0.9856989345910911,
+            "y": 0.8354510662787769,
+            "z": 2.878905224463301
+          }
+        },
+        {
+          "frame": 44,
+          "file": "Sky-44.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.6859091905155146,
+            "z": 2.6,
+            "vx": -8.92256551292632,
+            "vz": 0,
+            "facingAngle": 4.696789501495118,
+            "sprintStamina": 0.7749999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.7500000000000007,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9368678476547159,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999986290409136,
+            "handSwitchCooldownSec": 0.15666666666666673,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.5766323076506716,
+                7.604183119945429,
+                10.968266971747488
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.464,
+                  "y": 0.814
+                },
+                {
+                  "x": 0.46,
+                  "y": 0.613
+                },
+                {
+                  "x": 0.474,
+                  "y": 0.729
+                },
+                {
+                  "x": 0.472,
+                  "y": 0.539
+                },
+                {
+                  "x": 0.504,
+                  "y": 0.198
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.993
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.75
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.237
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                0.43893177450921317,
+                0.9813214182428935,
+                2.94368236357856
+              ],
+              [
+                1.1786323209507494,
+                1.0891796484550123,
+                1.5103060630360376
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.8967941577308846,
+                0,
+                2.6
+              ],
+              [
+                0.5487741576975596,
+                0,
+                1.396893045137726
+              ]
+            ]
+          },
+          "ball": {
+            "x": 0.40097444008360333,
+            "y": 0.6375940553112778,
+            "z": 2.914128454851223
+          }
+        },
+        {
+          "frame": 47,
+          "file": "Sky-47.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.23972168395068283,
+            "z": 2.6,
+            "vx": -8.924302507775497,
+            "vz": 0,
+            "facingAngle": 4.706046705560427,
+            "sprintStamina": 0.7599999999999998,
+            "isSprinting": true,
+            "sprintSettleRemainingMs": 350,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.8000000000000008,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9644752304970461,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999994426096307,
+            "handSwitchCooldownSec": 0.10666666666666674,
+            "plantSec": 0,
+            "plantDirX": -1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.546749893506248,
+                7.603459269247252,
+                10.974354671033524
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.435,
+                  "y": 0.808
+                },
+                {
+                  "x": 0.429,
+                  "y": 0.608
+                },
+                {
+                  "x": 0.485,
+                  "y": 0.731
+                },
+                {
+                  "x": 0.483,
+                  "y": 0.541
+                },
+                {
+                  "x": 0.506,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.996
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.741
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.253
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.018871879296709484,
+                0.9042798042028624,
+                2.9519008628330314
+              ],
+              [
+                1.2404068533723471,
+                1.0882869053994886,
+                1.751194988413827
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.4507668256259737,
+                0,
+                2.6
+              ],
+              [
+                0.6722347028594877,
+                0,
+                1.4055125414540075
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.04235245571716855,
+            "y": 0.4216204352301647,
+            "z": 2.926139082746044
+          }
+        },
+        {
+          "frame": 48,
+          "file": "Sky-48.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.14150361239053144,
+            "z": 2.6,
+            "vx": -5.063771227391196,
+            "vz": 0,
+            "facingAngle": 4.406046705560427,
+            "sprintStamina": 0.7658333333333331,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 333.3333333333333,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.8166666666666675,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.970671389153199,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999995870750584,
+            "handSwitchCooldownSec": 0.09000000000000008,
+            "plantSec": 0.16,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.536121016969711,
+                7.603246975777774,
+                10.976298944577609
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.429,
+                  "y": 0.807
+                },
+                {
+                  "x": 0.423,
+                  "y": 0.607
+                },
+                {
+                  "x": 0.488,
+                  "y": 0.731
+                },
+                {
+                  "x": 0.487,
+                  "y": 0.541
+                },
+                {
+                  "x": 0.507,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_sprint",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.103
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.895
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.739
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.256
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.18150589999932037,
+                0.884867662764684,
+                2.891686565103988
+              ],
+              [
+                1.238423943895637,
+                1.088550382782049,
+                1.8256072800035383
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.32293170726862847,
+                0,
+                2.6
+              ],
+              [
+                0.7134498077408723,
+                0,
+                1.4082240213857282
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.22498811914386035,
+            "y": 0.342392480602852,
+            "z": 2.8302225904227063
+          }
+        },
+        {
+          "frame": 52,
+          "file": "Sky-52.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.026027388797190194,
+            "z": 2.6,
+            "vx": -0.5248959853770434,
+            "vz": 0,
+            "facingAngle": 3.5392730541251147,
+            "sprintStamina": 0.7891666666666666,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 266.6666666666666,
+            "animState": "dribble",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.8833333333333344,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9863751292764636,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.9999998756293976,
+            "handSwitchCooldownSec": 0.023333333333333425,
+            "plantSec": 0.14333333333333334,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.500330855658187,
+                7.602520332153748,
+                10.983697566431422
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.425,
+                  "y": 0.806
+                },
+                {
+                  "x": 0.418,
+                  "y": 0.605
+                },
+                {
+                  "x": 0.502,
+                  "y": 0.734
+                },
+                {
+                  "x": 0.502,
+                  "y": 0.544
+                },
+                {
+                  "x": 0.51,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_walk",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.261
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.289
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.098
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.352
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.735
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.263
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.39169414968740507,
+                0.9152700858411985,
+                2.480425578296931
+              ],
+              [
+                1.1996230853265055,
+                1.0857748120293633,
+                2.014552637104753
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.07264899379570357,
+                0,
+                2.6
+              ],
+              [
+                0.8784241450625803,
+                0,
+                1.4186968259174721
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.3916072897272732,
+            "y": 0.45787835507285524,
+            "z": 2.4717320952019133
+          }
+        },
+        {
+          "frame": 56,
+          "file": "Sky-56.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.014057455036601671,
+            "z": 2.6,
+            "vx": -0.05440921066390282,
+            "vz": 0,
+            "facingAngle": 3.299215490311915,
+            "sprintStamina": 0.8125,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 199.99999999999994,
+            "animState": "idle",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 0.9500000000000013,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9936704434041299,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.4645589625834263,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0.07666666666666669,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.4781832521788485,
+                7.60195630475863,
+                10.990603817487035
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.426,
+                  "y": 0.805
+                },
+                {
+                  "x": 0.419,
+                  "y": 0.605
+                },
+                {
+                  "x": 0.515,
+                  "y": 0.736
+                },
+                {
+                  "x": 0.516,
+                  "y": 0.546
+                },
+                {
+                  "x": 0.512,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_idle",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.707
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.116
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.039
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.138
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.733
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.267
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.3356012040372648,
+                0.9257620821933932,
+                2.3744828699489196
+              ],
+              [
+                1.2154690515584279,
+                1.0753652293548586,
+                2.075207880386855
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.02218461052080689,
+                0,
+                2.6
+              ],
+              [
+                1.0434485681671433,
+                0,
+                1.4291439205657501
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.2925117295152715,
+            "y": 0.9096363536276104,
+            "z": 2.3489469782228753
+          }
+        },
+        {
+          "frame": 59,
+          "file": "Sky-59.png",
+          "player": {
+            "slot": 0,
+            "id": "student-local",
+            "pseudonym": "Student A",
+            "isAi": false,
+            "x": 0.012926078920481816,
+            "z": 2.6,
+            "vx": -0.009939666345009398,
+            "vz": 0,
+            "facingAngle": 3.22070767809674,
+            "sprintStamina": 0.8300000000000001,
+            "isSprinting": false,
+            "sprintSettleRemainingMs": 149.99999999999997,
+            "animState": "idle",
+            "appearancePreset": 4,
+            "streetMove": null,
+            "moveElapsedSec": 0,
+            "moveCooldownSec": 0,
+            "moveSide": 1,
+            "moveForwardX": 0,
+            "moveForwardZ": -1,
+            "wrongFootSec": 0,
+            "finishKind": null,
+            "finishElapsedSec": 0,
+            "finishResolutionSec": -1,
+            "dunkStyle": "tomahawk",
+            "dunkBallStart": null,
+            "finishOutcome": null,
+            "defenseAction": null,
+            "defenseElapsedSec": 1.0000000000000013,
+            "defenseRecoverySec": 0,
+            "defenseCooldownSec": 0,
+            "defenseResult": null,
+            "defenseTargetX": 0,
+            "defenseTargetZ": 0,
+            "streetFlow": 0,
+            "onFire": false,
+            "correctAnswerStreak": 0,
+            "trickCombo": 0,
+            "lastTrick": null,
+            "comboGraceSec": 0,
+            "trickOverexposedSec": 0,
+            "bufferedTrick": null,
+            "bufferedTrickSec": 0,
+            "bufferedFinish": null,
+            "bufferedFinishStyle": null,
+            "bufferedFinishSec": 0,
+            "bufferedDefense": null,
+            "bufferedDefenseSec": 0,
+            "calloutText": null,
+            "calloutSec": 0,
+            "dribbleHand": 1,
+            "dribbleSide": 0.9964383276861147,
+            "moveStartSide": 1,
+            "dribbleBlend": 0.2614095900936023,
+            "handSwitchCooldownSec": 0,
+            "plantSec": 0.026666666666666696,
+            "plantDirX": 1,
+            "plantDirZ": 0
+          },
+          "presentation": {
+            "camera": {
+              "mode": "broadcast",
+              "position": [
+                2.4694521218873047,
+                7.601617784088926,
+                10.995579922904414
+              ],
+              "fov": 43,
+              "safeRect": {
+                "top": 0.13999999999999999,
+                "bottom": 0.9
+              },
+              "subjects": [
+                {
+                  "x": 0.427,
+                  "y": 0.805
+                },
+                {
+                  "x": 0.42,
+                  "y": 0.605
+                },
+                {
+                  "x": 0.523,
+                  "y": 0.738
+                },
+                {
+                  "x": 0.525,
+                  "y": 0.547
+                },
+                {
+                  "x": 0.512,
+                  "y": 0.199
+                }
+              ]
+            },
+            "animations": [
+              {
+                "active": "court_idle",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_idle",
+                    "weight": 0.854
+                  },
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.058
+                  },
+                  {
+                    "clip": "court_sprint",
+                    "weight": 0.069
+                  }
+                ]
+              },
+              {
+                "active": "court_jog",
+                "clips": 17,
+                "weights": [
+                  {
+                    "clip": "court_walk",
+                    "weight": 0.755
+                  },
+                  {
+                    "clip": "court_jog",
+                    "weight": 0.244
+                  }
+                ]
+              }
+            ],
+            "palms": [
+              [
+                -0.3177185958151409,
+                1.0237243385711083,
+                2.364177684428906
+              ],
+              [
+                1.2682471287810433,
+                1.0721824175403398,
+                2.09127901047223
+              ]
+            ],
+            "avatarRoots": [
+              [
+                0.01491785612966267,
+                0,
+                2.6
+              ],
+              [
+                1.16623099768415,
+                0,
+                1.4374780947857813
+              ]
+            ]
+          },
+          "ball": {
+            "x": -0.24597143473488944,
+            "y": 1.0124114633560144,
+            "z": 2.3174197097672766
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
