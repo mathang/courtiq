@@ -478,5 +478,8 @@
   "tests": 178,
   "suites": 24,
   "builtAtUtc": "2026-11-12T00:19:36.370946+00:00",
-  "correction": "Bounded idempotent Ready/Continue HTTP retries after an observed missing-room acknowledgement; gameplay/answer intents never replayed."
+  "correction": "Bounded idempotent Ready/Continue HTTP retries after an observed missing-room acknowledgement; gameplay/answer intents never replayed.",
+  "releaseSourceCommit": "8375df4d84750a46904b27382f167e666e34f221",
+  "previewDeployId": "6af5061d57ae3cbfb80f5dcb",
+  "productionDeployId": "6af506c76ad792d17813d3b5"
 }

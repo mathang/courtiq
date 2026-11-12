@@ -670,6 +670,19 @@
       "observed": "178tests/24files and strict build pass. Local47/hosted31 secrecy checks,1 deliberately injected error recovered in each,complete subsequent dunk/manual swat,0page errors. Corrected preview29files match and unchanged function digests.",
       "evidence_path": "docs/verification/2026-11-12-motion-roster/",
       "reason": "Corrects the actual initial production lost-Continue failure documented in initial-production-room-failure.json; bounded client retry does not claim durable serverless rooms."
+    },
+    {
+      "id": "2026-11-12-motion-roster-final-production",
+      "status": "PASS",
+      "required": true,
+      "kind": "integration",
+      "environment": "Netlify current production6af506c76ad792d17813d3b5 / Metal Chromium desktop and390x844 HTTP two-browser game",
+      "timestamp_utc": "2026-11-12T00:25:57.003066+00:00",
+      "command_or_action": "Exact29file delivery comparison; current/ready deploy and function-digest check; actual final live two-student match with one missing-room Continue fault injected.",
+      "expected": "Verified current revision accessible; preserve both character/teaching/defence contracts and recover the observed lost confirmation without an extra student click.",
+      "observed": "Source8375df4 on GitHub main;29files match178-test strict build; function hashes match corrected preview;30 secrecy checks,1 injected response recovered, both dunks/manual swat/shared questions/personal feedback/both Continue pass;0page errors.",
+      "evidence_path": "docs/verification/2026-11-12-motion-roster/release.json",
+      "reason": "Supersedes initial production room-acknowledgement failure. No durable-room, real-device/classroom/perceptual-audio/AAA-parity claim."
     }
   ],
   "release_decision": "PASS_VERIFIED_LIVE_RELEASE_PENDING_HUMAN_CLASSROOM_AND_LISTENING_REVIEW",

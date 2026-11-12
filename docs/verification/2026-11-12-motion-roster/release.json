@@ -1,0 +1,57 @@
+{
+  "ready": true,
+  "verifiedAtUtc": "2026-11-12T00:25:57.003066+00:00",
+  "url": "https://courtiq-spx101.netlify.app/",
+  "sourceCommit": "8375df4d84750a46904b27382f167e666e34f221",
+  "baselineCommit": "22a46b0f3ab6cae809ce307f1d61e84d9498f440",
+  "model": "gemini-4-carbon-high",
+  "effort": "high",
+  "useG1Credits": false,
+  "previewDeploy": "6af5061d57ae3cbfb80f5dcb",
+  "productionDeploy": "6af506c76ad792d17813d3b5",
+  "tests": 178,
+  "suites": 24,
+  "strictBuild": "PASS",
+  "deliveredFiles": 29,
+  "functionsMatchPreview": true,
+  "productionTeaching": {
+    "pass": true,
+    "secrecyChecks": 30,
+    "injectedMissingRoomResponses": 1,
+    "recoveredWithoutAnotherClick": true,
+    "bothCharacterDunks": true,
+    "manualSwat": true,
+    "sameQuestionsAndChoices": true,
+    "personalFeedback": true,
+    "bothContinue": true,
+    "missedSwipeRoot": true,
+    "pageErrors": 0
+  },
+  "limits": [
+    "HTTP polling latency remains; retries do not make serverless rooms durable across instances.",
+    "Physical phones, classroom concurrency/network and human-ear listening not validated.",
+    "255 prior distractor rationales remain draft for instructor review.",
+    "No NBA 2K/Street parity or full-body motion-matching/mocap claim."
+  ],
+  "finalProductionFullPossessions": {
+    "pass": true,
+    "characters": [
+      {
+        "name": "River",
+        "move": "crossover",
+        "style": "360",
+        "frames": 22,
+        "botFinish": "dunk"
+      },
+      {
+        "name": "Sky",
+        "move": "spin",
+        "style": "tomahawk",
+        "frames": 22,
+        "botFinish": "dunk"
+      }
+    ],
+    "realHostingBadgeAnswersClear": true,
+    "pageErrors": 0
+  }
+}
