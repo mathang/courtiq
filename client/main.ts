@@ -132,6 +132,7 @@ class CourtIqApp {
         phase: online?.phase ?? eng?.phase,
         features: { multiplayer: MULTIPLAYER_ENABLED },
         questionTiming: eng?.getQuestionTimingState(),
+        possessionCountdownMs: eng?.possessionCountdownRemainingMs ?? 0,
         score: online?.scoreState.scores ?? eng?.scoreState.scores,
         attacker: online?.scoreState.currentAttacker ?? eng?.scoreState.currentAttacker,
         clockMs: online?.movementClockRemainingMs ?? eng?.movementClockRemainingMs,
@@ -327,6 +328,7 @@ class CourtIqApp {
           this.sendWsMessage({ type: 'CONTINUE_FEEDBACK', duelId: this.onlineSnapshot.feedbackState.duelId });
         } else if (this.soloEngine && this.soloEngine.phase === 'Feedback') {
           this.soloEngine.acknowledgeFeedback(0, this.soloEngine.feedbackState!.duelId);
+          this.updateDomOverlaysForSolo(this.soloEngine, this.soloEngine.getLiveBlockEligibility().eligible);
         }
       });
 
@@ -592,6 +594,7 @@ class CourtIqApp {
       sessionLengthId: cfg.sessionLengthId,
       aiDifficulty: previewPossession ? 'beginner' : cfg.aiDifficulty,
       adaptiveQuestionTiming: !previewPossession && cfg.adaptiveQuestionTiming,
+      postFeedbackCountdown: !previewPossession,
       player0: {
         id: 'student-local',
         pseudonym: cfg.pseudonym,
@@ -721,6 +724,7 @@ class CourtIqApp {
       duelId: activeDuel?.duelId ?? null,
       readingProtected,
       displayedOptions: activeDuel?.displayedOptionsBySlot[0] ?? [],
+      gameplayLocked: eng.possessionCountdownRemainingMs > 0,
     });
 
     const paused = ['settings-modal', 'tutorial-modal'].some((id) => !document.getElementById(id)?.classList.contains('hidden'));
@@ -867,7 +871,26 @@ class CourtIqApp {
     blockEligible: boolean
   ): void {
     const att = eng.scoreState.currentAttacker;
+    const gettingReady = eng.phase === 'Possession' && eng.possessionCountdownRemainingMs > 0;
+    this.input.setGameplayLocked(gettingReady);
+    document.getElementById('possession-countdown')?.classList.toggle('hidden', !gettingReady);
+    if (gettingReady) {
+      const seconds = eng.possessionCountdownRemainingMs > 1000 ? 2 : 1;
+      for (const [id, text] of [
+        ['possession-countdown-label', att === 0 ? 'Get ready to attack' : 'Get ready to defend'],
+        ['possession-countdown-number', String(seconds)],
+        ['possession-countdown-status', `Play starts in ${seconds} second${seconds === 1 ? '' : 's'}.`],
+      ]) {
+        const el = document.getElementById(id);
+        if (el && el.textContent !== text) el.textContent = text;
+      }
+    }
+    for (const id of ['btn-touch-shoot', 'btn-touch-trick']) {
+      const btn = document.getElementById(id) as HTMLButtonElement | null;
+      if (btn) btn.disabled = gettingReady;
+    }
     this.updateStreetHud(eng.phase, eng.players[0], eng.players[att]);
+    if (gettingReady) document.getElementById('street-status')?.classList.add('hidden');
     const activeDuel = eng.activeDuel;
     const readingProtected =
       eng.phase === 'QuestionReady' ||
@@ -898,7 +921,7 @@ class CourtIqApp {
       ?.classList.toggle('hidden', eng.phase === 'Lobby');
     document
       .getElementById('possession-hint-pill')
-      ?.classList.toggle('hidden', eng.phase !== 'Possession');
+      ?.classList.toggle('hidden', eng.phase !== 'Possession' || gettingReady);
 
     const showTouch =
       (eng.phase === 'Possession' || (eng.phase === 'QuestionReady' && att !== 0)) &&

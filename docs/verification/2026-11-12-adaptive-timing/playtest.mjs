@@ -17,7 +17,8 @@ try{
   const enabled=adaptive&&preset!=='practice';assert((await state()).questionTiming.enabled===enabled,'Timing mode mismatch');
   const rounds=[];let round=0,expectedPace=100;
   while((await state()).phase!=='MatchEnd'&&round<limit){
-   round++;await p.locator('body').click({position:{x:3,y:300}});let s=await state();
+   round++;const readyMs=(await state()).possessionCountdownMs??0;if(readyMs>0)await step(readyMs+20);
+   await p.locator('body').click({position:{x:3,y:300}});let s=await state();
    if(s.attacker===0){await p.keyboard.press('Space');await step(20);}
    for(let t=0;t<20000&&(await state()).phase==='Possession';t+=100)await step(100);
    for(let t=0;t<2000&&(await state()).phase==='QuestionReady';t+=25)await step(25);

@@ -1,0 +1,210 @@
+{
+  "base": "https://6af6b4b98ad4a02e6dd3aca7--courtiq-spx101.netlify.app",
+  "files": [
+    {
+      "file": "assets/audio/CC0-LICENSE.txt",
+      "bytes": 7048,
+      "sourceSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "deliveredSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/README.md",
+      "bytes": 847,
+      "sourceSha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545",
+      "deliveredSha256": "00aa53983e17d869572d29b0b724d4ba59cbcd3315a1e7235cd11d4eba59d545",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/bounce-1.wav",
+      "bytes": 28450,
+      "sourceSha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8",
+      "deliveredSha256": "87e9e2d5d01f47f930019b431b5531e1da4888ddc87310d4f59d901f09cf19a8",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/bounce-2.wav",
+      "bytes": 28450,
+      "sourceSha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886",
+      "deliveredSha256": "b355ec30c479686087e0a5fc4d1e5891b232e956d273668e6f0c08f00050f886",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/bounce-3.wav",
+      "bytes": 28450,
+      "sourceSha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174",
+      "deliveredSha256": "8d5daf0edc1ecbc0386a20d6e7989c55371c7dbcdbd9093a73c7cc59b9285174",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/cheer.wav",
+      "bytes": 110514,
+      "sourceSha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2",
+      "deliveredSha256": "9eb5a663451845c538b18dfd39dc9417238ad291fb132b647b6c387ce5bf2fd2",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/squeak-1.wav",
+      "bytes": 23132,
+      "sourceSha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9",
+      "deliveredSha256": "d6ef901280086e7c4586603d0a1f8b4c1d47c5e2108c7cdeda86db422c5ffef9",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/squeak-2.wav",
+      "bytes": 23132,
+      "sourceSha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7",
+      "deliveredSha256": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/audio/squeak-3.wav",
+      "bytes": 23132,
+      "sourceSha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334",
+      "deliveredSha256": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/game-CflYYxAh.css",
+      "bytes": 28454,
+      "sourceSha256": "018a9a09600547583c68b19c6be45950b9399976bda112595578c2ffcfb5706f",
+      "deliveredSha256": "018a9a09600547583c68b19c6be45950b9399976bda112595578c2ffcfb5706f",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/game-hem23HPt.js",
+      "bytes": 106168,
+      "sourceSha256": "6c2aeff9894880641e9e137c3f8728b52e7a420a03f2eab294dcc10348149032",
+      "deliveredSha256": "6c2aeff9894880641e9e137c3f8728b52e7a420a03f2eab294dcc10348149032",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/ANIMATION-LICENSE.txt",
+      "bytes": 7048,
+      "sourceSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "deliveredSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/QUATERNIUS-LICENSE.txt",
+      "bytes": 806,
+      "sourceSha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e",
+      "deliveredSha256": "0f4beaf0fe360a7732e58bbe3dbf60a2422367fbea60cb9ea4add968f383268e",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/athlete-sky.glb",
+      "bytes": 1219968,
+      "sourceSha256": "74e195211cfabeebc71752f9540c836e3a29fb8ca47f795d75c5d5110055378e",
+      "deliveredSha256": "74e195211cfabeebc71752f9540c836e3a29fb8ca47f795d75c5d5110055378e",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-river-1.png",
+      "bytes": 18155,
+      "sourceSha256": "09410cb4ef246066363b4fd7f14be34bc3f102ceec32c4313fbeae1733d89548",
+      "deliveredSha256": "09410cb4ef246066363b4fd7f14be34bc3f102ceec32c4313fbeae1733d89548",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-river-2.png",
+      "bytes": 17219,
+      "sourceSha256": "2581b60814e7d3dd2eb08d6f35772402131135097df1cc50ba0fbe501b9201b7",
+      "deliveredSha256": "2581b60814e7d3dd2eb08d6f35772402131135097df1cc50ba0fbe501b9201b7",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-river-3.png",
+      "bytes": 18447,
+      "sourceSha256": "7159b1b08cbd500c09f9f394a87cb0ac5f5f5c4f2db0f0148672b2e1b7e3dce8",
+      "deliveredSha256": "7159b1b08cbd500c09f9f394a87cb0ac5f5f5c4f2db0f0148672b2e1b7e3dce8",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-river.png",
+      "bytes": 17575,
+      "sourceSha256": "3a5aa05f54baa944bdcc62731d32f059150b79a0427cfaab9429e5666e335787",
+      "deliveredSha256": "3a5aa05f54baa944bdcc62731d32f059150b79a0427cfaab9429e5666e335787",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-sky-1.png",
+      "bytes": 15311,
+      "sourceSha256": "32eaf045ec97273475951437a3db40ba14f91756750bd05c1214fbb30e6c5e52",
+      "deliveredSha256": "32eaf045ec97273475951437a3db40ba14f91756750bd05c1214fbb30e6c5e52",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-sky-2.png",
+      "bytes": 14408,
+      "sourceSha256": "7e653fbccf6a05f51f879e116fa36cdadb6eae490ecebd0e934fc9981711145d",
+      "deliveredSha256": "7e653fbccf6a05f51f879e116fa36cdadb6eae490ecebd0e934fc9981711145d",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-sky-3.png",
+      "bytes": 15506,
+      "sourceSha256": "7ffacca2cb0eeaabc8d35a35766d63b2774ca24b9752b57edc6bd39a3933144a",
+      "deliveredSha256": "7ffacca2cb0eeaabc8d35a35766d63b2774ca24b9752b57edc6bd39a3933144a",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/portrait-sky.png",
+      "bytes": 14706,
+      "sourceSha256": "0f64aed6d4124713dccc8d8b39a0049a06a6e5bc4c3933fa4d33cec1da57d05f",
+      "deliveredSha256": "0f64aed6d4124713dccc8d8b39a0049a06a6e5bc4c3933fa4d33cec1da57d05f",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/player/streetball-player.glb",
+      "bytes": 1286024,
+      "sourceSha256": "50a3c20397f679c31db968075dc5ead31f76622a095399b0c1bda8647d83982b",
+      "deliveredSha256": "50a3c20397f679c31db968075dc5ead31f76622a095399b0c1bda8647d83982b",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/playerCharacter-B0NYVsMC.js",
+      "bytes": 278578,
+      "sourceSha256": "d71038b65ccdb578991c4511378d9aa0c6adc972fa0461b27a1240f07197caf6",
+      "deliveredSha256": "d71038b65ccdb578991c4511378d9aa0c6adc972fa0461b27a1240f07197caf6",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/playerLab-CpIJaJLo.css",
+      "bytes": 6063,
+      "sourceSha256": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f",
+      "deliveredSha256": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/playerLab-CsdHzgSA.js",
+      "bytes": 27169,
+      "sourceSha256": "dc8fe52305a7fa567d63fbbc60d732c9208374c660fa265c18c2893d03009426",
+      "deliveredSha256": "dc8fe52305a7fa567d63fbbc60d732c9208374c660fa265c18c2893d03009426",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "assets/three-C3aAHTDY.js",
+      "bytes": 559766,
+      "sourceSha256": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03",
+      "deliveredSha256": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03",
+      "platformHtmlTransform": false
+    },
+    {
+      "file": "index.html",
+      "bytes": 27687,
+      "sourceSha256": "5c561a61fa72541c40067e2a7551b80c113d7a39a42003f7cbd372b6be54f6f6",
+      "deliveredSha256": "16134a59899270d56a42179863c5e659e0aaea5754d853073ec6259a5d5d0aeb",
+      "platformHtmlTransform": true
+    },
+    {
+      "file": "player-lab.html",
+      "bytes": 5696,
+      "sourceSha256": "f29bcc9f3676966def8d58f13373f48bb459f8f070c7f577946d5f54e76a4a5b",
+      "deliveredSha256": "f29bcc9f3676966def8d58f13373f48bb459f8f070c7f577946d5f54e76a4a5b",
+      "platformHtmlTransform": false
+    }
+  ],
+  "pass": true,
+  "htmlNormalisation": "Only observed Netlify hosting comment, public HUD script and Pretty URL link serialisation removed for comparison; application JS/CSS/GLB/audio/credits/licence hashes exact."
+}

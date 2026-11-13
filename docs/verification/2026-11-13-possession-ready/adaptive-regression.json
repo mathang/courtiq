@@ -1,0 +1,293 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "runs": [
+    {
+      "label": "adaptive",
+      "width": 1440,
+      "height": 900,
+      "adaptive": true,
+      "rounds": [
+        {
+          "round": 1,
+          "question": "spx101-w09-030",
+          "kind": "wrong",
+          "readingMs": 2000,
+          "answerWindowMs": 12000,
+          "paceBefore": 100,
+          "paceAfter": 120,
+          "note": "Next question: more time"
+        },
+        {
+          "round": 2,
+          "question": "spx101-w09-039",
+          "kind": "timeout",
+          "readingMs": 2000,
+          "answerWindowMs": 14000,
+          "paceBefore": 120,
+          "paceAfter": 150,
+          "note": "Next question: more time"
+        },
+        {
+          "round": 3,
+          "question": "spx101-w09-021",
+          "kind": "slow",
+          "readingMs": 2200,
+          "answerWindowMs": 16900,
+          "paceBefore": 150,
+          "paceAfter": 170,
+          "note": "Next question: more time"
+        },
+        {
+          "round": 4,
+          "question": "spx101-w09-007",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 19000,
+          "paceBefore": 170,
+          "paceAfter": 170,
+          "note": ""
+        },
+        {
+          "round": 5,
+          "question": "spx101-w09-019",
+          "kind": "quick",
+          "readingMs": 2200,
+          "answerWindowMs": 18860,
+          "paceBefore": 170,
+          "paceAfter": 170,
+          "note": ""
+        },
+        {
+          "round": 6,
+          "question": "spx101-w09-026",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 19000,
+          "paceBefore": 170,
+          "paceAfter": 160,
+          "note": "Next question: quicker pace"
+        },
+        {
+          "round": 7,
+          "question": "spx101-w09-017",
+          "kind": "medium",
+          "readingMs": 2000,
+          "answerWindowMs": 18000,
+          "paceBefore": 160,
+          "paceAfter": 160,
+          "note": ""
+        },
+        {
+          "round": 8,
+          "question": "spx101-w09-045",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 18000,
+          "paceBefore": 160,
+          "paceAfter": 160,
+          "note": ""
+        },
+        {
+          "round": 9,
+          "question": "spx101-w09-010",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 18000,
+          "paceBefore": 160,
+          "paceAfter": 160,
+          "note": ""
+        },
+        {
+          "round": 10,
+          "question": "spx101-w09-037",
+          "kind": "quick",
+          "readingMs": 2200,
+          "answerWindowMs": 17880,
+          "paceBefore": 160,
+          "paceAfter": 150,
+          "note": "Next question: quicker pace"
+        },
+        {
+          "round": 11,
+          "question": "spx101-w09-032",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 17000,
+          "paceBefore": 150,
+          "paceAfter": 150,
+          "note": ""
+        },
+        {
+          "round": 12,
+          "question": "spx101-w09-038",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 17000,
+          "paceBefore": 150,
+          "paceAfter": 150,
+          "note": ""
+        },
+        {
+          "round": 13,
+          "question": "spx101-w09-002",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 17000,
+          "paceBefore": 150,
+          "paceAfter": 140,
+          "note": "Next question: quicker pace"
+        },
+        {
+          "round": 14,
+          "question": "spx101-w09-033",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 16000,
+          "paceBefore": 140,
+          "paceAfter": 140,
+          "note": ""
+        },
+        {
+          "round": 15,
+          "question": "spx101-w09-027",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 16000,
+          "paceBefore": 140,
+          "paceAfter": 140,
+          "note": ""
+        },
+        {
+          "round": 16,
+          "question": "spx101-w09-024",
+          "kind": "quick",
+          "readingMs": 2200,
+          "answerWindowMs": 15920,
+          "paceBefore": 140,
+          "paceAfter": 130,
+          "note": "Next question: quicker pace"
+        }
+      ]
+    },
+    {
+      "label": "phone",
+      "width": 390,
+      "height": 844,
+      "adaptive": true,
+      "rounds": [
+        {
+          "round": 1,
+          "question": "spx101-w09-026",
+          "kind": "wrong",
+          "readingMs": 2000,
+          "answerWindowMs": 12000,
+          "paceBefore": 100,
+          "paceAfter": 120,
+          "note": "Next question: more time"
+        },
+        {
+          "round": 2,
+          "question": "spx101-w09-018",
+          "kind": "quick",
+          "readingMs": 2500,
+          "answerWindowMs": 13900,
+          "paceBefore": 120,
+          "paceAfter": 120,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "label": "landscape",
+      "width": 844,
+      "height": 390,
+      "adaptive": true,
+      "rounds": [
+        {
+          "round": 1,
+          "question": "spx101-w09-023",
+          "kind": "wrong",
+          "readingMs": 2000,
+          "answerWindowMs": 12000,
+          "paceBefore": 100,
+          "paceAfter": 120,
+          "note": "Next question: more time"
+        },
+        {
+          "round": 2,
+          "question": "spx101-w09-041",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 14000,
+          "paceBefore": 120,
+          "paceAfter": 120,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "label": "fixed",
+      "width": 1440,
+      "height": 900,
+      "adaptive": false,
+      "rounds": [
+        {
+          "round": 1,
+          "question": "spx101-w09-026",
+          "kind": "wrong",
+          "readingMs": 2000,
+          "answerWindowMs": 12000,
+          "paceBefore": 100,
+          "paceAfter": 100,
+          "note": ""
+        },
+        {
+          "round": 2,
+          "question": "spx101-w09-011",
+          "kind": "quick",
+          "readingMs": 2200,
+          "answerWindowMs": 12000,
+          "paceBefore": 100,
+          "paceAfter": 100,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "label": "practice",
+      "width": 390,
+      "height": 844,
+      "adaptive": false,
+      "rounds": [
+        {
+          "round": 1,
+          "question": "spx101-w09-040",
+          "kind": "wrong",
+          "readingMs": 2000,
+          "answerWindowMs": 60000,
+          "paceBefore": 100,
+          "paceAfter": 100,
+          "note": ""
+        },
+        {
+          "round": 2,
+          "question": "spx101-w09-009",
+          "kind": "quick",
+          "readingMs": 2000,
+          "answerWindowMs": 60000,
+          "paceBefore": 100,
+          "paceAfter": 100,
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "roomRequests": 0,
+  "exports": {
+    "actualTimingRecorded": true,
+    "questions": 16,
+    "json": true,
+    "csv": true
+  }
+}

@@ -16,7 +16,8 @@ try{
   await p.click('#btn-start-solo');await step(0);
   let round=0;const missedQuestions=new Set();
   while((await state()).phase!=='MatchEnd'&&round<(label==='desktop'?32:2)){
-   round++;await p.locator('body').click({position:{x:3,y:300}});
+   round++;const readyMs=(await state()).possessionCountdownMs??0;if(readyMs>0)await step(readyMs+20);
+   await p.locator('body').click({position:{x:3,y:300}});
    let s=await state();
    if(s.attacker===0){await p.keyboard.press('Space');await step(20);}
    for(let t=0;t<20000&&(await state()).phase==='Possession';t+=100)await step(100);

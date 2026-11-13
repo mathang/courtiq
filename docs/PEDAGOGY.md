@@ -29,6 +29,12 @@ CourtBot's answer time scales with the effective answer budget at question creat
 
 These thresholds are conservative design defaults, not a validated assessment model. They adapt time, not content difficulty or a claim of mastery. Their educational benefit and accessibility still need evaluation with students; fixed timing remains available.
 
+## Ready before the next possession
+
+After Continue closes a solo answer review, a two-second “Get ready to defend” or “Get ready to attack” countdown appears. Both players, CourtBot's decision clock and the movement clock stay still until it finishes. Players can get their thumb onto the joystick; early block, steal, shot and trick taps are discarded, and actions require a fresh press once play resumes. Opening Settings pauses the countdown. Opening play starts immediately, and the final review goes straight to match results.
+
+This preparation time is separate from question reading/answer time and does not change learning credit, adaptive timing or live basketball speed.
+
 ## Evidence and limits
 
 These are design decisions informed by research, not evidence that this particular game improves learning.

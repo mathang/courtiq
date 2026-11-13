@@ -1,0 +1,15 @@
+{
+  "id": "6af6b4b98ad4a02e6dd3aca7",
+  "state": "ready",
+  "error": null,
+  "functions": [
+    {
+      "name": "health",
+      "digest": "80fdc2b7b1319085f1a31f56f667373cc2dca16870adac7b581088fc87ba876a"
+    },
+    {
+      "name": "room",
+      "digest": "05ea18f84d6eb9cb1e16d43fa4ab0b036fbbac1f1dc6923684564ed2065f6a56"
+    }
+  ]
+}

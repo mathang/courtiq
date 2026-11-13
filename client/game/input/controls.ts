@@ -70,6 +70,7 @@ export class InputGuardController {
   private trickTapCount = 0;
   private trickWindowRemainingMs = 0;
   private phase: MatchPhase = 'Lobby';
+  private gameplayLocked = false;
 
 
   private activeDuelId: string | null = null;
@@ -105,7 +106,9 @@ export class InputGuardController {
     duelId: string | null;
     readingProtected: boolean;
     displayedOptions: readonly QuestionOption[];
+    gameplayLocked?: boolean;
   }): void {
+    this.setGameplayLocked(params.gameplayLocked ?? false);
     const nextAttacker = params.isAttacker ?? this.isAttacker;
     if (nextAttacker !== this.isAttacker || (params.phase !== this.phase && params.phase !== 'Possession')) {
       this.clearTrickTaps();
@@ -169,7 +172,7 @@ export class InputGuardController {
     // Space never activates a focused answer button during a question.
     if (ev.code === this.bindings.shoot || ev.code === 'Space') {
       ev.preventDefault?.();
-      if (this.phase === 'Possession') this.shootTriggeredFresh = true;
+      if (this.phase === 'Possession' && !this.gameplayLocked) this.shootTriggeredFresh = true;
       if (this.phase === 'QuestionReady' && !this.isAttacker) this.pendingDefense = 'jump';
       return;
     }
@@ -225,6 +228,7 @@ export class InputGuardController {
   }
 
   public reset(): void {
+    this.gameplayLocked = false;
     this.downKeys.clear();
     this.touchVector = { x: 0, z: 0 };
     this.touchSprint = false;
@@ -238,6 +242,16 @@ export class InputGuardController {
   private clearTrickTaps(): void {
     this.trickTapCount = 0;
     this.trickWindowRemainingMs = 0;
+  }
+
+  /** Keep held movement available for tip-off, but require fresh action presses. */
+  public setGameplayLocked(locked: boolean): void {
+    if (locked && !this.gameplayLocked) {
+      this.pendingDefense = undefined; this.pendingTrick = undefined; this.clearTrickTaps();
+      this.shootTriggeredFresh = this.touchShootTriggered = false;
+      this.touchPrimaryHeld = false;
+    }
+    this.gameplayLocked = locked;
   }
 
   private finishTrickTaps(): void {
@@ -255,7 +269,7 @@ export class InputGuardController {
 
   /** A fixed 500ms window from the first fresh press; holding never adds taps. */
   public triggerTouchTrick(): void {
-    if (this.phase !== 'Possession') return;
+    if (this.phase !== 'Possession' || this.gameplayLocked) return;
     if (!this.isAttacker) {
       this.pendingDefense = 'swipe';
       return;
@@ -280,7 +294,7 @@ export class InputGuardController {
   }
 
   public triggerTouchShoot(): void {
-    if (!this.answerButtonsUnlocked && this.activeDuelId === null) {
+    if (!this.gameplayLocked && !this.answerButtonsUnlocked && this.activeDuelId === null) {
       this.touchShootTriggered = true;
     }
   }
@@ -291,6 +305,11 @@ export class InputGuardController {
    * return zero so they never affect gameplay.
    */
   public consumeMoveInput(phase: MatchPhase, realDeltaMs = 1000 / 60): PlayerMoveInput {
+    if (this.gameplayLocked) {
+      this.pendingDefense = undefined; this.pendingTrick = undefined; this.clearTrickTaps();
+      this.shootTriggeredFresh = this.touchShootTriggered = false;
+      return { moveX: 0, moveZ: 0, sprint: false, shoot: false };
+    }
     if (this.trickTapCount) {
       this.trickWindowRemainingMs = Math.max(0, this.trickWindowRemainingMs - Math.max(0, realDeltaMs));
       if (this.trickWindowRemainingMs < 0.000001) this.finishTrickTaps();

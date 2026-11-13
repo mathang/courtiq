@@ -1,0 +1,22 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "runs": [
+    {
+      "name": "River",
+      "move": "crossover",
+      "style": "tomahawk",
+      "botTravelM": 8.145019953492591,
+      "botFinish": "dunk",
+      "captures": 23
+    },
+    {
+      "name": "Sky",
+      "move": "spin",
+      "style": "360",
+      "botTravelM": 8.145019953492591,
+      "botFinish": "dunk",
+      "captures": 23
+    }
+  ],
+  "errors": []
+}

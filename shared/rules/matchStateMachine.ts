@@ -217,6 +217,7 @@ export interface MatchEngineOptions {
   aiDifficulty?: AiDifficultyId;
   customMaxPossessions?: number;
   adaptiveQuestionTiming?: boolean;
+  postFeedbackCountdown?: boolean;
   player0: { id: string; pseudonym: string; appearancePreset?: number };
   player1: {
     id: string;
@@ -237,6 +238,8 @@ export class AuthoritativeMatchEngine {
   public readonly aiDifficulty: AiDifficultyId;
   public readonly rules: MatchRulesConfig;
   public readonly adaptiveQuestionTiming: boolean;
+  public readonly postFeedbackCountdown: boolean;
+  public possessionCountdownRemainingMs = 0;
 
   public phase: MatchPhase = 'Lobby';
   public scoreState: PossessionScoreState;
@@ -274,6 +277,7 @@ export class AuthoritativeMatchEngine {
     const roomPreset = ROOM_PRESETS[this.roomPresetId];
     this.adaptiveQuestionTiming = options.adaptiveQuestionTiming === true && options.mode === 'solo' &&
       options.player1.isAi && !roomPreset.untimed;
+    this.postFeedbackCountdown = options.postFeedbackCountdown === true && options.mode === 'solo' && options.player1.isAi;
     const sessionPreset = SESSION_LENGTH_PRESETS[this.sessionLengthId];
 
     this.rules = Object.freeze({
@@ -397,6 +401,7 @@ export class AuthoritativeMatchEngine {
   }
 
   private setupPossessionPositions(): void {
+    this.possessionCountdownRemainingMs = 0;
     const att = this.scoreState.currentAttacker;
     const def: PlayerSlot = att === 0 ? 1 : 0;
 
@@ -501,6 +506,13 @@ export class AuthoritativeMatchEngine {
     }
 
     if (this.phase === 'Possession') {
+      if (this.possessionCountdownRemainingMs > 0) {
+        this.possessionCountdownRemainingMs = Math.max(0, this.possessionCountdownRemainingMs - clampedDeltaMs);
+        if (this.possessionCountdownRemainingMs < 0.000001) this.possessionCountdownRemainingMs = 0;
+        // Start on the following frame, giving both players fresh live input together.
+        // The movement clock, AI decisions and player positions stay frozen here.
+        return;
+      }
       this.stepPossessionPhase(clampedDeltaMs, deltaSec, inputsBySlot);
       return;
     }
@@ -903,7 +915,7 @@ export class AuthoritativeMatchEngine {
    * - Creates a unique duel ID and shuffles options independently for both players
    */
   public initiateShotAttempt(input?: PlayerMoveInput): void {
-    if (this.phase !== 'Possession') {
+    if (this.phase !== 'Possession' || this.possessionCountdownRemainingMs > 0) {
       return;
     }
 
@@ -1548,6 +1560,7 @@ export class AuthoritativeMatchEngine {
     }
     this.setupPossessionPositions();
     this.phase = 'Possession';
+    this.possessionCountdownRemainingMs = this.postFeedbackCountdown ? 2000 : 0;
   }
 
   public getBallPosition3D(): Vector3D {
