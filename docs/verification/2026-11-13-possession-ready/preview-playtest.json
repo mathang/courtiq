@@ -1,5 +1,6 @@
 {
-  "base": "https://6af6b4b98ad4a02e6dd3aca7--courtiq-spx101.netlify.app",
+  "base": "https://6af6b63e11536e31fa762fb6--courtiq-spx101.netlify.app",
+  "badgeSource": "64px test fixture",
   "runs": [
     {
       "label": "portrait",

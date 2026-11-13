@@ -20,4 +20,6 @@ COURTIQ_URL=http://127.0.0.1:4173 REVIEW_OUT=output/possession-ready/recheck nod
 
 The test uses the existing Playwright installation from Ross's web-game skill and the game's deterministic clock hook with ordinary pointer/keyboard inputs. `CHECK_HOST_BADGE=1` requires the real ready Netlify badge and verifies joystick/action target size and clearance. Draft deploys may omit the badge.
 
+The first production gate found a pre-existing 6px overlap: the real iframe is 64px high (including transparent hit area), while touch controls reserved 58px. The corrected CSS reserves at least 72px when that iframe is present. `BADGE_FIXTURE=1 CHECK_HOST_BADGE=1` uses a clearly labelled 64px iframe fixture for a draft without a badge; the final production check always uses the actual hosting iframe. The hit-area check runs while live controls are visible, before the new shot hides them.
+
 Viewport emulation is not a physical-device ergonomics study; subjective defensive difficulty remains for Ross to assess. There are no new assets, services, paid API calls, databases or billing/plan changes. Public play remains solo-only. Final build fingerprints, hosted reports and release identifiers are stored alongside this file.

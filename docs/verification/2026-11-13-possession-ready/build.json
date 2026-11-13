@@ -1,6 +1,6 @@
 {
   "baseline": "dc61c55c136e0f1f8235e349a7951454046ebbfc",
-  "checkedAtUtc": "2026-11-13T06:56:52.724046+00:00",
+  "checkedAtUtc": "2026-11-13T07:05:25.812568+00:00",
   "tests": 219,
   "suites": 28,
   "strictBuild": "PASS",
@@ -8,19 +8,19 @@
   "sourceFiles": {
     "client/main.ts": "7c761480b3023627a5e4ce9ea855a1e89020d41a6582776ac7c49948df2e3793",
     "client/game/input/controls.ts": "359e43871bd5f40f582638c5137edf43aa143686d0b73d68b466f8ed55075c19",
-    "client/styles/main.css": "a4b30c18cccc43fe9a964d6ca8c30f9f5d8878125c9336555a56b6dddfd9a965",
+    "client/styles/main.css": "5cda57009f6187f1bd8f9ffccd25296644c4eb5fd489f61bfebbadd333d12b48",
     "index.html": "f7eec5e9bd32ae38534f05aa19f5018f8a3d102e5f0199054c562d3c12da6516",
     "shared/rules/matchStateMachine.ts": "4bb152a78af5c9a6ef0dd25188596de9ad910797ccef46c86974bc0a1f784824",
     "tests/rules/possessionCountdown.test.ts": "05992c97c8a8d420f85d968530b56e5c772e5241839265d41be824db9c76a31a"
   },
   "distFiles": {
-    "dist/index.html": "5c561a61fa72541c40067e2a7551b80c113d7a39a42003f7cbd372b6be54f6f6",
+    "dist/index.html": "af5d302e9458d044b1741305f534f1c54cd31e355c79daefd01ed888895d724b",
     "dist/player-lab.html": "f29bcc9f3676966def8d58f13373f48bb459f8f070c7f577946d5f54e76a4a5b",
     "dist/assets/playerCharacter-B0NYVsMC.js": "d71038b65ccdb578991c4511378d9aa0c6adc972fa0461b27a1240f07197caf6",
     "dist/assets/three-C3aAHTDY.js": "72499008c400cabfc01e37d649a2eea8545cbfd5f4ffdc3f247112e76f1f5b03",
     "dist/assets/playerLab-CsdHzgSA.js": "dc8fe52305a7fa567d63fbbc60d732c9208374c660fa265c18c2893d03009426",
-    "dist/assets/game-hem23HPt.js": "6c2aeff9894880641e9e137c3f8728b52e7a420a03f2eab294dcc10348149032",
-    "dist/assets/game-CflYYxAh.css": "018a9a09600547583c68b19c6be45950b9399976bda112595578c2ffcfb5706f",
+    "dist/assets/game-CwbMC6k2.js": "6c2aeff9894880641e9e137c3f8728b52e7a420a03f2eab294dcc10348149032",
+    "dist/assets/game-CWnUvODI.css": "c2140d0c42ccb7d8870b5230c5e4bf71200d92dcf24b8f87e1406cdc0bd5f2ba",
     "dist/assets/playerLab-CpIJaJLo.css": "51f1a3b9103264a51648a5ed0547777d6662f180b0fa62c2808505bfa75acc2f",
     "dist/assets/audio/squeak-2.wav": "40343e5c7d21628e7ae5b0d30836edf2d801fc8632941dd1b8a065c4409277c7",
     "dist/assets/audio/squeak-3.wav": "71f0266ae4ee260e356f14d4e5846c9cd4d6cf1f14260dee0ca9aa813d446334",

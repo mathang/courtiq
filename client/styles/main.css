@@ -1236,6 +1236,11 @@ body:has(> #nl-badge-frame) .feedback-overlay {
   bottom:max(58px, calc(env(safe-area-inset-bottom) + 50px));
 }
 
+/* The injected badge's hit area is 64px tall, including its transparent margin. */
+body:has(> #nl-badge-frame) .touch-controls {
+  bottom:max(72px, calc(env(safe-area-inset-bottom) + 72px));
+}
+
 /* Two game actions, with learner-paced explanations after every question. */
 .touch-action-buttons { grid-template-columns:repeat(3,72px); }
 .fb-learning-verdict { margin:0 0 9px; font-size:1.25rem; line-height:1.25; }

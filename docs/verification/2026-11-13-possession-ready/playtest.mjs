@@ -2,7 +2,7 @@ import {chromium} from '/Users/ross_mac/.codex/skills/develop-web-game/node_modu
 import fs from 'node:fs/promises';
 const base=process.env.COURTIQ_URL||'http://127.0.0.1:4173',out=process.env.REVIEW_OUT||'output/possession-ready/local';await fs.mkdir(out,{recursive:true});
 const bank=(await Promise.all((await fs.readdir('content/approved-packs')).filter(f=>f.endsWith('.json')).map(async f=>JSON.parse(await fs.readFile('content/approved-packs/'+f,'utf8')).questions))).flat();
-const browser=await chromium.launch({headless:true,args:['--use-angle=metal']});const report={base,runs:[],errors:[],roomRequests:0};const assert=(v,m)=>{if(!v)throw Error(m);};
+const browser=await chromium.launch({headless:true,args:['--use-angle=metal']});const report={base,badgeSource:process.env.BADGE_FIXTURE==='1'?'64px test fixture':process.env.CHECK_HOST_BADGE==='1'?'real hosting iframe':'not required',runs:[],errors:[],roomRequests:0};const assert=(v,m)=>{if(!v)throw Error(m);};
 try{
  for(const [label,width,height]of [['portrait',390,844],['landscape',844,390],['desktop',1440,900]]){
   const touch=label!=='desktop',p=await browser.newPage({viewport:{width,height},hasTouch:touch});p.on('pageerror',e=>report.errors.push(e.message));p.on('request',r=>{if(r.url().includes('/api/room'))report.roomRequests++;});
@@ -22,6 +22,11 @@ try{
    assert((await state()).phase==='Feedback','No final review');await tap('#btn-next-possession');
   }
   await p.goto(base);await p.waitForFunction(()=>window.advanceTime&&JSON.parse(window.render_game_to_text()).playerModels.every(s=>s==='ready'));await step(0);
+  if(process.env.BADGE_FIXTURE==='1')await p.evaluate(()=>{
+   if(document.getElementById('nl-badge-frame'))return;
+   const frame=document.createElement('iframe');frame.id='nl-badge-frame';frame.dataset.nlReady='1';frame.title='64px badge hit area test fixture';
+   frame.style.cssText='position:fixed;right:0;bottom:0;width:202px;height:64px;z-index:2147483647;border:0;';frame.srcdoc='<body style="margin:0;background:#173447;color:white;font:12px sans-serif">64px badge hit area test fixture</body>';document.body.append(frame);
+  });
   if(touch)await p.click('#lobby-character-picker [data-character="1"]');
   await p.locator('#lobby-options > summary').click();await p.selectOption('#select-ai-difficulty','beginner');await p.selectOption('#select-session-length','practice');await p.locator('#lobby-options > summary').click();await tap('#btn-start-solo');await step(0);
   assert((await state()).possessionCountdownMs===0,'Opening play unexpectedly delayed');
@@ -53,6 +58,10 @@ try{
    await step(100);s=await state();assert(s.players[0].x<JSON.parse(before).players[0].x,'Held preparation movement did not resume');assert(s.clockMs<JSON.parse(before).clock,'Clock stayed frozen');
    if(touch)await p.mouse.up();else await p.keyboard.up('KeyA');
    assert(s.players[0].defenseAction===null&&s.players[0].streetMove===null&&s.players[0].finishKind===null,'Early action leaked into live play');
+   if(touch&&process.env.CHECK_HOST_BADGE==='1'){
+    await p.locator('#nl-badge-frame[data-nl-ready="1"]').waitFor();const badge=await p.locator('#nl-badge-frame').boundingBox();
+    for(const id of ['#touch-joystick-base','#btn-touch-shoot','#btn-touch-trick']){const b=await p.locator(id).boundingBox();assert(b&&b.height>=44&&b.y+b.height<badge.y,'Touch control overlaps badge');}
+   }
    if(round===1){
     const action=label==='landscape'?'swipe':'jump';
     if(touch)await tap(action==='swipe'?'#btn-touch-trick':'#btn-touch-shoot');else await p.keyboard.press('Space');await step(16);
@@ -60,10 +69,6 @@ try{
    }else{
     if(touch)await tap('#btn-touch-shoot');else await p.keyboard.press('Space');await step(16);
     assert((await state()).phase==='QuestionReady','Fresh attacking action did not resume');
-   }
-   if(touch&&process.env.CHECK_HOST_BADGE==='1'){
-    await p.locator('#nl-badge-frame[data-nl-ready="1"]').waitFor();const badge=await p.locator('#nl-badge-frame').boundingBox();
-    for(const id of ['#touch-joystick-base','#btn-touch-shoot','#btn-touch-trick']){const b=await p.locator(id).boundingBox();assert(b.height>=44&&b.y+b.height<badge.y,'Touch control overlaps badge');}
    }
    assert(!await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),'Horizontal overflow');
    rounds.push({round,role,fullTwoSecondsFrozen:true,pauseChecked:round===1,heldMovementResumed:true,freshRoleActionVerified:true});

@@ -1,5 +1,5 @@
 {
-  "base": "https://6af6b4b98ad4a02e6dd3aca7--courtiq-spx101.netlify.app",
+  "base": "https://6af6b63e11536e31fa762fb6--courtiq-spx101.netlify.app",
   "files": [
     {
       "file": "assets/audio/CC0-LICENSE.txt",
@@ -65,14 +65,14 @@
       "platformHtmlTransform": false
     },
     {
-      "file": "assets/game-CflYYxAh.css",
-      "bytes": 28454,
-      "sourceSha256": "018a9a09600547583c68b19c6be45950b9399976bda112595578c2ffcfb5706f",
-      "deliveredSha256": "018a9a09600547583c68b19c6be45950b9399976bda112595578c2ffcfb5706f",
+      "file": "assets/game-CWnUvODI.css",
+      "bytes": 28555,
+      "sourceSha256": "c2140d0c42ccb7d8870b5230c5e4bf71200d92dcf24b8f87e1406cdc0bd5f2ba",
+      "deliveredSha256": "c2140d0c42ccb7d8870b5230c5e4bf71200d92dcf24b8f87e1406cdc0bd5f2ba",
       "platformHtmlTransform": false
     },
     {
-      "file": "assets/game-hem23HPt.js",
+      "file": "assets/game-CwbMC6k2.js",
       "bytes": 106168,
       "sourceSha256": "6c2aeff9894880641e9e137c3f8728b52e7a420a03f2eab294dcc10348149032",
       "deliveredSha256": "6c2aeff9894880641e9e137c3f8728b52e7a420a03f2eab294dcc10348149032",
@@ -193,8 +193,8 @@
     {
       "file": "index.html",
       "bytes": 27687,
-      "sourceSha256": "5c561a61fa72541c40067e2a7551b80c113d7a39a42003f7cbd372b6be54f6f6",
-      "deliveredSha256": "16134a59899270d56a42179863c5e659e0aaea5754d853073ec6259a5d5d0aeb",
+      "sourceSha256": "af5d302e9458d044b1741305f534f1c54cd31e355c79daefd01ed888895d724b",
+      "deliveredSha256": "13ab0b487b653a29c7ed0ac17665dbac86a8ab949bc97751719afda8159d45b1",
       "platformHtmlTransform": true
     },
     {
