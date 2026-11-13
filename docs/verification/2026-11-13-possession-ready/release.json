@@ -1,0 +1,43 @@
+{
+  "ready": true,
+  "verifiedAtUtc": "2026-11-13T07:10:06.308717+00:00",
+  "sourceCommit": "d1af9322c79ede9378d7fa44e6ad13a9c83b522a",
+  "countdownImplementationCommit": "91a7f34",
+  "previewDeploy": "6af6b63e11536e31fa762fb6",
+  "productionDeploy": "6af6b7046336772e72d92fcd",
+  "initialProductionWithFailedTouchClearance": "6af6b572d3d577202f0dd14d",
+  "url": "https://courtiq-spx101.netlify.app/",
+  "currentAndReady": true,
+  "tests": 219,
+  "suites": 28,
+  "newCountdownTests": 12,
+  "strictProductionBuild": "PASS",
+  "sourceAndBuildFingerprintsUnchanged": true,
+  "approvedQuestionPacksByteIdentical": true,
+  "deliveredFiles": 29,
+  "functionDigestsMatchPreview": true,
+  "actualProductionHandovers": 6,
+  "viewports": [
+    "390x844",
+    "844x390",
+    "1440x900"
+  ],
+  "twoSecondCounterAfterReviewCloses": true,
+  "bothPlayersBallAndMovementClockFrozen": true,
+  "heldMovementResumes": true,
+  "freshBlockStealAndShootVerified": true,
+  "settingsPausePreserved": true,
+  "realHostingIframeHitAreaHeightPx": 64,
+  "touchTargetsClearOfWholeHostingIframe": true,
+  "pageErrors": 0,
+  "roomRequests": 0,
+  "adaptiveFullMatchExportsAndModesRegression": "PASS - compiled browser",
+  "bothCharacterDunkAndCourtBotRegression": "PASS - compiled browser",
+  "physicalDevicesTested": false,
+  "humanPlayBalanceNotClaimed": true,
+  "newServicesOrPaidApiOrCredits": false,
+  "billingOrPlanChanges": false,
+  "currentModes": [
+    "solo"
+  ]
+}

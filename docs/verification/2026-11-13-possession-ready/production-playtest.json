@@ -1,0 +1,77 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "badgeSource": "real hosting iframe",
+  "runs": [
+    {
+      "label": "portrait",
+      "width": 390,
+      "height": 844,
+      "rounds": [
+        {
+          "round": 1,
+          "role": "defend",
+          "fullTwoSecondsFrozen": true,
+          "pauseChecked": true,
+          "heldMovementResumed": true,
+          "freshRoleActionVerified": true
+        },
+        {
+          "round": 2,
+          "role": "attack",
+          "fullTwoSecondsFrozen": true,
+          "pauseChecked": false,
+          "heldMovementResumed": true,
+          "freshRoleActionVerified": true
+        }
+      ]
+    },
+    {
+      "label": "landscape",
+      "width": 844,
+      "height": 390,
+      "rounds": [
+        {
+          "round": 1,
+          "role": "defend",
+          "fullTwoSecondsFrozen": true,
+          "pauseChecked": true,
+          "heldMovementResumed": true,
+          "freshRoleActionVerified": true
+        },
+        {
+          "round": 2,
+          "role": "attack",
+          "fullTwoSecondsFrozen": true,
+          "pauseChecked": false,
+          "heldMovementResumed": true,
+          "freshRoleActionVerified": true
+        }
+      ]
+    },
+    {
+      "label": "desktop",
+      "width": 1440,
+      "height": 900,
+      "rounds": [
+        {
+          "round": 1,
+          "role": "defend",
+          "fullTwoSecondsFrozen": true,
+          "pauseChecked": true,
+          "heldMovementResumed": true,
+          "freshRoleActionVerified": true
+        },
+        {
+          "round": 2,
+          "role": "attack",
+          "fullTwoSecondsFrozen": true,
+          "pauseChecked": false,
+          "heldMovementResumed": true,
+          "freshRoleActionVerified": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "roomRequests": 0
+}
