@@ -1,0 +1,47 @@
+{
+  "ready": false,
+  "readyNote": "Branch verified locally; parent must independently reproduce, run the real-iframe CHECK_HOST_BADGE=1 production gate, and review subjective balance before publishing.",
+  "verifiedAtLocal": "2026-11-17T20:18:53+10:00",
+  "reviewer": "Claude Opus 5.5 (High), Antigravity CLI, no subagents",
+  "baselineCommit": "a4c837be4bb47214163e2f1833704a1c20ba507b",
+  "baselineLiveDeploy": "6af6b7046336772e72d92fcd",
+  "branch": "feat/opus55-critical-improvements-20261117",
+  "implementationCommit": "21ae81808d56567d00bf5f50dfeeb3f338c0e847",
+  "tests": 231,
+  "suites": 29,
+  "baselineTests": 219,
+  "baselineSuites": 28,
+  "newTests": 12,
+  "strictProductionBuild": "PASS",
+  "distFingerprintsReproducedFromCommittedTree": true,
+  "approvedQuestionPacksUnchanged": true,
+  "compiledBrowserProbes": {
+    "possessionReady_64pxFixture": "PASS (6 handovers, 3 viewports, 0 errors, 0 room requests)",
+    "adaptiveTiming": "PASS (16-possession match, phone/landscape/fixed/practice, JSON+CSV)",
+    "immediateFeedback": "PASS (19 flows, retry)",
+    "motionSequenceBothAthletes": "PASS (River crossover, Sky spin, trick->drive->dunk, CourtBot)",
+    "lobbyReview4Sizes": "PASS (privacy, import, multiplayer inert, 0 identity/room traffic)"
+  },
+  "improvements": [
+    "Difficulty-scaled CourtBot steal success 0.30/0.55/0.80 (separate seeded stream; over-exposed always stolen; human unchanged)",
+    "Short-landscape camera close-in + one-row 52px HUD",
+    "Reason- and role-aware block explanations, DEFENDER SET head-on cue, touch-aware hints, tutorial lines",
+    "Spacing-graded trick wrong-foot + 0.45s settle window"
+  ],
+  "measuredBeforeAfter": {
+    "idleStolenWithin3s_B_I_A_of100": [[100, 100, 100], [39, 66, 84]],
+    "pause300StraightDriveStolenIntermediate_of80": [66, 31],
+    "advancedCushionWrongFootedReleases_of60": [56, 19],
+    "athletePxAtStart": {"1440x900": [170, 169], "390x844": [131, 131], "844x390": [48, 78], "667x375": [39, 80]},
+    "landscapeHudPx": [[67, 107], 52]
+  },
+  "realHostingIframeTested": false,
+  "physicalDevicesTested": false,
+  "audioListeningTested": false,
+  "learningEffectsTested": false,
+  "subjectiveBalanceTested": false,
+  "deferred": ["D1 live-ball steal turnover without question", "D2 binary offence vs CourtBot", "D3 cosmetic dribble shield", "D4 head-on bulldoze", "D5 500ms tap latency (contract)", "D6 latent 'too far' banner text", "D7 feedback camera framing"],
+  "newServicesPaidApiCreditsOrBilling": false,
+  "deployedOrPushed": false,
+  "currentModes": ["solo"]
+}
