@@ -1,0 +1,3 @@
+beginner stolen within 3s while idle: 39/100 within 1.5s: 26 median ms 1317
+intermediate stolen within 3s while idle: 66/100 within 1.5s: 47 median ms 1317
+advanced stolen within 3s while idle: 84/100 within 1.5s: 65 median ms 1317

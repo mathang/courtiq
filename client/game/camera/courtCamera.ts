@@ -7,6 +7,15 @@ import type {
 import type { Vector3D } from "../../../shared/rules/shot";
 import { getAirPose } from "../../../shared/rules/streetMoves";
 
+/** Phone-landscape class: wide and short enough that height, not width, limits framing. */
+export function isShortLandscapeViewport(width: number, height: number): boolean {
+  return height <= 560 && width / Math.max(1, height) >= 1.3;
+}
+/** Horizontal clearance for the joystick/action clusters in phone landscape. */
+export const SHORT_LANDSCAPE_SIDE_MARGIN = 0.17;
+/** Never move closer than this fraction of the default fitted distance. */
+export const SHORT_LANDSCAPE_MIN_DISTANCE_SCALE = 0.55;
+
 /** A possession director using airborne actors and the space above the question. */
 export class CourtCameraController {
   public readonly camera: THREE.PerspectiveCamera;
@@ -171,23 +180,36 @@ export class CourtCameraController {
     test.aspect = this.camera.aspect;
     test.fov = baseFov;
     this.compose(test, center);
-    for (let i = 0; i < 18; i++) {
-      test.position.copy(look).addScaledVector(direction, distance);
+    const shortLandscape = isShortLandscapeViewport(this.width, this.height);
+    // Phone landscape keeps both thumbs' controls in the lower corners, so athletes
+    // are framed inside the central band instead of across the full width.
+    const sideMargin = shortLandscape && !duel ? SHORT_LANDSCAPE_SIDE_MARGIN : 0.065;
+    const fits = (d: number) => {
+      test.position.copy(look).addScaledVector(direction, d);
       test.lookAt(look);
       test.updateMatrixWorld(true);
-      const fit = points.every((p) => {
+      return points.every((p) => {
         const n = p.clone().project(test);
         const x = (n.x + 1) * 0.5,
           y = (1 - n.y) * 0.5;
         return (
-          x > 0.065 &&
-          x < 0.935 &&
+          x > sideMargin &&
+          x < 1 - sideMargin &&
           y > this.safeRect.top + 0.015 &&
           y < this.safeRect.bottom - 0.015
         );
       });
-      if (fit) break;
+    };
+    for (let i = 0; i < 18; i++) {
+      if (fits(distance)) break;
       distance *= 1.1;
+    }
+    if (shortLandscape) {
+      // A short, wide screen has spare width but little height. The default
+      // broadcast distance left athletes ~40-60px tall; move in while every
+      // subject (both athletes, rim, airborne ball) still fits the safe band.
+      const nearest = distance * SHORT_LANDSCAPE_MIN_DISTANCE_SCALE;
+      while (distance * 0.95 >= nearest && fits(distance * 0.95)) distance *= 0.95;
     }
     position.copy(look).addScaledVector(direction, distance);
     const rate = duel || phase === "Resolution" ? 5.8 : 3.8;

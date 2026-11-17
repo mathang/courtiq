@@ -59,7 +59,7 @@
 
         <div class="hud-actions">
           <div id="hud-block-indicator" class="block-indicator hidden" role="status">
-            🛡️ Block Available (&le;2.6m)
+            🛡️ Contested &le;2.6m
           </div>
           <div class="stamina-wrap" title="Sprint Stamina Meter">
             <span class="stamina-label">SPRINT</span>
@@ -67,17 +67,17 @@
               <div id="hud-stamina-fill" class="stamina-fill" style="width: 100%"></div>
             </div>
           </div>
-          <button id="btn-open-tutorial" class="icon-btn" type="button" title="How to Play & Duel Rules">
-            ? Rules
+          <button id="btn-open-tutorial" class="icon-btn" type="button" title="How to Play & Duel Rules" aria-label="Rules">
+            <span class="hud-btn-icon" aria-hidden="true">?</span><span class="hud-btn-label"> Rules</span>
           </button>
-          <button id="btn-toggle-mute" class="icon-btn" type="button" aria-pressed="false" title="Toggle Audio Mute">
-            🔊 Audio
+          <button id="btn-toggle-mute" class="icon-btn" type="button" aria-pressed="false" title="Toggle Audio Mute" aria-label="Audio">
+            <span class="hud-btn-icon" aria-hidden="true">🔊</span><span class="hud-btn-label"> Audio</span>
           </button>
-          <button id="btn-open-settings" class="icon-btn" type="button" title="Settings, Accessibility & Controls (Esc)">
-            ⚙️ Settings
+          <button id="btn-open-settings" class="icon-btn" type="button" title="Settings, Accessibility & Controls (Esc)" aria-label="Settings">
+            <span class="hud-btn-icon" aria-hidden="true">⚙️</span><span class="hud-btn-label"> Settings</span>
           </button>
-          <button id="btn-return-lobby" class="icon-btn hidden" type="button" title="Return to Lobby">
-            🏠 Lobby
+          <button id="btn-return-lobby" class="icon-btn hidden" type="button" title="Return to Lobby" aria-label="Lobby">
+            <span class="hud-btn-icon" aria-hidden="true">🏠</span><span class="hud-btn-label"> Lobby</span>
           </button>
         </div>
       </header>
@@ -454,7 +454,7 @@
             <ol class="tutorial-steps">
               <li>
                 <strong>1. Position on the Half-Court (15s Movement Clock):</strong>
-                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>; hold <kbd>Shift</kbd> for Turbo. There are two action keys: <kbd>Space</kbd> shoots, or automatically attempts a dunk when you are moving towards the basket inside the blue paint. Dunk styles are random: tomahawk, windmill, 360 or reverse. Tap <kbd>C</kbd> within half a second: <strong>1 tap = crossover, 2 = spin, 3 = eurostep, 4+ = stepback</strong>. Moves cost stamina. On defence, <kbd>C</kbd> swipes for a steal; a missed swipe freezes you for 1 second. <kbd>Space</kbd> jumps to block; hold it during a dunk take-off for a forgiving swat attempt from within 2.6m. The jump faces the attacker automatically. Press <kbd>F</kbd> for fullscreen. Inside the arc scores 2 points; outside scores 3.
+                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>; hold <kbd>Shift</kbd> for Turbo. There are two action keys: <kbd>Space</kbd> shoots, or automatically attempts a dunk when you are moving towards the basket inside the blue paint. Dunk styles are random: tomahawk, windmill, 360 or reverse. Tap <kbd>C</kbd> within half a second: <strong>1 tap = crossover, 2 = spin, 3 = eurostep, 4+ = stepback</strong>. Moves cost stamina. Dribbling straight into a set defender exposes the ball to a steal, so steer around them or use a trick. On defence, <kbd>C</kbd> swipes for a steal; a missed swipe freezes you for 1 second. <kbd>Space</kbd> jumps to block; hold it during a dunk take-off for a forgiving swat attempt from within 2.6m. The jump faces the attacker automatically. Press <kbd>F</kbd> for fullscreen. Inside the arc scores 2 points; outside scores 3.
               </li>
               <li>
                 <strong>2. Release the Shot (<kbd>Space</kbd>) &amp; Slow-Motion Flight:</strong>
@@ -469,7 +469,7 @@
                 <ul>
                   <li><strong>Attacker correct first (or tied within 200ms):</strong> Earns up to +70% accuracy bonus based on speed: \(P = \text{clamp}(B + C(0.35 + 0.35S), 0.03, 0.95)\).</li>
                   <li><strong>Eligible defender (&le;2.6m) correct first:</strong> Swats and <strong>BLOCKS</strong> the shot!</li>
-                  <li><strong>Defender correct first but out of range:</strong> Credited in learning accuracy, but too far away to block.</li>
+                  <li><strong>Defender correct first but no block:</strong> Credited in learning accuracy, but no block if they were too far away, off balance from a trick, reaching for a steal or beaten behind the shooter. The question card says which.</li>
                 </ul>
               </li>
               <li>

@@ -1368,3 +1368,44 @@ body:has(> #nl-badge-frame) .touch-controls {
  .lobby-card #online-room-entry { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
  .lobby-card .join-code-row { margin-top:0; }
 }
+
+/* Utility buttons keep icon + label on one line. */
+.icon-btn { white-space:nowrap; }
+@media (min-width:651px) { .block-indicator { white-space:nowrap; } }
+
+/* Phone landscape (Opus 5.5 pass): one compact HUD row so the camera can give the
+   athletes the freed height. Icon-only utility buttons keep 44px hit targets and
+   accessible names (aria-label); score, clock, roles and Fire streak stay visible. */
+@media (max-height:500px) and (min-width:560px) {
+  .hud-top { top:4px; left:8px; right:8px; flex-wrap:nowrap; gap:6px; padding:3px 6px; border-radius:11px; }
+  .hud-brand { display:none; }
+  .scoreboard-strip { flex:1 1 auto; min-width:0; gap:4px; }
+  .player-score-card { min-width:0; flex:1 1 0; padding:2px 7px; gap:6px; border-radius:8px; }
+  .player-meta { flex-direction:row; align-items:center; gap:5px; min-width:0; }
+  .player-meta.right { flex-direction:row-reverse; }
+  .flow-mini-track { display:none; }
+  .player-name { font-size:.7rem; max-width:96px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .role-pill { font-size:.55rem; padding:1px 4px; white-space:nowrap; }
+  .player-score { font-size:1.25rem; line-height:1.1; }
+  .center-clock-card { min-width:0; flex:0 1 auto; padding:2px 8px; display:grid; grid-template-columns:auto auto; column-gap:6px; align-items:center; }
+  .possession-counter { font-size:.56rem; }
+  .shot-clock { font-size:.95rem; line-height:1.1; }
+  .zone-badge { grid-column:1 / -1; font-size:.52rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px; text-align:center; }
+  .hud-actions { flex:0 0 auto; flex-wrap:nowrap; gap:3px; }
+  .hud-actions .icon-btn { min-width:44px; min-height:44px; padding:0 6px; justify-content:center; font-size:.9rem; }
+  .hud-btn-label { display:none; }
+  /* Out of the score row so both names fit; sits under the HUD's right edge. */
+  .block-indicator { position:absolute; top:calc(100% + 4px); right:4px; font-size:.56rem; padding:2px 7px; white-space:nowrap; }
+  .stamina-wrap { width:44px; }
+  .stamina-label { font-size:.46rem; }
+  .street-status { top:58px; }
+}
+@media (max-height:500px) and (min-width:560px) and (max-width:720px) {
+  .stamina-label { display:none; }
+  .stamina-wrap { width:34px; }
+  .zone-badge { max-width:112px; }
+  .center-clock-card { padding:2px 5px; }
+  .player-score-card { padding:2px 5px; gap:4px; }
+  .player-meta { gap:3px; }
+  .role-pill { font-size:.5rem; padding:1px 3px; }
+}

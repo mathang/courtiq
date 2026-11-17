@@ -1,0 +1,106 @@
+{
+  "base": "http://127.0.0.1:4185",
+  "views": [
+    {
+      "label": "desktop",
+      "width": 1440,
+      "height": 900,
+      "start": {
+        "tag": "start",
+        "attackerPx": 181,
+        "defenderPx": 170,
+        "hoopY": 181,
+        "feetY": 729,
+        "hudBottom": 91,
+        "hudHeight": 81,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 162,
+        "defenderPx": 167,
+        "hoopY": 176,
+        "feetY": 575,
+        "hudBottom": 91,
+        "hudHeight": 81,
+        "camera": "broadcast"
+      }
+    },
+    {
+      "label": "portrait",
+      "width": 390,
+      "height": 844,
+      "start": {
+        "tag": "start",
+        "attackerPx": 131,
+        "defenderPx": 123,
+        "hoopY": 227,
+        "feetY": 624,
+        "hudBottom": 150,
+        "hudHeight": 144,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 118,
+        "defenderPx": 128,
+        "hoopY": 222,
+        "feetY": 525,
+        "hudBottom": 105,
+        "hudHeight": 99,
+        "camera": "broadcast"
+      }
+    },
+    {
+      "label": "landscape",
+      "width": 844,
+      "height": 390,
+      "start": {
+        "tag": "start",
+        "attackerPx": 83,
+        "defenderPx": 78,
+        "hoopY": 73,
+        "feetY": 324,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 73,
+        "defenderPx": 79,
+        "hoopY": 73,
+        "feetY": 258,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      }
+    },
+    {
+      "label": "landscape-se",
+      "width": 667,
+      "height": 375,
+      "start": {
+        "tag": "start",
+        "attackerPx": 80,
+        "defenderPx": 75,
+        "hoopY": 70,
+        "feetY": 312,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 69,
+        "defenderPx": 74,
+        "hoopY": 72,
+        "feetY": 248,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      }
+    }
+  ],
+  "errors": []
+}

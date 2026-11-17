@@ -1,0 +1,1 @@
+{"base":"http://127.0.0.1:4185","runs":[{"label":"adaptive","rounds":16},{"label":"phone","rounds":2},{"label":"landscape","rounds":2},{"label":"fixed","rounds":2},{"label":"practice","rounds":2}],"exports":{"actualTimingRecorded":true,"questions":16,"json":true,"csv":true},"errors":[],"roomRequests":0}

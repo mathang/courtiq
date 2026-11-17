@@ -34,6 +34,8 @@ export interface AiDifficultyConfig {
   reactionDelayMs: number;
   moveSpeedMultiplier: number;
   contestAggression: number;
+  /** Chance a CourtBot swipe at a reachable, not over-exposed ball connects. */
+  stealSuccess: number;
 }
 
 export const COURT_GEOMETRY = {
@@ -227,6 +229,7 @@ export const AI_DIFFICULTY_PRESETS: Record<AiDifficultyId, AiDifficultyConfig> =
     reactionDelayMs: 380,
     moveSpeedMultiplier: 0.82,
     contestAggression: 0.55,
+    stealSuccess: 0.3,
   },
   intermediate: {
     id: 'intermediate',
@@ -237,6 +240,7 @@ export const AI_DIFFICULTY_PRESETS: Record<AiDifficultyId, AiDifficultyConfig> =
     reactionDelayMs: 220,
     moveSpeedMultiplier: 0.94,
     contestAggression: 0.78,
+    stealSuccess: 0.55,
   },
   advanced: {
     id: 'advanced',
@@ -247,5 +251,6 @@ export const AI_DIFFICULTY_PRESETS: Record<AiDifficultyId, AiDifficultyConfig> =
     reactionDelayMs: 120,
     moveSpeedMultiplier: 1.0,
     contestAggression: 0.94,
+    stealSuccess: 0.8,
   },
 };

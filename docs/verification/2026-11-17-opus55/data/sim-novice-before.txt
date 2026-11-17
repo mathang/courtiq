@@ -1,0 +1,15 @@
+beginner tap 0 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+intermediate tap 0 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+advanced tap 0 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+beginner tap 333 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+intermediate tap 333 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+advanced tap 333 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+beginner tap 700 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+intermediate tap 700 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+advanced tap 700 {"stolen":16,"dunk":64} botShotAfterSteal median ms 1183.333333333337 eligible 7/16
+beginner tap 100000 {"dunk":80} botShotAfterSteal median ms - eligible 0/0
+intermediate tap 100000 {"stolen":66,"dunk":14} botShotAfterSteal median ms 1050.000000000002 eligible 42/66
+advanced tap 100000 {"stolen":50,"dunk":30} botShotAfterSteal median ms 883.3333333333369 eligible 24/50
+beginner tap 100000 {"stolen":18,"dunk":62} botShotAfterSteal median ms 2199.999999999994 eligible 10/18
+intermediate tap 100000 {"stolen":80} botShotAfterSteal median ms 1100.0000000000011 eligible 55/80
+advanced tap 100000 {"stolen":80} botShotAfterSteal median ms 1599.9999999999984 eligible 33/80

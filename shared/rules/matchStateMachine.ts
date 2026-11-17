@@ -9,11 +9,12 @@ import {
   stepAngleTowards,
   stepDribbleState,
 } from './dribble';
-import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction, isStealRecovery } from './defense';
+import { DefenseAction, DEFENSE_CONFIG, canStealBall, isDefenseAction, isFullAnkleBreak, isStealRecovery, trickWrongFootSec, ANKLE_BREAK_CONFIG } from './defense';
 import { stepPlayerMotion, MotionTarget } from './contact';
 import { DunkStyle, DUNK_STYLES, DUNK_TAKEOFF_SEC, DUNK_LABELS, isDunkStyle, dunkBallPosition, dunkReboundPosition } from './dunks';
 import { canTriggerOrChainTrick, getAirPose, isStreetMove, STREET_MOVES, StreetMove } from './streetMoves';
 import {
+  AI_DIFFICULTY_PRESETS,
   AiDifficultyId,
   COURT_GEOMETRY,
   MOVEMENT_CONFIG,
@@ -117,6 +118,8 @@ export interface PlayerSimState {
   moveForwardX: number;
   moveForwardZ: number;
   wrongFootSec: number;
+  /** Brief settle window after a wrong-foot ends, so chained tricks cannot keep a defender permanently frozen. */
+  balanceSettleSec?: number;
   finishKind: 'jump' | 'dunk' | null;
   finishElapsedSec: number;
   finishResolutionSec: number;
@@ -256,6 +259,8 @@ export class AuthoritativeMatchEngine {
   private usedQuestionIds = new Set<string>();
   private rng: () => number;
   private readonly dunkRng: () => number;
+  /** Separate stream so CourtBot steal rolls never shift question/option selection. */
+  private readonly stealRng: () => number;
   private lastDunkStyle: DunkStyle | null = null;
   private aiBrain: AiBasketballBrainState;
   private questionReadyTimerMs = 0;
@@ -302,6 +307,7 @@ export class AuthoritativeMatchEngine {
         : () => Math.random();
     // Style variety must not consume the question/answer/shot RNG stream.
     this.dunkRng = options.seed !== undefined ? createSeededRng(options.seed ^ 0x5d6a7b8c) : () => Math.random();
+    this.stealRng = options.seed !== undefined ? createSeededRng(options.seed ^ 0x2c1b3a49) : () => Math.random();
     this.aiBrain = createAiBasketballBrainState(this.rng);
 
     this.scoreState = createInitialPossessionScoreState(0);
@@ -425,7 +431,7 @@ export class AuthoritativeMatchEngine {
 
     for (const p of this.players) {
       p.streetMove = null; p.moveElapsedSec = 0; p.moveCooldownSec = 0;
-      p.wrongFootSec = 0; p.finishKind = null; p.finishElapsedSec = 0; p.finishResolutionSec = -1;
+      p.wrongFootSec = 0; p.balanceSettleSec = 0; p.finishKind = null; p.finishElapsedSec = 0; p.finishResolutionSec = -1;
       p.defenseAction = null; p.defenseElapsedSec = 0; p.defenseRecoverySec = 0; p.defenseCooldownSec = 0;
       p.defenseResult = null; p.dunkBallStart = null; p.finishOutcome = null;
       p.trickCombo = 0; p.lastTrick = null; p.comboGraceSec = 0; p.trickOverexposedSec = 0;
@@ -475,6 +481,7 @@ export class AuthoritativeMatchEngine {
       defenderPos: { x: this.players[def].x, z: this.players[def].z },
       defenderFacingAngle: this.players[def].facingAngle,
       blockingDisabledByRule: this.players[def].defenseAction === 'swipe' || this.players[def].wrongFootSec > 0,
+      disabledBy: this.players[def].defenseAction === 'swipe' ? 'reaching' : 'off-balance',
     });
   }
 
@@ -625,7 +632,10 @@ export class AuthoritativeMatchEngine {
       const opponent = this.players[slot === 0 ? 1 : 0];
 
       p.moveCooldownSec = Math.max(0, p.moveCooldownSec - deltaSec);
+      const wasWrongFooted = p.wrongFootSec > 0;
       p.wrongFootSec = Math.max(0, p.wrongFootSec - deltaSec);
+      p.balanceSettleSec = Math.max(0, (p.balanceSettleSec ?? 0) - deltaSec);
+      if (wasWrongFooted && p.wrongFootSec <= 0) p.balanceSettleSec = ANKLE_BREAK_CONFIG.settleSec;
       p.plantSec = Math.max(0, (p.plantSec ?? 0) - deltaSec);
       p.comboGraceSec = Math.max(0, p.comboGraceSec - deltaSec);
       p.trickOverexposedSec = Math.max(0, p.trickOverexposedSec - deltaSec);
@@ -718,10 +728,11 @@ export class AuthoritativeMatchEngine {
             this.emitCallout(slot, 'OVERDRIBBLE — EXPOSED!', 1.05);
           } else {
             let brokeAnkles = false;
-            if (distToDef < 2.55 && opponent.wrongFootSec <= 0) {
-              const baseFreeze = nextTrick === 'spin' ? 0.44 : nextTrick === 'crossover' ? 0.36 : 0.32;
-              opponent.wrongFootSec = baseFreeze + (check.isChain ? 0.08 : 0);
-              brokeAnkles = true;
+            const freeze = trickWrongFootSec(nextTrick, distToDef, check.isChain);
+            if (freeze > 0 && opponent.wrongFootSec <= 0 && (opponent.balanceSettleSec ?? 0) <= 0) {
+              // Graded by spacing: crowding defenders are broken, cushioned ones keep balance.
+              opponent.wrongFootSec = freeze;
+              brokeAnkles = isFullAnkleBreak(nextTrick, distToDef, check.isChain);
             }
             const flowGain =
               STREET_FLOW_CONFIG.flowCleanTrick +
@@ -870,7 +881,7 @@ export class AuthoritativeMatchEngine {
     const defender = this.players[def];
     if (defender.defenseAction === 'swipe' && defender.defenseResult === null &&
         defender.defenseElapsedSec >= DEFENSE_CONFIG.swipeContactSec) {
-      if (canStealBall(defender, this.players[att], this.getBallPosition3D())) {
+      if (canStealBall(defender, this.players[att], this.getBallPosition3D()) && this.stealConnects(defender, this.players[att])) {
         defender.defenseResult = 'steal'; this.completeSteal(def); return;
       }
       defender.defenseResult = 'miss';
@@ -958,6 +969,7 @@ export class AuthoritativeMatchEngine {
       defenderPos: { x: defender.x, z: defender.z },
       defenderFacingAngle: defender.facingAngle,
       blockingDisabledByRule: defender.defenseAction === 'swipe' || defender.wrongFootSec > 0,
+      disabledBy: defender.defenseAction === 'swipe' ? 'reaching' : 'off-balance',
     });
 
     const releasedWhileSprinting =
@@ -1427,6 +1439,16 @@ export class AuthoritativeMatchEngine {
       duel.physicalBlock = true; d.defenseResult = 'timed-block';
       this.emitCallout(defSlot, '🛡️ TIMED SWAT!', 1.6);
     }
+  }
+
+  /**
+   * Human swipes on a reachable ball always connect. CourtBot's hands are part of
+   * its difficulty: an over-exposed (spammed) handle is always stolen, otherwise a
+   * seeded roll uses the preset's success rate. A miss uses the normal 1s root.
+   */
+  private stealConnects(defender: PlayerSimState, attacker: PlayerSimState): boolean {
+    if (!defender.isAi || attacker.trickOverexposedSec > 0) return true;
+    return this.stealRng() < AI_DIFFICULTY_PRESETS[this.aiDifficulty].stealSuccess;
   }
 
   private completeSteal(def: PlayerSlot): void {

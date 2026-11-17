@@ -1,5 +1,5 @@
 import type { PlayerSimState } from './matchStateMachine';
-import { STREET_MOVES } from './streetMoves';
+import { STREET_MOVES, type StreetMove } from './streetMoves';
 
 export type DefenseAction = 'swipe' | 'jump';
 export const DEFENSE_CONFIG = {
@@ -67,4 +67,34 @@ export function canStealBall(
   }
 
   return true;
+}
+
+/**
+ * Wrong-foot ("ankle breaker") duration caused by a trick, graded by spacing.
+ * A defender crowding within steal reach takes the full freeze; one keeping a
+ * cushion takes proportionally less, and none at 2.55m+. Crowding therefore buys
+ * steal chances at the risk of being broken, while a cushion keeps balance (and
+ * question-block eligibility up to 2.6m) at the cost of conceding space.
+ */
+export const ANKLE_BREAK_CONFIG = {
+  fullFreezeWithinM: DEFENSE_CONFIG.swipeReachM,
+  noFreezeBeyondM: 2.55,
+  chainBonusSec: 0.08,
+  /** Below this fraction of the full freeze there is no "ANKLE BREAKER" callout. */
+  calloutFraction: 0.6,
+  /** After a wrong-foot ends, the defender cannot be re-broken for this long. */
+  settleSec: 0.45,
+} as const;
+
+export function trickWrongFootSec(move: StreetMove, distanceM: number, isChain: boolean): number {
+  const { fullFreezeWithinM, noFreezeBeyondM, chainBonusSec } = ANKLE_BREAK_CONFIG;
+  if (!(distanceM < noFreezeBeyondM)) return 0;
+  const full = (move === 'spin' ? 0.44 : move === 'crossover' ? 0.36 : 0.32) + (isChain ? chainBonusSec : 0);
+  const closeness = Math.min(1, Math.max(0, (noFreezeBeyondM - distanceM) / (noFreezeBeyondM - fullFreezeWithinM)));
+  return full * closeness;
+}
+
+export function isFullAnkleBreak(move: StreetMove, distanceM: number, isChain: boolean): boolean {
+  const full = trickWrongFootSec(move, 0, isChain);
+  return full > 0 && trickWrongFootSec(move, distanceM, isChain) >= full * ANKLE_BREAK_CONFIG.calloutFraction;
 }

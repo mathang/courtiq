@@ -11,6 +11,8 @@ export interface BlockEvaluationInput {
   /** Angle in radians where facing vector is (sin(angle), cos(angle)) */
   defenderFacingAngle: number;
   blockingDisabledByRule?: boolean;
+  /** Why the rule disabled blocking, for player-facing explanations only. */
+  disabledBy?: 'off-balance' | 'reaching';
 }
 
 export interface BlockEligibilitySnapshot {
@@ -27,6 +29,7 @@ export interface BlockEligibilitySnapshot {
     | 'poor-contest-angle'
     | 'out-of-bounds'
     | 'rule-disabled';
+  readonly disabledBy?: 'off-balance' | 'reaching';
 }
 
 export function isInsidePlayableCourt(pt: CourtPoint2D): boolean {
@@ -61,6 +64,7 @@ export function evaluateBlockEligibilityAtRelease(
       inContestPosition: false,
       insideCourt: true,
       reason: 'rule-disabled',
+      ...(input.disabledBy ? { disabledBy: input.disabledBy } : {}),
     });
   }
 

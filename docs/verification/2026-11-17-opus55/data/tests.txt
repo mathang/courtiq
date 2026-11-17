@@ -1,0 +1,45 @@
+
+> courtiq@1.0.0 test
+> vitest run
+
+
+ RUN  v2.1.8 /Users/ross_mac/Documents/Codex/2026-10-31/courtiq-agy-opus55-20261117
+
+ ✓ tests/rules/timing.test.ts (2 tests) 2ms
+ ✓ tests/rules/basketballMotorAndDribble.test.ts (6 tests) 11ms
+ ✓ tests/rules/adaptiveQuestionTiming.test.ts (18 tests) 11ms
+ ✓ tests/rules/streetFlowAndCombos.test.ts (9 tests) 12ms
+ ✓ tests/rules/learningStreakAndFinishing.test.ts (20 tests) 28ms
+ ✓ tests/rules/arcadeDefense.test.ts (16 tests) 12ms
+ ✓ tests/rules/opus55Improvements.test.ts (12 tests) 52ms
+ ✓ tests/multiplayer/roomAuthoritative.test.ts (2 tests) 126ms
+ ✓ tests/rules/shot.test.ts (5 tests) 7ms
+ ✓ tests/rules/streetMoves.test.ts (10 tests) 9ms
+ ✓ tests/rules/possessionCountdown.test.ts (12 tests) 20ms
+ ✓ tests/rules/immediateFeedback.test.ts (9 tests) 8ms
+ ✓ tests/rules/motionCurves.test.ts (6 tests) 15ms
+ ✓ tests/rules/aiPositioning.test.ts (12 tests) 36ms
+ ✓ tests/render/possessionPresentation.test.ts (8 tests) 364ms
+   ✓ possession presentation > generates reusable, finite sound buffers with headroom and no DC build-up 324ms
+ ✓ tests/rules/fluidDefense.test.ts (14 tests) 13ms
+ ✓ tests/accessibility/simpleControls.test.ts (8 tests) 4ms
+ ✓ tests/render/motionContinuity.test.ts (8 tests) 370ms
+ ✓ tests/rules/content.test.ts (3 tests) 2ms
+ ✓ tests/rules/possession.test.ts (2 tests) 2ms
+ ✓ tests/multiplayer/characterChoice.test.ts (3 tests) 110ms
+ ✓ tests/accessibility/uiAndInput.test.ts (1 test) 1ms
+ ✓ tests/rules/block.test.ts (5 tests) 3ms
+ ✓ tests/multiplayer/httpControlRetry.test.ts (4 tests) 2ms
+ ✓ tests/rules/aiOpponent.test.ts (1 test) 20ms
+ ✓ tests/multiplayer/lobbyLeave.test.ts (3 tests) 4ms
+ ✓ tests/render/characterRigCompatibility.test.ts (2 tests) 13ms
+ ✓ tests/multiplayer/soloRelease.test.ts (2 tests) 30ms
+ ✓ tests/render/playerAsset.test.ts (28 tests) 3009ms
+   ✓ shipped streetball player: streetball-player.glb > keeps misses and swats clear of the descending head from either lane 1261ms
+   ✓ shipped streetball player: athlete-sky.glb > keeps misses and swats clear of the descending head from either lane 1102ms
+
+ Test Files  29 passed (29)
+      Tests  231 passed (231)
+   Start at  20:07:01
+   Duration  3.43s (transform 748ms, setup 0ms, collect 2.66s, tests 4.30s, environment 3ms, prepare 1.38s)
+

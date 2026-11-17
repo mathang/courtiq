@@ -23,6 +23,8 @@ import {
   ServerToClientMessage,
 } from '../shared/protocol/messages';
 import { computeDistance2D } from '../shared/rules/block';
+import type { BlockEligibilitySnapshot } from '../shared/rules/block';
+import { describeQuestionBlock, isDrivingIntoSetDefender } from '../shared/rules/defensiveReads';
 import type { QuestionAnswerReview } from '../shared/rules/learningFeedback';
 import {
   AuthoritativeMatchEngine,
@@ -682,7 +684,8 @@ class CourtIqApp {
     // Determine whether we are rendering an active online match or the local solo engine
     if (this.onlineSnapshot) {
       const snap = this.onlineSnapshot;
-      this.updateStreetHud(snap.phase, snap.players[this.onlineSlot], snap.players[snap.scoreState.currentAttacker]);
+      this.updateStreetHud(snap.phase, snap.players[this.onlineSlot], snap.players[snap.scoreState.currentAttacker],
+        snap.players[snap.scoreState.currentAttacker === 0 ? 1 : 0], snap.ballPosition);
       this.syncInputAndOverlaysFromOnline(snap);
 
       const moveIntent = this.input.consumeMoveInput(snap.phase, realDeltaMs);
@@ -889,7 +892,7 @@ class CourtIqApp {
       const btn = document.getElementById(id) as HTMLButtonElement | null;
       if (btn) btn.disabled = gettingReady;
     }
-    this.updateStreetHud(eng.phase, eng.players[0], eng.players[att]);
+    this.updateStreetHud(eng.phase, eng.players[0], eng.players[att], eng.players[att === 0 ? 1 : 0], eng.getBallPosition3D());
     if (gettingReady) document.getElementById('street-status')?.classList.add('hidden');
     const activeDuel = eng.activeDuel;
     const readingProtected =
@@ -949,6 +952,7 @@ class CourtIqApp {
         opponentSubmitted: activeDuel.answersBySlot[1] !== null,
         blockEligibleAtRelease:
           activeDuel.releaseSnapshot.blockEligibility.eligible,
+        blockEligibility: activeDuel.releaseSnapshot.blockEligibility,
         physicalBlock: activeDuel.physicalBlock,
         youAreAttacker: att === 0,
         adaptiveTiming: eng.adaptiveQuestionTiming,
@@ -982,9 +986,17 @@ class CourtIqApp {
     }
   }
 
-  private updateStreetHud(phase: MatchPhase, you: PlayerSimState, attacker: PlayerSimState): void {
+  private updateStreetHud(phase: MatchPhase, you: PlayerSimState, attacker: PlayerSimState,
+    defender?: PlayerSimState, ball?: { x: number; y: number; z: number }): void {
     const badge = document.getElementById('street-status');
     if (!badge) return;
+    // Name the on-screen buttons on touch devices instead of keyboard keys.
+    const touch = this.touchOverlayEnabled || 'ontouchstart' in window;
+    const keys = touch
+      ? { shoot: 'SHOOT', trick: 'TRICK', steal: 'STEAL', block: 'BLOCK', dunk: 'DUNK' }
+      : { shoot: 'SPACE', trick: 'C', steal: 'C', block: 'SPACE', dunk: 'SPACE' };
+    const drivingIntoSetDefender = phase === 'Possession' && you.slot === attacker.slot && defender && ball
+      ? isDrivingIntoSetDefender(attacker, defender, ball) : false;
     const active = phase === 'Possession' || phase === 'QuestionReady' || phase === 'Duel' || phase === 'Resolution';
     badge.classList.toggle('hidden', !active || phase === 'Duel');
     const defending = you.slot !== attacker.slot;
@@ -1020,7 +1032,7 @@ class CourtIqApp {
       physicalSwat && (phase === 'QuestionReady' || phase === 'Duel')
         ? 'SWAT CONNECTED • QUESTION STILL COUNTS'
         : defending && attacker.defenseResult === 'steal' && attacker.defenseElapsedSec < 1.2
-          ? 'BALL STOLEN! GET BACK ON DEFENSE'
+          ? 'STOLEN! GET BACK • NEXT TIME STEER AROUND'
           : you.defenseResult === 'steal' && you.defenseElapsedSec < 1.2
             ? 'COOKIE SNATCH! DRIVE TO THE RIM!'
             : you.defenseResult === 'timed-block' && (phase === 'QuestionReady' || phase === 'Duel')
@@ -1034,24 +1046,26 @@ class CourtIqApp {
                   : liveCallout
                     ? `${attacker.onFire ? '🔥 ' : ''}${liveCallout}`
                     : attacker.finishKind === 'dunk'
-                      ? `${attacker.onFire ? '🔥 ' : ''}${DUNK_LABELS[attacker.dunkStyle]} • ${defending && phase === 'QuestionReady' ? 'HOLD SPACE TO BLOCK!' : 'ABOVE THE RIM'}`
+                      ? `${attacker.onFire ? '🔥 ' : ''}${DUNK_LABELS[attacker.dunkStyle]} • ${defending && phase === 'QuestionReady' ? `HOLD ${keys.block} TO BLOCK!` : 'ABOVE THE RIM'}`
                       : phase !== 'Possession'
                         ? 'SHOT DUEL • ANSWER TO SCORE / BLOCK'
                         : defending
                           ? attacker.trickOverexposedSec > 0
-                            ? '⚡ BALL EXPOSED! C: STEAL'
+                            ? `⚡ BALL EXPOSED! ${keys.steal}: STEAL`
                             : you.defenseCooldownSec > 0
                               ? `DEFENSE RECHARGING ${you.defenseCooldownSec.toFixed(1)}s`
-                              : 'C: STEAL • SPACE: BLOCK'
+                              : touch ? 'STAY BETWEEN BALL & HOOP • STEAL OR BLOCK' : 'C: STEAL • SPACE: BLOCK'
                           : you.wrongFootSec > 0
                             ? 'WRONG FOOTED'
                             : selection
                               ? `${selection.count} TAP${selection.count > 1 ? 'S' : ''} • ${STREET_MOVES[selection.move].label} • ${Math.ceil(selection.remainingMs / 100) / 10}s`
+                              : drivingIntoSetDefender
+                              ? `DEFENDER SET • STEER AROUND OR ${touch ? 'TAP TRICK' : 'TAP C'}`
                               : you.streetMove
                               ? `${you.trickCombo >= 2 ? `${you.trickCombo}x CHAIN • ` : ''}${STREET_MOVES[you.streetMove].label}`
                               : dunkRange
-                                ? `${you.onFire ? '🔥 ON FIRE • ' : ''}DUNK READY • SPACE`
-                                : `${you.onFire ? '🔥 ON FIRE • ' : ''}SPACE: SHOOT • C: TAP FOR A TRICK`;
+                                ? `${you.onFire ? '🔥 ON FIRE • ' : ''}DUNK READY • ${keys.dunk}`
+                                : `${you.onFire ? '🔥 ON FIRE • ' : ''}${touch ? 'SHOOT • TAP TRICK FOR MOVES' : 'SPACE: SHOOT • C: TAP FOR A TRICK'}`;
     if (badge.textContent !== label) badge.textContent = label;
   }
 
@@ -1258,6 +1272,12 @@ class CourtIqApp {
       'hidden',
       params.phase === 'Lobby' || !params.blockEligible
     );
+    if (blockInd) {
+      // The same geometry means different things to each role.
+      const youDefend = params.attackerSlot !== params.yourSlot;
+      const text = youDefend ? '🛡️ You can block ≤2.6m' : '🛡️ Contested ≤2.6m';
+      if (blockInd.textContent !== text) blockInd.textContent = text;
+    }
 
     // Sprint stamina bar for local player
     const staminaFill = document.getElementById('hud-stamina-fill');
@@ -1276,6 +1296,8 @@ class CourtIqApp {
     yourSubmittedOptionId: string | null;
     opponentSubmitted: boolean;
     blockEligibleAtRelease: boolean;
+    /** Solo only: the frozen release snapshot, used to explain why a block is (un)available. */
+    blockEligibility?: BlockEligibilitySnapshot;
     physicalBlock: boolean;
     youAreAttacker: boolean;
     adaptiveTiming?: boolean;
@@ -1291,11 +1313,13 @@ class CourtIqApp {
     document.getElementById('q-pace-badge')?.classList.toggle('hidden', !params.adaptiveTiming);
     setTxt(
       'q-contest-badge',
-      params.physicalBlock
-        ? '🛡️ Swat connected • your answer still counts'
-        : params.blockEligibleAtRelease
-          ? '🛡️ Defender in Block Range (≤2.6m)'
-          : '📏 Question block unavailable at release'
+      params.blockEligibility
+        ? describeQuestionBlock({ eligibility: params.blockEligibility, physicalBlock: params.physicalBlock, youAreAttacker: params.youAreAttacker })
+        : params.physicalBlock
+          ? '🛡️ Swat connected • your answer still counts'
+          : params.blockEligibleAtRelease
+            ? '🛡️ Defender in Block Range (≤2.6m)'
+            : '📏 Question block unavailable at release'
     );
 
     const readingPill = document.getElementById('q-reading-pill');
@@ -2115,7 +2139,15 @@ class CourtIqApp {
   private syncAudioMuteUi(): void {
     const btn = document.getElementById('btn-toggle-mute');
     if (btn) {
-      btn.textContent = this.sound.muted ? '🔇 Muted' : '🔊 Audio';
+      const icon = btn.querySelector('.hud-btn-icon');
+      const label = btn.querySelector('.hud-btn-label');
+      if (icon && label) {
+        icon.textContent = this.sound.muted ? '🔇' : '🔊';
+        label.textContent = this.sound.muted ? ' Muted' : ' Audio';
+      } else {
+        btn.textContent = this.sound.muted ? '🔇 Muted' : '🔊 Audio';
+      }
+      btn.setAttribute('aria-label', this.sound.muted ? 'Muted' : 'Audio');
       btn.setAttribute('aria-pressed', String(this.sound.muted));
     }
     const chk = document.getElementById(

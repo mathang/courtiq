@@ -1,0 +1,1 @@
+{"base":"http://127.0.0.1:4185","runs":[{"name":"River","move":"crossover","style":"tomahawk","botTravelM":9.099374292551236,"botFinish":"dunk","frames":23},{"name":"Sky","move":"spin","style":"360","botTravelM":9.100918116354508,"botFinish":"dunk","frames":23}],"errors":[]}
