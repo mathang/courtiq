@@ -1,0 +1,106 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "views": [
+    {
+      "label": "desktop",
+      "width": 1440,
+      "height": 900,
+      "start": {
+        "tag": "start",
+        "attackerPx": 181,
+        "defenderPx": 170,
+        "hoopY": 180,
+        "feetY": 729,
+        "hudBottom": 91,
+        "hudHeight": 81,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 165,
+        "defenderPx": 176,
+        "hoopY": 174,
+        "feetY": 593,
+        "hudBottom": 91,
+        "hudHeight": 81,
+        "camera": "broadcast"
+      }
+    },
+    {
+      "label": "portrait",
+      "width": 390,
+      "height": 844,
+      "start": {
+        "tag": "start",
+        "attackerPx": 122,
+        "defenderPx": 132,
+        "hoopY": 226,
+        "feetY": 567,
+        "hudBottom": 105,
+        "hudHeight": 99,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 111,
+        "defenderPx": 122,
+        "hoopY": 227,
+        "feetY": 477,
+        "hudBottom": 113,
+        "hudHeight": 107,
+        "camera": "broadcast"
+      }
+    },
+    {
+      "label": "landscape",
+      "width": 844,
+      "height": 390,
+      "start": {
+        "tag": "start",
+        "attackerPx": 78,
+        "defenderPx": 83,
+        "hoopY": 73,
+        "feetY": 287,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 74,
+        "defenderPx": 85,
+        "hoopY": 84,
+        "feetY": 241,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "drive"
+      }
+    },
+    {
+      "label": "landscape-se",
+      "width": 667,
+      "height": 375,
+      "start": {
+        "tag": "start",
+        "attackerPx": 80,
+        "defenderPx": 75,
+        "hoopY": 70,
+        "feetY": 312,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      },
+      "drive": {
+        "tag": "drive",
+        "attackerPx": 76,
+        "defenderPx": 69,
+        "hoopY": 72,
+        "feetY": 302,
+        "hudBottom": 56,
+        "hudHeight": 52,
+        "camera": "broadcast"
+      }
+    }
+  ],
+  "errors": []
+}

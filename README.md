@@ -21,7 +21,9 @@ The live game currently offers **computer matches only**. Classmate play has bee
 
 Use a **nickname**. **Don't use your full name, email, student number or other personal details.** This reminder appears beside the lobby input and in the Player Lab; harmless defaults replace personal-name examples. Your nickname appears on the jersey and in any learning report you choose to export. The warning is guidance, not an automatic personal-information detector.
 
-**180 tests / 25 suites and the strict build pass**, including the retained multiplayer contracts explicitly enabled in isolated tests and new checks that the shipped room entry points reject access. Current release evidence is [here](docs/verification/2026-11-12-solo-privacy/README.md).
+The **17 November Opus 5.5 High improvement pass** makes CourtBot steals depend on difficulty, brings the camera closer on phones held sideways, explains block availability and head-on steal risks, and gives defenders a short recovery from repeated ankle-breakers. The teaching loop and simple controls are preserved. Read the [critical appraisal](docs/OPUS55_CRITICAL_APPRAISAL.md) for the measured findings and remaining design limits.
+
+**231 tests / 29 suites and the strict build pass**, including the retained multiplayer contracts explicitly enabled in isolated tests and checks that the shipped room entry points reject access. See [current verification and release evidence](docs/verification/2026-11-17-opus55/README.md); the earlier [solo privacy release](docs/verification/2026-11-12-solo-privacy/README.md) records the multiplayer deferral.
 
 ## Basketball movement and selectable athletes — 12 November 2026
 

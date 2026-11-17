@@ -1,0 +1,26 @@
+[
+  {
+    "name": "production-assets",
+    "script": "output/fluid-lobby/assets-check.mjs",
+    "url": "https://courtiq-spx101.netlify.app",
+    "exitCode": 0
+  },
+  {
+    "name": "production-ready",
+    "script": "docs/verification/2026-11-13-possession-ready/playtest.mjs",
+    "url": "https://courtiq-spx101.netlify.app",
+    "exitCode": 0
+  },
+  {
+    "name": "production-motion",
+    "script": "docs/verification/2026-11-17-opus55/probes/motion-sequence.mjs",
+    "url": "https://courtiq-spx101.netlify.app",
+    "exitCode": 0
+  },
+  {
+    "name": "production-framing",
+    "script": "docs/verification/2026-11-17-opus55/probes/framing.mjs",
+    "url": "https://courtiq-spx101.netlify.app",
+    "exitCode": 0
+  }
+]

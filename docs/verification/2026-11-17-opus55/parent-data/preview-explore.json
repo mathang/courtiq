@@ -1,0 +1,996 @@
+{
+  "base": "https://6afc2cfda4b52a4404b4a5fc--courtiq-spx101.netlify.app",
+  "runs": [
+    {
+      "label": "desktop",
+      "log": [
+        {
+          "poss": 0,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP C"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                1.02
+              ],
+              "bot": [
+                0,
+                0.32
+              ],
+              "sep": 0.7,
+              "cue": "SPACE: SHOOT • C: TAP FOR A TRICK"
+            },
+            {
+              "t": 60,
+              "me": [
+                0.01,
+                -0.79
+              ],
+              "bot": [
+                -0.66,
+                -1.49
+              ],
+              "sep": 0.97,
+              "cue": "STOLEN! GET BACK • NEXT TIME STEER AROUND"
+            },
+            {
+              "t": 66,
+              "primary": true,
+              "me": [
+                0.01150157281820072,
+                -1.6131506852518371
+              ],
+              "sep": 1.1886982314569163
+            }
+          ],
+          "minSep": 0.6999999999999997,
+          "cueFrames": 24,
+          "stolen": true,
+          "finish": null,
+          "phase": "Possession",
+          "contestBadge": "↩️ Beaten • behind the shooter",
+          "score": [
+            0,
+            0
+          ]
+        },
+        {
+          "poss": 1,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP C"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0,
+                -0.1
+              ],
+              "sep": 0.7,
+              "cue": "1 TAP • CROSSOVER • 0.4s"
+            },
+            {
+              "t": 60,
+              "me": [
+                1.39,
+                -1
+              ],
+              "bot": [
+                0,
+                -1.13
+              ],
+              "sep": 1.4,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 90,
+              "me": [
+                3.21,
+                -4.59
+              ],
+              "bot": [
+                0,
+                -1.13
+              ],
+              "sep": 4.72,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 120,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                0.54,
+                -1.97
+              ],
+              "sep": 5.01,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 150,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                1.8,
+                -3.96
+              ],
+              "sep": 2.65,
+              "cue": "SPACE: SHOOT • C: TAP FOR A TRICK"
+            },
+            {
+              "t": 180,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                2.19,
+                -4.56
+              ],
+              "sep": 1.94,
+              "cue": "SPACE: SHOOT • C: TAP FOR A TRICK"
+            },
+            {
+              "t": 210,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                2.19,
+                -4.56
+              ],
+              "sep": 1.94,
+              "cue": "SPACE: SHOOT • C: TAP FOR A TRICK"
+            }
+          ],
+          "minSep": 0.6999999999999998,
+          "cueFrames": 21,
+          "stolen": false,
+          "finish": null,
+          "phase": "Possession",
+          "score": [
+            0,
+            0
+          ]
+        },
+        {
+          "poss": 2,
+          "human": false,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0.12,
+                2.44
+              ],
+              "sep": 1.84,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 20,
+              "swipe": true,
+              "sep": 1.5460675235983095
+            },
+            {
+              "t": 30,
+              "me": [
+                0.78,
+                -0.81
+              ],
+              "bot": [
+                1.96,
+                -0.32
+              ],
+              "sep": 1.28,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 60,
+              "me": [
+                0.78,
+                -0.81
+              ],
+              "bot": [
+                3.3,
+                -3.22
+              ],
+              "sep": 3.49,
+              "botMove": null,
+              "botFinish": null
+            }
+          ],
+          "phase": "QuestionReady",
+          "botFinish": "jump",
+          "contestBadge": "✋ You reached for a steal • no block",
+          "score": [
+            0,
+            2
+          ]
+        },
+        {
+          "poss": 3,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP C"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0,
+                -0.1
+              ],
+              "sep": 0.7,
+              "cue": "1 TAP • CROSSOVER • 0.4s"
+            },
+            {
+              "t": 60,
+              "me": [
+                1.37,
+                -1.21
+              ],
+              "bot": [
+                -0.04,
+                -1.26
+              ],
+              "sep": 1.41,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 66,
+              "primary": true,
+              "me": [
+                2.268964823056544,
+                -1.667338705830896
+              ],
+              "sep": 2.3049051260551456
+            }
+          ],
+          "minSep": 0.6999999999999998,
+          "cueFrames": 21,
+          "stolen": false,
+          "finish": "jump",
+          "phase": "QuestionReady",
+          "contestBadge": "🌀 Defender off balance • no block",
+          "score": [
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "label": "portrait",
+      "log": [
+        {
+          "poss": 0,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0,
+                -0.1
+              ],
+              "sep": 0.7,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 60,
+              "me": [
+                0,
+                -0.32
+              ],
+              "bot": [
+                0,
+                -1.02
+              ],
+              "sep": 0.7,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 90,
+              "me": [
+                0,
+                -0.32
+              ],
+              "bot": [
+                0,
+                -1.02
+              ],
+              "sep": 0.7,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 120,
+              "me": [
+                0,
+                -1.3
+              ],
+              "bot": [
+                0,
+                -2
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 126,
+              "primary": true,
+              "me": [
+                0,
+                -1.6121760741768907
+              ],
+              "sep": 0.6999999999999997
+            }
+          ],
+          "minSep": 0.6999999999999997,
+          "cueFrames": 47,
+          "stolen": false,
+          "finish": "dunk",
+          "phase": "QuestionReady",
+          "contestBadge": "🛡️ Contested • answer correctly first",
+          "score": [
+            2,
+            0
+          ]
+        },
+        {
+          "poss": 1,
+          "human": false,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                -0.12,
+                2.44
+              ],
+              "sep": 1.84,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 20,
+              "swipe": true,
+              "sep": 1.5460675235983095
+            },
+            {
+              "t": 30,
+              "me": [
+                -0.78,
+                -0.81
+              ],
+              "bot": [
+                -1.96,
+                -0.32
+              ],
+              "sep": 1.28,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 60,
+              "me": [
+                -0.78,
+                -0.81
+              ],
+              "bot": [
+                -3.3,
+                -3.22
+              ],
+              "sep": 3.49,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 90,
+              "me": [
+                -0.84,
+                -1.41
+              ],
+              "bot": [
+                -1.48,
+                -3.51
+              ],
+              "sep": 2.19,
+              "botMove": "eurostep",
+              "botFinish": null
+            }
+          ],
+          "phase": "QuestionReady",
+          "botFinish": "jump",
+          "contestBadge": "📏 Too far to block (2.8m > 2.6m)",
+          "score": [
+            2,
+            2
+          ]
+        },
+        {
+          "poss": 2,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0,
+                -0.1
+              ],
+              "sep": 0.7,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 60,
+              "me": [
+                0,
+                0.11
+              ],
+              "bot": [
+                0.05,
+                -0.61
+              ],
+              "sep": 0.71,
+              "cue": "STOLEN! GET BACK • NEXT TIME STEER AROUND"
+            },
+            {
+              "t": 74,
+              "primary": true,
+              "me": [
+                -0.013801318448402485,
+                -1.6900202866090315
+              ],
+              "sep": 1.081034289404707
+            }
+          ],
+          "minSep": 0.6999999999999998,
+          "cueFrames": 37,
+          "stolen": true,
+          "finish": null,
+          "phase": "Possession",
+          "contestBadge": "🛡️ In block range • answer first to block",
+          "score": [
+            2,
+            4
+          ]
+        },
+        {
+          "poss": 3,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0,
+                -0.1
+              ],
+              "sep": 0.7,
+              "cue": "1 TAP • CROSSOVER • 0.4s"
+            },
+            {
+              "t": 60,
+              "me": [
+                1.39,
+                -0.48
+              ],
+              "bot": [
+                0,
+                -0.62
+              ],
+              "sep": 1.4,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 90,
+              "me": [
+                3.21,
+                -4.07
+              ],
+              "bot": [
+                0,
+                -0.62
+              ],
+              "sep": 4.71,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 120,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                0.95,
+                -2.27
+              ],
+              "sep": 4.54,
+              "cue": "ANKLE BREAKER!"
+            },
+            {
+              "t": 150,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                2.01,
+                -4.21
+              ],
+              "sep": 2.32,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 180,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                2.19,
+                -4.55
+              ],
+              "sep": 1.94,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 210,
+              "me": [
+                3.21,
+                -6.2
+              ],
+              "bot": [
+                2.19,
+                -4.55
+              ],
+              "sep": 1.94,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            }
+          ],
+          "minSep": 0.6999999999999998,
+          "cueFrames": 21,
+          "stolen": false,
+          "finish": null,
+          "phase": "Possession",
+          "score": [
+            2,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "label": "landscape",
+      "log": [
+        {
+          "poss": 0,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                1.24
+              ],
+              "bot": [
+                0,
+                0.54
+              ],
+              "sep": 0.7,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 60,
+              "me": [
+                0,
+                1.24
+              ],
+              "bot": [
+                0,
+                0.54
+              ],
+              "sep": 0.7,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 90,
+              "me": [
+                0,
+                0.44
+              ],
+              "bot": [
+                0,
+                -0.26
+              ],
+              "sep": 0.7,
+              "cue": "SHOOT • TAP TRICK FOR MOVES"
+            },
+            {
+              "t": 120,
+              "me": [
+                0,
+                -0.74
+              ],
+              "bot": [
+                0,
+                -1.44
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 150,
+              "me": [
+                0,
+                -0.74
+              ],
+              "bot": [
+                0,
+                -1.44
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 180,
+              "me": [
+                0,
+                -1.4
+              ],
+              "bot": [
+                0,
+                -2.1
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 184,
+              "primary": true,
+              "me": [
+                0,
+                -1.659051864007556
+              ],
+              "sep": 0.7000000000000002
+            }
+          ],
+          "minSep": 0.6999999999999997,
+          "cueFrames": 31,
+          "stolen": false,
+          "finish": "dunk",
+          "phase": "QuestionReady",
+          "contestBadge": "🛡️ Contested • answer correctly first",
+          "score": [
+            0,
+            0
+          ]
+        },
+        {
+          "poss": 1,
+          "human": false,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0.02,
+                2.46
+              ],
+              "sep": 1.87,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                -0.26
+              ],
+              "bot": [
+                0.12,
+                1.63
+              ],
+              "sep": 1.9,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 60,
+              "me": [
+                1.73,
+                -0.93
+              ],
+              "bot": [
+                3.29,
+                1.88
+              ],
+              "sep": 3.21,
+              "botMove": "stepback",
+              "botFinish": null
+            }
+          ],
+          "phase": "QuestionReady",
+          "botFinish": "jump",
+          "contestBadge": "🛡️ In block range • answer first to block",
+          "score": [
+            0,
+            0
+          ]
+        },
+        {
+          "poss": 2,
+          "human": true,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                2.56
+              ],
+              "bot": [
+                0,
+                1.34
+              ],
+              "sep": 1.22,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 30,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                0,
+                -0.1
+              ],
+              "sep": 0.7,
+              "cue": "DEFENDER SET • STEER AROUND OR TAP TRICK"
+            },
+            {
+              "t": 60,
+              "me": [
+                0,
+                -0.89
+              ],
+              "bot": [
+                0,
+                -1.59
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 90,
+              "me": [
+                0,
+                -0.89
+              ],
+              "bot": [
+                0,
+                -1.59
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 120,
+              "me": [
+                0,
+                -1.18
+              ],
+              "bot": [
+                0,
+                -1.88
+              ],
+              "sep": 0.7,
+              "cue": "DUNK READY • DUNK"
+            },
+            {
+              "t": 126,
+              "primary": true,
+              "me": [
+                0,
+                -1.6207258484487979
+              ],
+              "sep": 0.7
+            }
+          ],
+          "minSep": 0.6999999999999997,
+          "cueFrames": 57,
+          "stolen": false,
+          "finish": "dunk",
+          "phase": "QuestionReady",
+          "contestBadge": "🛡️ Contested • answer correctly first",
+          "score": [
+            0,
+            0
+          ]
+        },
+        {
+          "poss": 3,
+          "human": false,
+          "events": [
+            {
+              "t": 0,
+              "me": [
+                0,
+                0.6
+              ],
+              "bot": [
+                -0.12,
+                2.44
+              ],
+              "sep": 1.84,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 20,
+              "swipe": true,
+              "sep": 1.5460675235983095
+            },
+            {
+              "t": 30,
+              "me": [
+                -0.78,
+                -0.81
+              ],
+              "bot": [
+                -1.96,
+                -0.32
+              ],
+              "sep": 1.28,
+              "botMove": null,
+              "botFinish": null
+            },
+            {
+              "t": 60,
+              "me": [
+                -0.78,
+                -0.81
+              ],
+              "bot": [
+                -3.3,
+                -3.22
+              ],
+              "sep": 3.49,
+              "botMove": null,
+              "botFinish": null
+            }
+          ],
+          "phase": "QuestionReady",
+          "botFinish": "dunk",
+          "contestBadge": "✋ You reached for a steal • no block",
+          "score": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

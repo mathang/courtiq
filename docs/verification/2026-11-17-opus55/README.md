@@ -1,8 +1,9 @@
 # Opus 5.5 High: critical appraisal and improvement pass, 17 Nov 2026
 
 * **Baseline:** GitHub main `a4c837be4bb47214163e2f1833704a1c20ba507b`. The live deploy `6af6b7046336772e72d92fcd` was built from this commit.
-* **Branch:** `feat/opus55-critical-improvements-20261117`. It is a single commit on top of the baseline; see `release.json` for the commit hash.
+* **Agent branch:** `feat/opus55-critical-improvements-20261117`. Implementation `21ae81808d56567d00bf5f50dfeeb3f338c0e847`, followed by evidence-only commit `c3d7329a3e026894ec908ea2c70e6ffcc479d383`.
 * **Appraisal:** [`docs/OPUS55_CRITICAL_APPRAISAL.md`](../../OPUS55_CRITICAL_APPRAISAL.md).
+* **Independent review and publication:** [parent review](PARENT_REVIEW.md), [parent release record](parent-release.json). The original `release.json` below is the agent's local handoff, before publication.
 
 ## What changed
 
@@ -45,7 +46,7 @@ npx tsx docs/verification/2026-11-17-opus55/probes/sim-idle.ts      # idle-steal
 
 Outputs from these commands are copied into `data/`: `probe-*.txt`, `tests.txt`, `build.txt`, `framing-*.json`, `explore-*.json` and `sim-*.txt`. `data/dist-sha256.txt` fingerprints the final `dist/`.
 
-`output/opus55-baseline-tools/*.mjs` were supplied by the parent agent. They are not tracked, so check they are present before you reproduce from a fresh clone.
+`output/opus55-baseline-tools/*.mjs` were supplied by the parent agent. Identical copies are now tracked as `probes/motion-sequence.mjs` and `probes/lobby-review.mjs` for reproduction from a fresh clone. All browser probes use the installed Playwright path shown in their imports; adjust that path for another machine.
 
 The sim scripts in `probes/` have import paths adjusted to run in place from the repo root (for example `npx tsx docs/verification/2026-11-17-opus55/probes/sim.ts`).
 

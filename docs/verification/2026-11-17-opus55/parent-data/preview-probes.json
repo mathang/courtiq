@@ -1,0 +1,26 @@
+[
+  {
+    "name": "preview-assets",
+    "script": "output/fluid-lobby/assets-check.mjs",
+    "url": "https://6afc2cfda4b52a4404b4a5fc--courtiq-spx101.netlify.app",
+    "exitCode": 0
+  },
+  {
+    "name": "preview-ready",
+    "script": "docs/verification/2026-11-13-possession-ready/playtest.mjs",
+    "url": "https://6afc2cfda4b52a4404b4a5fc--courtiq-spx101.netlify.app",
+    "exitCode": 1
+  },
+  {
+    "name": "preview-ready-no-badge",
+    "script": "docs/verification/2026-11-13-possession-ready/playtest.mjs",
+    "url": "https://6afc2cfda4b52a4404b4a5fc--courtiq-spx101.netlify.app",
+    "exitCode": 0
+  },
+  {
+    "name": "preview-explore",
+    "script": "docs/verification/2026-11-17-opus55/probes/explore-after.mjs",
+    "url": "https://6afc2cfda4b52a4404b4a5fc--courtiq-spx101.netlify.app",
+    "exitCode": 0
+  }
+]

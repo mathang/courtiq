@@ -1,0 +1,27 @@
+[
+  {
+    "name": "ready",
+    "script": "docs/verification/2026-11-13-possession-ready/playtest.mjs",
+    "exitCode": 0
+  },
+  {
+    "name": "adaptive",
+    "script": "docs/verification/2026-11-12-adaptive-timing/playtest.mjs",
+    "exitCode": 0
+  },
+  {
+    "name": "motion",
+    "script": "output/athlete-roster/motion-sequence.mjs",
+    "exitCode": 0
+  },
+  {
+    "name": "framing",
+    "script": "docs/verification/2026-11-17-opus55/probes/framing.mjs",
+    "exitCode": 0
+  },
+  {
+    "name": "lobby",
+    "script": "output/solo-privacy/lobby-review.mjs",
+    "exitCode": 0
+  }
+]

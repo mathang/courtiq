@@ -1,0 +1,43 @@
+{
+  "preview": {
+    "id": "6afc2cfda4b52a4404b4a5fc",
+    "state": "ready",
+    "error_message": null,
+    "available_functions": [
+      {
+        "name": "health",
+        "digest": "80fdc2b7b1319085f1a31f56f667373cc2dca16870adac7b581088fc87ba876a"
+      },
+      {
+        "name": "room",
+        "digest": "76c558fd4a427de49bb12c3f9e969df37b5f9ba98022fdc56be256e8185c6979"
+      }
+    ]
+  },
+  "production": {
+    "id": "6afc2e02bb38597d0424fa37",
+    "state": "ready",
+    "published_at": "2026-11-17T10:35:47.218Z",
+    "error_message": null,
+    "available_functions": [
+      {
+        "name": "health",
+        "digest": "80fdc2b7b1319085f1a31f56f667373cc2dca16870adac7b581088fc87ba876a"
+      },
+      {
+        "name": "room",
+        "digest": "76c558fd4a427de49bb12c3f9e969df37b5f9ba98022fdc56be256e8185c6979"
+      }
+    ]
+  },
+  "publishedSite": {
+    "siteId": "0163a0e9-643d-4a4e-b835-b789dcee1204",
+    "currentDeploy": {
+      "state": "current",
+      "currentDeploy": {
+        "id": "6afc2e02bb38597d0424fa37",
+        "state": "ready"
+      }
+    }
+  }
+}

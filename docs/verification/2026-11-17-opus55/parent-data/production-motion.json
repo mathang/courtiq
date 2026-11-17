@@ -1,0 +1,22 @@
+{
+  "base": "https://courtiq-spx101.netlify.app",
+  "runs": [
+    {
+      "name": "River",
+      "move": "crossover",
+      "style": "360",
+      "botTravelM": 8.145019953492591,
+      "botFinish": "dunk",
+      "frames": 24
+    },
+    {
+      "name": "Sky",
+      "move": "spin",
+      "style": "reverse",
+      "botTravelM": 10.104358352811833,
+      "botFinish": "dunk",
+      "frames": 24
+    }
+  ],
+  "errors": []
+}

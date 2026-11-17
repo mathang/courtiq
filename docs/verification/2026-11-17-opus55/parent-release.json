@@ -1,0 +1,66 @@
+{
+  "ready": true,
+  "verifiedAtUtc": "2026-11-17T10:40:04.904228+00:00",
+  "reviewer": "Independent Codex parent review after the Opus 5.5 High Antigravity handoff",
+  "baselineCommit": "a4c837be4bb47214163e2f1833704a1c20ba507b",
+  "implementationCommit": "21ae81808d56567d00bf5f50dfeeb3f338c0e847",
+  "testedRuntimeSourceCommit": "c3d7329a3e026894ec908ea2c70e6ffcc479d383",
+  "runtimeSourceTreeListSha256": "222cd3ca97e31ae35c93888ffc256c23471931fddd1bdaedfb951e5bc5843993",
+  "evidenceCommitNote": "The commit containing this record adds documentation and verification scripts only. Runtime source and all 29 dist files are unchanged from the independently tested source commit.",
+  "githubMainUpdated": true,
+  "previewDeploy": "6afc2cfda4b52a4404b4a5fc",
+  "productionDeploy": "6afc2e02bb38597d0424fa37",
+  "productionUrl": "https://courtiq-spx101.netlify.app/",
+  "productionReady": true,
+  "tests": 231,
+  "suites": 29,
+  "strictProductionBuild": "PASS",
+  "approvedQuestionPacksUnchanged": true,
+  "localChecks": {
+    "fullAdaptiveMatchAndTimingExports": "PASS (16 possessions + phone/landscape/fixed/practice)",
+    "countdownAndTouch_64pxFixture": "PASS (6 handovers / 3 viewports)",
+    "bothAthleteMotion": "PASS",
+    "framing4Viewports": "PASS",
+    "lobbyPrivacyAndImport4Viewports": "PASS",
+    "installedSkillPlaywrightClient": "PASS; screenshot and state inspected"
+  },
+  "hostedChecks": {
+    "all29DistFiles": "PASS on preview and production; exact bytes except observed Netlify HTML transforms",
+    "functionDigestsMatchPreview": true,
+    "previewExploration": "4 possessions x 3 viewports, rendered cue and block reason inspected, zero page/console errors",
+    "productionCountdownAndNativeTouch": "PASS (6 handovers / 3 viewports), real iframe, zero errors / room requests",
+    "productionBothAthleteMotion": "PASS (River crossover to 360, Sky spin to reverse, both landings and CourtBot next dunk); real iframe answer clearance",
+    "productionFraming4Viewports": "PASS; landscape athletes 78px at 844x390 and 80px at 667x375, 52px HUD",
+    "productionHitAreas3PhoneViewports": "PASS; actual 202x64px iframe, >=44px controls, >=8px clearance",
+    "publicRoomEndpoint": {
+      "method": "POST",
+      "status": 503,
+      "code": "MULTIPLAYER_DISABLED"
+    }
+  },
+  "agentSession": {
+    "requestedModel": "claude-opus-5-5-high",
+    "effort": "high",
+    "useG1Credits": false,
+    "completedExitCode": 0
+  },
+  "newServicesPaidApisBillingOrOveragesEnabled": false,
+  "materialFailedReleaseChecks": [],
+  "probeNotes": [
+    "Strict preview badge check initially timed out because the deploy preview did not include the production hosting iframe; preview gameplay passed without that requirement, and the strict real-iframe gate subsequently passed on production.",
+    "An extra endpoint smoke initially used GET, correctly receiving 405. Corrected to the supported POST method, which returns 503 MULTIPLAYER_DISABLED. No runtime change or weakened check."
+  ],
+  "limitations": {
+    "physicalDevicesAndNotches": "NOT_TESTED",
+    "realDevicePerformance": "NOT_TESTED",
+    "humanAudioListening": "NOT_TESTED",
+    "humanSubjectiveBalance": "NOT_TESTED; simulation-supported tuning defaults",
+    "classroomLearningEffects": "NOT_TESTED",
+    "aaaParity": "NOT_CLAIMED"
+  },
+  "deferredDesignFindings": [
+    "Live steals still change possession immediately at the current location",
+    "Angled/trick offence can still dominate CourtBot",
+    "Dribble-hand shielding is still cosmetic for steal eligibility"
+  ]
+}

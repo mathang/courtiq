@@ -1,0 +1,136 @@
+{
+  "url": "https://courtiq-spx101.netlify.app",
+  "fixture": false,
+  "views": [
+    {
+      "width": 390,
+      "height": 844,
+      "badge": {
+        "x": 188,
+        "y": 780,
+        "width": 202,
+        "height": 64
+      },
+      "controls": [
+        {
+          "id": "#touch-joystick-base",
+          "box": {
+            "x": 10,
+            "y": 665,
+            "width": 88,
+            "height": 88
+          },
+          "clearancePx": 27
+        },
+        {
+          "id": "#btn-touch-shoot",
+          "box": {
+            "x": 322,
+            "y": 722,
+            "width": 58,
+            "height": 50
+          },
+          "clearancePx": 8
+        },
+        {
+          "id": "#btn-touch-trick",
+          "box": {
+            "x": 196,
+            "y": 722,
+            "width": 58,
+            "height": 50
+          },
+          "clearancePx": 8
+        }
+      ]
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "badge": {
+        "x": 642,
+        "y": 326,
+        "width": 202,
+        "height": 64
+      },
+      "controls": [
+        {
+          "id": "#touch-joystick-base",
+          "box": {
+            "x": 18,
+            "y": 187,
+            "width": 112,
+            "height": 112
+          },
+          "clearancePx": 27
+        },
+        {
+          "id": "#btn-touch-shoot",
+          "box": {
+            "x": 754,
+            "y": 262,
+            "width": 64,
+            "height": 56
+          },
+          "clearancePx": 8
+        },
+        {
+          "id": "#btn-touch-trick",
+          "box": {
+            "x": 594,
+            "y": 262,
+            "width": 64,
+            "height": 56
+          },
+          "clearancePx": 8
+        }
+      ]
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "badge": {
+        "x": 465,
+        "y": 311,
+        "width": 202,
+        "height": 64
+      },
+      "controls": [
+        {
+          "id": "#touch-joystick-base",
+          "box": {
+            "x": 10,
+            "y": 172,
+            "width": 112,
+            "height": 112
+          },
+          "clearancePx": 27
+        },
+        {
+          "id": "#btn-touch-shoot",
+          "box": {
+            "x": 585,
+            "y": 247,
+            "width": 64,
+            "height": 56
+          },
+          "clearancePx": 8
+        },
+        {
+          "id": "#btn-touch-trick",
+          "box": {
+            "x": 425,
+            "y": 247,
+            "width": 64,
+            "height": 56
+          },
+          "clearancePx": 8
+        }
+      ]
+    }
+  ],
+  "publicRoom": {
+    "status": 503,
+    "code": "MULTIPLAYER_DISABLED"
+  }
+}

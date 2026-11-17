@@ -151,3 +151,7 @@ The following are unchanged:
 * Subjective play-balance and "fun" were not assessed with real players. The steal rates and settle window are reasoned defaults backed by policy simulations.
 * The real Netlify badge iframe was not tested; that needs the parent's production gate. Local runs used the labelled 64 px fixture.
 * No AAA or NBA-licensed parity is claimed.
+
+## Publication follow-up
+
+The assessment above records Opus's local handoff. The parent subsequently reproduced the build and 231 tests, inspected compiled and hosted matches, passed the unchanged production gate against the actual 202×64 px Netlify iframe, and published the reviewed game to GitHub main and the live site. See the [independent parent review and limitations](verification/2026-11-17-opus55/PARENT_REVIEW.md) and [final parent release record](verification/2026-11-17-opus55/parent-release.json). Physical-device, human balance, listening and classroom-effect claims remain unvalidated.
