@@ -1017,19 +1017,43 @@ textarea {
   font-weight: 900;
   font-size: 0.85rem;
   cursor: pointer;
-  touch-action: manipulation;
+  touch-action: none;
 }
 
-.touch-btn.sprint-btn {
-  background: rgba(56, 189, 248, 0.25);
-  border: 2px solid var(--cyan);
-}
+kbd.red-key, .touch-btn.shoot-btn { background: #b91c33; color: #fff; border-color: #ff919c; }
+kbd.blue-key, .touch-btn.trick-btn { background: #134eae; color: #fff; border-color: #83baff; }
+kbd.white-key, .touch-btn.sprint-btn { background: #f5f7ff; color: #10182a; border-color: #a3b3ce; }
 
-.touch-btn.shoot-btn {
-  background: linear-gradient(135deg, var(--gold), #f59e0b);
-  border: none;
-  color: #091324;
+.touch-btn {
+  display: grid;
+  place-content: center;
+  gap: 1px;
+  line-height: 1;
+  border: 2px solid;
 }
+.touch-btn strong { font-size: 1.15rem; }
+.touch-btn span { font-size: .55rem; font-weight: 850; }
+.touch-btn:active { filter: brightness(1.22); }
+.arcade-commentary {
+  position: absolute;
+  z-index: 23;
+  top: 143px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 24px);
+  margin: 0;
+  padding: 5px 12px;
+  border-left: 3px solid #67e8f9;
+  border-radius: 4px 9px 9px 4px;
+  background: #0a1931f0;
+  color: #e0feff;
+  font-size: .8rem;
+  font-weight: 850;
+  pointer-events: none;
+}
+@media (max-width: 650px) { .arcade-commentary { top: 149px; } }
+@media (max-height: 560px) and (orientation: landscape) { .arcade-commentary { top: 88px; } }
 
 .modal-backdrop {
   position: absolute;
@@ -1127,7 +1151,6 @@ textarea {
 .street-status.callout-hot { background:linear-gradient(135deg,rgba(124,45,18,.94),rgba(15,23,42,.94)); border-color:#ff8c38; color:#fff7ed; box-shadow:0 6px 20px rgba(255,107,0,.38); transform:translateX(-50%) scale(1.04); }
 .touch-action-buttons { display:grid; grid-template-columns:repeat(3,64px); gap:8px; }
 .touch-btn { width:64px; height:56px; border-radius:16px; font-size:.62rem; }
-.trick-btn { background:rgba(15,23,42,.88); border:1px solid var(--gold); }
 @media (max-width: 1050px) { .hud-top { flex-wrap:wrap; gap:5px; padding:6px 9px; } .hud-brand { display:none; } .hud-actions { gap:4px; } }
 @media (max-width: 650px) { .street-status { top:116px; font-size:.6rem; } .possession-hint-pill { display:none; } .touch-action-buttons { grid-template-columns:repeat(3,52px); gap:5px; } .touch-btn { width:52px; height:50px; } .touch-joystick-base { width:88px; height:88px; } .touch-controls { left:10px; right:10px; bottom:12px; } }
 

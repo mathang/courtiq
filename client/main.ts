@@ -9,7 +9,7 @@ import {
   COURT_GEOMETRY,
   RoomPresetId,
   SessionLengthId,
-  STREET_FLOW_CONFIG,
+  ROOM_PRESETS,
 } from '../shared/config/balance';
 import {
   PublicDuelQuestion,
@@ -22,7 +22,6 @@ import {
   RoomLobbySnapshot,
   ServerToClientMessage,
 } from '../shared/protocol/messages';
-import { computeDistance2D } from '../shared/rules/block';
 import type { BlockEligibilitySnapshot } from '../shared/rules/block';
 import { describeQuestionBlock, isDrivingIntoSetDefender } from '../shared/rules/defensiveReads';
 import type { QuestionAnswerReview } from '../shared/rules/learningFeedback';
@@ -37,7 +36,8 @@ import {
   PlayerLearningSummary,
   PlayerSlot,
 } from '../shared/rules/possession';
-import { classifyShotZone, computeBaseShotProbability } from '../shared/rules/shot';
+import { capturePlayerShotRelease, classifyShotZone, estimateCorrectShotPercentage } from '../shared/rules/shot';
+import { ArcadeCommentary, type ArcadeCue } from './game/audio/arcadeCommentary';
 import { SoundEngine } from './game/audio/soundEngine';
 import { PossessionCueTracker } from './game/presentation/possessionCues';
 import { HttpControlRetry, isTransientRoomMiss } from './game/network/httpControlRetry';
@@ -54,6 +54,9 @@ import {
 class CourtIqApp {
   private renderer: CourtIqRenderer;
   private sound = new SoundEngine();
+  private commentary = new ArcadeCommentary(document.getElementById('arcade-commentary')!);
+  private commentaryAttempt: string | null = null;
+  private lastAttackingMove: PlayerSimState['streetMove'] = null;
   private cueTracker = new PossessionCueTracker();
   private showcase: ShowcasePossession | null = null;
   private input: InputGuardController;
@@ -143,6 +146,7 @@ class CourtIqApp {
         playerModels: this.renderer.getPlayerAssetStates(),
         presentation: this.renderer.getPresentationState(),
         audio: this.sound.diagnostics(),
+        commentary: this.commentary.lastCue,
         showcase: Boolean(this.showcase?.active),
         trickSelection: this.input.getTrickSelection(),
         paused: !document.getElementById('settings-modal')?.classList.contains('hidden'),
@@ -505,17 +509,17 @@ class CourtIqApp {
       });
       base.addEventListener('pointerup', resetStick);
       base.addEventListener('pointercancel', resetStick);
+      base.addEventListener('lostpointercapture', resetStick);
     }
 
-    sprintBtn?.addEventListener('pointerdown', () =>
-      this.input.setTouchSprint(true)
-    );
-    sprintBtn?.addEventListener('pointerup', () =>
-      this.input.setTouchSprint(false)
-    );
-    sprintBtn?.addEventListener('pointercancel', () =>
-      this.input.setTouchSprint(false)
-    );
+    sprintBtn?.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      sprintBtn.setPointerCapture(e.pointerId);
+      this.input.setTouchSprint(true);
+    });
+    for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+      sprintBtn?.addEventListener(event, () => this.input.setTouchSprint(false));
+    }
 
     shootBtn?.addEventListener('pointerdown', e => {
       e.preventDefault();
@@ -581,6 +585,9 @@ class CourtIqApp {
     this.onlineSnapshot = null;
     this.input.reset();
     this.cueTracker.reset();
+    this.commentary.reset();
+    this.commentaryAttempt = null;
+    this.lastAttackingMove = null;
     this.sound.stopSlowMoAtmosphere();
     this.showcase = previewPossession ? new ShowcasePossession() : null;
 
@@ -611,6 +618,7 @@ class CourtIqApp {
     });
 
     this.soloEngine.startMatch();
+    this.commentary.call('tipoff', !this.sound.muted);
   }
 
   private selectLobbyMode(mode: 'solo' | 'online'): void {
@@ -636,6 +644,7 @@ class CourtIqApp {
   }
 
   private returnToLobby(): void {
+    this.commentary.reset();
     this.showcase = null;
     this.input.reset();
     this.closeOnlineConnection();
@@ -742,6 +751,8 @@ class CourtIqApp {
       eng.step(realDeltaMs, [moveInput0, neutralInput]);
     }
 
+    this.updateArcadeCommentary(eng, realDeltaMs, paused);
+
     // Trigger sound effects on phase/outcome transitions
     this.handlePhaseAudioEffects(
       eng.phase,
@@ -752,7 +763,22 @@ class CourtIqApp {
     );
 
     const liveBlock = eng.getLiveBlockEligibility();
+    const att = eng.scoreState.currentAttacker;
+    const attacker = eng.players[att];
+    const defender = eng.players[att === 0 ? 1 : 0];
+    const forecast = eng.phase === 'Possession' && eng.possessionCountdownRemainingMs <= 0
+      ? estimateCorrectShotPercentage(
+        capturePlayerShotRelease(attacker, defender, liveBlock),
+        attacker.correctAnswerStreak,
+        ROOM_PRESETS[eng.roomPresetId],
+      )
+      : null;
     this.updateDomOverlaysForSolo(eng, liveBlock.eligible);
+    const zone = document.getElementById('hud-zone-badge');
+    if (zone) {
+      if (forecast === null) zone.removeAttribute('aria-label');
+      else zone.setAttribute('aria-label', `${zone.textContent}, ${forecast}% if correct`);
+    }
 
     this.renderer.renderFrame(
       {
@@ -764,12 +790,38 @@ class CourtIqApp {
         ballPos: eng.getBallPosition3D(),
         blockEligible: liveBlock.eligible,
         reducedMotion: this.reducedMotion,
+        shotForecast: forecast,
       },
       realDeltaSec,
       nowSec,
       draw
     );
     this.playFootContacts(eng.phase);
+  }
+
+  private updateArcadeCommentary(eng: AuthoritativeMatchEngine, deltaMs: number, paused: boolean): void {
+    this.commentary.step(deltaMs);
+    if (paused || document.hidden || this.sound.muted) this.commentary.stopVoice();
+    if (paused || document.hidden || eng.phase === 'Lobby') return;
+    const attempt = eng.attemptEvents.at(-1);
+    const attacker = eng.players[eng.scoreState.currentAttacker];
+    let cue: ArcadeCue | undefined;
+    if (attempt && attempt.duelId !== this.commentaryAttempt) {
+      this.commentaryAttempt = attempt.duelId;
+      if (attempt.basketballOutcome === 'basket') {
+        cue = attacker.finishKind === 'dunk' ? 'dunk' : attempt.pointsAwarded === 3 ? 'three' : 'basket';
+      } else {
+        cue = {
+          miss: 'miss', block: 'block', 'steal-turnover': 'steal', 'shot-clock-turnover': 'clock',
+        }[attempt.basketballOutcome] as ArcadeCue;
+      }
+    } else if (eng.players.some((p, slot) => p.onFire && !this.lastOnFireBySlot[slot])) {
+      cue = 'fire';
+    } else if (eng.phase === 'Possession' && attacker.streetMove === 'stepback' && this.lastAttackingMove !== 'stepback') {
+      cue = 'stepback';
+    }
+    this.lastAttackingMove = attacker.streetMove;
+    if (cue) this.commentary.call(cue, !this.sound.muted);
   }
 
   private handlePhaseAudioEffects(
@@ -992,9 +1044,11 @@ class CourtIqApp {
     if (!badge) return;
     // Name the on-screen buttons on touch devices instead of keyboard keys.
     const touch = this.touchOverlayEnabled || 'ontouchstart' in window;
+    const primaryKey = this.keyLabel(this.input.bindings.shoot).toUpperCase();
+    const secondaryKey = this.keyLabel(this.input.bindings.trick).toUpperCase();
     const keys = touch
-      ? { shoot: 'SHOOT', trick: 'TRICK', steal: 'STEAL', block: 'BLOCK', dunk: 'DUNK' }
-      : { shoot: 'SPACE', trick: 'C', steal: 'C', block: 'SPACE', dunk: 'SPACE' };
+      ? { steal: 'STEAL', block: 'BLOCK', dunk: 'DUNK' }
+      : { steal: secondaryKey, block: primaryKey, dunk: primaryKey };
     const drivingIntoSetDefender = phase === 'Possession' && you.slot === attacker.slot && defender && ball
       ? isDrivingIntoSetDefender(attacker, defender, ball) : false;
     const active = phase === 'Possession' || phase === 'QuestionReady' || phase === 'Duel' || phase === 'Resolution';
@@ -1004,12 +1058,16 @@ class CourtIqApp {
     const selection = this.input.getTrickSelection();
     const primary = document.getElementById('btn-touch-shoot');
     if (primary) {
-      primary.textContent = defending ? 'BLOCK' : dunkRange ? 'DUNK' : 'SHOOT';
+      const label = primary.querySelector('#touch-primary-label');
+      const text = defending ? 'BLOCK' : dunkRange ? 'DUNK' : 'SHOOT';
+      if (label && label.textContent !== text) label.textContent = text;
       primary.setAttribute('aria-label', defending ? 'Jump to block; hold during take-off' : 'Shoot or dunk when driving towards the basket in the blue paint');
     }
     const trickButton = document.getElementById('btn-touch-trick');
     if (trickButton) {
-      trickButton.textContent = defending ? 'STEAL' : selection ? `TRICK ×${selection.count}` : 'TRICK';
+      const label = trickButton.querySelector('#touch-trick-label');
+      const text = defending ? 'STEAL' : selection ? `×${selection.count}` : 'TRICK';
+      if (label && label.textContent !== text) label.textContent = text;
       trickButton.setAttribute('aria-label', defending ? 'Swipe to steal' : 'Trick: one tap crossover, two spin, three eurostep, four step back in half a second');
     }
     const physicalSwat = this.onlineSnapshot?.activeDuel?.physicalBlock ?? this.soloEngine?.activeDuel?.physicalBlock ?? false;
@@ -1054,18 +1112,18 @@ class CourtIqApp {
                             ? `⚡ BALL EXPOSED! ${keys.steal}: STEAL`
                             : you.defenseCooldownSec > 0
                               ? `DEFENSE RECHARGING ${you.defenseCooldownSec.toFixed(1)}s`
-                              : touch ? 'STAY BETWEEN BALL & HOOP • STEAL OR BLOCK' : 'C: STEAL • SPACE: BLOCK'
+                              : touch ? 'STAY BETWEEN BALL & HOOP • STEAL OR BLOCK' : `${secondaryKey}: STEAL • ${primaryKey}: BLOCK`
                           : you.wrongFootSec > 0
                             ? 'WRONG FOOTED'
                             : selection
                               ? `${selection.count} TAP${selection.count > 1 ? 'S' : ''} • ${STREET_MOVES[selection.move].label} • ${Math.ceil(selection.remainingMs / 100) / 10}s`
                               : drivingIntoSetDefender
-                              ? `DEFENDER SET • STEER AROUND OR ${touch ? 'TAP TRICK' : 'TAP C'}`
+                              ? `DEFENDER SET • STEER AROUND OR ${touch ? 'TAP TRICK' : `TAP ${secondaryKey}`}`
                               : you.streetMove
                               ? `${you.trickCombo >= 2 ? `${you.trickCombo}x CHAIN • ` : ''}${STREET_MOVES[you.streetMove].label}`
                               : dunkRange
                                 ? `${you.onFire ? '🔥 ON FIRE • ' : ''}DUNK READY • ${keys.dunk}`
-                                : `${you.onFire ? '🔥 ON FIRE • ' : ''}${touch ? 'SHOOT • TAP TRICK FOR MOVES' : 'SPACE: SHOOT • C: TAP FOR A TRICK'}`;
+                                : `${you.onFire ? '🔥 ON FIRE • ' : ''}${touch ? 'SHOOT • TAP TRICK FOR MOVES' : `${primaryKey}: SHOOT • ${secondaryKey}: TRICK`}`;
     if (badge.textContent !== label) badge.textContent = label;
   }
 
@@ -1236,35 +1294,12 @@ class CourtIqApp {
       clockEl.classList.toggle('urgent', params.movementClockMs <= 4000);
     }
 
-    // Current attacker distance & base probability
-    const attPlayer = params.players[params.attackerSlot];
-    const dist = computeDistance2D(
-      { x: attPlayer.x, z: attPlayer.z },
-      { x: COURT_GEOMETRY.hoopX, z: COURT_GEOMETRY.hoopZ }
-    );
-    const { zone, pointValue } = classifyShotZone(dist);
-    const comboIdx = Math.min(
-      STREET_FLOW_CONFIG.comboSetupBonus.length - 1,
-      attPlayer.trickCombo
-    );
-    const liveSetupBonus = STREET_FLOW_CONFIG.comboSetupBonus[comboIdx];
-    const baseProb = Math.round(
-      computeBaseShotProbability({
-        zone,
-        heavilyContested: params.blockEligible,
-        releasedWhileSprinting: attPlayer.isSprinting && !attPlayer.finishKind,
-        setupBonus: liveSetupBonus,
-        onFire: attPlayer.onFire,
-      }) * 100
-    );
-    const bonusTag =
-      liveSetupBonus > 0
-        ? ` (+${Math.round(liveSetupBonus * 100)}pp combo)`
-        : '';
-    setTxt(
-      'hud-zone-badge',
-      `${pointValue}PT ${zone.toUpperCase()} • Base ${baseProb}%${bonusTag}`
-    );
+    const attacker = params.players[params.attackerSlot];
+    const { zone, pointValue } = classifyShotZone(Math.hypot(
+      attacker.x - COURT_GEOMETRY.hoopX,
+      attacker.z - COURT_GEOMETRY.hoopZ,
+    ));
+    setTxt('hud-zone-badge', zone === 'close' ? 'CLOSE RANGE' : `${pointValue}PT`);
 
     // Subtle "Block available" indicator (Section 8)
     const blockInd = document.getElementById('hud-block-indicator');
@@ -2097,7 +2132,22 @@ class CourtIqApp {
     modal.classList.toggle('hidden', !willOpen);
   }
 
+  private keyLabel(code: string): string {
+    return code.replace(/^(Key|Digit)/, '');
+  }
+
   private renderRemapGrid(): void {
+    const bindings = this.input.bindings;
+    const movement = [bindings.moveUp, bindings.moveLeft, bindings.moveDown, bindings.moveRight];
+    for (const [id, label] of [
+      ['move-key-hint', movement.map(code => this.keyLabel(code)).join(movement.every(code => /^Key/.test(code)) ? '' : ' / ')],
+      ['shoot-key-hint', this.keyLabel(bindings.shoot)],
+      ['trick-key-hint', this.keyLabel(bindings.trick)],
+      ['turbo-key-hint', this.keyLabel(bindings.sprint)],
+    ]) {
+      const hint = document.getElementById(id);
+      if (hint) hint.textContent = label;
+    }
     const grid = document.getElementById('remap-grid');
     if (!grid) return;
 
@@ -2106,7 +2156,7 @@ class CourtIqApp {
       ['moveDown', 'Move Down'],
       ['moveLeft', 'Move Left'],
       ['moveRight', 'Move Right'],
-      ['sprint', 'Sprint'],
+      ['sprint', 'Turbo'],
       ['shoot', 'Shoot / Auto Dunk / Block'],
       ['trick', 'Trick / Steal (tap 1–4 times)'],
       ['answer1', 'Answer Option 1'],
@@ -2137,6 +2187,7 @@ class CourtIqApp {
   }
 
   private syncAudioMuteUi(): void {
+    if (this.sound.muted) this.commentary.stopVoice();
     const btn = document.getElementById('btn-toggle-mute');
     if (btn) {
       const icon = btn.querySelector('.hud-btn-icon');
@@ -2158,10 +2209,10 @@ class CourtIqApp {
 
   private loadSavedBindings(): KeyBindingsConfig {
     try {
-      const raw = localStorage.getItem('courtiq_bindings_v1');
-      if (raw) {
-        return normaliseKeyBindings(JSON.parse(raw));
-      }
+      const raw = localStorage.getItem('courtiq_bindings_v2');
+      if (raw) return normaliseKeyBindings(JSON.parse(raw));
+      const legacy = localStorage.getItem('courtiq_bindings_v1');
+      if (legacy) return normaliseKeyBindings(JSON.parse(legacy), true);
     } catch {
       // ignore storage errors
     }
@@ -2171,7 +2222,7 @@ class CourtIqApp {
   private saveBindings(): void {
     try {
       localStorage.setItem(
-        'courtiq_bindings_v1',
+        'courtiq_bindings_v2',
         JSON.stringify(this.input.bindings)
       );
     } catch {

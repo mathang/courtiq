@@ -23,9 +23,9 @@ export const DEFAULT_KEY_BINDINGS: KeyBindingsConfig = {
   moveDown: 'KeyS',
   moveLeft: 'KeyA',
   moveRight: 'KeyD',
-  sprint: 'ShiftLeft',
-  shoot: 'Space',
-  trick: 'KeyC',
+  sprint: 'KeyL',
+  shoot: 'KeyJ',
+  trick: 'KeyK',
   answer1: 'Digit1',
   answer2: 'Digit2',
   answer3: 'Digit3',
@@ -36,8 +36,8 @@ export const DEFAULT_KEY_BINDINGS: KeyBindingsConfig = {
 export const TRICK_TAP_WINDOW_MS = 500;
 export const TRICKS_BY_TAP_COUNT: readonly StreetMove[] = ['crossover', 'spin', 'eurostep', 'stepback'];
 
-/** Preserve saved movement/shot keys; migrate the old crossover key to one trick key. */
-export function normaliseKeyBindings(saved: unknown): KeyBindingsConfig {
+/** Preserve remaps and migrate the previous release’s default action keys. */
+export function normaliseKeyBindings(saved: unknown, migrateLegacy = false): KeyBindingsConfig {
   const bindings = { ...DEFAULT_KEY_BINDINGS };
   if (!saved || typeof saved !== 'object') return bindings;
   const old = saved as Record<string, unknown>;
@@ -45,6 +45,11 @@ export function normaliseKeyBindings(saved: unknown): KeyBindingsConfig {
     if (typeof old[key] === 'string' && old[key]) bindings[key] = old[key] as string;
   }
   if (!old.trick && typeof old.crossover === 'string' && old.crossover) bindings.trick = old.crossover;
+  if (migrateLegacy) {
+    if (bindings.shoot === 'Space') bindings.shoot = DEFAULT_KEY_BINDINGS.shoot;
+    if (bindings.trick === 'KeyC') bindings.trick = DEFAULT_KEY_BINDINGS.trick;
+    if (bindings.sprint === 'ShiftLeft') bindings.sprint = DEFAULT_KEY_BINDINGS.sprint;
+  }
   return bindings;
 }
 
@@ -169,13 +174,15 @@ export class InputGuardController {
       return;
     }
     // The primary button shoots/dunks on attack and jumps to block on defence.
-    // Space never activates a focused answer button during a question.
-    if (ev.code === this.bindings.shoot || ev.code === 'Space') {
+    if (ev.code === this.bindings.shoot) {
       ev.preventDefault?.();
       if (this.phase === 'Possession' && !this.gameplayLocked) this.shootTriggeredFresh = true;
       if (this.phase === 'QuestionReady' && !this.isAttacker) this.pendingDefense = 'jump';
       return;
     }
+
+    // Preserve Space for native buttons outside the question. Answers require an explicit choice.
+    if (ev.code === 'Space' && (this.phase === 'QuestionReady' || this.phase === 'Duel')) ev.preventDefault?.();
 
     // Check answer keys 1..4
     const answerSlotIndex = this.getAnswerIndexForKeyCode(ev.code);
@@ -354,8 +361,7 @@ export class InputGuardController {
 
     const sprint =
       this.touchSprint ||
-      this.downKeys.has(this.bindings.sprint) ||
-      this.downKeys.has('ShiftRight');
+      this.downKeys.has(this.bindings.sprint);
 
     const shoot = this.shootTriggeredFresh || this.touchShootTriggered;
     this.shootTriggeredFresh = false;

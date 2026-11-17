@@ -333,19 +333,39 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
     };
   }
 
-  // Preserve difficulty-specific reaction time; use observed court positions, never human intentions.
+  // Read movement from delayed positions. Even Advanced cannot see fresh inputs or a queued trick.
   for (const observation of brain.observations) observation.age += deltaSec;
   brain.observations.push({ age: 0, ...opponentPos });
   const delay = preset.reactionDelayMs / 1000;
-  while (brain.observations.length > 1 && brain.observations[1].age >= delay) brain.observations.shift();
-  const observed = brain.observations[0];
-  const hx = COURT_GEOMETRY.hoopX - observed.x, hz = COURT_GEOMETRY.hoopZ - observed.z;
-  const hoopDistance = Math.hypot(hx, hz);
-  const guardGap = Math.min(1.15, Math.max(0.6, hoopDistance * 0.3));
-  const goal = safeCourtTarget({ x: observed.x + hx / Math.max(hoopDistance, 0.01) * guardGap,
-    z: observed.z + hz / Math.max(hoopDistance, 0.01) * guardGap });
+  while (brain.observations.length > 2 && brain.observations[1].age >= delay + 0.12) brain.observations.shift();
+  let observedIndex = brain.observations.length - 1;
+  while (observedIndex > 0 && brain.observations[observedIndex].age < delay) observedIndex--;
+  const observed = brain.observations[Math.max(0, observedIndex)];
+  const older = brain.observations[0];
+  const sampleSec = observedIndex > 0 ? older.age - observed.age : 0;
+  const vx = sampleSec > 0.04 ? clamp((observed.x - older.x) / sampleSec, -9, 9) : 0;
+  const vz = sampleSec > 0.04 ? clamp((observed.z - older.z) / sampleSec, -9, 9) : 0;
+  const hx = COURT_GEOMETRY.hoopX - observed.x;
+  const hz = COURT_GEOMETRY.hoopZ - observed.z;
+  const hoopDistance = Math.max(0.01, Math.hypot(hx, hz));
+  const rimX = hx / hoopDistance;
+  const rimZ = hz / hoopDistance;
+  const rimSpeed = vx * rimX + vz * rimZ;
+  const steppingAway = rimSpeed < -1.5;
+  const driving = rimSpeed > 1.6;
+  const defendingRim = (aiPos.x - observed.x) * rimX + (aiPos.z - observed.z) * rimZ > 0;
+  const lead = ({ beginner: 0.06, intermediate: 0.15, advanced: 0.21 })[params.difficulty];
+  const guardGap = Math.min(hoopDistance * 0.55, steppingAway ? 0.85 : driving ? 1.45 : 1.08);
+  // Cut off a drive chest-first, then step up toward a retreating shooter. From behind, recover
+  // goal-side on the open lane rather than circling the attacker on a separate route.
+  const laneLead = Math.min(1.35, Math.max(0, hoopDistance - guardGap), Math.max(0, rimSpeed * lead));
+  const lateralLead = clamp((vx * -rimZ + vz * rimX) * lead, -1.25, 1.25);
+  const depth = guardGap + (steppingAway ? Math.max(-1.1, rimSpeed * lead) : laneLead);
+  const goal = safeCourtTarget({
+    x: observed.x + rimX * depth - rimZ * lateralLead,
+    z: observed.z + rimZ * depth + rimX * lateralLead,
+  });
   brain.targetSpot = goal;
-  const route = routeAroundDefender(params, goal);
   brain.defenseTimerSec -= deltaSec;
   if (
     params.difficulty !== 'beginner' &&
@@ -356,9 +376,12 @@ export function stepAiBasketballDecision(params: BasketballDecisionParams): AiMo
   }
   const canChallenge = !recovering && (!self || (self.defenseCooldownSec <= 0 && self.sprintStamina > 0.18));
   const exposedBall = self && params.opponent && params.ballPos ? canStealBall(self, params.opponent, params.ballPos) : defenderDistance < 1.4;
-  const swipe = brain.defenseTimerSec <= 0 && canChallenge && exposedBall;
+  const canReachWithoutGivingUpLane = defendingRim || (params.opponent?.trickOverexposedSec ?? 0) > 0;
+  const swipe = brain.defenseTimerSec <= 0 && canChallenge && exposedBall && canReachWithoutGivingUpLane;
   if (brain.defenseTimerSec <= 0) brain.defenseTimerSec = swipe ? 1.5 + rng() * 1.0 : 0.25 + rng() * 0.2;
-  return { ...movementToward(aiPos, route, preset.moveSpeedMultiplier * preset.contestAggression),
-    sprint: !recovering && computeDistance2D(aiPos, goal) > 2.4 && (!self || self.sprintStamina > 0.25),
+  const recoveryGap = steppingAway ? 0.95 : driving || !defendingRim ? 1.25 : 2.1;
+  const pace = preset.moveSpeedMultiplier * (0.28 + 0.72 * preset.contestAggression);
+  return { ...movementToward(aiPos, goal, pace),
+    sprint: !recovering && computeDistance2D(aiPos, goal) > recoveryGap && (!self || self.sprintStamina > 0.26),
     shoot: false, ...(swipe ? { defense: 'swipe' as const } : {}) };
 }

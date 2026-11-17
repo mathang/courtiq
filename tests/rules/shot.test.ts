@@ -15,13 +15,13 @@ import { computeSpeedScore, evaluateQuestionDuel } from '../../shared/rules/timi
 import { COURT_GEOMETRY } from '../../shared/config/balance';
 
 describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
-  it('reproduces the exact Section 7 open mid-range specification probabilities', () => {
+  it('reproduces the NBA-informed open mid-range base and timing bonuses', () => {
     const baseMidRange = computeBaseShotProbability({
       zone: 'mid-range',
-      heavilyContested: false,
+      defenderDistanceM: 2.6,
       releasedWhileSprinting: false,
     });
-    expect(baseMidRange).toBe(0.12);
+    expect(baseMidRange).toBe(0.1427);
 
     // Wrong or unanswered -> 12%
     const wrongProb = computeShotBasketProbability({
@@ -29,9 +29,9 @@ describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
       attackerCorrect: false,
       speedScore: 0.9,
     });
-    expect(wrongProb.finalProbability).toBeCloseTo(0.12, 4);
+    expect(wrongProb.finalProbability).toBeCloseTo(0.1427, 4);
 
-    // Correct at 3 seconds (R=2000ms, T=12000ms) -> S=0.9 -> 0.785 (~79%)
+    // Correct at 3 seconds (R=2000ms, T=12000ms) -> S=0.9 -> 0.8077 (~79%)
     const s3 = computeSpeedScore(3000, 2000, 12000);
     expect(s3).toBeCloseTo(0.9, 4);
     const p3 = computeShotBasketProbability({
@@ -39,10 +39,10 @@ describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
       attackerCorrect: true,
       speedScore: s3,
     });
-    expect(p3.finalProbability).toBeCloseTo(0.785, 3);
-    expect(Math.round(p3.finalProbability * 100)).toBe(79);
+    expect(p3.finalProbability).toBeCloseTo(0.8077, 3);
+    expect(Math.round(p3.finalProbability * 100)).toBe(81);
 
-    // Correct at 7 seconds -> S=0.5 -> 0.645 (~65%)
+    // Correct at 7 seconds -> S=0.5 -> 0.6677 (~65%)
     const s7 = computeSpeedScore(7000, 2000, 12000);
     expect(s7).toBeCloseTo(0.5, 4);
     const p7 = computeShotBasketProbability({
@@ -50,10 +50,10 @@ describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
       attackerCorrect: true,
       speedScore: s7,
     });
-    expect(p7.finalProbability).toBeCloseTo(0.645, 3);
-    expect(Math.round(p7.finalProbability * 100)).toBe(65);
+    expect(p7.finalProbability).toBeCloseTo(0.6677, 3);
+    expect(Math.round(p7.finalProbability * 100)).toBe(67);
 
-    // Correct at 11 seconds -> S=0.1 -> 0.505 (~51%)
+    // Correct at 11 seconds -> S=0.1 -> 0.5277 (~51%)
     const s11 = computeSpeedScore(11000, 2000, 12000);
     expect(s11).toBeCloseTo(0.1, 4);
     const p11 = computeShotBasketProbability({
@@ -61,34 +61,34 @@ describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
       attackerCorrect: true,
       speedScore: s11,
     });
-    expect(p11.finalProbability).toBeCloseTo(0.505, 3);
-    expect(Math.round(p11.finalProbability * 100)).toBe(51);
+    expect(p11.finalProbability).toBeCloseTo(0.5277, 3);
+    expect(Math.round(p11.finalProbability * 100)).toBe(53);
   });
 
-  it('applies close (20%), three-pointer (7%), heavy contest (-5%), and sprint (-5%) modifiers', () => {
+  it('applies zone, defender distance and turbo at release modifiers', () => {
     expect(
       computeBaseShotProbability({
         zone: 'close',
-        heavilyContested: false,
+        defenderDistanceM: 2.6,
         releasedWhileSprinting: false,
       })
-    ).toBe(0.2);
+    ).toBe(0.2237);
 
     expect(
       computeBaseShotProbability({
         zone: 'three-pointer',
-        heavilyContested: false,
+        defenderDistanceM: 2.6,
         releasedWhileSprinting: false,
       })
-    ).toBe(0.07);
+    ).toBe(0.1171);
 
     expect(
       computeBaseShotProbability({
         zone: 'mid-range',
-        heavilyContested: true,
+        defenderDistanceM: 1.2192,
         releasedWhileSprinting: true,
       })
-    ).toBe(0.02);
+    ).toBe(0.0327);
 
     // Clamped to minimum 3% when resolving shot basket probability
     const clampedLow = computeShotBasketProbability({

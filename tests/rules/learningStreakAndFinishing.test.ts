@@ -176,7 +176,7 @@ describe('Learning-powered Fire and learner-paced explanations', () => {
   });
   it('adds a full Fire shooting bonus in every zone and keeps the final probability capped', () => {
     for (const zone of ['close', 'mid-range', 'three-pointer'] as const) for (const heavilyContested of [true, false]) {
-      const params = { zone, heavilyContested, releasedWhileSprinting: true, setupBonus: 0.05 };
+      const params = { zone, defenderDistanceM: heavilyContested ? 0.8 : 2.1, releasedWhileSprinting: true, setupBonus: 0.05 };
       expect(computeBaseShotProbability({ ...params, onFire: true }) - computeBaseShotProbability(params)).toBeCloseTo(.2, 6);
     }
     expect(computeShotBasketProbability({ baseProbability: .6, attackerCorrect: true, speedScore: 1 }).finalProbability).toBe(.95);

@@ -58,6 +58,7 @@ import {
 } from './possession';
 import {
   BallFlightState,
+  capturePlayerShotRelease,
   captureShotReleaseSnapshot,
   createInitialBallFlightState,
   evaluateBallPosition,
@@ -937,8 +938,9 @@ export class AuthoritativeMatchEngine {
 
     const ballAtGather = this.getBallPosition3D();
     const drivingInPaint = isDrivingInPaint(attacker);
-    const activeCombo = attacker.streetMove || attacker.comboGraceSec > 0 ? attacker.trickCombo : 0;
-    const wasStepback = attacker.streetMove === 'stepback' || attacker.lastTrick === 'stepback';
+    // Freeze the same positioning and setup the player saw in the floor forecast.
+    const blockEligibility = this.getLiveBlockEligibility();
+    const releaseSnapshot = capturePlayerShotRelease(attacker, defender, blockEligibility);
 
     // Automatic facing towards the basket when shooting (Section 4)
     attacker.facingAngle = Math.atan2(
@@ -962,31 +964,6 @@ export class AuthoritativeMatchEngine {
     attacker.bufferedTrick = null; attacker.bufferedTrickSec = 0;
     attacker.bufferedFinish = null; attacker.bufferedFinishStyle = null; attacker.bufferedFinishSec = 0;
     defender.animState = 'idle';
-
-    // Freeze block eligibility at release (Section 8)
-    const blockEligibility = evaluateBlockEligibilityAtRelease({
-      shooterPos: { x: attacker.x, z: attacker.z },
-      defenderPos: { x: defender.x, z: defender.z },
-      defenderFacingAngle: defender.facingAngle,
-      blockingDisabledByRule: defender.defenseAction === 'swipe' || defender.wrongFootSec > 0,
-      disabledBy: defender.defenseAction === 'swipe' ? 'reaching' : 'off-balance',
-    });
-
-    const releasedWhileSprinting =
-      (attacker.isSprinting || attacker.sprintSettleRemainingMs > 0) && !wasStepback;
-
-    const comboTier = Math.min(STREET_FLOW_CONFIG.comboSetupBonus.length - 1, activeCombo);
-    const setupBonus = STREET_FLOW_CONFIG.comboSetupBonus[comboTier] ?? 0;
-
-    const releaseSnapshot = captureShotReleaseSnapshot({
-      shooterPos: { x: attacker.x, z: attacker.z },
-      defenderPos: { x: defender.x, z: defender.z },
-      releasedWhileSprinting,
-      blockEligibility,
-      setupBonus,
-      comboCount: activeCombo,
-      onFire: attacker.onFire,
-    });
 
     const question = this.selectNextQuestion();
     const roomPreset = ROOM_PRESETS[this.roomPresetId];

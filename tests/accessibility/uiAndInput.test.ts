@@ -16,7 +16,7 @@ describe('Input & Accessibility Safeguards (Sections 4, 10 & 22)', () => {
       onAnswer: (duelId, optionId) => submissions.push({ duelId, optionId }),
     });
 
-    // In Possession phase, player holds Digit1 and presses Space to shoot
+    // In Possession phase, player holds Digit1 and presses J to shoot
     input.syncDuelContext({
       phase: 'Possession',
       duelId: null,
@@ -24,7 +24,7 @@ describe('Input & Accessibility Safeguards (Sections 4, 10 & 22)', () => {
       displayedOptions: [],
     });
     input.handleKeyDown({ code: 'Digit1' });
-    input.handleKeyDown({ code: 'Space' });
+    input.handleKeyDown({ code: 'KeyJ' });
 
     const move = input.consumeMoveInput('Possession');
     expect(move.shoot).toBe(true);
@@ -57,8 +57,8 @@ describe('Input & Accessibility Safeguards (Sections 4, 10 & 22)', () => {
       displayedOptions: shuffledOptions,
     });
 
-    // Autorepeat from held Space or held Digit1 must NOT submit an answer
-    input.handleKeyDown({ code: 'Space', repeat: true });
+    // Autorepeat from held J or held Digit1 must NOT submit an answer
+    input.handleKeyDown({ code: 'KeyJ', repeat: true });
     input.handleKeyDown({ code: 'Digit1', repeat: true });
     expect(submissions.length).toBe(0);
 

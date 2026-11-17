@@ -99,15 +99,15 @@ describe('Arcade dunks and risk/reward defense',()=>{
   });
   it('primary action needs fresh input and only defensive jump is allowed during takeoff',()=>{
     const c=new InputGuardController();c.syncDuelContext({phase:'Possession',duelId:null,readingProtected:false,displayedOptions:[]});
-    c.handleKeyDown({code:'Space'});
+    c.handleKeyDown({code:'KeyJ'});
     const shot=c.consumeMoveInput('Possession');expect(shot.shoot).toBe(true);expect(shot.dunkStyle).toBeUndefined();
-    c.handleKeyDown({code:'Space',repeat:true});expect(c.consumeMoveInput('Possession').shoot).toBe(false);
-    c.handleKeyUp({code:'Space'});
+    c.handleKeyDown({code:'KeyJ',repeat:true});expect(c.consumeMoveInput('Possession').shoot).toBe(false);
+    c.handleKeyUp({code:'KeyJ'});
     c.syncDuelContext({phase:'QuestionReady',isAttacker:false,duelId:'d1',readingProtected:true,displayedOptions:[]});
-    c.handleKeyDown({code:'Space'});expect(c.consumeMoveInput('QuestionReady').defense).toBe('jump');
-    c.handleKeyUp({code:'Space'});c.handleKeyDown({code:'KeyC'});expect(c.consumeMoveInput('QuestionReady').defense).toBeUndefined();
+    c.handleKeyDown({code:'KeyJ'});expect(c.consumeMoveInput('QuestionReady').defense).toBe('jump');
+    c.handleKeyUp({code:'KeyJ'});c.handleKeyDown({code:'KeyK'});expect(c.consumeMoveInput('QuestionReady').defense).toBeUndefined();
     c.syncDuelContext({phase:'Duel',duelId:'d1',readingProtected:false,displayedOptions:[]});
-    c.handleKeyDown({code:'Space'});expect(c.consumeMoveInput('Duel').defense).toBeUndefined();
+    c.handleKeyDown({code:'KeyJ'});expect(c.consumeMoveInput('Duel').defense).toBeUndefined();
   });
   it('HTTP rooms accept defensive actions and consume them once rather than re-swiping on every tick',()=>{
     const rooms=new RoomManager(new ServerPackService(),{defaultSeed:24});
