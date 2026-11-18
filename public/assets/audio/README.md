@@ -9,3 +9,7 @@ Recorded ball rebounds by **Joseph Sardin**, shoe squeaks by **Thibaud Vaerman**
 CourtIQ trims, filters, fades and normalises these recordings into the seven WAV files here. Full licence: [CC0-LICENSE.txt](CC0-LICENSE.txt). Original recordings, hashes and reproducible edit instructions are retained in the repository's `assets/source/README.md` and `scripts/build-court-audio.mjs`.
 
 Additional footfall, flight, rim, dunk, net and interface layers are original deterministic Web Audio synthesis in `client/game/audio/courtSoundBank.ts`.
+
+## Broadcast commentary
+
+[CourtIQ's Qwen3-TTS recordings](https://huggingface.co/spaces/Qwen/Qwen3-TTS) were generated in Voice Design mode for two synthetic Australian sports announcers. Each announcer reads eight original calls. The two takes were cut at phrase boundaries and loudness matched, then packed into `courtiq-broadcast.mp3` (33 seconds, 24 kHz mono). The cue times and captions are in `client/game/audio/broadcastClips.ts`. CourtIQ loads and mixes the bundled recording locally through Web Audio.

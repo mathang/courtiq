@@ -46,7 +46,7 @@ Choose **Options → Watch a possession** in the lobby to watch a drive, crossov
 
 The player now carries 17 keyframed clips, with blended walk/jog/sprint, basketball accents, planted feet and hand/ball contact. A possession camera follows the approach, shifts for take-off and keeps the airborne action above the question card. Reduced Motion uses steady framing. Soft floor shadows and brighter arena lighting improve depth.
 
-Recorded CC0 ball, shoe and crowd sounds sit alongside original designed impacts and net sounds. Cues follow visible contacts, with bounded voices, immediate master mute and pause handling. The player GLB is 1.29 MB; seven audio recordings total 265 kB. Provenance, licences and rebuild instructions are in [assets/source/README.md](assets/source/README.md).
+Recorded CC0 ball, shoe and crowd sounds sit alongside original impacts and net sounds. Two Australian announcers created with Qwen3-TTS share the captioned broadcast calls. Cues follow visible contacts, with bounded voices, immediate master mute and pause handling. The player GLB is 1.29 MB; seven audio recordings total 265 kB. Provenance, licences and rebuild instructions are in [assets/source/README.md](assets/source/README.md).
 
 ## Integrated kit and smoother motion — 11 November 2026
 
