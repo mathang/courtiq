@@ -223,6 +223,7 @@ export class CourtIqRenderer {
       camera: this.cameraCtrl?.snapshot(),
       shotForecast: this.currentForecast,
       shotForecastBounds: this.forecastDecal?.screenBounds ?? null,
+      shotForecastPlayerOverlap: this.forecastDecal?.playerOverlap ?? null,
       animations: this.chars?.map(c => c.getAnimationState()),
       palms: this.chars?.map(c => c.getPalmPosition()?.toArray() ?? null),
       avatarRoots: this.chars?.map(c => c.root.position.toArray()),

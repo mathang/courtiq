@@ -5,6 +5,13 @@ import type { CourtPoint2D } from '../../../shared/rules/block';
 const WIDTH = 3.12;
 const DEPTH = 1.95;
 const FLOOR_Y = 0.038;
+type Bounds = { left: number; right: number; top: number; bottom: number };
+
+function overlapFraction(panel: Bounds, other: Bounds): number {
+  const width = Math.max(0, Math.min(panel.right, other.right) - Math.max(panel.left, other.left));
+  const height = Math.max(0, Math.min(panel.bottom, other.bottom) - Math.max(panel.top, other.top));
+  return width * height / ((panel.right - panel.left) * (panel.bottom - panel.top));
+}
 
 function floorPosition(x: number, z: number): CourtPoint2D {
   return {
@@ -44,7 +51,8 @@ export class ShotForecastDecal {
   private previous: number | null = null;
   private readonly sample = new THREE.Vector3();
   public readonly mesh: THREE.Mesh;
-  public screenBounds: { left: number; right: number; top: number; bottom: number } | null = null;
+  public screenBounds: Bounds | null = null;
+  public playerOverlap = 0;
 
   constructor() {
     this.canvas.width = 512;
@@ -72,30 +80,39 @@ export class ShotForecastDecal {
     const wasVisible = this.mesh.visible;
     this.mesh.visible = percent !== null;
     this.screenBounds = null;
+    this.playerOverlap = 0;
     if (percent === null) return;
     camera.updateMatrixWorld();
     const inward = attacker.x > 0 ? -1 : 1;
+    const attackerBounds = this.projectBounds(attacker.x, attacker.z, .46, .28, [.10, 2.12], camera);
+    const defenderBounds = this.projectBounds(defender.x, defender.z, .46, .28, [.10, 2.12], camera);
     const positions = [
       forecastFloorPosition(attacker),
       floorPosition(attacker.x - inward * 2.25, attacker.z - .95),
       floorPosition(attacker.x + inward * 2.4, attacker.z + .9),
       floorPosition(attacker.x - inward * 2.4, attacker.z + .9),
+      floorPosition(attacker.x + inward * 1.65, attacker.z - 2.25),
+      floorPosition(attacker.x - inward * 1.65, attacker.z - 2.25),
       floorPosition(attacker.x, attacker.z - 2.45),
     ];
     const { x: previousX, z: previousZ } = this.mesh.position;
     let bestScore = Infinity;
     for (const { x, z } of positions) {
-      const bounds = this.projectBounds(x, z, camera);
-      const edge = Math.max(0, .035 - bounds.left) + Math.max(0, bounds.right - .965)
-        + Math.max(0, .14 - bounds.top) + Math.max(0, bounds.bottom - .865);
       const distance = Math.hypot(x - attacker.x, z - attacker.z);
-      const feet = Math.max(0, 1.5 - distance) + Math.max(0, 1.3 - Math.hypot(x - defender.x, z - defender.z));
       const movement = wasVisible ? Math.hypot(x - previousX, z - previousZ) : 0;
-      const score = edge * 45 + feet * 2 + distance * .1 + movement * .035;
-      if (score >= bestScore) continue;
-      bestScore = score;
-      this.screenBounds = bounds;
-      this.mesh.position.set(x, FLOOR_Y, z);
+      for (const scale of [1, .82, .70]) {
+        const bounds = this.projectBounds(x, z, WIDTH * scale / 2, DEPTH * scale / 2, [FLOOR_Y], camera);
+        const edge = Math.max(0, .025 - bounds.left) + Math.max(0, bounds.right - .975)
+          + Math.max(0, .14 - bounds.top) + Math.max(0, bounds.bottom - .865);
+        const overlap = overlapFraction(bounds, attackerBounds) + overlapFraction(bounds, defenderBounds);
+        const score = edge * 65 + overlap * 8 + (1 - scale) * 1.35 + distance * .12 + movement * .045;
+        if (score >= bestScore) continue;
+        bestScore = score;
+        this.screenBounds = bounds;
+        this.playerOverlap = overlap;
+        this.mesh.position.set(x, FLOOR_Y, z);
+        this.mesh.scale.set(scale, scale, 1);
+      }
     }
     if (this.previous !== percent) {
       paintShotForecast(this.context, percent);
@@ -104,17 +121,22 @@ export class ShotForecastDecal {
     }
   }
 
-  private projectBounds(x: number, z: number, camera: THREE.PerspectiveCamera) {
+  private projectBounds(
+    x: number, z: number, halfWidth: number, halfDepth: number, heights: readonly number[],
+    camera: THREE.PerspectiveCamera,
+  ): Bounds {
     const bounds = { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity };
-    for (const side of [-1, 1]) {
-      for (const end of [-1, 1]) {
-        const sample = this.sample.set(x + side * WIDTH / 2, FLOOR_Y, z + end * DEPTH / 2).project(camera);
-        const screenX = (1 + sample.x) / 2;
-        const screenY = (1 - sample.y) / 2;
-        bounds.left = Math.min(bounds.left, screenX);
-        bounds.right = Math.max(bounds.right, screenX);
-        bounds.top = Math.min(bounds.top, screenY);
-        bounds.bottom = Math.max(bounds.bottom, screenY);
+    for (const y of heights) {
+      for (const side of [-1, 1]) {
+        for (const end of [-1, 1]) {
+          const sample = this.sample.set(x + side * halfWidth, y, z + end * halfDepth).project(camera);
+          const screenX = (1 + sample.x) / 2;
+          const screenY = (1 - sample.y) / 2;
+          bounds.left = Math.min(bounds.left, screenX);
+          bounds.right = Math.max(bounds.right, screenX);
+          bounds.top = Math.min(bounds.top, screenY);
+          bounds.bottom = Math.max(bounds.bottom, screenY);
+        }
       }
     }
     return bounds;

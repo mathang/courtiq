@@ -80,6 +80,8 @@ try {
       assert.ok(bounds.left > .01 && bounds.right < .99 && bounds.top > .11 && bounds.bottom < .94,
         'Floor label is clipped: ' + JSON.stringify(bounds));
       assert.ok((bounds.right - bounds.left) * width >= 80, 'Floor label is too narrow to read');
+      assert.ok(presentation.shotForecastPlayerOverlap < .12,
+        'Players obscure the floor label: ' + presentation.shotForecastPlayerOverlap);
     };
     assertFloorVisible(first);
     assert.match(await page.locator('#arcade-commentary').innerText(), /Light up/);
