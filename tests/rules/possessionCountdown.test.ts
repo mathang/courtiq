@@ -76,14 +76,14 @@ describe('Preparation input guard', () => {
   it.each([true, false])('drops early keyboard/touch actions but keeps held movement ready (attacker=%s)', isAttacker => {
     const c = new InputGuardController();
     c.syncDuelContext({ phase: 'Possession', isAttacker, duelId: null, readingProtected: false, displayedOptions: [], gameplayLocked: true });
-    c.handleKeyDown({ code: 'KeyA' }); c.handleKeyDown({ code: 'Space' }); c.handleKeyDown({ code: 'KeyC' });
+    c.handleKeyDown({ code: 'KeyA' }); c.handleKeyDown({ code: 'KeyJ' }); c.handleKeyDown({ code: 'KeyK' });
     c.setTouchMove(0, -1); c.setTouchPrimary(true); c.triggerTouchTrick();
     expect(c.consumeMoveInput('Possession', 2000)).toEqual(N); expect(c.getTrickSelection()).toBeNull();
     c.setGameplayLocked(false); expect(c.consumeMoveInput('Possession', 16)).toEqual({ ...N, moveX: -1, moveZ: -1 });
-    c.handleKeyUp({ code: 'Space' }); c.handleKeyDown({ code: 'Space' });
+    c.handleKeyUp({ code: 'KeyJ' }); c.handleKeyDown({ code: 'KeyJ' });
     const fresh = c.consumeMoveInput('Possession', 16);
     expect(isAttacker ? fresh.shoot : fresh.defense === 'jump').toBe(true);
-    c.handleKeyUp({ code: 'KeyC' }); c.handleKeyDown({ code: 'KeyC' });
+    c.handleKeyUp({ code: 'KeyK' }); c.handleKeyDown({ code: 'KeyK' });
     const trick = c.consumeMoveInput('Possession', 500);
     expect(isAttacker ? trick.trick === 'crossover' : trick.defense === 'swipe').toBe(true);
   });

@@ -39,7 +39,7 @@
           <div class="center-clock-card">
             <div id="hud-possession-label" class="possession-counter">POSS 1 / 10</div>
             <div id="hud-shot-clock" class="shot-clock" title="15-second movement clock">15.0s</div>
-            <div id="hud-zone-badge" class="zone-badge">3PT ARC • Base 7%</div>
+            <div id="hud-zone-badge" class="zone-badge">3PT</div>
           </div>
 
           <div id="hud-p1-card" class="player-score-card slot-1">
@@ -61,8 +61,8 @@
           <div id="hud-block-indicator" class="block-indicator hidden" role="status">
             🛡️ Contested &le;2.6m
           </div>
-          <div class="stamina-wrap" title="Sprint Stamina Meter">
-            <span class="stamina-label">SPRINT</span>
+          <div class="stamina-wrap" title="Turbo stamina">
+            <span class="stamina-label">TURBO</span>
             <div class="stamina-track">
               <div id="hud-stamina-fill" class="stamina-fill" style="width: 100%"></div>
             </div>
@@ -87,10 +87,12 @@
 
       <!-- On-Court Possession Prompt Pill -->
       <div id="possession-hint-pill" class="possession-hint-pill hidden" aria-live="polite">
-        <kbd>WASD</kbd> Move · <kbd>Shift</kbd> Sprint · <kbd>Space</kbd> Shoot / Dunk / Block · <kbd>C</kbd> Trick / Steal · 1/2/3/4 taps in 0.5s: Cross / Spin / Euro / Step back
+        <kbd id="move-key-hint">WASD</kbd> Move · <kbd class="red-key" id="shoot-key-hint">J</kbd> Shoot / Block · <kbd class="blue-key" id="trick-key-hint">K</kbd> Trick / Steal · <kbd class="white-key" id="turbo-key-hint">L</kbd> Turbo
       </div>
 
       <div id="street-status" class="street-status hidden" role="status" aria-live="polite"></div>
+
+      <p id="arcade-commentary" class="arcade-commentary hidden"></p>
 
       <!-- Touch Controls for Mobile / Tablet / Optional Desktop Touch Mode -->
       <div id="touch-controls" class="touch-controls hidden" aria-label="Touch Controls">
@@ -101,13 +103,9 @@
           <span class="touch-caption">DRAG TO MOVE</span>
         </div>
         <div class="touch-action-buttons">
-          <button id="btn-touch-trick" class="touch-btn trick-btn" type="button">TRICK</button>
-          <button id="btn-touch-sprint" class="touch-btn sprint-btn" type="button">
-            ⚡ SPRINT
-          </button>
-          <button id="btn-touch-shoot" class="touch-btn shoot-btn" type="button">
-            SHOOT
-          </button>
+          <button id="btn-touch-shoot" class="touch-btn shoot-btn" type="button"><strong>J</strong><span id="touch-primary-label">SHOOT</span></button>
+          <button id="btn-touch-trick" class="touch-btn trick-btn" type="button"><strong>K</strong><span id="touch-trick-label">TRICK</span></button>
+          <button id="btn-touch-sprint" class="touch-btn sprint-btn" type="button" aria-label="Hold for turbo"><strong>L</strong><span>TURBO</span></button>
         </div>
       </div>
 
@@ -420,7 +418,7 @@
             </label>
             <label class="toggle-row">
               <input id="chk-touch-overlay" type="checkbox" />
-              <span><strong>Show On-Screen Touch Controls</strong> (Joystick, Trick / Steal, Sprint &amp; Shoot / Dunk / Block)</span>
+              <span><strong>Show touch controls</strong> (joystick and J, K, L)</span>
             </label>
             <div class="form-group" style="margin-top: 10px">
               <label for="select-quality-mode">Graphics &amp; Performance Mode</label>
@@ -451,36 +449,16 @@
             <button id="btn-close-tutorial" class="icon-btn" type="button">✕ Close</button>
           </div>
           <div class="tutorial-body">
-            <ol class="tutorial-steps">
-              <li>
-                <strong>1. Position on the Half-Court (15s Movement Clock):</strong>
-                Move with <kbd>WASD</kbd> or <kbd>Arrows</kbd>; hold <kbd>Shift</kbd> for Turbo. There are two action keys: <kbd>Space</kbd> shoots, or automatically attempts a dunk when you are moving towards the basket inside the blue paint. Dunk styles are random: tomahawk, windmill, 360 or reverse. Tap <kbd>C</kbd> within half a second: <strong>1 tap = crossover, 2 = spin, 3 = eurostep, 4+ = stepback</strong>. Moves cost stamina. Dribbling straight into a set defender exposes the ball to a steal, so steer around them or use a trick. On defence, <kbd>C</kbd> swipes for a steal; a missed swipe freezes you for 1 second. <kbd>Space</kbd> jumps to block; hold it during a dunk take-off for a forgiving swat attempt from within 2.6m. The jump faces the attacker automatically. Press <kbd>F</kbd> for fullscreen. Inside the arc scores 2 points; outside scores 3.
+            <ul class="tutorial-steps">
+              <li><kbd>WASD</kbd> or joystick to move. Hold <kbd class="white-key">L</kbd> for turbo.</li>
+              <li><kbd class="red-key">J</kbd> to shoot. Drive into the blue paint for a dunk. On defence, hold J as the shooter takes off to try a block.</li>
+              <li><kbd class="blue-key">K</kbd> for a trick or to steal on defence. Missing a steal costs a second.
+                <details><summary>Trick moves</summary>Tap K in quick succession. One tap crosses over, two spin, three eurostep and four step back.</details>
               </li>
-              <li>
-                <strong>2. Release the Shot (<kbd>Space</kbd>) &amp; Slow-Motion Flight:</strong>
-                When the ball leaves the attacker's hands, court positions and block eligibility (&le;2.6m and facing shooter) are frozen, and the ball enters a suspended slow-motion arc. On a dunk, you take off and hang in the air for the question before the finish resolves. A timed physical swat overrides the basket; both students still answer and receive learning credit. A clean steal changes possession immediately and is excluded from question accuracy.
-              </li>
-              <li>
-                <strong>3. Protected Reading &amp; Single-Lock Answer Duel:</strong>
-                After the protected reading period (at least 2 seconds), both players answer the same multiple-choice question (<kbd>1</kbd>–<kbd>4</kbd> or tap). Each player gets <strong>one locked submission</strong>. Option order is shuffled independently per device.
-              </li>
-              <li>
-                <strong>4. Knowledge + Speed + Positioning = Outcome:</strong>
-                <ul>
-                  <li><strong>Attacker correct first (or tied within 200ms):</strong> Earns up to +70% accuracy bonus based on speed: \(P = \text{clamp}(B + C(0.35 + 0.35S), 0.03, 0.95)\).</li>
-                  <li><strong>Eligible defender (&le;2.6m) correct first:</strong> Swats and <strong>BLOCKS</strong> the shot!</li>
-                  <li><strong>Defender correct first but no block:</strong> Credited in learning accuracy, but no block if they were too far away, off balance from a trick, reaching for a steal or beaten behind the shooter. The question card says which.</li>
-                </ul>
-              </li>
-              <li>
-                <strong>5. Learn, Then Continue:</strong>
-                Lock an answer to see the result and a short explanation while CourtBot thinks. Use <strong>More detail</strong> for the question and course source, then continue when ready. Three correct answers in a row ignites <strong>“ON FIRE!”</strong>: 20% faster movement and +20 percentage points to shooting (maximum 95%). A wrong or unanswered question ends Fire; misses and blocks do not.
-              </li>
-              <li>
-                <strong>6. Alternating Possessions &amp; Equal Opportunity:</strong>
-                Possession switches after every attempt. First to 11 points (max 10 possessions each), always preserving equal possessions and paired overtime rounds.
-              </li>
-            </ol>
+              <li>Look for <strong>IF CORRECT</strong> on the floor. It estimates your chance of scoring with a correct answer halfway through answer time and no block. More space helps.</li>
+              <li>Answer with <kbd>1</kbd>–<kbd>4</kbd> or tap. A faster correct answer boosts a shot or can block it if you’re close enough on defence. Read the feedback, then choose <strong>Continue</strong>.</li>
+              <li>Three correct answers in a row puts you <strong>On Fire</strong> for a speed and shooting boost.</li>
+            </ul>
           </div>
         </div>
       </div>

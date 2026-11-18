@@ -6,7 +6,7 @@ function controls(isAttacker = true) {
   c.syncDuelContext({ phase: 'Possession', isAttacker, duelId: null, readingProtected: false, displayedOptions: [] });
   return c;
 }
-function tap(c: InputGuardController, code = 'KeyC') { c.handleKeyDown({ code }); c.handleKeyUp({ code }); }
+function tap(c: InputGuardController, code = 'KeyK') { c.handleKeyDown({ code }); c.handleKeyUp({ code }); }
 
 describe('Two context-sensitive action buttons', () => {
   it.each(['crossover', 'spin', 'eurostep', 'stepback'] as const)('selects %s with fresh taps inside a fixed half-second window', move => {
@@ -23,13 +23,13 @@ describe('Two context-sensitive action buttons', () => {
     for (let i = 0; i < 7; i++) { tap(c); c.consumeMoveInput('Possession', 50); }
     expect(c.getTrickSelection()?.count).toBe(4);
     expect(c.consumeMoveInput('Possession', 150).trick).toBe('stepback');
-    c.handleKeyDown({ code: 'KeyC' });
-    for (let i = 0; i < 8; i++) c.handleKeyDown({ code: 'KeyC', repeat: true });
+    c.handleKeyDown({ code: 'KeyK' });
+    for (let i = 0; i < 8; i++) c.handleKeyDown({ code: 'KeyK', repeat: true });
     expect(c.consumeMoveInput('Possession', 500).trick).toBe('crossover');
     expect(c.consumeMoveInput('Possession', 500).trick).toBeUndefined();
   });
   it('commits a selected trick with the primary button and clears stale intentions on phase, role and blur', () => {
-    const c = controls(); tap(c); tap(c); tap(c, 'Space');
+    const c = controls(); tap(c); tap(c); tap(c, 'KeyJ');
     expect(c.consumeMoveInput('Possession', 16)).toMatchObject({ trick: 'spin', shoot: true });
     tap(c);
     c.syncDuelContext({ phase: 'QuestionReady', duelId: 'd1', readingProtected: true, displayedOptions: [] });
@@ -41,10 +41,10 @@ describe('Two context-sensitive action buttons', () => {
     expect(c.consumeMoveInput('Possession', 600).trick).toBeUndefined();
     tap(c); expect(c.consumeMoveInput('Possession', 1).defense).toBe('swipe');
   });
-  it('uses C immediately for a defensive swipe and Space for jumping, including a held takeoff block', () => {
+  it('uses K immediately for a defensive swipe and J for jumping, including a held takeoff block', () => {
     const c = controls(false); tap(c);
     expect(c.consumeMoveInput('Possession', 1)).toMatchObject({ defense: 'swipe', shoot: false });
-    c.handleKeyDown({ code: 'Space' });
+    c.handleKeyDown({ code: 'KeyJ' });
     expect(c.consumeMoveInput('Possession', 16).defense).toBe('jump');
     c.syncDuelContext({ phase: 'QuestionReady', isAttacker: false, duelId: 'd', readingProtected: true, displayedOptions: [] });
     expect(c.consumeMoveInput('QuestionReady', 16).defense).toBe('jump');

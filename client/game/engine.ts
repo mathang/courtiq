@@ -6,6 +6,7 @@ import { BallVisualController } from './animation/ballTrajectory';
 import { CourtCameraController } from './camera/courtCamera';
 import { PlayerCharacter3D } from './characters/playerCharacter';
 import { CourtIqArena3D } from './court/arena';
+import { forecastFloorPosition, paintShotForecast, ShotForecastDecal } from './court/shotForecast';
 
 export type RenderQualityMode = 'high' | 'low' | 'fallback2d';
 
@@ -18,6 +19,7 @@ export interface RenderFrameState {
   ballPos: Vector3D;
   blockEligible: boolean;
   reducedMotion: boolean;
+  shotForecast?: number | null;
 }
 
 export class CourtIqRenderer {
@@ -32,9 +34,13 @@ export class CourtIqRenderer {
   private arena: CourtIqArena3D | null = null;
   private chars: [PlayerCharacter3D, PlayerCharacter3D] | null = null;
   private ballCtrl: BallVisualController | null = null;
+  private forecastDecal: ShotForecastDecal | null = null;
+  private currentForecast: number | null = null;
 
   private fallbackCanvas: HTMLCanvasElement | null = null;
   private fallbackCtx: CanvasRenderingContext2D | null = null;
+  private fallbackForecastCanvas: HTMLCanvasElement | null = null;
+  private fallbackForecastValue: number | null = null;
 
   private currentPresets: [number, number] = [0, 1];
   private overlayBounds = { top: 0.13, bottom: 0.55 };
@@ -114,6 +120,8 @@ export class CourtIqRenderer {
         if (element) observer.observe(element);
       }
       this.scene.add(this.arena.group);
+      this.forecastDecal = new ShotForecastDecal();
+      this.scene.add(this.forecastDecal.mesh);
 
       this.chars = [
         new PlayerCharacter3D(0, this.currentPresets[0]),
@@ -150,6 +158,8 @@ export class CourtIqRenderer {
 
     if (mode === 'fallback2d' || !this.webglAvailable) {
       if (this.renderer) {
+        this.forecastDecal?.dispose();
+        this.forecastDecal = null;
         this.renderer.dispose();
         this.renderer = null;
       }
@@ -211,6 +221,8 @@ export class CourtIqRenderer {
   public getPresentationState() {
     return {
       camera: this.cameraCtrl?.snapshot(),
+      shotForecast: this.currentForecast,
+      shotForecastBounds: this.forecastDecal?.screenBounds ?? null,
       animations: this.chars?.map(c => c.getAnimationState()),
       palms: this.chars?.map(c => c.getPalmPosition()?.toArray() ?? null),
       avatarRoots: this.chars?.map(c => c.root.position.toArray()),
@@ -258,6 +270,7 @@ export class CourtIqRenderer {
     nowSec: number,
     draw = true
   ): void {
+    this.currentForecast = state.shotForecast ?? null;
     // Slow-motion presentation clock scaling during QuestionReady & Duel (Section 9)
     const presentationScale =
       state.phase === 'QuestionReady' || state.phase === 'Duel' ? 0.14 : 1.0;
@@ -342,7 +355,11 @@ export class CourtIqRenderer {
       safeBottom: this.overlayBounds.bottom,
     });
 
-    if (draw) this.renderer.render(this.scene, this.cameraCtrl.camera);
+    if (draw) {
+      this.forecastDecal?.update(attacker, state.players[state.attackerSlot === 0 ? 1 : 0],
+        this.currentForecast, this.cameraCtrl.camera);
+      this.renderer.render(this.scene, this.cameraCtrl.camera);
+    }
   }
 
   private renderFallback2D(state: RenderFrameState): void {
@@ -394,6 +411,26 @@ export class CourtIqRenderer {
       Math.PI * 2
     );
     ctx.fill();
+
+    if (this.currentForecast !== null) {
+      const floor = forecastFloorPosition(state.players[state.attackerSlot]);
+      const width = Math.max(92, courtSize * 0.24);
+      const height = width * 0.625;
+      ctx.save();
+      ctx.translate(toX(floor.x) - width / 2, toY(floor.z) - height / 2);
+      ctx.scale(width / 512, height / 320);
+      // Paint on a separate surface so its transparent corners leave the floor intact.
+      const decal = this.fallbackForecastCanvas ??= document.createElement('canvas');
+      if (this.fallbackForecastValue !== this.currentForecast) {
+        decal.width = 512;
+        decal.height = 320;
+        const decalContext = decal.getContext('2d');
+        if (decalContext) paintShotForecast(decalContext, this.currentForecast);
+        this.fallbackForecastValue = this.currentForecast;
+      }
+      ctx.drawImage(decal, 0, 0);
+      ctx.restore();
+    }
 
     // Players
     for (const slot of [0, 1] as const) {

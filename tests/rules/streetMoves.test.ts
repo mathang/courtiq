@@ -87,10 +87,10 @@ describe('Street basketball movement and finishes', () => {
   it('requires a fresh trick keypress, clears buffered tricks in duels and resets on blur', () => {
     const input = new InputGuardController();
     input.syncDuelContext({phase:'Possession',duelId:null,readingProtected:false,displayedOptions:[]});
-    input.handleKeyDown({ code: 'KeyC' });
+    input.handleKeyDown({ code: 'KeyK' });
     expect(input.consumeMoveInput('Possession', 500).trick).toBe('crossover');
-    input.handleKeyDown({ code: 'KeyC', repeat: true }); expect(input.consumeMoveInput('Possession').trick).toBeUndefined();
-    input.handleKeyUp({ code: 'KeyC' }); input.handleKeyDown({ code: 'KeyC' });
+    input.handleKeyDown({ code: 'KeyK', repeat: true }); expect(input.consumeMoveInput('Possession').trick).toBeUndefined();
+    input.handleKeyUp({ code: 'KeyK' }); input.handleKeyDown({ code: 'KeyK' });
     input.consumeMoveInput('Duel'); expect(input.consumeMoveInput('Possession').trick).toBeUndefined();
     input.handleKeyDown({ code: 'KeyW' }); input.reset(); expect(input.consumeMoveInput('Possession').moveZ).toBe(0);
   });

@@ -1,10 +1,12 @@
 import {
   COURT_GEOMETRY,
   SHOT_BALANCE_CONFIG,
+  STREET_FLOW_CONFIG,
   LEARNING_STREAK_CONFIG,
   ShotZone,
 } from '../config/balance';
 import { BlockEligibilitySnapshot, CourtPoint2D, computeDistance2D } from './block';
+import type { PlayerSimState } from './matchStateMachine';
 import { clamp, DuelResolutionSummary } from './timing';
 
 export interface ShotReleaseSnapshot {
@@ -48,20 +50,30 @@ export function classifyShotZone(distanceToHoopM: number): {
   return { zone: 'mid-range', pointValue: 2 };
 }
 
+function contestPenalty(distanceM: number): number {
+  const curve = SHOT_BALANCE_CONFIG.contestCurve;
+  for (let i = 1; i < curve.length; i++) {
+    const [far, low] = curve[i];
+    if (distanceM <= far) {
+      const [near, high] = curve[i - 1];
+      return high + (low - high) * clamp((distanceM - near) / (far - near), 0, 1);
+    }
+  }
+  return 0;
+}
+
 /**
  * Computes base shooting probability B from court position, defensive contest, and sprint state.
  */
 export function computeBaseShotProbability(params: {
   zone: ShotZone;
-  heavilyContested: boolean;
+  defenderDistanceM: number;
   releasedWhileSprinting: boolean;
   setupBonus?: number;
   onFire?: boolean;
 }): number {
-  let base = SHOT_BALANCE_CONFIG.baseProbabilities[params.zone];
-  if (params.heavilyContested) {
-    base -= SHOT_BALANCE_CONFIG.heavilyContestedPenalty;
-  }
+  let base = SHOT_BALANCE_CONFIG.nbaZoneRates[params.zone] * SHOT_BALANCE_CONFIG.arcadeBaseScale;
+  base -= contestPenalty(params.defenderDistanceM);
   if (params.releasedWhileSprinting) {
     base -= SHOT_BALANCE_CONFIG.sprintingPenalty;
   }
@@ -95,7 +107,7 @@ export function captureShotReleaseSnapshot(params: {
   const setupBonus = clamp(params.setupBonus ?? 0, 0, 0.08);
   const baseProbability = computeBaseShotProbability({
     zone,
-    heavilyContested,
+    defenderDistanceM: computeDistance2D(params.shooterPos, params.defenderPos),
     releasedWhileSprinting: params.releasedWhileSprinting,
     setupBonus,
     onFire: params.onFire,
@@ -115,6 +127,42 @@ export function captureShotReleaseSnapshot(params: {
     onFire: Boolean(params.onFire),
     blockEligibility: params.blockEligibility,
   });
+}
+
+/** Shared by the live forecast and the authoritative release. Call before resetting the shooter's move. */
+export function capturePlayerShotRelease(
+  attacker: PlayerSimState,
+  defender: CourtPoint2D,
+  blockEligibility: BlockEligibilitySnapshot
+): ShotReleaseSnapshot {
+  const comboCount = attacker.streetMove || attacker.comboGraceSec > 0 ? attacker.trickCombo : 0;
+  const usedStepback = (attacker.streetMove ?? (attacker.comboGraceSec > 0 ? attacker.lastTrick : null)) === 'stepback';
+  const comboTier = Math.min(STREET_FLOW_CONFIG.comboSetupBonus.length - 1, comboCount);
+  return captureShotReleaseSnapshot({
+    shooterPos: { x: attacker.x, z: attacker.z },
+    defenderPos: { x: defender.x, z: defender.z },
+    blockEligibility,
+    releasedWhileSprinting: (attacker.isSprinting || attacker.sprintSettleRemainingMs > 0) && !usedStepback,
+    setupBonus: STREET_FLOW_CONFIG.comboSetupBonus[comboTier],
+    comboCount,
+    onFire: attacker.onFire,
+  });
+}
+
+/** Forecast for a correct answer at the midpoint of answer time, conditional on no block. */
+export function estimateCorrectShotPercentage(
+  release: ShotReleaseSnapshot,
+  streak: number,
+  rules: { correctBaseBonus: number; speedBonusWeight: number }
+): number {
+  const ignitesFire = !release.onFire && streak + 1 >= LEARNING_STREAK_CONFIG.correctAnswersToIgnite;
+  const { finalProbability } = computeShotBasketProbability({
+    baseProbability: release.baseProbability + (ignitesFire ? LEARNING_STREAK_CONFIG.shootingBonus : 0),
+    attackerCorrect: true,
+    speedScore: 0.5,
+    ...rules,
+  });
+  return Math.round(finalProbability * 100);
 }
 
 /**

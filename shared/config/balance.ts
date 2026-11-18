@@ -118,12 +118,16 @@ export const LEARNING_STREAK_CONFIG = {
 } as const;
 
 export const SHOT_BALANCE_CONFIG = {
-  baseProbabilities: {
-    close: 0.20,
-    'mid-range': 0.12,
-    'three-pointer': 0.07,
+  // 2023–24 NBA regular season: 0–3 ft, 10–16 ft and three-point FG%.
+  nbaZoneRates: {
+    close: 0.699,
+    'mid-range': 0.446,
+    'three-pointer': 0.366,
   } as Record<ShotZone, number>,
-  heavilyContestedPenalty: 0.05,
+  // Downscale the unboosted shot to keep the learning answer consequential.
+  arcadeBaseScale: 0.32,
+  // Game-tuned penalties (percentage points), anchored to NBA tracking distance bands.
+  contestCurve: [[0, 0.12], [0.6096, 0.10], [1.2192, 0.06], [1.8288, 0]] as const,
   sprintingPenalty: 0.05,
   correctBaseBonus: 0.35,
   speedBonusWeight: 0.35,

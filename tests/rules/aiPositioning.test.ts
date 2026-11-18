@@ -82,3 +82,38 @@ describe('CourtBot recovery and defensive judgement',()=>{
   expect(intent.sprint).toBe(true);
  });
 });
+
+
+describe('CourtBot step-back and drive coverage', () => {
+  it('closes on a step-back only after observing the retreat', () => {
+    const brain = createAiBasketballBrainState(() => .4);
+    const decide = (z: number) => stepAiBasketballDecision({
+      brain, isAttacker: false, aiPos: { x: 0, z: 0 }, opponentPos: { x: 0, z },
+      movementClockRemainingMs: 12000, difficulty: 'advanced', deltaSec: .04,
+    });
+    for (let i = 0; i < 8; i++) decide(1.2);
+    const initialTarget = brain.targetSpot.z;
+    decide(1.5);
+    expect(brain.targetSpot.z).toBeCloseTo(initialTarget);
+    let intent = decide(1.8);
+    for (let i = 0; i < 5; i++) intent = decide(2.6);
+    expect(brain.targetSpot.z).toBeGreaterThan(initialTarget + 1.5);
+    expect(intent.moveZ).toBeGreaterThan(0);
+    expect(intent.sprint).toBe(true);
+  });
+
+  it('shades the moving lane and gives ground to intercept an angled drive', () => {
+    const brain = createAiBasketballBrainState(() => .4);
+    const decide = (x: number, z: number) => stepAiBasketballDecision({
+      brain, isAttacker: false, aiPos: { x: 0, z: 0 }, opponentPos: { x, z },
+      movementClockRemainingMs: 12000, difficulty: 'advanced', deltaSec: .04,
+    });
+    for (let i = 0; i < 8; i++) decide(0, 1.2);
+    let intent;
+    for (let i = 1; i <= 8; i++) intent = decide(i * .15, 1.2 - i * .2);
+    expect(brain.targetSpot.z).toBeLessThan(-1.7);
+    expect(intent!.moveX).toBeGreaterThan(.10);
+    expect(intent!.moveZ).toBeLessThan(-.48);
+    expect(intent!.sprint).toBe(true);
+  });
+});
