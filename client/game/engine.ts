@@ -222,6 +222,7 @@ export class CourtIqRenderer {
     return {
       camera: this.cameraCtrl?.snapshot(),
       shotForecast: this.currentForecast,
+      shotForecastBounds: this.forecastDecal?.screenBounds ?? null,
       animations: this.chars?.map(c => c.getAnimationState()),
       palms: this.chars?.map(c => c.getPalmPosition()?.toArray() ?? null),
       avatarRoots: this.chars?.map(c => c.root.position.toArray()),
@@ -299,7 +300,6 @@ export class CourtIqRenderer {
     );
 
     const attacker = state.players[state.attackerSlot];
-    this.forecastDecal?.update(attacker, this.currentForecast);
     const anyOnFire = state.players[0].onFire || state.players[1].onFire;
 
     this.arena.updateScoreboard({
@@ -355,7 +355,11 @@ export class CourtIqRenderer {
       safeBottom: this.overlayBounds.bottom,
     });
 
-    if (draw) this.renderer.render(this.scene, this.cameraCtrl.camera);
+    if (draw) {
+      this.forecastDecal?.update(attacker, state.players[state.attackerSlot === 0 ? 1 : 0],
+        this.currentForecast, this.cameraCtrl.camera);
+      this.renderer.render(this.scene, this.cameraCtrl.camera);
+    }
   }
 
   private renderFallback2D(state: RenderFrameState): void {

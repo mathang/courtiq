@@ -74,6 +74,14 @@ try {
     const first = await state();
     assert.equal(first.phase, 'Possession');
     assert.ok(first.presentation.shotForecast > 0);
+    const assertFloorVisible = ({ presentation }) => {
+      const bounds = presentation.shotForecastBounds;
+      assert.ok(bounds, 'Forecast is not projected in 3D');
+      assert.ok(bounds.left > .01 && bounds.right < .99 && bounds.top > .11 && bounds.bottom < .94,
+        'Floor label is clipped: ' + JSON.stringify(bounds));
+      assert.ok((bounds.right - bounds.left) * width >= 80, 'Floor label is too narrow to read');
+    };
+    assertFloorVisible(first);
     assert.match(await page.locator('#arcade-commentary').innerText(), /Light up/);
     await photo('floor');
 
@@ -107,6 +115,7 @@ try {
           assert.equal(current.players[0].lastTrick, 'stepback');
           stepbackDistance = current.players[0].z - first.players[0].z;
           assert.ok(stepbackDistance > .3, `Step-back moved ${stepbackDistance} metres`);
+          assertFloorVisible(current);
           await photo('stepback');
           await drive(630);
           current = await state();
@@ -128,7 +137,7 @@ try {
           await step(20);
           assert.equal((await state()).players[0].defenseAction, 'swipe');
         }
-        for (let i = 0; i < 80 && (await state()).phase === 'Possession' && (await state()).attacker === 1; i++) await step(100);
+        for (let i = 0; i < 35 && (await state()).phase === 'Possession' && (await state()).attacker === 1; i++) await step(240);
         if ((await state()).phase === 'QuestionReady') {
           await primary();
           await step(15);
@@ -155,7 +164,7 @@ try {
         else await page.keyboard.press('Digit' + (index + 1));
         await page.locator('#feedback-overlay').waitFor({ state: 'visible' });
       }
-      for (let i = 0; i < 120 && (await state()).phase !== 'Feedback'; i++) await step(150);
+      for (let i = 0; i < 30 && (await state()).phase !== 'Feedback'; i++) await step(600);
       current = await state();
       assert.equal(current.phase, 'Feedback');
       const status = current.learningReview?.status;
