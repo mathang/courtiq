@@ -93,6 +93,12 @@ export class ShotForecastDecal {
       floorPosition(attacker.x - inward * 2.4, attacker.z + .9),
       floorPosition(attacker.x + inward * 1.65, attacker.z - 2.25),
       floorPosition(attacker.x - inward * 1.65, attacker.z - 2.25),
+      floorPosition(attacker.x + inward * 3.7, attacker.z - 1.55),
+      floorPosition(attacker.x - inward * 3.7, attacker.z - 1.55),
+      floorPosition(attacker.x + inward * 3.6, attacker.z + .30),
+      floorPosition(attacker.x - inward * 3.6, attacker.z + .30),
+      floorPosition(attacker.x + inward * 2.5, attacker.z - 3.0),
+      floorPosition(attacker.x - inward * 2.5, attacker.z - 3.0),
       floorPosition(attacker.x, attacker.z - 2.45),
     ];
     const { x: previousX, z: previousZ } = this.mesh.position;
