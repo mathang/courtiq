@@ -1052,7 +1052,7 @@ kbd.white-key, .touch-btn.sprint-btn { background: #f5f7ff; color: #10182a; bord
   font-weight: 850;
   pointer-events: none;
 }
-@media (max-width: 650px) { .arcade-commentary { top: 149px; } }
+@media (max-width: 650px) { .arcade-commentary { top: 166px; } }
 @media (max-height: 560px) and (orientation: landscape) { .arcade-commentary { top: 88px; } }
 
 .modal-backdrop {

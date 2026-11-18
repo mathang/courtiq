@@ -14,7 +14,7 @@ const browser = await chromium.launch({
 const report = [];
 
 try {
-  for (const [name, width, height, touch] of [
+  viewportLoop: for (const [name, width, height, touch] of [
     ['desktop', 1440, 900, false], ['portrait', 390, 844, true], ['landscape', 844, 390, true],
   ]) {
     const page = await browser.newPage({ viewport: { width, height }, hasTouch: touch, isMobile: touch });
@@ -80,6 +80,8 @@ try {
       assert.ok(bounds.left > .01 && bounds.right < .99 && bounds.top > .11 && bounds.bottom < .94,
         'Floor label is clipped: ' + JSON.stringify(bounds));
       assert.ok((bounds.right - bounds.left) * width >= 80, 'Floor label is too narrow to read');
+      assert.ok(presentation.shotForecastPlayerOverlap < .12,
+        'Players obscure the floor label: ' + presentation.shotForecastPlayerOverlap);
     };
     assertFloorVisible(first);
     assert.match(await page.locator('#arcade-commentary').innerText(), /Light up/);
@@ -117,6 +119,21 @@ try {
           assert.ok(stepbackDistance > .3, `Step-back moved ${stepbackDistance} metres`);
           assertFloorVisible(current);
           await photo('stepback');
+          if (process.argv.includes('--floor-only')) {
+            assert.deepEqual(errors, []);
+            assert.deepEqual(roomRequests, []);
+            report.push({
+              name, viewport: [width, height], stepbackDistance,
+              openingLabel: first.presentation.shotForecastBounds,
+              stepbackLabel: current.presentation.shotForecastBounds,
+              openingOverlap: first.presentation.shotForecastPlayerOverlap,
+              stepbackOverlap: current.presentation.shotForecastPlayerOverlap,
+            });
+            console.log(JSON.stringify(report.at(-1)));
+            await writeFile(`${output}/report.json`, JSON.stringify(report, null, 2));
+            await page.close();
+            continue viewportLoop;
+          }
           await drive(630);
           current = await state();
           assert.ok(current.players[0].sprintStamina < .9, 'Turbo was never used');
