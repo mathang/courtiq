@@ -62,13 +62,13 @@ The 65-bone Quaternius CC0 humanoid has original CourtIQ clothing, trainers, hai
 
 `npm run build:player` regenerates and optimises both character GLBs with pinned glTF Transform tools. The checked-in asset is used by normal `npm run build`; rebuilding it is optional. Preserve the jersey UV attribute during optimisation because names and numbers are mapped at runtime.
 
-## Simple controls and learning streaks — 12 November 2026
+## Arcade controls and shot forecast
 
 | Action | Keyboard | Touch |
 | --- | --- | --- |
-| Move / Turbo | WASD or arrows / Shift | Joystick / SPRINT |
-| Shoot / automatic dunk on offence; jump block on defence | Space | SHOOT / DUNK / BLOCK |
-| Trick on offence; immediate steal swipe on defence | C | TRICK / STEAL |
+| Move / Turbo | WASD or arrows / L | Joystick / white L |
+| Shoot or dunk on offence / block on defence | J | Red J |
+| Trick on offence / steal on defence | K | Blue K |
 | Answer | 1–4 | Tap an option |
 | Fullscreen | F (Esc exits) | Browser fullscreen controls |
 
@@ -76,9 +76,9 @@ Tap the trick key in a fixed **500 ms window**: **1 crossover, 2 spin, 3 euroste
 
 The primary action attempts a dunk when the player is **inside the visible blue paint and actually moving towards the hoop**. Standing, moving away or shooting outside the paint gives a jumper. Tomahawk, windmill, 360 and reverse finishes are chosen by the authoritative simulation, without immediate repeats. No style selection is needed.
 
-On defence, press or hold **Space** during the dunk take-off. The jump faces the attacker automatically, with a **2.6 m** reach and a wider reaction window. Distance, court position, recovery and timing still matter. Both physical swats and question-based blocks override shooting boosts, while correct answers still earn learning credit.
+On defence, press or hold **J** during the dunk take-off. The jump faces the attacker automatically, with a **2.6 m** reach and a wider reaction window. Distance, court position, recovery and timing still matter. Both physical swats and question-based blocks override shooting boosts, while correct answers still earn learning credit.
 
-**C** immediately swipes for a steal on defence. A missed swipe roots the defender for **1 full second**. Swipes retain their reach, stamina and cooldown requirements. A steal changes possession at the live location and does not count as an incorrect or unanswered question.
+**K** immediately swipes for a steal on defence. A missed swipe roots the defender for **1 full second**. Swipes retain their reach, stamina and cooldown requirements. A steal changes possession at the live location and does not count as an incorrect or unanswered question.
 
 In **student-versus-student rooms**, both students receive the same question, choices, reading period and answer deadline. Choice order can differ. Public online payloads omit answer keys and explanations until resolution. Each student gets their own correct/incorrect/unanswered verdict and selected-option feedback. Neither can dismiss the other student's explanation: both confirm Continue before play resumes.
 
@@ -86,7 +86,9 @@ Each student's HUD tracks **three consecutive correct answers** towards **“ON 
 
 All **255 wrong choices across 85 bundled questions** have a specific explanation, derived from the existing course questions and reasoning. These new rationales are **draft additions for instructor review**; original stems, choices, answer keys, explanations and source references are unchanged. Custom packs can supply `optionFeedback` keyed by stable option ID; packs without it retain their existing explanation.
 
-Solo settings pause the match. Controls can be remapped; old movement/shot bindings are preserved and an old crossover binding migrates to the single trick key. Mobile has two game actions plus Sprint and the joystick. Question and feedback controls clear the hosting badge.
+Solo settings pause the match. The former default action keys migrate to J, K and L. Custom mappings remain available. CourtBot reads delayed attacker motion to close on step-backs and cut off driving lanes. Arcade calls are captioned and use an installed English voice when available. The sound toggle silences spoken calls.
+
+The floor shows the attacker's chance of scoring if they answer correctly halfway through the answer time and avoid a block. The forecast uses the same shot model as the match, including distance from the defender, turbo, tricks and the Fire boost a correct answer can trigger. The zone anchors come from 2023–24 league shooting (69.9% at 0–3 feet, 44.6% at 10–16 feet and 36.6% on threes). CourtIQ scales the unboosted chance to 32% of those anchors and interpolates game-tuned contest penalties at the NBA's 2-, 4- and 6-foot tracking thresholds. [League shooting table](https://www.basketball-reference.com/leagues/NBA_2024_shooting.html) · [NBA closest-defender dashboard](https://www.nba.com/stats/teams/shots-closest-defender)
 
 ## Fluid defence, simpler lobby and 2K benchmark — 12 November 2026
 

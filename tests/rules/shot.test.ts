@@ -6,13 +6,14 @@ import {
   computeShotBasketProbability,
   createInitialBallFlightState,
   evaluateBallPosition,
+  estimateCorrectShotPercentage,
   resolveAuthoritativeShot,
   stepBallPreResolution,
   transitionBallToResolution,
 } from '../../shared/rules/shot';
 import { evaluateBlockEligibilityAtRelease } from '../../shared/rules/block';
 import { computeSpeedScore, evaluateQuestionDuel } from '../../shared/rules/timing';
-import { COURT_GEOMETRY } from '../../shared/config/balance';
+import { COURT_GEOMETRY, ROOM_PRESETS } from '../../shared/config/balance';
 
 describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
   it('reproduces the NBA-informed open mid-range base and timing bonuses', () => {
@@ -97,6 +98,32 @@ describe('Shot probability & 4-stage slow-motion trajectory rules', () => {
       speedScore: 0,
     });
     expect(clampedLow.finalProbability).toBe(0.03);
+  });
+
+  it('shows the same correct-answer midpoint chance that the resolver would use', () => {
+    const shooterPos = { x: 0, z: 0 };
+    const release = (distance: number) => {
+      const defenderPos = { x: 0, z: -distance };
+      return captureShotReleaseSnapshot({
+        shooterPos, defenderPos, releasedWhileSprinting: false,
+        blockEligibility: evaluateBlockEligibilityAtRelease({
+          shooterPos, defenderPos, defenderFacingAngle: 0,
+        }),
+      });
+    };
+    const near = release(.75);
+    const open = release(2);
+    expect(estimateCorrectShotPercentage(near, 0, ROOM_PRESETS.standard))
+      .toBeLessThan(estimateCorrectShotPercentage(open, 0, ROOM_PRESETS.standard));
+    const actual = computeShotBasketProbability({
+      baseProbability: open.baseProbability + .20,
+      attackerCorrect: true,
+      speedScore: computeSpeedScore(7000, 2000, 12000),
+      correctBaseBonus: ROOM_PRESETS.standard.correctBaseBonus,
+      speedBonusWeight: ROOM_PRESETS.standard.speedBonusWeight,
+    });
+    expect(estimateCorrectShotPercentage(open, 2, ROOM_PRESETS.standard))
+      .toBe(Math.round(actual.finalProbability * 100));
   });
 
   it('classifies 2-point vs 3-point zones accurately around the 6.75m arc', () => {

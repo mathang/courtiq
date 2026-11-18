@@ -102,11 +102,11 @@ try {
             if (i < 3) await step(45);
           }
           assert.equal((await state()).trickSelection.move, 'stepback');
-          await step(400);
+          await step(680);
           current = await state();
           assert.equal(current.players[0].lastTrick, 'stepback');
           stepbackDistance = current.players[0].z - first.players[0].z;
-          assert.ok(stepbackDistance > .3);
+          assert.ok(stepbackDistance > .3, `Step-back moved ${stepbackDistance} metres`);
           await photo('stepback');
           await drive(630);
           current = await state();
