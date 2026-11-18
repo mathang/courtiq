@@ -174,7 +174,7 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await photo('results');
     report.push({ name, viewport: [width, height], score: end.score, attacking: attacked, defending: defended, stepbackDistance, rounds });
-    await writeFile(`${output}/report.json`, JSON.stringify(report, null, 2));
+    console.log(JSON.stringify(report.at(-1)));    await writeFile(`${output}/report.json`, JSON.stringify(report, null, 2));
     await page.close();
   }
 } finally {
