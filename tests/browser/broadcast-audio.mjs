@@ -15,20 +15,40 @@ try {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.speak = () => { throw Error('Browser speech synthesis was used'); };
       }
+      const decode = AudioContext.prototype.decodeAudioData;
+      AudioContext.prototype.decodeAudioData = async function (bytes) {
+        try {
+          return await decode.call(this, bytes);
+        } catch (error) {
+          console.error('Audio decoding failed', error.message);
+          throw error;
+        }
+      };
     });
     const errors = [];
+    const browserErrors = [];
     const broadcasts = [];
     page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => {
+      if (message.type() === 'error' || message.type() === 'warning') browserErrors.push(message.text());
+    });
     page.on('request', request => {
       if (request.url().includes('courtiq-broadcast.mp3')) broadcasts.push(request.url());
     });
     const step = ms => page.evaluate(ms => window.advanceTime(ms), ms);
     const audio = () => page.evaluate(() => JSON.parse(window.render_game_to_text()).audio);
     const click = selector => touch ? page.locator(selector).tap() : page.locator(selector).click();
-    const announcement = voice => page.waitForFunction(voice => {
-      const audio = JSON.parse(window.render_game_to_text()).audio;
-      return audio.broadcast.ready && audio.broadcast.active === voice;
-    }, voice, { timeout: 7000 });
+    const announcement = async voice => {
+      try {
+        await page.waitForFunction(voice => {
+          const state = JSON.parse(window.render_game_to_text()).audio;
+          return state.context === 'running' && state.broadcast.ready && state.broadcast.active === voice;
+        }, voice, { polling: 30, timeout: 7000 });
+      } catch (error) {
+        console.error(`${name}: expected ${voice} announcer`, await audio(), errors, browserErrors);
+        throw error;
+      }
+    };
 
     const response = page.waitForResponse(r => r.url().includes('courtiq-broadcast.mp3') && r.ok());
     await page.goto(baseUrl);
@@ -36,8 +56,8 @@ try {
     await page.waitForFunction(() => window.advanceTime && JSON.parse(window.render_game_to_text()).playerModels.every(m => m === 'ready'));
     await step(0);
     await click('#btn-start-solo');
-    await step(70);
     await announcement('female');
+    await step(70);
     assert.match((await audio()).broadcast.last.text, /Light up the court/);
     assert.match(await page.locator('#arcade-commentary').innerText(), /Light up the court/);
     await click('#btn-toggle-mute');
