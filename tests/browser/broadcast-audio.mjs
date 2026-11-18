@@ -12,6 +12,8 @@ try {
   ]) {
     const page = await browser.newPage({ viewport: { width, height }, hasTouch: touch, isMobile: touch });
     await page.addInitScript(() => {
+      // Keep CourtBot's random steal rolls from ending this scripted possession.
+      Math.random = () => 0.91;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.speak = () => { throw Error('Browser speech synthesis was used'); };
       }
@@ -55,6 +57,9 @@ try {
     assert.match((await response).headers()['content-type'], /audio\/mpeg/);
     await page.waitForFunction(() => window.advanceTime && JSON.parse(window.render_game_to_text()).playerModels.every(m => m === 'ready'));
     await step(0);
+    await click('#lobby-options > summary');
+    await page.selectOption('#select-ai-difficulty', 'beginner');
+    await click('#lobby-options > summary');
     await click('#btn-start-solo');
     await announcement('female');
     await step(70);
@@ -72,6 +77,7 @@ try {
       else await page.keyboard.press('KeyK');
       if (i < 3) await step(45);
     }
+    assert.equal(await page.evaluate(() => JSON.parse(window.render_game_to_text()).trickSelection.move), 'stepback');
     await step(405);
     await announcement('male');
     assert.equal((await audio()).broadcast.last.text, 'Back-step lightning!');
