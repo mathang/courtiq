@@ -54,7 +54,7 @@ import {
 class CourtIqApp {
   private renderer: CourtIqRenderer;
   private sound = new SoundEngine();
-  private commentary = new ArcadeCommentary(document.getElementById('arcade-commentary')!);
+  private commentary = new ArcadeCommentary(document.getElementById('arcade-commentary')!, this.sound);
   private commentaryAttempt: string | null = null;
   private lastAttackingMove: PlayerSimState['streetMove'] = null;
   private cueTracker = new PossessionCueTracker();

@@ -1,4 +1,5 @@
 import { createCourtSound, type DesignedSound } from "./courtSoundBank";
+import type { BroadcastClip } from "./broadcastClips";
 
 const RECORDED = [
   "bounce-1",
@@ -22,6 +23,13 @@ export class SoundEngine {
   private bed: AudioBufferSourceNode | null = null;
   private bedGain: GainNode | null = null;
   private voices = new Set<AudioBufferSourceNode>();
+  private commentaryFile: Promise<ArrayBuffer | null> | null = null;
+  private commentaryDecode: Promise<AudioBuffer | null> | null = null;
+  private commentaryBuffer: AudioBuffer | null = null;
+  private commentarySource: AudioBufferSourceNode | null = null;
+  private commentaryRequest = 0;
+  private activeCommentary: BroadcastClip | null = null;
+  private lastCommentary: BroadcastClip | null = null;
   private serial = 0;
   private paused = false;
   private status = "idle";
@@ -30,7 +38,12 @@ export class SoundEngine {
   public muted = false;
 
   constructor() {
-    if (typeof window !== "undefined") this.prime();
+    if (typeof window !== "undefined") {
+      this.prime();
+      this.commentaryFile = fetch("/assets/audio/courtiq-broadcast.mp3")
+        .then(response => response.ok ? response.arrayBuffer() : null)
+        .catch(() => null);
+    }
   }
   private prime(): void {
     if (this.loading) return;
@@ -118,6 +131,7 @@ export class SoundEngine {
         send.connect(convolver);
         convolver.connect(this.master);
         this.decode();
+        this.loadCommentary(ctx);
       } catch {
         return null;
       }
@@ -134,6 +148,7 @@ export class SoundEngine {
     if (muted) {
       this.stopSlowMoAtmosphere();
       this.silenceActiveVoices();
+      this.stopCommentary();
     }
     if (!muted) this.ensureContext();
     if (this.master && this.ctx) {
@@ -150,6 +165,7 @@ export class SoundEngine {
     if (paused) {
       this.stopSlowMoAtmosphere();
       this.silenceActiveVoices();
+      this.stopCommentary();
     }
     if (this.master && this.ctx) {
       this.master.gain.setTargetAtTime(
@@ -158,6 +174,56 @@ export class SoundEngine {
         0.01,
       );
     }
+  }
+  private loadCommentary(ctx: AudioContext): Promise<AudioBuffer | null> {
+    this.commentaryDecode ??= (this.commentaryFile ?? Promise.resolve(null))
+      .then(bytes => bytes ? ctx.decodeAudioData(bytes) : null)
+      .then(buffer => (this.commentaryBuffer = buffer))
+      .catch(() => null);
+    return this.commentaryDecode;
+  }
+  public playCommentary(clip: BroadcastClip): void {
+    const ctx = this.ensureContext();
+    if (!ctx || !this.master || !this.bus) return;
+    this.stopCommentary();
+    const request = this.commentaryRequest;
+    const requestedAt = performance.now();
+    const start = (buffer: AudioBuffer | null) => {
+      if (!buffer || request !== this.commentaryRequest || this.muted || this.paused ||
+          performance.now() - requestedAt > 750 || clip.start + clip.duration > buffer.duration + 0.025) return;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(this.master!);
+      source.onended = () => {
+        source.disconnect();
+        if (this.commentarySource !== source) return;
+        this.commentarySource = null;
+        this.activeCommentary = null;
+        this.setCourtLevel(1);
+      };
+      this.commentarySource = source;
+      this.activeCommentary = this.lastCommentary = clip;
+      this.setCourtLevel(0.53);
+      source.start(ctx.currentTime, clip.start, clip.duration);
+    };
+    if (this.commentaryBuffer) start(this.commentaryBuffer);
+    else void this.loadCommentary(ctx).then(start);
+  }
+  public stopCommentary(): void {
+    this.commentaryRequest++;
+    const source = this.commentarySource;
+    if (!source) return;
+    this.commentarySource = null;
+    this.activeCommentary = null;
+    source.onended = null;
+    source.stop();
+    source.disconnect();
+    this.setCourtLevel(1);
+  }
+  private setCourtLevel(level: number): void {
+    if (!this.ctx || !this.bus) return;
+    this.bus.gain.cancelScheduledValues(this.ctx.currentTime);
+    this.bus.gain.setTargetAtTime(level, this.ctx.currentTime, 0.045);
   }
   private silenceActiveVoices(): void {
     for (const v of this.voices) {
@@ -306,6 +372,11 @@ export class SoundEngine {
     }
     return {
       samples: this.status,
+      broadcast: {
+        ready: this.commentaryBuffer !== null,
+        active: this.activeCommentary?.voice ?? null,
+        last: this.lastCommentary ? { voice: this.lastCommentary.voice, text: this.lastCommentary.text } : null,
+      },
       muted: this.muted,
       paused: this.paused,
       context: this.ctx?.state ?? "locked",

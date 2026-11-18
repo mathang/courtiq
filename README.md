@@ -46,7 +46,7 @@ Choose **Options → Watch a possession** in the lobby to watch a drive, crossov
 
 The player now carries 17 keyframed clips, with blended walk/jog/sprint, basketball accents, planted feet and hand/ball contact. A possession camera follows the approach, shifts for take-off and keeps the airborne action above the question card. Reduced Motion uses steady framing. Soft floor shadows and brighter arena lighting improve depth.
 
-Recorded CC0 ball, shoe and crowd sounds sit alongside original designed impacts and net sounds. Cues follow visible contacts, with bounded voices, immediate master mute and pause handling. The player GLB is 1.29 MB; seven audio recordings total 265 kB. Provenance, licences and rebuild instructions are in [assets/source/README.md](assets/source/README.md).
+Recorded CC0 ball, shoe and crowd sounds sit alongside original impacts and net sounds. Two Australian announcers created with Qwen3-TTS share the captioned broadcast calls. Cues follow visible contacts, with bounded voices, immediate master mute and pause handling. The player GLB is 1.29 MB; seven audio recordings total 265 kB. Provenance, licences and rebuild instructions are in [assets/source/README.md](assets/source/README.md).
 
 ## Integrated kit and smoother motion — 11 November 2026
 
@@ -86,7 +86,7 @@ Each student's HUD tracks **three consecutive correct answers** towards **“ON 
 
 All **255 wrong choices across 85 bundled questions** have a specific explanation, derived from the existing course questions and reasoning. These new rationales are **draft additions for instructor review**; original stems, choices, answer keys, explanations and source references are unchanged. Custom packs can supply `optionFeedback` keyed by stable option ID; packs without it retain their existing explanation.
 
-Solo settings pause the match. The former default action keys migrate to J, K and L. Custom mappings remain available. CourtBot reads delayed attacker motion to close on step-backs and cut off driving lanes. Arcade calls are captioned and use an installed English voice when available. The sound toggle silences spoken calls.
+Solo settings pause the match. The former default action keys migrate to J, K and L. Custom mappings remain available. CourtBot reads delayed attacker motion to close on step-backs and cut off driving lanes. Two Australian announcers split 16 captioned calls evenly, with one voice per call. The sound toggle silences spoken calls. [Broadcast audio credits](public/assets/audio/README.md)
 
 The floor shows the attacker's chance of scoring if they answer correctly halfway through the answer time and avoid a block. The forecast uses the same shot model as the match, including distance from the defender, turbo, tricks and the Fire boost a correct answer can trigger. The zone anchors come from 2023–24 league shooting (69.9% at 0–3 feet, 44.6% at 10–16 feet and 36.6% on threes). CourtIQ scales the unboosted chance to 32% of those anchors and interpolates game-tuned contest penalties at the NBA's 2-, 4- and 6-foot tracking thresholds. [League shooting table](https://www.basketball-reference.com/leagues/NBA_2024_shooting.html) · [NBA closest-defender dashboard](https://www.nba.com/stats/teams/shots-closest-defender)
 
